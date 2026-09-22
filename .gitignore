@@ -1,0 +1,17 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary lock files (MS Word, Excel, etc.)
+~$*
+*.tmp
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+env/
+.env

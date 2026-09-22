@@ -1,0 +1,328 @@
+T+7 FEASIBILITY CHECKLIST
+APMC MANDI MARKET INTELLIGENCE PROJECT
+
+Purpose:
+Use this checklist to test the current dataset before building the T+7 ML model.
+Do not build the final ML model until these checks are completed.
+
+
+A. BASIC DATA STRUCTURE
+
+Check that the dataset contains:
+
+[ ] District
+[ ] Market
+[ ] Commodity
+[ ] Variety
+[ ] Arrival_Date
+[ ] Modal_Price
+[ ] Min_Price
+[ ] Max_Price
+
+
+B. UNIQUE TIME-SERIES IDENTIFICATION
+
+Treat the following combination as one individual time series:
+
+District + Market + Commodity + Variety
+
+For every unique combination, check:
+
+[ ] Total number of records
+[ ] Earliest date
+[ ] Latest date
+[ ] Number of unique dates
+[ ] Duplicate records for the same combination and date
+
+
+C. DATE CONTINUITY
+
+For each District + Market + Commodity + Variety series, calculate the gap
+between consecutive observations.
+
+Check:
+
+[ ] Mostly consecutive daily observations
+[ ] Small gaps (2–3 days)
+[ ] Large gaps (7+ days)
+[ ] Long missing periods
+
+Example of good continuity:
+
+10 Sep
+11 Sep
+12 Sep
+13 Sep
+14 Sep
+15 Sep
+16 Sep
+17 Sep
+
+Example of problematic continuity:
+
+10 Sep
+11 Sep
+15 Sep
+22 Sep
+
+
+D. EXACT T+7 AVAILABILITY — MOST IMPORTANT
+
+For every observation at date T, search for the SAME:
+
+District + Market + Commodity + Variety
+
+on exactly T + 7 calendar days.
+
+Example:
+
+T = 10 September
+Required target date = 17 September
+
+Do NOT use the next available row as T+7.
+
+Calculate:
+
+Total observations = ______
+Observations with exact T+7 = ______
+Observations without T+7 = ______
+
+T+7 availability percentage:
+
+Valid T+7 pairs / Total possible T records × 100
+
+T+7 availability % = ______
+
+
+E. NUMBER OF USABLE SERIES
+
+For every District + Market + Commodity + Variety combination, calculate:
+
+[ ] Total observations
+[ ] Number of valid T+7 pairs
+[ ] Date coverage
+
+Initial screening:
+
+[ ] Very weak: fewer than 20 usable T+7 pairs
+[ ] Potentially usable: 20–50 usable T+7 pairs
+[ ] Stronger: 50+ usable T+7 pairs
+
+These are initial screening thresholds and should be adjusted after examining the actual data.
+
+
+F. T+7 PRICE INFORMATION
+
+For every valid T+7 pair, record:
+
+Price at T = ______
+Price at T+7 = ______
+
+Calculate:
+
+Absolute price change:
+Price_T+7 - Price_T
+
+Percentage price change:
+((Price_T+7 - Price_T) / Price_T) × 100
+
+Check:
+
+[ ] Minimum price change
+[ ] Maximum price change
+[ ] Mean price change
+[ ] Median price change
+[ ] Standard deviation
+[ ] Distribution of price changes
+
+
+G. CLASSIFICATION TARGET FEASIBILITY
+
+Analyze the distribution of T → T+7 price changes.
+
+Determine whether three meaningful classes can be created:
+
+[ ] Favorable
+[ ] Normal
+[ ] Unfavorable
+
+Check:
+
+[ ] Each class has enough observations
+[ ] No class is extremely small
+[ ] Classes have a clear interpretation
+[ ] Thresholds are supported by the dataset
+
+Do NOT arbitrarily choose thresholds before inspecting the distribution.
+
+
+H. PRICE-RANGE FEASIBILITY
+
+For each valid T+7 pair, inspect:
+
+[ ] T+7 Min_Price
+[ ] T+7 Max_Price
+[ ] T+7 Modal_Price
+
+Analyze:
+
+[ ] Historical T+7 minimum price behaviour
+[ ] Historical T+7 maximum price behaviour
+[ ] Width of the T+7 price range
+[ ] Differences in price ranges between commodities
+[ ] Differences in price ranges between mandis
+
+Goal:
+Determine whether a meaningful T+7 expected price band can be produced.
+
+
+I. COMMODITY-WISE FEASIBILITY
+
+For every commodity, calculate:
+
+[ ] Total observations
+[ ] Number of varieties
+[ ] Number of mandis
+[ ] Number of valid T+7 pairs
+[ ] T+7 availability percentage
+
+Identify:
+
+[ ] Commodities with sufficient data
+[ ] Commodities with insufficient data
+
+Do not necessarily model every commodity if the historical coverage is insufficient.
+
+
+J. VARIETY-WISE FEASIBILITY
+
+For every Commodity + Variety combination, calculate:
+
+[ ] Number of observations
+[ ] Number of T+7 pairs
+[ ] Date coverage
+[ ] Price variability
+
+Check whether individual varieties have enough data even when the overall commodity has many records.
+
+
+K. MANDI-WISE FEASIBILITY
+
+For every Market/Mandi, calculate:
+
+[ ] Number of commodities
+[ ] Number of varieties
+[ ] Total records
+[ ] Number of T+7 pairs
+
+This helps determine whether mandi-level information can support district-level market intelligence.
+
+
+L. NEIGHBOURING-MANDI FEASIBILITY
+
+For a target mandi, check whether other mandis have observations for the same:
+
+[ ] Commodity
+[ ] Variety
+[ ] Date
+
+Calculate:
+
+[ ] Number of mandis available per commodity
+[ ] Same-day observations across mandis
+[ ] Number of common commodities
+[ ] Number of common varieties
+[ ] Percentage of dates with neighbouring-market data
+
+If most commodities occur in only one mandi, neighbouring-mandi features may be difficult to construct.
+
+
+M. WEATHER DATA FEASIBILITY
+
+This is a later stage. Do not generate synthetic weather data initially.
+
+Check whether external historical weather data can be matched using:
+
+[ ] Date
+[ ] Mandi location
+[ ] District/location
+[ ] Geographic coordinates if available
+
+Check weather coverage:
+
+[ ] Dates overlap with mandi data
+[ ] Geographic coverage is appropriate
+[ ] Historical weather is available up to T
+[ ] No future actual weather is used as an input for T+7 prediction
+
+Possible weather features:
+
+[ ] Rainfall
+[ ] Temperature
+[ ] Humidity
+[ ] Rainfall over previous 3 days
+[ ] Rainfall over previous 7 days
+[ ] Average temperature
+[ ] Extreme rainfall indicator
+
+
+N. FINAL T+7 FEASIBILITY TABLE
+
+Fill these values after analysis:
+
+Total records = __________
+Unique districts = __________
+Unique mandis = __________
+Unique commodities = __________
+Unique varieties = __________
+Unique District-Market-Commodity-Variety series = __________
+
+Records with exact T+7 = __________
+Records without T+7 = __________
+T+7 availability % = __________
+
+Series with >=20 T+7 pairs = __________
+Series with >=50 T+7 pairs = __________
+
+Possible classification samples = __________
+Favorable samples = __________
+Normal samples = __________
+Unfavorable samples = __________
+
+
+O. FINAL DECISION
+
+GOOD:
+[ ] High T+7 availability
+[ ] Many usable series
+[ ] Enough samples per class
+[ ] Reasonable price variation
+[ ] Sufficient mandi overlap
+
+If these conditions are satisfied:
+Proceed with T+7 prediction.
+
+MODERATE:
+[ ] Only some commodities/series have enough T+7 observations
+
+If this happens:
+Restrict the project to selected commodities/series with sufficient historical coverage.
+
+PROBLEMATIC:
+[ ] Very few exact T+7 observations
+[ ] Many missing dates
+[ ] Very few samples per class
+
+If this happens:
+Do not force T+7 prediction. Consider obtaining a more continuous historical dataset or reconsidering the prediction horizon.
+
+
+MOST IMPORTANT FIRST TEST
+
+Before doing anything else, calculate:
+
+"What percentage of each District + Market + Commodity + Variety series
+has an observation exactly 7 calendar days after T?"
+
+This number will give the first indication of whether the current dataset
+can realistically support T+7 prediction.
