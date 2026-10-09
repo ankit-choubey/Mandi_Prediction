@@ -1,0 +1,7 @@
+scope,total_rows,compliant_price_order_rows,compliance_pct,min_gt_modal_count,modal_gt_max_count,min_gt_max_count,zero_modal_price_count,zero_min_price_count,zero_max_price_count,zero_spread_count,zero_spread_pct
+Gaziabaad.csv,41495,41495,100.0,0,0,0,0,0,0,3578,8.62
+Jhansi.csv,23625,23624,99.9958,0,1,1,0,0,1,3686,15.6
+Kanpur.csv,42644,42640,99.9906,0,4,3,0,1,4,5173,12.13
+Lukhnow.csv,21063,21063,100.0,0,0,0,0,0,0,3316,15.74
+Unnao.csv,31365,31364,99.9968,0,1,1,0,0,1,2247,7.16
+ALL_FILES_TOTAL,160192,160186,99.9963,0,6,5,0,1,6,18000,11.24

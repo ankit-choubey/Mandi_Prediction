@@ -1,0 +1,6 @@
+category,series_id,origin_date,target_date_required,origin_price,matched_price,pct_change,market_condition,notes
+SUCCESSFUL_EXACT_MATCH_T7,Ghaziabad__Ghaziabad APMC__Apple__Kasmir/Shimla - II,2025-11-02,2025-11-09,5900.0,5840.0,-1.0169,Normal,Matched exactly at T+7 calendar days.
+SUCCESSFUL_EXACT_MATCH_T3,Ghaziabad__Ghaziabad APMC__Bengal Gram Dal(Chana Dal)__Other,2026-03-10,2026-03-13,10082.14,7474.25,-25.8664,Unfavorable,Matched exactly at T+3 calendar days.
+INTERIOR_MISSING_GAP_T7,Ghaziabad__Ghaziabad APMC__Apple__Kasmir/Shimla - II,2025-11-09,2025-11-16,5840.0,,,UNOBSERVED,Target date is within dataset span but no auction reported for this series on that day.
+BOUNDARY_TRUNCATED_HORIZON_T7,Ghaziabad__Ghaziabad APMC__Bengal Gram Dal(Chana Dal)__Other,2026-08-30,2026-09-06,7942.91,,,TRUNCATED,Target date is beyond dataset maximum date (2026-09-01).
+STICKY_PRICE_ZERO_CHANGE_T7,Ghaziabad__Ghaziabad APMC__Chili Red__Other,2026-07-03,2026-07-10,8000.0,8000.0,0.0,Normal,Price was completely unchanged after 7 calendar days.

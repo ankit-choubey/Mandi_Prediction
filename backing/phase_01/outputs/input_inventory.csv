@@ -1,0 +1,6 @@
+filename,file_path,file_size_bytes,sha256_hash,row_count,column_count,min_date,max_date,distinct_districts,distinct_markets,distinct_commodities,distinct_varieties
+Gaziabaad.csv,data/raw/Gaziabaad.csv,3656537,71601f993e07efa146f126747245a7fffb608a307abdea579475ba19bfeb0251,41495,13,2024-09-01,2026-09-01,1,8,100,109
+Jhansi.csv,data/raw/Jhansi.csv,1947875,7d0808d8d32555212af546004195c0ccf58e368106daad67169a231e80988a5c,23625,13,2024-09-01,2026-09-01,1,15,84,96
+Kanpur.csv,data/raw/Kanpur.csv,3705373,0eb17704ebba1f66b8c9ef660f48dabc3665ea4691ed3b8aa20a49df8528d04a,42644,13,2024-09-01,2026-09-01,1,9,102,133
+Lukhnow.csv,data/raw/Lukhnow.csv,1840744,6ca52743cc2f9059bf1e3b919b25317aa367f580bbafa6f62adb9db1d759bb13,21063,13,2024-09-01,2026-09-01,1,4,88,96
+Unnao.csv,data/raw/Unnao.csv,2570462,d4ee358b96cad3a888e4a92acd993327e56c4dc6af6eb60814193f98f591cebc,31365,13,2024-09-01,2026-09-01,1,6,70,90

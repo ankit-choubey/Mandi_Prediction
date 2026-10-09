@@ -208,17 +208,36 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 ---
 
 ### Phase 1: Data Integrity & Exact-Calendar Continuity
-- **Status:** **NOT STARTED**
-- **Scheduled Scope:** Detailed commodity-wise gap analysis, exact-calendar lag reformation, market-name unification audit, and target sensitivity analysis.
+- **Status:** **COMPLETED**
+- **Git Branch:** `audit/phase-01-data-integrity`
+- **Dataset Inspected:** 5 raw CSV files in `data/raw/*.csv` (160,192 raw records, 155,741 clean deduplicated series-date observations).
+- **Core Results & Exact Denominators:**
+  - **T+3 Target Matching:** 110,349 matched targets out of 155,276 eligible origins (**71.07% match rate**). 465 boundary-truncated origins; 44,927 interior missing targets.
+  - **T+7 Target Matching:** 117,176 matched targets out of 154,736 eligible origins (**75.73% match rate**; 75.24% of all 155,741 origins). 1,005 boundary-truncated origins; 37,560 interior missing targets.
+  - **Duplicate Ambiguity Discovered:** 4,393 duplicate groups (8,844 rows) exist. 4,380 groups (**99.7%**) have conflicting prices on the exact same date (4,363 conflicting modal prices, 17 conflicting spreads, 13 identical). The original pipeline silently discarded 4,380 rows via `keep='first'`.
+  - **Price Quality Compliance:** 99.9963% compliance (160,186 / 160,192). Exactly 6 rows violated due to `Max_Price = 0.0` while `Modal_Price > 0.0`. 18,000 rows (11.24%) exhibit flat zero intraday spread ($Min == Modal == Max$).
+  - **Market Mapping Review:** 42 nominal market strings collapse to 21 physical mandis due to the Nov 2025 APMC renaming. Pre- and post-APMC pairs have only 2–4 overlapping days, except Jhansi and Jhansi (Grain) which ran concurrently across 306 days as separate physical yards.
+  - **Class Distribution & Sticky Prices:** At T+7, 20,085 records (**17.14%**) experience exactly 0.00% price change. At T+3, 29,408 records (**26.65%**) experience exactly 0.00% change. Under fixed $\pm 2.5\%$, Normal comprises 57.84% (T+7) and 68.20% (T+3).
+- **Automated Tests:** 8 formal tests executed via pytest ([`backing/phase_01/tests/test_phase01_data_integrity.py`](./phase_01/tests/test_phase01_data_integrity.py)); **8 PASSED (100%)** in 2.08s.
+- **Evidence Files:**
+  - [`backing/phase_01/findings.md`](./phase_01/findings.md)
+  - [`backing/phase_01/evidence/input_verification.md`](./phase_01/evidence/input_verification.md)
+  - [`backing/phase_01/evidence/unresolved_questions.md`](./phase_01/evidence/unresolved_questions.md)
+  - [`backing/phase_01/evidence/execution_environment.txt`](./phase_01/evidence/execution_environment.txt)
+  - [`backing/phase_01/evidence/reproduction_instructions.md`](./phase_01/evidence/reproduction_instructions.md)
+  - [`backing/phase_01/tests/test_results.txt`](./phase_01/tests/test_results.txt)
+  - 9 Machine-readable CSVs in [`backing/phase_01/outputs/`](./phase_01/outputs/)
+- **Phase 1 Verdict:** **PASS (Data integrity, exact denominators, duplicate conflicts, and calendar matching boundaries fully established).**
 
 ---
 
 ## 14. Unresolved Questions and Risks
 
-1. **Market String Canonicalization:** Will downstream reporting accept collapsing the 42 nominal mandis to the 21 true physical mandis?
-2. **Lag Reformation:** When converting `shift(k)` to calendar-based date joins (`T - k days`), how should missing dates be handled (forward fill with staleness limit vs explicit missing indicator)?
-3. **Target Calibration:** Should the static $\pm 2.5\%$ threshold be replaced with or benchmarked against commodity-specific volatility bands ($k \sigma_i$) or empirical quantile splits?
-4. **External Grounding:** Sourcing verified CWC UP warehouse tariffs and Agricultural Wages in India tables.
+1. **Reconciliation of Conflicting Duplicates:** Should the 4,380 conflicting rows be replaced with daily medians plus an `Is_Ambiguous_Price_Date` flag, or excluded from training?
+2. **Correction of Inverted Price Rows:** Impute `Max_Price = Modal_Price` on the 6 zero-max rows or drop them?
+3. **Market String Canonicalization Boundaries:** Adopting proposed mapping from [`market_mapping_review.csv`](./phase_01/outputs/market_mapping_review.csv) to merge pre/post APMC variants while keeping parallel yards (Jhansi vs Jhansi Grain) distinct.
+4. **Low-Continuity Commodity Screening:** Should commodities with $<60\%$ T+7 continuity (e.g. Lobia at 15.3%, Til at 15.2%) be formally excluded from automated model training?
+5. **Calendar Lag Implementation ($T-k$):** Bounded forward-fill ($\le 2$ calendar days) with staleness indicators vs strict joins.
 
 ---
 
@@ -229,13 +248,15 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 | **DEC-001** | 2026-10-10 | Preserve raw CSV files strictly unchanged | Prevents corruption of source data; transformations belong in reproducible pipelines. |
 | **DEC-002** | 2026-10-10 | Establish dedicated `backing/` audit archive | Consolidates all empirical checks, execution logs, and audit trails in version control. |
 | **DEC-003** | 2026-10-10 | Quarantine model training and synthetic data | Core price modeling and calendar lag defects must be resolved before introducing cost layers. |
-| **DEC-004** | 2026-10-10 | Isolate work on `audit/phase-00-inspection` branch | Keeps audit artifacts segregated from main development branch until verified. |
+| **DEC-004** | 2026-10-10 | Isolate work on dedicated audit branches | Keeps audit artifacts segregated from main development branch until verified. |
+| **DEC-005** | 2026-10-10 | Catalog all 4,380 conflicting duplicate rows without silent dropping | Eliminates arbitrary row dropping (`keep='first'`); preserves full ambiguity audit trail. |
+| **DEC-006** | 2026-10-10 | Preserve market name mappings as proposals | Prevents accidental merging of distinct concurrent physical market yards (e.g. Jhansi vs Jhansi Grain). |
 
 ---
 
 ## 16. Final Feasibility Verdict
 
-- **Current Overall Status:** **INCOMPLETE / UNDER AUDIT**
+- **Current Overall Status:** **PHASE 1 COMPLETE / READY FOR PHASE 2 (METHODOLOGY & FEATURE REMEDIATION)**
 - **Interim Conclusion:**
-  The raw historical mandi dataset is authentic, high-quality, and structurally suitable for agricultural price forecasting ($P_{T+7}$). However, the current predictive pipeline contains critical defects (observation lags masquerading as calendar lags, artificial time-series fragmentation from APMC string renaming, and performance claims contradicted by live baselines).
-- **Production Readiness:** **NOT PRODUCTION READY**. Modeling must be remediated across Phases 1 through 3 before adding economic decision support.
+  Phase 1 has established exact empirical baselines for data integrity: the raw Agmarknet dataset contains 160,192 records with 75.73% eligible calendar T+7 availability and 99.996% price order validity. However, the original modeling pipeline's reliance on `shift(7)` (11.45-day mean lag), silent dropping of 4,380 conflicting duplicates, and artificial time-series fragmentation from the APMC string rename must be remediated in Phase 2 before models can be trained or evaluated.
+- **Production Readiness:** **NOT PRODUCTION READY**. Proceed to Phase 2 (Calendar-Aware Feature Engineering & Leakage-Free Lag Reformation).

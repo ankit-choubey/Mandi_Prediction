@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- /Library/Frameworks/Python.framework/Versions/3.14/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
+plugins: anyio-4.11.0
+collecting ... collected 8 items
+
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_total_raw_record_count PASSED [ 12%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_exact_calendar_t7_matching PASSED [ 25%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_exact_calendar_t3_matching PASSED [ 37%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_missing_target_separation_t7 PASSED [ 50%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_duplicate_date_ambiguity PASSED [ 62%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_price_order_violations_detection PASSED [ 75%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_target_class_boundaries_and_edge_cases PASSED [ 87%]
+backing/phase_01/tests/test_phase01_data_integrity.py::TestPhase01DataIntegrity::test_output_csv_artifacts_exist PASSED [100%]
+
+============================== 8 passed in 2.08s ===============================
