@@ -1,0 +1,43 @@
+2026-10-10 03:29:43,128 [INFO] ================================================================================
+2026-10-10 03:29:43,129 [INFO] STARTING PHASE 2 DATA HANDLING & METHODOLOGY REMEDIATION AUDIT
+2026-10-10 03:29:43,129 [INFO] Target Output Directory: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs
+2026-10-10 03:29:43,129 [INFO] Execution Log: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/logs/phase02_execution.log
+2026-10-10 03:29:43,129 [INFO] ================================================================================
+2026-10-10 03:29:43,131 [INFO] Discovered 5 raw CSV files.
+2026-10-10 03:29:43,212 [INFO] Loaded 160,192 raw records into memory.
+2026-10-10 03:29:43,645 [INFO] Temporal bounds: 2024-09-01 to 2026-09-01 (731 calendar days)
+2026-10-10 03:29:43,645 [INFO] 
+--- STEP 3: Duplicate Record Investigation ---
+2026-10-10 03:29:45,241 [INFO] Identified 4,393 duplicate series-date groups (keyed by District, Market, Commodity, Variety, Date).
+2026-10-10 03:29:46,869 [INFO] Duplicate Categories Breakdown:
+2026-10-10 03:29:46,870 [INFO]  - Cat A (Completely identical all columns): 0
+2026-10-10 03:29:46,870 [INFO]  - Cat B (Conflicting Modal_Price): 4,363
+2026-10-10 03:29:46,870 [INFO]  - Cat C (Same Modal_Price, conflicting Min/Max): 17
+2026-10-10 03:29:46,870 [INFO]  - Cat D (Differing Grade within duplicate group): 3,096 (70.5% of duplicates are multi-grade!)
+2026-10-10 03:29:46,870 [INFO]  - Cat E (Conflicting prices with IDENTICAL Grade): 1,287
+2026-10-10 03:29:46,870 [INFO]  - Total Ambiguous Groups (Cat B + Cat C): 4,380
+2026-10-10 03:29:47,307 [INFO] Candidate Strategies Row Counts:
+2026-10-10 03:29:47,307 [INFO]  - Strat 1 (Preserve All & Flag): 160,192 rows (8,818 flagged)
+2026-10-10 03:29:47,307 [INFO]  - Strat 2 (Exclude Ambiguous Dates): 151,361 clean rows
+2026-10-10 03:29:47,307 [INFO]  - Strat 3 (Median Aggregation): 155,741 unique series-date rows
+2026-10-10 03:29:47,307 [INFO]  - Strat 4 (Grade-Stratified Key): 158,839 rows
+2026-10-10 03:29:47,307 [INFO]  - Strat 5 (Original Silent Drop): 155,741 rows
+2026-10-10 03:29:48,159 [INFO] Saved duplicate_resolution_comparison.csv successfully.
+2026-10-10 03:29:48,159 [INFO] 
+--- STEP 4: Canonical Market Mapping ---
+2026-10-10 03:29:49,205 [INFO] Saved canonical_market_mapping.csv (42 raw market strings mapped to 20 proposed canonical markets).
+2026-10-10 03:29:49,205 [INFO] 
+--- STEP 5: Exact-Calendar Lag Feature Audit ---
+2026-10-10 03:29:49,479 [INFO] Computing calendar lags and bounded staleness lags...
+2026-10-10 03:29:50,003 [INFO] Saved calendar_lag_coverage.csv successfully.
+2026-10-10 03:29:50,003 [INFO] 
+--- STEP 6: Target Definition Comparison ---
+2026-10-10 03:29:50,292 [INFO] Saved target_definition_comparison.csv successfully.
+2026-10-10 03:29:50,292 [INFO] 
+--- STEP 7: Cleaned Data Quality & Sensitivity Analysis ---
+2026-10-10 03:29:50,319 [INFO] Saved cleaned_data_quality_summary.csv successfully.
+2026-10-10 03:29:50,319 [INFO] Saved methodology_sensitivity_summary.csv successfully.
+2026-10-10 03:29:50,319 [INFO] 
+================================================================================
+2026-10-10 03:29:50,319 [INFO] PHASE 2 ANALYSIS COMPLETED WITH ZERO ERRORS
+2026-10-10 03:29:50,319 [INFO] ================================================================================

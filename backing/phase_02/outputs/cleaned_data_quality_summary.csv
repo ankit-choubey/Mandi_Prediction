@@ -1,0 +1,5 @@
+pipeline_stage,total_rows,unique_series_count,unique_dates_count,price_order_violations,zero_or_negative_price_rows,ambiguous_duplicate_rows,zero_spread_rows,mean_modal_price,median_modal_price,iqr_modal_price,retention_pct_of_raw,exclusion_rationale
+01_RAW_ORIGINAL_INGESTION,160192,2044,731,6,6,8818,18000,3759.82,2515.0,2760.0,100.0,None (Baseline uncleaned dataset)
+02_EXCLUDE_AMBIGUOUS_DATES,151361,2041,731,6,6,0,17692,3777.11,2539.0,2735.0,94.49,"Dropped all 4,380 ambiguous series-date groups (8,818 rows) to enforce absolute label purity."
+03_MEDIAN_AGGREGATED_CLEAN,155741,2044,731,6,6,0,17692,3767.61,2520.0,2753.57,97.22,Collapses multiple quotes to daily median; retains 100% of unique series-date coordinates.
+04_CANONICAL_MARKET_UNIFIED,154492,1599,731,6,6,0,17240,3759.82,2515.0,2760.0,96.44,Applies proposed canonical market mapping (21 physical mandis); eliminates artificial Nov 2025 split.

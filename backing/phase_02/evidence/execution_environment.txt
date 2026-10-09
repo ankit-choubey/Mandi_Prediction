@@ -1,0 +1,45 @@
+PHASE 02 EXECUTION ENVIRONMENT AND INPUT INTEGRITY
+Generated: 2026-10-10
+Project: Mandi_Prediction
+Corpus: ankit-choubey/Mandi_Prediction
+Branch: audit/phase-02-methodology
+Base Commit: 8a691dd (Phase 1 Data Integrity Audit)
+
+SYSTEM ENVIRONMENT:
+-------------------
+OS: macOS (Darwin 27.0.1, arm64, Apple Silicon)
+Python Executable: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3
+Python Version: 3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]
+
+CORE DEPENDENCIES:
+------------------
+pandas: 2.3.3
+numpy: 2.2.6
+scipy: 1.16.3
+scikit-learn: 1.7.2
+pytest: 9.1.1
+
+INPUT DATASETS & VERIFIED SHA-256 HASHES:
+-----------------------------------------
+File: data/raw/Gaziabaad.csv
+  Size: 4,064,260 bytes (33,740 rows)
+  SHA-256: 71601f993e07efa146f126747245a7fffb608a307abdea579475ba19bfeb0251
+
+File: data/raw/Jhansi.csv
+  Size: 2,514,248 bytes (21,291 rows)
+  SHA-256: 7d0808d8d32555212af546004195c0ccf58e368106daad67169a231e80988a5c
+
+File: data/raw/Kanpur.csv
+  Size: 4,964,482 bytes (41,208 rows)
+  SHA-256: 0eb17704ebba1f66b8c9ef660f48dabc3665ea4691ed3b8aa20a49df8528d04a
+
+File: data/raw/Lukhnow.csv
+  Size: 6,104,748 bytes (50,917 rows)
+  SHA-256: 6ca52743cc2f9059bf1e3b919b25317aa367f580bbafa6f62adb9db1d759bb13
+
+File: data/raw/Unnao.csv
+  Size: 1,573,982 bytes (13,036 rows)
+  SHA-256: d4ee358b96cad3a888e4a92acd993327e56c4dc6af6eb60814193f98f591cebc
+
+Total Raw Records: 160,192
+Data Integrity Status: 100% Unaltered Raw Files
