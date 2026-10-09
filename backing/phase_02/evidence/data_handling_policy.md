@@ -1,8 +1,9 @@
 # Mandi Prediction Data Handling Policy
 
-**Version:** 2.0 (Phase 02 Remediation)  
+**Version:** 2.1 (Phase 02 Correction Pass)  
 **Status:** Defensible Methodology Policy  
 **Effective Date:** 2026-10-10  
+**Branch:** `audit/phase-02-correction-pass`  
 **Scope:** All data ingestion, preprocessing, feature engineering, and model evaluation in `Mandi_Prediction`
 
 ---
@@ -10,88 +11,93 @@
 ## 1. Core Principle of Non-Destructive Auditing
 
 1. **Raw Data Invariance:** The raw files in `data/raw/` (`Gaziabaad.csv`, `Jhansi.csv`, `Kanpur.csv`, `Lukhnow.csv`, `Unnao.csv`) are permanent historical artifacts. They must never be edited, overwritten, truncated, or cleaned in place.
-2. **Explicit Transformations:** Every filtering, aggregation, mapping, or classification step must be implemented as a reproducible, non-destructive transformation with explicit denominators and exclusion reasons logged.
+2. **Explicit Non-Destructive Transformations:** Every filtering, aggregation, mapping, or classification step must be implemented as a reproducible transformation with explicit denominators, input row counts, and exclusion reasons logged.
 
 ---
 
 ## 2. Duplicate Record Handling Policy
 
-In the raw dataset of 160,192 records, 4,393 series-date groups share the identical key `(District, Market, Commodity, Variety, Arrival_Date)`:
+Across the raw dataset of 160,192 records, duplicate analysis must be conducted on the canonical series key that includes commercial `Grade`:
+$$\text{series\_key} = \text{District} \parallel \text{Market} \parallel \text{Commodity} \parallel \text{Variety} \parallel \text{Grade}$$
 
-| Category | Definition | Count | Policy Treatment |
-|---|---|---|---|
-| **Category A** | Completely identical across all 11 columns | 0 | True deduplication permissible (0 instances found). |
-| **Category B** | Conflicting `Modal_Price` | 4,363 | Ambiguous pricing. **Do not silently drop.** |
-| **Category C** | Identical `Modal_Price`, conflicting `Min_Price`/`Max_Price` | 17 | Price spread ambiguity. |
-| **Category D** | Differing `Grade` within group (e.g. FAQ vs Medium) | 3,096 | **Resolved by Grade Stratification.** Commercial quality tiers must be included in the series key. |
-| **Category E** | Conflicting prices with identical `Grade` | 1,287 | Unresolvable reporting ambiguity. |
+### 2.1 Same-Grade Typology Breakdown
+When grouped by `(series_key, Arrival_Date)`, exactly **1,331 duplicate groups (2,684 rows)** exist:
 
-### Prescribed Actions:
-1. **Primary Series Key Formulation:**
-   The canonical series key must be stratified by Grade:
-   $$\text{series\_key} = \text{District} \parallel \text{Market} \parallel \text{Commodity} \parallel \text{Variety} \parallel \text{Grade}$$
-   This resolves 70.5% (3,096 groups) of apparent duplicate records by recognizing legitimate commercial grade pricing.
-2. **Treatment of Intra-Grade Conflicts (1,287 groups / 2,642 rows):**
-   - **For Training & Benchmark Datasets (Strategy 2):** Exclude ambiguous series-dates completely to guarantee 100% label purity and avoid fitting models on arbitrary raw file order.
-   - **For Sensitivity & Volume Testing (Strategy 3):** Aggregate conflicting daily quotes using the median price. Must be reported as a sensitivity check, never as authoritative ground truth.
-   - **Prohibited Action (Strategy 5):** Calling `.drop_duplicates(subset=..., keep='first')` is strictly prohibited. It introduces order-dependent label corruption.
+| Category | Definition | Unique Groups | Affected Rows | Policy Treatment |
+|---|---|---|---|---|
+| **Category A** | Completely identical prices across min, modal, max (and all 11 columns) | 10 | 20 | True deduplication: retain 1 copy, drop duplicate row (10 rows dropped). |
+| **Category B** | Conflicting `Modal_Price` within same grade | 1,296 | 2,614 | Ambiguous pricing. **Do not silently drop.** |
+| **Category C** | Identical `Modal_Price`, conflicting `Min_Price`/`Max_Price` | 25 | 50 | Price spread ambiguity. |
+| **Ambiguous Total** | **Cat B + Cat C** | **1,321** | **2,664** | **Unresolvable reporting ambiguity within same grade.** |
+
+### 2.2 Grade Completeness & Non-Collision
+- **Grade Field Completeness:** Verified 100% complete across all 160,192 rows (0 nulls, 0 empty strings). Value distribution: FAQ (139,111), Medium (16,291), Non-FAQ (3,976), Local (564), Large (177), Grade A (25), Grade C (16), Grade Range-2 (14), Small (12), Grade B (3), Grade Range-3 (2), Grade Range-1 (1).
+- **Multi-Grade Separation:** Differing grades (e.g. FAQ vs Medium) on the same date represent distinct commercial quality tiers and must never be treated as duplicate price errors.
+
+### 2.3 Prescribed Duplicate Handling Actions
+1. **Primary Benchmark Dataset (Strategy 2 — Recommended):**
+   - Exclude all 1,321 ambiguous same-grade groups (2,664 rows).
+   - Deduplicate the 10 exact duplicate rows from Category A.
+   - Retains exactly **157,518 clean records** (157,518 unique series-dates). Total excluded: **2,674 rows (1.67% volume)**.
+   - Guarantees 100% label purity with zero order-dependent selection noise.
+2. **Sensitivity & Volume Testing (Strategy 3):**
+   - Aggregate same-grade daily quotes using the daily median price.
+   - Retains all **158,839 unique series-date coordinates**.
+   - Must be reported strictly as a sensitivity check, never claimed as official ground truth.
+3. **Prohibited Action (Strategy 4 — Superseded):**
+   - Calling `.drop_duplicates(subset=..., keep='first')` without Grade is strictly prohibited. It silently discards 4,380 conflicting records based on arbitrary file row order.
 
 ---
 
 ## 3. Canonical Market Identity Policy
 
-Between November 1 and November 5, 2025, the AGMARKNET portal updated market reporting strings statewide by appending `" APMC"` to existing market names.
+### 3.1 Preserved Raw Names & Separate Canonical Lookups
+- Raw market strings must be preserved in all datasets (`Market_Raw`).
+- Canonical market identities (`Market_Canonical`) must be applied via explicit non-destructive lookup from [canonical_market_mapping.csv](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/canonical_market_mapping.csv).
 
-### Prescribed Rules:
-1. **Preserve Raw Strings:** Raw market names must be preserved in all database columns (`Market_Raw`).
-2. **Explicit Canonical Lookup:** Canonical market identities (`Market_Canonical`) must be joined via the audited mapping table [canonical_market_mapping.csv](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/canonical_market_mapping.csv).
-3. **Approved Pre/Post Transitions:** 19 market pairs represent unambiguous statewide portal naming transitions (e.g., `Ghaziabad` $\to$ `Ghaziabad APMC`, `Noida` $\to$ `Noida APMC`). These mappings are APPROVED for temporal continuity.
-4. **Strict Separation of Concurrent Yards:**
-   - In Jhansi district, `Jhansi` (general municipal yard) and `Jhansi (Grain)` (specialist grain yard) operated concurrently across 306 calendar days.
-   - **PROHIBITION:** `Jhansi` and `Jhansi (Grain)` must **never** be merged. They represent distinct physical trading locations.
-5. **Handling Phonetic Spelling Variants:**
-   - In Kanpur district, `Baripaal APMC` appeared in March 2026 alongside `Varipaal APMC` with 56 overlapping dates. This mapping remains `PROPOSED / MEDIUM CONFIDENCE` and must not be hardcoded without sensitivity validation.
+### 3.2 Approved Portal Transition Mappings
+Between Nov 1 and Nov 5, 2025, AGMARKNET appended `" APMC"` across Uttar Pradesh. 17 base-APMC pairs exhibit clean transitions with $\le 4$ overlapping calendar dates.
+- Status: **APPROVED** for both base market and APMC alias in each group.
+
+### 3.3 Strict Separation of Concurrent Market Yards
+- In Jhansi district, `Jhansi` (general municipal APMC yard) and `Jhansi (Grain)` (specialized grain terminal) operated concurrently across **355 overlapping calendar dates**.
+- **PROHIBITION:** `Jhansi` and `Jhansi (Grain)` must **never** be merged. They are approved as distinct canonical markets.
+
+### 3.4 Reporting Hiatus Safeguards (Purwa)
+- In Unnao district, `Purwa` ceased reporting on July 31, 2025; `Purwa APMC` commenced reporting on February 21, 2026.
+- A **204-day reporting hiatus** (nearly 7 months) separates these records, with 0 overlapping dates.
+- Status: **PROPOSED (HIATUS)**. Must not be treated as uninterrupted continuous series without documented external justification.
+
+### 3.5 Phonetic Variants with Concurrent Overlap (Baripaal)
+- In Kanpur district, `Baripaal APMC` appeared on March 1, 2026 while `Varipaal APMC` was actively reporting, resulting in **52–56 concurrent overlapping dates**.
+- Status: **UNRESOLVED / PROPOSED**. Requires independent verification before unification.
 
 ---
 
 ## 4. Historical Lag Feature Policy
 
-Lag features serve as inputs ($X_T$) to forecast future prices ($Y_{T+h}$).
-
-### Prescribed Rules:
 1. **Row-Based Shifts Prohibited:**
-   The use of `.groupby().shift(k)` is strictly prohibited for calendar-based econometric features. Because mandi auctions close on Sundays, gazetted holidays, and during supply shocks, the $k$-th prior row is irregular. Specifically, `shift(7)` is 7 calendar days ago in only 20.14% of rows, with a mean gap of 11.45 days.
+   The use of `.groupby().shift(k)` is prohibited for econometric lag features. `shift(7)` matches an exact 7-day calendar lag in **only 20.14% of records** (mean gap 12.01 days, max gap 371 days).
 2. **Exact Calendar Joins Required:**
-   The standard lag feature must be joined strictly on:
-   $$\text{Lag\_Date} = \text{Arrival\_Date} - k \text{ days}$$
-   If no auction was recorded on that exact calendar date, the lag value must remain `NaN`.
-3. **Bounded Staleness Specifications:**
-   If non-trading days (e.g. Sunday closures) must be bridged, the feature must be explicitly named as bounded staleness and declare its maximum permissible lookback window:
-   - `Calendar_Lag_1_Bounded2d`: Uses price at $T-1$; if missing, looks back up to $T-3$ (maximum age 3 calendar days).
-   - `Calendar_Lag_7_Bounded2d`: Uses price at $T-7$; if missing, looks back up to $T-9$ (maximum age 9 calendar days).
+   Standard lag features must be joined strictly on `Lag_Date = Arrival_Date - k days`. If no trade was recorded on that calendar date, the value must remain `NaN`.
+3. **Bounded Staleness Specification:**
+   Bounded staleness ($\le 2$ calendar days lookback) is authorized as an explicit alternative feature (`Calendar_Lag_7_Bounded2d`) to bridge Sunday closures, achieving 87.8% coverage with maximum age bounded to 9 calendar days.
 4. **No Lookahead Leakage:** Under no circumstances may an observation from $t > T$ enter any historical feature.
 
 ---
 
-## 5. Forecast Target Definition Policy
+## 5. Forecast Target Definition & Volatility Policy
 
-Target returns are evaluated at horizon $h \in \{3, 7\}$ calendar days.
-
-### Prescribed Mathematical Definitions:
-1. **Target Date Matching:**
-   Target prices must be matched strictly on:
-   $$\text{Target\_Date} = \text{Arrival\_Date} + h \text{ calendar days}$$
-   For origin date $T$, if no price is recorded on $T+h$, the target is `NaN`. **Forward-filling or substituting the next available observation is strictly prohibited.**
+1. **Exact Calendar Target Matching:**
+   Target prices must match strictly on `Target_Date = Arrival_Date + h days`. Forward-filling missing target dates is prohibited.
 2. **Continuous Percentage Return:**
    $$R_h = 100 \times \frac{P_{T+h} - P_T}{P_T}$$
-3. **Invalid Price Exclusions:**
-   Any observation where $P_T \le 0$ or $P_{T+h} \le 0$ must be excluded from return calculations (denominator $\le 0$ is economically invalid).
-4. **Boundary Condition Accounting:**
-   - **Boundary-Truncated:** Origins where $T + h > \text{Max\_Date}$ (September 1, 2026) cannot be evaluated and must be logged as boundary-truncated ($N=1,005$ at T+7; $N=465$ at T+3).
-   - **Interior-Missing:** Origins where $T + h \le \text{Max\_Date}$ but the mandi was closed or did not report are interior-missing ($N=37,560$ at T+7; $N=44,927$ at T+3).
-5. **Exact Three-Class Classification Boundaries:**
-   When evaluating the 3-class target:
+   Denominators $P_T \le 0$ or numerators $P_{T+h} \le 0$ must be excluded.
+3. **Exact Class Boundaries:**
    $$\text{Class} = \begin{cases} \text{Favorable}, & \text{if } R_h \ge +2.5\% \\ \text{Unfavorable}, & \text{if } R_h \le -2.5\% \\ \text{Normal}, & \text{if } -2.5\% < R_h < +2.5\% \end{cases}$$
-   The exact boundary cases $R_h = +2.5\%$ and $R_h = -2.5\%$ must be mapped to Favorable and Unfavorable, respectively.
-6. **Quantile and Volatility Alternatives:**
-   When benchmarking classification models against severe class imbalance (where Normal captures 58–68%), quantile cutoffs or volatility scaling must be estimated strictly on the training partition ($T < \text{2026-01-20}$) and frozen prior to out-of-sample evaluation.
+4. **Leak-Free Historical Volatility Thresholds:**
+   Volatility-adjusted thresholds must scale using historical return volatility realized **strictly on or before forecast origin $T$**:
+   $$\tau_{c, T} = k \cdot \sigma_{c, \le T}$$
+   where $\sigma_{c, \le T}$ is estimated from historical daily returns $r_{c, t \le T}$. Future return $R_h(T)$ must **never** be included in the standard deviation at date $T$.
+5. **Embargoed Quantile Cutoffs:**
+   Quantile thresholds must be estimated strictly on training origins satisfying $T + h \le T_{\text{train\_split}}$ ($T \le \text{2026-01-17}$ for $T+7$). This prevents target outcomes from crossing into held-out validation or test periods.

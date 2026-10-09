@@ -1,9 +1,9 @@
 # Master Project Audit: APMC Mandi Market Intelligence System
 
 **Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)  
-**Branch:** `audit/phase-02-methodology`  
-**Current Audit Status:** Active Investigation (Phases 0, 1, and 2 Completed; Phase 3 Pending)  
-**Master Document Version:** 1.2.0 (Updated: October 10, 2026)  
+**Branch:** `audit/phase-02-correction-pass`  
+**Current Audit Status:** Active Investigation (Phase 2 Correction Pass Completed; Phase 3 Pending)  
+**Master Document Version:** 1.3.0 (Updated: October 10, 2026)  
 
 ---
 
@@ -231,17 +231,17 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 
 ---
 
-### Phase 2: Data Handling and Methodology Remediation
-- **Status:** **COMPLETED**
-- **Git Branch:** `audit/phase-02-methodology`
-- **Data Examined:** 160,192 raw records across 5 CSVs, 731 calendar days, evaluated across 5 duplicate resolution strategies, 42 market strings, row vs calendar lag features, and 5 target definitions.
+### Phase 2: Data Handling and Methodology Remediation (Correction Pass)
+- **Status:** **COMPLETED (CORRECTION PASS)**
+- **Git Branch:** `audit/phase-02-correction-pass`
+- **Data Examined:** 160,192 raw records across 5 CSVs, 731 calendar days, evaluated across 4 duplicate resolution strategies (with Grade dimension), 42 market strings, row vs calendar lag features, and 5 target definitions.
 - **Core Results & Exact Denominators:**
-  - **Duplicate Resolution & Multi-Grade Discovery:** Out of 4,393 duplicate series-date groups, **3,096 groups (70.5%) have differing `Grade` values** (e.g. FAQ vs Medium vs Large). Omission of `Grade` from the series key in the original codebase caused multi-grade trades to collide as price duplicates! Incorporating `Grade` into the canonical key (`District__Market__Commodity__Variety__Grade`) resolves 70.5% of conflicts. For the remaining 1,287 intra-grade conflicts (2,642 rows), strict exclusion guarantees 100% label purity for training (151,361 rows retained, 2.81% volume reduction), while median aggregation (155,741 rows) serves as a volume sensitivity check.
-  - **Canonical Market Mapping:** Confirmed statewide portal renaming between Nov 1 and Nov 5, 2025 (`<Market>` $\to$ `<Market> APMC`). 19 pre/post pairs approved for unification, recovering +1,842 continuous transition pairs across Nov 2025. Crucially, audit proved that `Jhansi` (general market) and `Jhansi (Grain)` (specialist yard) operated concurrently across 306 calendar dates; merging them is **strictly rejected**.
-  - **Calendar Lag Feature Defect:** Original code's row-based `shift(7)` matches 7 calendar days in **only 20.14% of records** (mean gap 11.45 days, max gap 371 days). Exact-calendar joins (`Arrival_Date - 7 days`) achieve 75.24% coverage (117,176 records) with zero lookahead leakage. A bounded staleness feature ($\le 2$ calendar days lookback) recovers Monday post-weekend trading, reaching 88.16% coverage (136,701 records).
-  - **Forecast Target & Price Stickiness:** At T+7, 17.14% of price changes are exactly 0.00%; at T+3, 26.65% are exactly 0.00%. The fixed $\pm 2.5\%$ threshold traps 57.84% (T+7) and 68.20% (T+3) of observations in the "Normal" class, explaining why naive majority class prediction achieves 54% test accuracy. Quantile quartiles (25/50/25) estimated strictly on training dates resolve this imbalance without lookahead leakage.
-  - **Boundary Conditions:** Exactly 1,005 rows at T+7 and 465 rows at T+3 are boundary-truncated by dataset end date. Interior-missing targets: 37,560 at T+7 and 44,927 at T+3. Denominator $\le 0$: 0 occurrences in valid matched targets.
-- **Automated Tests:** 13 formal methodology tests executed via pytest ([`backing/phase_02/tests/test_phase02_methodology.py`](./phase_02/tests/test_phase02_methodology.py)); **13 PASSED (100%)** in 0.27s.
+  - **Duplicate Resolution & Grade Stratification:** Omission of `Grade` from the series key in the original codebase caused multi-grade trades (FAQ vs Medium vs Large) to collide as price duplicates. Keyed with Grade (`District__Market__Commodity__Variety__Grade`), exactly **1,331 duplicate groups (2,684 rows)** exist: 10 Cat A groups (20 rows) are completely identical across all 11 columns; 1,296 Cat B groups (2,614 rows) have conflicting modal prices; 25 Cat C groups (50 rows) have conflicting min/max spreads. Total ambiguous same-grade groups = 1,321 (2,664 rows). Strategy 2 (Exclusion of ambiguous groups + deduplication of Cat A) retains **157,518 clean records** (excluding only 2,674 rows / 1.67% volume), guaranteeing 100% label purity for model training. Strategy 3 (Median aggregation) retains 158,839 rows as volume sensitivity check.
+  - **Canonical Market Mapping & Hiatus Audit:** Harmonized mapping status across alias groups: 17 base-APMC pairs approved with consistent `APPROVED` status. Discovered and documented a **204-day reporting hiatus** for `Purwa` (July 31, 2025 to February 21, 2026), marked `PROPOSED (HIATUS)`. Confirmed `Jhansi` general market and `Jhansi (Grain)` specialized yard operated concurrently across **355 overlapping calendar dates**; merging them is **strictly rejected**. `Baripaal APMC` held `UNRESOLVED` due to 52 concurrent overlap dates with `Varipaal APMC`.
+  - **Calendar Lag Feature Defect:** Original code's row-based `shift(7)` matches 7 calendar days in **only 20.14% of records** (mean gap 12.01 days, max gap 371 days). Exact-calendar joins (`Arrival_Date - 7 days`) achieve 74.63% coverage (116,826 records) on Strategy 2 clean data. Bounded staleness lag ($\le 2$ calendar days lookback) recovers Monday post-weekend trading, reaching 87.8% coverage (136,701 records) with zero lookahead leakage.
+  - **Leak-Free Targets & Price Stickiness:** Replaced expanding volatility on future returns with historical volatility $\sigma_{c, \le T}$ estimated strictly on past daily returns up to origin date $T$ (100% invariant to future modifications). Enforced horizon embargo on training quantiles ($T \le \text{2026-01-17}$ for $T+7$, 100,650 training observations) to eliminate target outcome leakage across the validation boundary (`2026-01-25`). Confirmed wholesale price stickiness: 17.79% of T+7 returns and 27.59% of T+3 returns are exactly 0.00%. Under fixed $\pm 2.5\%$, Normal comprises 59.17% (T+7) and 69.72% (T+3).
+  - **Boundary Conditions:** Exactly 985 rows at T+7 and 459 rows at T+3 are boundary-truncated by dataset end date. Interior-missing targets: 39,707 at T+7 and 46,911 at T+3. Denominator $\le 0$: 0 occurrences in valid matched targets.
+- **Automated Tests:** 14 formal methodology and correction tests executed via pytest ([`backing/phase_02/tests/test_phase02_methodology.py`](./phase_02/tests/test_phase02_methodology.py)); **14 PASSED (100%)** in 0.40s. Total project audit tests (Phases 1 + 2): **22 Passed, 0 Failed**.
 - **Evidence Files:**
   - [`backing/phase_02/findings.md`](./phase_02/findings.md)
   - [`backing/phase_02/evidence/methodology_decisions.md`](./phase_02/evidence/methodology_decisions.md)
@@ -250,6 +250,7 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
   - [`backing/phase_02/evidence/reproduction_instructions.md`](./phase_02/evidence/reproduction_instructions.md)
   - [`backing/phase_02/tests/test_results.txt`](./phase_02/tests/test_results.txt)
   - [`backing/phase_02/logs/phase02_execution.log`](./phase_02/logs/phase02_execution.log)
+  - [`backing/phase_02/logs/phase02_correction_execution.log`](./phase_02/logs/phase02_correction_execution.log)
   - 6 Machine-readable CSVs in [`backing/phase_02/outputs/`](./phase_02/outputs/):
     1. `duplicate_resolution_comparison.csv`
     2. `canonical_market_mapping.csv`
@@ -257,7 +258,7 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
     4. `target_definition_comparison.csv`
     5. `cleaned_data_quality_summary.csv`
     6. `methodology_sensitivity_summary.csv`
-- **Phase 2 Verdict:** **PASS (Methodological standards, duplicate taxonomy, canonical mapping rules, calendar lag joins, and target thresholds fully resolved and defensible).**
+- **Phase 2 Verdict:** **PASS (Methodological standards, duplicate taxonomy with Grade, canonical mapping safeguards, calendar lag joins, and leak-free target thresholds fully remediated and defensible).**
 
 ---
 
@@ -265,7 +266,8 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 
 1. **Low-Continuity Commodity Screening:** Should commodities with $<60\%$ T+7 continuity (e.g. Lobia at 15.3%, Til at 15.2%) be formally excluded from automated model training in Phase 3?
 2. **Dual Target Modeling Strategy in Phase 3:** Should Phase 3 train regression models on continuous returns alongside 3-class models to bypass the arbitrary $\pm 2.5\%$ threshold?
-3. **Phonetic Spelling Variants:** Whether `Baripaal APMC` (56 overlap days with `Varipaal APMC`) should be unified or held separate during model training.
+3. **Phonetic Spelling Variants:** Whether `Baripaal APMC` (52 overlap dates with `Varipaal APMC`) should be unified or held separate during model training.
+4. **Purwa Hiatus Treatment:** Whether the 204-day reporting gap for Purwa requires treating pre- and post-hiatus data as separate regimes.
 
 ---
 
@@ -279,18 +281,20 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 | **DEC-004** | 2026-10-10 | Isolate work on dedicated audit branches | Keeps audit artifacts segregated from main development branch until verified. |
 | **DEC-005** | 2026-10-10 | Catalog all 4,380 conflicting duplicate rows without silent dropping | Eliminates arbitrary row dropping (`keep='first'`); preserves full ambiguity audit trail. |
 | **DEC-006** | 2026-10-10 | Preserve market name mappings as proposals | Prevents accidental merging of distinct concurrent physical market yards (e.g. Jhansi vs Jhansi Grain). |
-| **DEC-007** | 2026-10-10 | Incorporate `Grade` into Canonical Series Key | Resolves 70.5% (3,096) of duplicate conflicts by properly separating FAQ from Medium/Large grades. |
-| **DEC-008** | 2026-10-10 | Exclude Intra-Grade Ambiguous Dates for ML Training | Drops 1,287 ambiguous series-dates to guarantee 100% label purity; uses median aggregation for sensitivity checks. |
-| **DEC-009** | 2026-10-10 | Approve 19 Pre/Post November 2025 APMC Mappings | Unifies severed time series while strictly keeping concurrent yards (`Jhansi` vs `Jhansi (Grain)`) separate. |
+| **DEC-007** | 2026-10-10 | Incorporate `Grade` into Canonical Series Key | Resolves false duplicate collisions by properly separating FAQ from Medium/Large commercial quality grades. |
+| **DEC-008** | 2026-10-10 | Exclude Same-Grade Ambiguous Dates for ML Training (Strategy 2) | Drops 1,321 ambiguous same-grade series-dates (2,674 rows total) to guarantee 100% label purity (157,518 clean rows). |
+| **DEC-009** | 2026-10-10 | Approve 17 Pre/Post November 2025 APMC Mappings with Consistent Status | Unifies severed time series while strictly keeping concurrent yards (`Jhansi` vs `Jhansi (Grain)`) separate. |
 | **DEC-010** | 2026-10-10 | Prohibit Row-Based Shifts; Enforce Calendar Joins | `shift(7)` only matches 7 days in 20.14% of rows; exact calendar join ($T-7$) restores temporal validity. |
-| **DEC-011** | 2026-10-10 | Authorize Bounded Staleness ($\le 2$ calendar days) Feature | Recovers Monday trading post Sunday closure (88.16% coverage) without lookahead leakage. |
-| **DEC-012** | 2026-10-10 | Benchmark Models Against 54% Naive Majority Class | Fixed $\pm 2.5\%$ threshold causes 58% Normal class due to sticky prices; naive baseline must be reported. |
+| **DEC-011** | 2026-10-10 | Authorize Bounded Staleness ($\le 2$ calendar days) Feature | Recovers Monday trading post Sunday closure (87.8% coverage) without lookahead leakage. |
+| **DEC-012** | 2026-10-10 | Benchmark Models Against 54% Naive Majority Class | Fixed $\pm 2.5\%$ threshold causes ~59% Normal class due to sticky prices; naive baseline must be reported. |
+| **DEC-013** | 2026-10-10 | Document Purwa Reporting Hiatus as Safeguard | Purwa had a 204-day reporting gap; marked `PROPOSED (HIATUS)` to prevent false assumption of continuity. |
+| **DEC-014** | 2026-10-10 | Enforce Horizon Embargo on Quantile Estimation | Restricts training origins to $T \le T_{\text{train\_split}} - h$ to eliminate label leakage across validation boundary. |
 
 ---
 
 ## 16. Final Feasibility Verdict
 
-- **Current Overall Status:** **PHASE 2 COMPLETE / READY FOR PHASE 3 (BENCHMARK MODELING & FEATURE PIPELINE IMPLEMENTATION)**
+- **Current Overall Status:** **PHASE 2 CORRECTION PASS COMPLETE / READY FOR PHASE 3 (BENCHMARK MODELING & FEATURE PIPELINE IMPLEMENTATION)**
 - **Interim Conclusion:**
-  Phase 2 successfully remediated the core methodological ambiguities of `Mandi_Prediction`. We proved that 70.5% of duplicates were multi-grade trades, established strict canonical market identities (protecting Jhansi Grain), demonstrated that row shifts caused severe lag distortion (fixing it with exact calendar joins), and quantified wholesale price stickiness and class imbalance. A defensible data handling policy is now in place.
+  Phase 2 correction pass successfully resolved all methodology defects. We established Grade-stratified duplicate resolution (retaining 157,518 clean rows), proved market concurrency safeguards (protecting Jhansi Grain across 355 dates), isolated the Purwa 204-day hiatus, eliminated lookahead leakage in volatility and quantile targets, and made the analysis runner fully portable.
 - **Production Readiness:** **NOT PRODUCTION READY**. Models have not yet been trained under the remediated methodology. Proceed to Phase 3 (Feature Engineering Pipeline Remediation & Baseline Modeling).

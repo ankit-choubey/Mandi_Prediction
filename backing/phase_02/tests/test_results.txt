@@ -3,20 +3,21 @@ platform darwin -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- /Library/Framewo
 cachedir: .pytest_cache
 rootdir: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
 plugins: anyio-4.11.0
-collecting ... collected 13 items
+collecting ... collected 14 items
 
-backing/phase_02/tests/test_phase02_methodology.py::test_duplicate_handling_preserves_original_source_records PASSED [  7%]
-backing/phase_02/tests/test_phase02_methodology.py::test_ambiguous_price_groups_are_explicitly_flagged PASSED [ 15%]
-backing/phase_02/tests/test_phase02_methodology.py::test_duplicate_resolution_strategies_produce_expected_group_counts PASSED [ 23%]
-backing/phase_02/tests/test_phase02_methodology.py::test_market_mappings_preserve_raw_names PASSED [ 30%]
-backing/phase_02/tests/test_phase02_methodology.py::test_unapproved_market_mappings_are_not_silently_applied PASSED [ 38%]
-backing/phase_02/tests/test_phase02_methodology.py::test_exact_calendar_lags_use_intended_calendar_date PASSED [ 46%]
-backing/phase_02/tests/test_phase02_methodology.py::test_missing_calendar_dates_remain_missing PASSED [ 53%]
-backing/phase_02/tests/test_phase02_methodology.py::test_no_future_observations_enter_historical_lag_features PASSED [ 61%]
-backing/phase_02/tests/test_phase02_methodology.py::test_target_joins_match_exact_intended_date PASSED [ 69%]
-backing/phase_02/tests/test_phase02_methodology.py::test_zero_and_negative_prices_excluded_from_return_calculations PASSED [ 76%]
-backing/phase_02/tests/test_phase02_methodology.py::test_target_classes_handle_exact_boundaries PASSED [ 84%]
-backing/phase_02/tests/test_phase02_methodology.py::test_boundary_truncated_and_interior_missing_targets_distinguished PASSED [ 92%]
-backing/phase_02/tests/test_phase02_methodology.py::test_every_required_output_exists_and_has_valid_schema PASSED [100%]
+backing/phase_02/tests/test_phase02_methodology.py::test_duplicate_group_with_different_grades_and_prices PASSED [  7%]
+backing/phase_02/tests/test_phase02_methodology.py::test_same_grade_conflicting_price_examples PASSED [ 14%]
+backing/phase_02/tests/test_phase02_methodology.py::test_missing_or_inconsistent_grade_values_audit PASSED [ 21%]
+backing/phase_02/tests/test_phase02_methodology.py::test_strategy_exclusions_operate_on_documented_key PASSED [ 28%]
+backing/phase_02/tests/test_phase02_methodology.py::test_medians_do_not_combine_different_grades PASSED [ 35%]
+backing/phase_02/tests/test_phase02_methodology.py::test_consistent_mapping_status_within_alias_groups PASSED [ 42%]
+backing/phase_02/tests/test_phase02_methodology.py::test_concurrent_market_names_remain_distinct PASSED [ 50%]
+backing/phase_02/tests/test_phase02_methodology.py::test_purwa_hiatus_explicit_mapping_decision PASSED [ 57%]
+backing/phase_02/tests/test_phase02_methodology.py::test_historical_volatility_thresholds_remain_unchanged_when_future_modified PASSED [ 64%]
+backing/phase_02/tests/test_phase02_methodology.py::test_quantile_cutoffs_do_not_use_outcomes_from_held_out_periods PASSED [ 71%]
+backing/phase_02/tests/test_phase02_methodology.py::test_independent_reproducibility_exact_joins PASSED [ 78%]
+backing/phase_02/tests/test_phase02_methodology.py::test_zero_and_negative_prices_excluded PASSED [ 85%]
+backing/phase_02/tests/test_phase02_methodology.py::test_target_classes_handle_exact_boundaries PASSED [ 92%]
+backing/phase_02/tests/test_phase02_methodology.py::test_every_output_csv_has_expected_schema_and_reconciled_denominators PASSED [100%]
 
-============================== 13 passed in 0.27s ==============================
+============================== 14 passed in 0.40s ==============================
