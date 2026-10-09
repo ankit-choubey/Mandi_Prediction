@@ -63,20 +63,20 @@ Mandi_Prediction/
 
 | Module | Location | Primary Responsibilities |
 |---|---|---|
-| **Data Loader** | [`src/data_loader.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/data_loader.py) | Loads 5 CSVs, fixes district typos (`Gaziabaad` $\to$ `Ghaziabad`), parses dates (`%d/%m/%Y`), deduplicates exact series-date rows, filters series with $<20$ records. |
-| **Feasibility Audit** | [`src/feasibility.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/feasibility.py) | Verifies Checklist Sections A–O; tests exact calendar $T+7$ availability across all series. |
-| **Feature Engineering** | [`src/feature_engineering.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/feature_engineering.py) | Computes intraday spread, historical lags (`shift(1)`, `shift(3)`, `shift(7)`), rolling stats, spatial neighbour signals, and constructs discrete 3-class target ($\pm 2.5\%$). |
-| **Model Suite** | [`src/models.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/models.py) | Implements Decision Tree, Random Forest, Extra Trees, Gradient Boosting, and Soft-Voting Ensemble using scikit-learn pipelines with median imputation. |
-| **Evaluation** | [`src/evaluate.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/evaluate.py) | Chronological train (70%) / val (15%) / test (15%) split; accuracy, precision, recall, macro/weighted F1, confusion matrices, and MDI feature importances. |
-| **Market Advisory** | [`src/intelligence_system.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/src/intelligence_system.py) | Rule-based decision recommendation engine mapping predicted market conditions into actionable advice. |
-| **Orchestration** | [`run_pipeline.py`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/run_pipeline.py) | End-to-end master runner executing audit $\to$ EDA $\to$ features $\to$ models $\to$ case studies $\to$ DOCX report. |
+| **Data Loader** | [`src/data_loader.py`](../../../src/data_loader.py) | Loads 5 CSVs, fixes district typos (`Gaziabaad` $\to$ `Ghaziabad`), parses dates (`%d/%m/%Y`), deduplicates exact series-date rows, filters series with $<20$ records. |
+| **Feasibility Audit** | [`src/feasibility.py`](../../../src/feasibility.py) | Verifies Checklist Sections A–O; tests exact calendar $T+7$ availability across all series. |
+| **Feature Engineering** | [`src/feature_engineering.py`](../../../src/feature_engineering.py) | Computes intraday spread, historical lags (`shift(1)`, `shift(3)`, `shift(7)`), rolling stats, spatial neighbour signals, and constructs discrete 3-class target ($\pm 2.5\%$). |
+| **Model Suite** | [`src/models.py`](../../../src/models.py) | Implements Decision Tree, Random Forest, Extra Trees, Gradient Boosting, and Soft-Voting Ensemble using scikit-learn pipelines with median imputation. |
+| **Evaluation** | [`src/evaluate.py`](../../../src/evaluate.py) | Chronological train (70%) / val (15%) / test (15%) split; accuracy, precision, recall, macro/weighted F1, confusion matrices, and MDI feature importances. |
+| **Market Advisory** | [`src/intelligence_system.py`](../../../src/intelligence_system.py) | Rule-based decision recommendation engine mapping predicted market conditions into actionable advice. |
+| **Orchestration** | [`run_pipeline.py`](../../../run_pipeline.py) | End-to-end master runner executing audit $\to$ EDA $\to$ features $\to$ models $\to$ case studies $\to$ DOCX report. |
 
 ---
 
 ## 3. Dataset Availability & Tracking Status
 
 - **Status:** **Present locally and fully tracked in Git.**
-- **Path:** [`data/raw/*.csv`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/data/raw)
+- **Path:** [`data/raw/*.csv`](../../../data/raw)
 - **Tracking:** Verified via `git ls-files data/raw`. All 5 files are committed to the repository history (`Gaziabaad.csv`, `Jhansi.csv`, `Kanpur.csv`, `Lukhnow.csv`, `Unnao.csv`).
 - **Absence Check:** No external data files are currently absent; all raw data referred to by the repository pipeline is directly accessible.
 - **External Dependencies:** Independent external datasets (e.g. Department of Consumer Affairs PMD wholesale series, CWC warehouse tariffs, DESAgri wage tables) are **not** present in the repository and must be formally staged in subsequent phases.
