@@ -1,0 +1,145 @@
+model_name,partition,actual_class,predicted_class,count
+Logistic Regression,VALIDATION,Favorable,Favorable,55
+Logistic Regression,VALIDATION,Favorable,Normal,473
+Logistic Regression,VALIDATION,Favorable,Unfavorable,249
+Logistic Regression,VALIDATION,Normal,Favorable,60
+Logistic Regression,VALIDATION,Normal,Normal,1070
+Logistic Regression,VALIDATION,Normal,Unfavorable,244
+Logistic Regression,VALIDATION,Unfavorable,Favorable,57
+Logistic Regression,VALIDATION,Unfavorable,Normal,441
+Logistic Regression,VALIDATION,Unfavorable,Unfavorable,265
+Logistic Regression,FINAL_TEST,Favorable,Favorable,267
+Logistic Regression,FINAL_TEST,Favorable,Normal,1785
+Logistic Regression,FINAL_TEST,Favorable,Unfavorable,915
+Logistic Regression,FINAL_TEST,Normal,Favorable,158
+Logistic Regression,FINAL_TEST,Normal,Normal,6111
+Logistic Regression,FINAL_TEST,Normal,Unfavorable,789
+Logistic Regression,FINAL_TEST,Unfavorable,Favorable,225
+Logistic Regression,FINAL_TEST,Unfavorable,Normal,1457
+Logistic Regression,FINAL_TEST,Unfavorable,Unfavorable,918
+Decision Tree,VALIDATION,Favorable,Favorable,206
+Decision Tree,VALIDATION,Favorable,Normal,490
+Decision Tree,VALIDATION,Favorable,Unfavorable,81
+Decision Tree,VALIDATION,Normal,Favorable,163
+Decision Tree,VALIDATION,Normal,Normal,1155
+Decision Tree,VALIDATION,Normal,Unfavorable,56
+Decision Tree,VALIDATION,Unfavorable,Favorable,247
+Decision Tree,VALIDATION,Unfavorable,Normal,455
+Decision Tree,VALIDATION,Unfavorable,Unfavorable,61
+Decision Tree,FINAL_TEST,Favorable,Favorable,910
+Decision Tree,FINAL_TEST,Favorable,Normal,1882
+Decision Tree,FINAL_TEST,Favorable,Unfavorable,175
+Decision Tree,FINAL_TEST,Normal,Favorable,647
+Decision Tree,FINAL_TEST,Normal,Normal,6266
+Decision Tree,FINAL_TEST,Normal,Unfavorable,145
+Decision Tree,FINAL_TEST,Unfavorable,Favorable,978
+Decision Tree,FINAL_TEST,Unfavorable,Normal,1522
+Decision Tree,FINAL_TEST,Unfavorable,Unfavorable,100
+Random Forest,VALIDATION,Favorable,Favorable,78
+Random Forest,VALIDATION,Favorable,Normal,500
+Random Forest,VALIDATION,Favorable,Unfavorable,199
+Random Forest,VALIDATION,Normal,Favorable,33
+Random Forest,VALIDATION,Normal,Normal,1229
+Random Forest,VALIDATION,Normal,Unfavorable,112
+Random Forest,VALIDATION,Unfavorable,Favorable,79
+Random Forest,VALIDATION,Unfavorable,Normal,578
+Random Forest,VALIDATION,Unfavorable,Unfavorable,106
+Random Forest,FINAL_TEST,Favorable,Favorable,271
+Random Forest,FINAL_TEST,Favorable,Normal,2068
+Random Forest,FINAL_TEST,Favorable,Unfavorable,628
+Random Forest,FINAL_TEST,Normal,Favorable,107
+Random Forest,FINAL_TEST,Normal,Normal,6602
+Random Forest,FINAL_TEST,Normal,Unfavorable,349
+Random Forest,FINAL_TEST,Unfavorable,Favorable,383
+Random Forest,FINAL_TEST,Unfavorable,Normal,1963
+Random Forest,FINAL_TEST,Unfavorable,Unfavorable,254
+LightGBM,VALIDATION,Favorable,Favorable,196
+LightGBM,VALIDATION,Favorable,Normal,396
+LightGBM,VALIDATION,Favorable,Unfavorable,185
+LightGBM,VALIDATION,Normal,Favorable,125
+LightGBM,VALIDATION,Normal,Normal,1125
+LightGBM,VALIDATION,Normal,Unfavorable,124
+LightGBM,VALIDATION,Unfavorable,Favorable,183
+LightGBM,VALIDATION,Unfavorable,Normal,378
+LightGBM,VALIDATION,Unfavorable,Unfavorable,202
+LightGBM,FINAL_TEST,Favorable,Favorable,903
+LightGBM,FINAL_TEST,Favorable,Normal,1521
+LightGBM,FINAL_TEST,Favorable,Unfavorable,543
+LightGBM,FINAL_TEST,Normal,Favorable,573
+LightGBM,FINAL_TEST,Normal,Normal,6193
+LightGBM,FINAL_TEST,Normal,Unfavorable,292
+LightGBM,FINAL_TEST,Unfavorable,Favorable,743
+LightGBM,FINAL_TEST,Unfavorable,Normal,1327
+LightGBM,FINAL_TEST,Unfavorable,Unfavorable,530
+Majority_Class_Baseline,VALIDATION,Favorable,Favorable,0
+Majority_Class_Baseline,VALIDATION,Favorable,Normal,777
+Majority_Class_Baseline,VALIDATION,Favorable,Unfavorable,0
+Majority_Class_Baseline,VALIDATION,Normal,Favorable,0
+Majority_Class_Baseline,VALIDATION,Normal,Normal,1374
+Majority_Class_Baseline,VALIDATION,Normal,Unfavorable,0
+Majority_Class_Baseline,VALIDATION,Unfavorable,Favorable,0
+Majority_Class_Baseline,VALIDATION,Unfavorable,Normal,763
+Majority_Class_Baseline,VALIDATION,Unfavorable,Unfavorable,0
+Majority_Class_Baseline,FINAL_TEST,Favorable,Favorable,0
+Majority_Class_Baseline,FINAL_TEST,Favorable,Normal,2967
+Majority_Class_Baseline,FINAL_TEST,Favorable,Unfavorable,0
+Majority_Class_Baseline,FINAL_TEST,Normal,Favorable,0
+Majority_Class_Baseline,FINAL_TEST,Normal,Normal,7058
+Majority_Class_Baseline,FINAL_TEST,Normal,Unfavorable,0
+Majority_Class_Baseline,FINAL_TEST,Unfavorable,Favorable,0
+Majority_Class_Baseline,FINAL_TEST,Unfavorable,Normal,2600
+Majority_Class_Baseline,FINAL_TEST,Unfavorable,Unfavorable,0
+Historical_Frequency_Baseline,VALIDATION,Favorable,Favorable,149
+Historical_Frequency_Baseline,VALIDATION,Favorable,Normal,468
+Historical_Frequency_Baseline,VALIDATION,Favorable,Unfavorable,160
+Historical_Frequency_Baseline,VALIDATION,Normal,Favorable,249
+Historical_Frequency_Baseline,VALIDATION,Normal,Normal,817
+Historical_Frequency_Baseline,VALIDATION,Normal,Unfavorable,308
+Historical_Frequency_Baseline,VALIDATION,Unfavorable,Favorable,124
+Historical_Frequency_Baseline,VALIDATION,Unfavorable,Normal,458
+Historical_Frequency_Baseline,VALIDATION,Unfavorable,Unfavorable,181
+Historical_Frequency_Baseline,FINAL_TEST,Favorable,Favorable,544
+Historical_Frequency_Baseline,FINAL_TEST,Favorable,Normal,1823
+Historical_Frequency_Baseline,FINAL_TEST,Favorable,Unfavorable,600
+Historical_Frequency_Baseline,FINAL_TEST,Normal,Favorable,1245
+Historical_Frequency_Baseline,FINAL_TEST,Normal,Normal,4318
+Historical_Frequency_Baseline,FINAL_TEST,Normal,Unfavorable,1495
+Historical_Frequency_Baseline,FINAL_TEST,Unfavorable,Favorable,478
+Historical_Frequency_Baseline,FINAL_TEST,Unfavorable,Normal,1583
+Historical_Frequency_Baseline,FINAL_TEST,Unfavorable,Unfavorable,539
+Historical_Momentum_Rule,VALIDATION,Favorable,Favorable,123
+Historical_Momentum_Rule,VALIDATION,Favorable,Normal,358
+Historical_Momentum_Rule,VALIDATION,Favorable,Unfavorable,296
+Historical_Momentum_Rule,VALIDATION,Normal,Favorable,127
+Historical_Momentum_Rule,VALIDATION,Normal,Normal,1046
+Historical_Momentum_Rule,VALIDATION,Normal,Unfavorable,201
+Historical_Momentum_Rule,VALIDATION,Unfavorable,Favorable,320
+Historical_Momentum_Rule,VALIDATION,Unfavorable,Normal,326
+Historical_Momentum_Rule,VALIDATION,Unfavorable,Unfavorable,117
+Historical_Momentum_Rule,FINAL_TEST,Favorable,Favorable,629
+Historical_Momentum_Rule,FINAL_TEST,Favorable,Normal,1267
+Historical_Momentum_Rule,FINAL_TEST,Favorable,Unfavorable,1071
+Historical_Momentum_Rule,FINAL_TEST,Normal,Favorable,690
+Historical_Momentum_Rule,FINAL_TEST,Normal,Normal,5605
+Historical_Momentum_Rule,FINAL_TEST,Normal,Unfavorable,763
+Historical_Momentum_Rule,FINAL_TEST,Unfavorable,Favorable,1345
+Historical_Momentum_Rule,FINAL_TEST,Unfavorable,Normal,844
+Historical_Momentum_Rule,FINAL_TEST,Unfavorable,Unfavorable,411
+Persistence_NoChange_Benchmark,VALIDATION,Favorable,Favorable,0
+Persistence_NoChange_Benchmark,VALIDATION,Favorable,Normal,777
+Persistence_NoChange_Benchmark,VALIDATION,Favorable,Unfavorable,0
+Persistence_NoChange_Benchmark,VALIDATION,Normal,Favorable,0
+Persistence_NoChange_Benchmark,VALIDATION,Normal,Normal,1374
+Persistence_NoChange_Benchmark,VALIDATION,Normal,Unfavorable,0
+Persistence_NoChange_Benchmark,VALIDATION,Unfavorable,Favorable,0
+Persistence_NoChange_Benchmark,VALIDATION,Unfavorable,Normal,763
+Persistence_NoChange_Benchmark,VALIDATION,Unfavorable,Unfavorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Favorable,Favorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Favorable,Normal,2967
+Persistence_NoChange_Benchmark,FINAL_TEST,Favorable,Unfavorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Normal,Favorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Normal,Normal,7058
+Persistence_NoChange_Benchmark,FINAL_TEST,Normal,Unfavorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Unfavorable,Favorable,0
+Persistence_NoChange_Benchmark,FINAL_TEST,Unfavorable,Normal,2600
+Persistence_NoChange_Benchmark,FINAL_TEST,Unfavorable,Unfavorable,0

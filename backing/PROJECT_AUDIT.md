@@ -290,12 +290,41 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 | **DEC-013** | 2026-10-10 | Document Purwa Reporting Hiatus as Safeguard | Purwa had a 204-day reporting gap; marked `PROPOSED (HIATUS)` to prevent false assumption of continuity. |
 | **DEC-014** | 2026-10-10 | Enforce Horizon Embargo on Quantile Estimation | Restricts training origins to $T \le T_{\text{train\_split}} - h$ to eliminate label leakage across validation boundary. |
 | **DEC-015** | 2026-10-10 | Enforce Agreed Boundary Convention & Causal Volatility Burn-in | Favorable: $R > +2.5\%$, Normal: $[-2.5\%, +2.5\%]$, Unfav: $R < -2.5\%$. Eliminates all backward-fill in historical volatility. |
+| **DEC-016** | 2026-10-10 | Enforce Horizon-Aware Embargo Purging on Chronological Partitions | Purged 72 origins at Train/Val boundary and 565 origins at Val/Test boundary so target outcomes ($T+7$) never cross partitions. |
+| **DEC-017** | 2026-10-10 | Preprocessing Pipeline Fitted Strictly on Training Partition | Imputation medians, standard scaling, and one-hot encoders fitted solely on training data; held-out sets transformed without feedback. |
+| **DEC-018** | 2026-10-10 | Benchmark All Models Against Majority Class Baseline | Majority class benchmark (55.90% accuracy on test holdout) mandatory; accuracy alone disqualified as model selection criterion. |
+| **DEC-019** | 2026-10-10 | Freeze Single Primary Candidate (LightGBM) on Validation Set | LightGBM selected on Validation Macro F1 (0.4369) and evaluated once on untouched Final Test set (60.40% acc, 0.4616 Macro F1). |
+| **DEC-020** | 2026-10-10 | Disqualify Continuous Return Regression for Mandi Forecasts | Persistence benchmark beats Ridge and LightGBM on test MAE (11.06% vs 11.88% and 13.20%) due to wholesale price modal stickiness. |
 
 ---
 
-## 16. Final Feasibility Verdict
+## 16. Phase 3 Audit Summary & Empirical Results
 
-- **Current Overall Status:** **PHASE 2 SECOND REVIEW PASS COMPLETE / READY FOR PHASE 3 (BENCHMARK MODELING & FEATURE PIPELINE IMPLEMENTATION)**
-- **Interim Conclusion:**
-  Phase 2 second review pass successfully resolved all methodology defects. We established Grade-stratified duplicate resolution (retaining 157,518 clean rows), proved market concurrency safeguards (protecting Jhansi Grain across 355 dates), isolated the Purwa 204-day hiatus, eliminated lookahead leakage in volatility and quantile targets (with an explicit causal rule for early dates), verified bounded lag figures directly from data (87.11% coverage), and enforced the agreed class boundary convention.
-- **Production Readiness:** **NOT PRODUCTION READY**. Models have not yet been trained under the remediated methodology. Proceed to Phase 3 (Feature Engineering Pipeline Remediation & Baseline Modeling).
+### Chronological Horizon-Aware Splitting
+- **Training Period:** 2024-09-01 to 2026-01-17 ($n=100,650$ clean matched pairs, 72 purged embargo buffer).
+- **Validation Period:** 2026-01-25 to 2026-03-31 ($n=2,914$ clean matched pairs, 565 purged embargo buffer).
+- **Final Test Period:** 2026-04-08 to 2026-08-25 ($n=12,625$ untouched holdout records).
+
+### Primary Classification Benchmark ($T+7$ 3-Class Target)
+- **Majority-Class Baseline:** Val Acc: 47.15% (Macro F1: 0.2136) | Test Acc: 55.90% (Macro F1: 0.2391, Balanced Acc: 33.33%).
+- **Historical Momentum Rule:** Val Acc: 44.13% (Macro F1: 0.3422) | Test Acc: 52.63% (Macro F1: 0.3839, Balanced Acc: 38.81%).
+- **Multinomial Logistic Regression:** Val Acc: 47.70% (Macro F1: 0.3672) | Test Acc: 57.79% (Macro F1: 0.4147, Balanced Acc: 43.63%).
+- **Decision Tree (depth=5):** Val Acc: 48.80% (Macro F1: 0.3626) | Test Acc: 57.63% (Macro F1: 0.3821, Balanced Acc: 41.10%).
+- **Random Forest (100 trees):** Val Acc: 48.49% (Macro F1: 0.3362) | Test Acc: 56.45% (Macro F1: 0.3415, Balanced Acc: 37.48%).
+- **LightGBM (100 trees, depth=5):** Val Acc: **52.26%** (Macro F1: **0.4369**) | Test Acc: **60.40%** (Macro F1: **0.4616**, Balanced Acc: **46.19%**).
+
+### Secondary Continuous Return Regression Benchmark
+- **Zero-Return Persistence Benchmark:** Val MAE: **9.81%** | Test MAE: **11.06%** (RMSE: 35.27%).
+- **Mean-Return Baseline:** Val MAE: 9.83% | Test MAE: 11.07% (RMSE: 35.27%).
+- **Ridge Regression ($\alpha=10.0$):** Val MAE: 10.19% | Test MAE: 11.88% (RMSE: 35.42%).
+- **LightGBM Regressor:** Val MAE: 11.67% | Test MAE: 13.20% (RMSE: 34.82%).
+
+---
+
+## 17. Final Feasibility & Audit Verdict
+
+- **Current Overall Status:** **PHASE 3 BASELINE MODELING AND TEMPORAL EVALUATION COMPLETE**
+- **Empirical Conclusion:**
+  Gradient Boosted Decision Trees (LightGBM) using strictly causal predictors available at origin date $T$ demonstrate genuine predictive superiority over the majority-class baseline on unseen future holdout data (+4.50% test accuracy, +0.2225 Macro F1, +12.86% Balanced Accuracy). However, the absolute predictive power remains moderate, with minority class recall at 30.4% (Favorable) and 20.4% (Unfavorable). Continuous return regression fails to outperform simple 0.0% price stickiness persistence due to fat-tailed volatility spikes.
+- **Production Readiness:** **NOT PRODUCTION READY FOR ECONOMIC OR FARMER-FACING RECOMMENDATIONS**. Phase 3 confirms directional predictability, but does not yet establish risk-adjusted economic value or net storage profitability. Do NOT deploy farmer recommendations without comprehensive risk modeling and transaction cost validation.
+
