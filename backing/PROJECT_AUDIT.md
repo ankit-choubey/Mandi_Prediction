@@ -1,9 +1,9 @@
 # Master Project Audit: APMC Mandi Market Intelligence System
 
 **Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)  
-**Branch:** `audit/phase-02-correction-pass`  
-**Current Audit Status:** Active Investigation (Phase 2 Correction Pass Completed; Phase 3 Pending)  
-**Master Document Version:** 1.3.0 (Updated: October 10, 2026)  
+**Branch:** `main`  
+**Current Audit Status:** Fully Consolidated & Verified (Phases 0, 1, 2, and 3 Verified on `main`)  
+**Master Document Version:** 1.4.0 (Updated: October 10, 2026)  
 
 ---
 
@@ -327,4 +327,36 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 - **Empirical Conclusion:**
   Gradient Boosted Decision Trees (LightGBM) using strictly causal predictors available at origin date $T$ demonstrate genuine predictive superiority over the majority-class baseline on unseen future holdout data (+4.50% test accuracy, +0.2225 Macro F1, +12.86% Balanced Accuracy). However, the absolute predictive power remains moderate, with minority class recall at 30.4% (Favorable) and 20.4% (Unfavorable). Continuous return regression fails to outperform simple 0.0% price stickiness persistence due to fat-tailed volatility spikes.
 - **Production Readiness:** **NOT PRODUCTION READY FOR ECONOMIC OR FARMER-FACING RECOMMENDATIONS**. Phase 3 confirms directional predictability, but does not yet establish risk-adjusted economic value or net storage profitability. Do NOT deploy farmer recommendations without comprehensive risk modeling and transaction cost validation.
+ 
+---
+ 
+## 18. Branch Consolidation and Project Integrity Verification
+ 
+### 18.1 Consolidation Scope & Objective
+All historical work across the 4 audit branches (`audit/phase-00-inspection`, `audit/phase-01-data-integrity`, `audit/phase-02-methodology`, `audit/phase-02-correction-pass`) and `main` was audited, consolidated into `main`, and rigorously verified.
+ 
+### 18.2 Branch Inventory and Consolidation Matrix
+ 
+| Branch Name | Latest Commit SHA | Commits Relative to Baseline | Integration Status | Conflicts & Deliberate Resolution | Supported Tests |
+|---|---|---|---|---|---|
+| `audit/phase-00-inspection` | `bc300ac` | 2 commits ahead of initial root (`5d1ca17`, `bc300ac`) | **A: Already integrated** | Ancestor of later branches; Phase 0 test suite and artifacts present in `main`. | 4/4 passing |
+| `audit/phase-01-data-integrity` | `8a691dd` | 1 commit ahead of Phase 0 (`8a691dd`) | **A: Already integrated** | Ancestor of Phase 2; Phase 1 data audit artifacts and tests present in `main`. | 8/8 passing |
+| `audit/phase-02-methodology` | `4206c9c` | 1 commit ahead of Phase 1 (`4206c9c`) | **A: Already integrated** | Direct ancestor of Phase 2 correction pass. | 17/17 passing |
+| `audit/phase-02-correction-pass` | `e8a935f` | 1 commit ahead of Phase 2 (`e8a935f`) | **B & C: Consolidated via merge** | Merged into `main` (`4dea174`). Resolved 16 duplicate file conflicts by retaining `main`'s versions (`2d317e1`), which contain verified causal volatility fixes, zero backward-fill, and corrected test conventions. | 17/17 passing |
+| `main` | `4dea174` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, and merge `4dea174` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, and 3. | Combined 45/45 passing |
+ 
+### 18.3 Verification Suite Results
+Executed from repository root on `main`:
+`python3 -m pytest backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v`
+- **Result:** **45 passed, 0 failed, 0 errors, 0 warnings** in 4.76s.
+- **Phase 0:** 4/4 passed (environment, Kaggle setup, path assertions).
+- **Phase 1:** 8/8 passed (data schema, non-null, calendar continuity, price order checks).
+- **Phase 2:** 17/17 passed (causal volatility, zero backward-fill, Grade in series key, exact calendar lags).
+- **Phase 3:** 16/16 passed (horizon embargo, non-leaking preprocessors, exploratory validation naming, finite warning handling).
+ 
+### 18.4 Repository & Source Data Integrity
+- `data/raw/` untouched: 0 diffs against origin baseline.
+- `src/` untouched: 0 diffs against origin baseline.
+- All 4 historical audit branches merged into `main` before deletion.
+
 
