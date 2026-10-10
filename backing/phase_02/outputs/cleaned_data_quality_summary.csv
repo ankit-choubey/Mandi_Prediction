@@ -1,5 +1,5 @@
 pipeline_stage,total_rows,unique_series_count,unique_dates_count,price_order_violations,zero_or_negative_price_rows,ambiguous_duplicate_rows,zero_spread_rows,mean_modal_price,median_modal_price,iqr_modal_price,retention_pct_of_raw,exclusion_rationale
-01_RAW_ORIGINAL_INGESTION,160192,2390,731,6,6,2664,18000,3759.82,2515.0,2760.0,100.0,None (Baseline uncleaned dataset)
-02_EXCLUDE_AMBIGUOUS_SAME_GRADE,157518,2390,731,6,6,0,17703,3751.15,2520.0,2750.0,98.33,"Dropped all 1,321 ambiguous same-grade series-date groups (2,664 rows) + 10 duplicate rows to enforce 100% label purity."
+01_RAW_INGESTION,160192,2390,731,6,6,2664,18000,3759.82,2515.0,2760.0,100.0,Raw master data across 5 Agmarknet files with 0 exclusions.
+02_EXCLUDE_AMBIGUOUS_SAME_GRADE,157518,2390,731,6,6,0,17703,3751.15,2520.0,2750.0,98.33,"Dropped all 1,321 ambiguous same-grade series-date groups (2,664 rows) + 10 Cat A duplicate rows (total 2,674 excluded)."
 03_MEDIAN_AGGREGATED_SAME_GRADE,158839,2390,731,6,6,0,17704,3755.03,2517.27,2750.0,99.16,"Collapses same-grade multiple quotes to daily median; retains 100% of unique series-date coordinates (158,839)."
-04_OLD_GRADE_OMITTING_PIPELINE,155741,2044,731,6,6,0,17864,3768.06,2520.0,2760.0,97.22,"Old implementation using keep='first' without Grade dimension; silently dropped 4,380 ambiguous series-dates."
+04_OLD_GRADE_OMITTING_PIPELINE,155741,2044,731,6,6,0,17864,3768.06,2520.0,2760.0,97.22,Old implementation using keep='first' without Grade dimension; silently dropped genuine commercial quality tiers.

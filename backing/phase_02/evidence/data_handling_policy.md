@@ -1,9 +1,9 @@
 # Mandi Prediction Data Handling Policy
 
-**Version:** 2.1 (Phase 02 Correction Pass)  
+**Version:** 2.2 (Phase 02 Second Review Pass)  
 **Status:** Defensible Methodology Policy  
 **Effective Date:** 2026-10-10  
-**Branch:** `audit/phase-02-correction-pass`  
+**Branch:** `main`  
 **Scope:** All data ingestion, preprocessing, feature engineering, and model evaluation in `Mandi_Prediction`
 
 ---
@@ -53,7 +53,7 @@ When grouped by `(series_key, Arrival_Date)`, exactly **1,331 duplicate groups (
 
 ### 3.1 Preserved Raw Names & Separate Canonical Lookups
 - Raw market strings must be preserved in all datasets (`Market_Raw`).
-- Canonical market identities (`Market_Canonical`) must be applied via explicit non-destructive lookup from [canonical_market_mapping.csv](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/canonical_market_mapping.csv).
+- Canonical market identities (`Market_Canonical`) must be applied via explicit non-destructive lookup from [canonical_market_mapping.csv](../outputs/canonical_market_mapping.csv).
 
 ### 3.2 Approved Portal Transition Mappings
 Between Nov 1 and Nov 5, 2025, AGMARKNET appended `" APMC"` across Uttar Pradesh. 17 base-APMC pairs exhibit clean transitions with $\le 4$ overlapping calendar dates.
@@ -69,19 +69,19 @@ Between Nov 1 and Nov 5, 2025, AGMARKNET appended `" APMC"` across Uttar Pradesh
 - Status: **PROPOSED (HIATUS)**. Must not be treated as uninterrupted continuous series without documented external justification.
 
 ### 3.5 Phonetic Variants with Concurrent Overlap (Baripaal)
-- In Kanpur district, `Baripaal APMC` appeared on March 1, 2026 while `Varipaal APMC` was actively reporting, resulting in **52–56 concurrent overlapping dates**.
-- Status: **UNRESOLVED / PROPOSED**. Requires independent verification before unification.
+- In Kanpur district, `Baripaal APMC` appeared on March 1, 2026 while `Varipaal APMC` was actively reporting, resulting in **52 concurrent overlapping dates**.
+- Status: **UNRESOLVED / PROPOSED**. Excluded from automatic canonical merge in modeling features.
 
 ---
 
 ## 4. Historical Lag Feature Policy
 
 1. **Row-Based Shifts Prohibited:**
-   The use of `.groupby().shift(k)` is prohibited for econometric lag features. `shift(7)` matches an exact 7-day calendar lag in **only 20.14% of records** (mean gap 12.01 days, max gap 371 days).
+   The use of `.groupby().shift(k)` is prohibited for econometric lag features. `shift(7)` matches an exact 7-day calendar lag in **only 18.42% of records** (mean gap 12.11 days, max gap 398 days).
 2. **Exact Calendar Joins Required:**
    Standard lag features must be joined strictly on `Lag_Date = Arrival_Date - k days`. If no trade was recorded on that calendar date, the value must remain `NaN`.
 3. **Bounded Staleness Specification:**
-   Bounded staleness ($\le 2$ calendar days lookback) is authorized as an explicit alternative feature (`Calendar_Lag_7_Bounded2d`) to bridge Sunday closures, achieving 87.8% coverage with maximum age bounded to 9 calendar days.
+   Bounded staleness ($\le 2$ calendar days lookback) is authorized as an explicit alternative feature (`Calendar_Lag_7_Bounded2d`) to bridge Sunday closures, achieving **87.11% coverage (137,212 / 157,518 valid rows)** with maximum age bounded to 9 calendar days.
 4. **No Lookahead Leakage:** Under no circumstances may an observation from $t > T$ enter any historical feature.
 
 ---
@@ -93,11 +93,12 @@ Between Nov 1 and Nov 5, 2025, AGMARKNET appended `" APMC"` across Uttar Pradesh
 2. **Continuous Percentage Return:**
    $$R_h = 100 \times \frac{P_{T+h} - P_T}{P_T}$$
    Denominators $P_T \le 0$ or numerators $P_{T+h} \le 0$ must be excluded.
-3. **Exact Class Boundaries:**
-   $$\text{Class} = \begin{cases} \text{Favorable}, & \text{if } R_h \ge +2.5\% \\ \text{Unfavorable}, & \text{if } R_h \le -2.5\% \\ \text{Normal}, & \text{if } -2.5\% < R_h < +2.5\% \end{cases}$$
+3. **Exact Class Boundaries (Agreed Convention):**
+   $$\text{Class} = \begin{cases} \text{Favorable}, & \text{if } R_h > +2.5\% \\ \text{Unfavorable}, & \text{if } R_h < -2.5\% \\ \text{Normal}, & \text{if } -2.5\% \le R_h \le +2.5\% \end{cases}$$
 4. **Leak-Free Historical Volatility Thresholds:**
    Volatility-adjusted thresholds must scale using historical return volatility realized **strictly on or before forecast origin $T$**:
    $$\tau_{c, T} = k \cdot \sigma_{c, \le T}$$
-   where $\sigma_{c, \le T}$ is estimated from historical daily returns $r_{c, t \le T}$. Future return $R_h(T)$ must **never** be included in the standard deviation at date $T$.
+   where $\sigma_{c, \le T}$ is estimated from historical daily returns $r_{c, t \le T}$ with `min_periods=10`.
+   - **Causal Rule for Insufficient History:** Dates with $<10$ prior return observations receive `hist_vol_T = np.nan` and are marked Unclassified. Backward-filling (`bfill()`) from future estimates is strictly prohibited.
 5. **Embargoed Quantile Cutoffs:**
    Quantile thresholds must be estimated strictly on training origins satisfying $T + h \le T_{\text{train\_split}}$ ($T \le \text{2026-01-17}$ for $T+7$). This prevents target outcomes from crossing into held-out validation or test periods.

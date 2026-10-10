@@ -1,37 +1,37 @@
-2026-10-10 03:44:06,055 [INFO] ================================================================================
-2026-10-10 03:44:06,055 [INFO] STARTING PHASE 2 METHODOLOGY AUDIT CORRECTION PASS
-2026-10-10 03:44:06,055 [INFO] Repository Root: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
-2026-10-10 03:44:06,055 [INFO] Target Output Directory: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs
-2026-10-10 03:44:06,055 [INFO] Execution Logs: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/logs/phase02_execution.log & /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/logs/phase02_correction_execution.log
-2026-10-10 03:44:06,055 [INFO] ================================================================================
-2026-10-10 03:44:06,055 [INFO] Discovered 5 raw CSV files.
-2026-10-10 03:44:06,145 [INFO] Loaded 160,192 raw records into memory.
-2026-10-10 03:44:06,206 [INFO] Grade Field Completeness: 160,192 / 160,192 (0 nulls, 0 empty strings)
-2026-10-10 03:44:06,210 [INFO] Grade Value Distribution: {'FAQ': 139111, 'Medium': 16291, 'Non-FAQ': 3976, 'Local': 564, 'Large': 177, 'Grade A': 25, 'Grade C': 16, 'Grade Range-2': 14, 'Small': 12, 'Grade B': 3, 'Grade Range-3': 2, 'Grade Range-1': 1}
-2026-10-10 03:44:06,212 [INFO] Temporal bounds: 2024-09-01 to 2026-09-01 (731 calendar days)
-2026-10-10 03:44:06,265 [INFO] 
+2026-10-10 09:38:18,798 [INFO] ================================================================================
+2026-10-10 09:38:18,798 [INFO] STARTING PHASE 2 METHODOLOGY AUDIT (SECOND REVIEW PASS)
+2026-10-10 09:38:18,798 [INFO] Repository Root: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
+2026-10-10 09:38:18,798 [INFO] Target Output Directory: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs
+2026-10-10 09:38:18,798 [INFO] Execution Logs: /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/logs/phase02_execution.log & /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/logs/phase02_correction_execution.log
+2026-10-10 09:38:18,798 [INFO] ================================================================================
+2026-10-10 09:38:18,798 [INFO] Discovered 5 raw CSV files.
+2026-10-10 09:38:18,883 [INFO] Loaded 160,192 raw records into memory.
+2026-10-10 09:38:18,943 [INFO] Grade Field Completeness: 160,192 / 160,192 (0 nulls, 0 empty strings)
+2026-10-10 09:38:18,947 [INFO] Grade Value Distribution: {'FAQ': 139111, 'Medium': 16291, 'Non-FAQ': 3976, 'Local': 564, 'Large': 177, 'Grade A': 25, 'Grade C': 16, 'Grade Range-2': 14, 'Small': 12, 'Grade B': 3, 'Grade Range-3': 2, 'Grade Range-1': 1}
+2026-10-10 09:38:18,947 [INFO] Temporal bounds: 2024-09-01 to 2026-09-01 (731 calendar days)
+2026-10-10 09:38:18,998 [INFO] 
 --- STEP 2: Duplicate Record Investigation with Grade ---
-2026-10-10 03:44:06,303 [INFO] Duplicate Groups WITH Grade: 1,331 groups (2,684 rows)
-2026-10-10 03:44:06,303 [INFO]   - Cat A (Exact Identical Prices): 10 groups (20 rows)
-2026-10-10 03:44:06,303 [INFO]   - Cat B (Conflicting Modal Price): 1,296 groups (2,614 rows)
-2026-10-10 03:44:06,303 [INFO]   - Cat C (Same Modal, Diff Min/Max): 25 groups (50 rows)
-2026-10-10 03:44:06,306 [INFO] Total Ambiguous Same-Grade Groups (Cat B + Cat C): 1,321 groups (2,664 rows)
-2026-10-10 03:44:06,983 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/duplicate_resolution_comparison.csv successfully.
-2026-10-10 03:44:06,984 [INFO] 
+2026-10-10 09:38:19,031 [INFO] Duplicate Groups WITH Grade: 1,331 groups (2,684 rows)
+2026-10-10 09:38:19,031 [INFO]   - Cat A (Exact Identical Prices): 10 groups (20 rows)
+2026-10-10 09:38:19,031 [INFO]   - Cat B (Conflicting Modal Price): 1,296 groups (2,614 rows)
+2026-10-10 09:38:19,031 [INFO]   - Cat C (Same Modal, Diff Min/Max): 25 groups (50 rows)
+2026-10-10 09:38:19,033 [INFO] Total Ambiguous Same-Grade Groups (Cat B + Cat C): 1,321 groups (2,664 rows)
+2026-10-10 09:38:19,911 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/duplicate_resolution_comparison.csv successfully.
+2026-10-10 09:38:19,911 [INFO] 
 --- STEP 4: Canonical Market Mapping Audit ---
-2026-10-10 03:44:07,523 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/canonical_market_mapping.csv successfully (42 raw market names audited).
-2026-10-10 03:44:07,523 [INFO] 
+2026-10-10 09:38:20,465 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/canonical_market_mapping.csv successfully (42 raw market names audited).
+2026-10-10 09:38:20,465 [INFO] 
 --- STEP 5: Exact-Calendar Lag Feature Audit ---
-2026-10-10 03:44:07,858 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/calendar_lag_coverage.csv successfully.
-2026-10-10 03:44:07,859 [INFO] 
+2026-10-10 09:38:20,804 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/calendar_lag_coverage.csv successfully.
+2026-10-10 09:38:20,804 [INFO] 
 --- STEP 6: Target Definition Comparison (Leak-Free Audit) ---
-2026-10-10 03:44:07,882 [INFO] Train Partition End Date (70%): 2026-01-24
-2026-10-10 03:44:08,229 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/target_definition_comparison.csv successfully.
-2026-10-10 03:44:08,229 [INFO] 
+2026-10-10 09:38:20,827 [INFO] Train Partition End Date (70%): 2026-01-24
+2026-10-10 09:38:21,172 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/target_definition_comparison.csv successfully.
+2026-10-10 09:38:21,172 [INFO] 
 --- STEP 7: Cleaned Data Quality & Sensitivity Analysis ---
-2026-10-10 03:44:08,267 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/cleaned_data_quality_summary.csv successfully.
-2026-10-10 03:44:08,267 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/methodology_sensitivity_summary.csv successfully.
-2026-10-10 03:44:08,267 [INFO] 
+2026-10-10 09:38:21,210 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/cleaned_data_quality_summary.csv successfully.
+2026-10-10 09:38:21,210 [INFO] Saved /Users/theankit/Documents/AK/Projects/Mandi_Prediction/backing/phase_02/outputs/methodology_sensitivity_summary.csv successfully.
+2026-10-10 09:38:21,210 [INFO] 
 ================================================================================
-2026-10-10 03:44:08,267 [INFO] PHASE 2 CORRECTION PASS ANALYSIS COMPLETED SUCCESSFULLY
-2026-10-10 03:44:08,267 [INFO] ================================================================================
+2026-10-10 09:38:21,210 [INFO] PHASE 2 SECOND REVIEW PASS ANALYSIS COMPLETED SUCCESSFULLY
+2026-10-10 09:38:21,210 [INFO] ================================================================================

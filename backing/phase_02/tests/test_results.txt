@@ -3,21 +3,24 @@ platform darwin -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- /Library/Framewo
 cachedir: .pytest_cache
 rootdir: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
 plugins: anyio-4.11.0
-collecting ... collected 14 items
+collecting ... collected 17 items
 
-backing/phase_02/tests/test_phase02_methodology.py::test_duplicate_group_with_different_grades_and_prices PASSED [  7%]
-backing/phase_02/tests/test_phase02_methodology.py::test_same_grade_conflicting_price_examples PASSED [ 14%]
-backing/phase_02/tests/test_phase02_methodology.py::test_missing_or_inconsistent_grade_values_audit PASSED [ 21%]
-backing/phase_02/tests/test_phase02_methodology.py::test_strategy_exclusions_operate_on_documented_key PASSED [ 28%]
-backing/phase_02/tests/test_phase02_methodology.py::test_medians_do_not_combine_different_grades PASSED [ 35%]
-backing/phase_02/tests/test_phase02_methodology.py::test_consistent_mapping_status_within_alias_groups PASSED [ 42%]
-backing/phase_02/tests/test_phase02_methodology.py::test_concurrent_market_names_remain_distinct PASSED [ 50%]
-backing/phase_02/tests/test_phase02_methodology.py::test_purwa_hiatus_explicit_mapping_decision PASSED [ 57%]
-backing/phase_02/tests/test_phase02_methodology.py::test_historical_volatility_thresholds_remain_unchanged_when_future_modified PASSED [ 64%]
-backing/phase_02/tests/test_phase02_methodology.py::test_quantile_cutoffs_do_not_use_outcomes_from_held_out_periods PASSED [ 71%]
-backing/phase_02/tests/test_phase02_methodology.py::test_independent_reproducibility_exact_joins PASSED [ 78%]
-backing/phase_02/tests/test_phase02_methodology.py::test_zero_and_negative_prices_excluded PASSED [ 85%]
-backing/phase_02/tests/test_phase02_methodology.py::test_target_classes_handle_exact_boundaries PASSED [ 92%]
+backing/phase_02/tests/test_phase02_methodology.py::test_duplicate_group_with_different_grades_and_prices PASSED [  5%]
+backing/phase_02/tests/test_phase02_methodology.py::test_same_grade_conflicting_price_examples PASSED [ 11%]
+backing/phase_02/tests/test_phase02_methodology.py::test_missing_or_inconsistent_grade_values_audit PASSED [ 17%]
+backing/phase_02/tests/test_phase02_methodology.py::test_strategy_exclusions_operate_on_documented_key PASSED [ 23%]
+backing/phase_02/tests/test_phase02_methodology.py::test_medians_do_not_combine_different_grades PASSED [ 29%]
+backing/phase_02/tests/test_phase02_methodology.py::test_consistent_mapping_status_within_alias_groups PASSED [ 35%]
+backing/phase_02/tests/test_phase02_methodology.py::test_concurrent_market_names_remain_distinct PASSED [ 41%]
+backing/phase_02/tests/test_phase02_methodology.py::test_purwa_hiatus_explicit_mapping_decision PASSED [ 47%]
+backing/phase_02/tests/test_phase02_methodology.py::test_canonical_mapping_safeguards_in_modeling_features PASSED [ 52%]
+backing/phase_02/tests/test_phase02_methodology.py::test_historical_volatility_causal_no_leakage_and_explicit_burn_in PASSED [ 58%]
+backing/phase_02/tests/test_phase02_methodology.py::test_quantile_embargo_data_level_verification PASSED [ 64%]
+backing/phase_02/tests/test_phase02_methodology.py::test_bounded_lag_figures_reconciled PASSED [ 70%]
+backing/phase_02/tests/test_phase02_methodology.py::test_target_class_boundaries_agreed_convention PASSED [ 76%]
+backing/phase_02/tests/test_phase02_methodology.py::test_independent_reproducibility_exact_joins PASSED [ 82%]
+backing/phase_02/tests/test_phase02_methodology.py::test_zero_and_negative_prices_excluded PASSED [ 88%]
+backing/phase_02/tests/test_phase02_methodology.py::test_no_cartesian_row_explosion_on_joins PASSED [ 94%]
 backing/phase_02/tests/test_phase02_methodology.py::test_every_output_csv_has_expected_schema_and_reconciled_denominators PASSED [100%]
 
-============================== 14 passed in 0.40s ==============================
+============================== 17 passed in 0.68s ==============================
