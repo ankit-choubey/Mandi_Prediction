@@ -1,0 +1,354 @@
+"""
+Economic Decision Support Module
+APMC Mandi Market Intelligence System - Phase 4 Research
+
+Implements economic modeling for comparing immediate harvest sale at Date T
+against short-term storage and sale at Date T+h (default h = 7 calendar days).
+
+Notation and Definitions:
+  Q       = Quantity of produce harvested, in quintals (1 quintal = 100 kg)
+  P_T     = Spot modal price at date T, in rupees per quintal (₹ / quintal)
+  P_Th    = Price observed exactly h calendar days later (₹ / quintal)
+  L       = Fraction of original quantity lost during storage (0 <= L < 1)
+  c_s     = Incremental storage and handling cost per initial quintal (₹ / quintal)
+  i       = Annual financing or opportunity-cost rate, as a decimal (e.g. 0.07 = 7% p.a.)
+  h       = Holding period in calendar days (typically h = 7)
+  d_q     = Quality discount factor on realized sale price (0 <= d_q < 1)
+
+Mathematical Formulations:
+  Immediate sale:
+    R_sell = Q * P_T - Q * c_trans_now
+
+  Gross storage proceeds:
+    R_store_gross = Q * (1 - L) * (1 - d_q) * P_Th
+
+  Net storage proceeds:
+    R_store = R_store_gross - Q * c_s - Carrying_Cost - Q * (1 - L) * c_trans_later
+
+  Incremental benefit of storing:
+    Delta_R = R_store - R_sell
+
+  Break-even future price:
+    P_break_even = [P_T * (1 + i * h / 365) + c_s] / [(1 - L) * (1 - d_q)]
+
+CRITICAL SAFEGUARDS:
+  1. No double counting: carrying cost represents EITHER borrowing interest OR opportunity cost.
+  2. Physical loss (L) is strictly distinct from price markdown (d_q).
+  3. Costs that cancel between strategies are not counted as storage-specific.
+  4. Explicit error handling for L >= 1, non-positive prices, negative costs, or division-by-zero.
+"""
+
+from dataclasses import dataclass
+from typing import Optional, Dict, Any, Literal
+
+
+@dataclass(frozen=True)
+class EconomicParameters:
+    """
+    Configurable parameters for sell-versus-store economic evaluation.
+    All costs and rates must be non-negative and explicitly documented.
+    """
+    storage_cost_per_quintal: float = 0.0        # c_s: ₹ / quintal for holding period h
+    quantity_loss_fraction: float = 0.0          # L: fractional loss (0 <= L < 1)
+    annual_carrying_rate: float = 0.0            # i: decimal per annum (e.g., 0.07 for 7%)
+    holding_period_days: int = 7                 # h: holding period in calendar days
+    carrying_cost_type: Literal['opportunity', 'financing', 'none'] = 'opportunity'
+    quality_discount_fraction: float = 0.0       # d_q: markdown fraction (0 <= d_q < 1)
+    handling_cost_per_quintal: float = 0.0       # incremental handling (in ₹ / quintal)
+    transaction_cost_now: float = 0.0            # selling cost now (₹ / quintal)
+    transaction_cost_later: float = 0.0          # selling cost later (₹ / quintal)
+    scenario_name: str = "custom"
+
+    def __post_init__(self):
+        if self.holding_period_days <= 0:
+            raise ValueError(f"Holding period h must be positive, got {self.holding_period_days}")
+        if not (0.0 <= self.quantity_loss_fraction < 1.0):
+            raise ValueError(
+                f"Loss fraction L must be in [0, 1), got {self.quantity_loss_fraction}"
+            )
+        if not (0.0 <= self.quality_discount_fraction < 1.0):
+            raise ValueError(
+                f"Quality discount d_q must be in [0, 1), got {self.quality_discount_fraction}"
+            )
+        if self.storage_cost_per_quintal < 0.0:
+            raise ValueError(
+                f"Storage cost c_s must be non-negative, got {self.storage_cost_per_quintal}"
+            )
+        if self.annual_carrying_rate < 0.0:
+            raise ValueError(
+                f"Annual rate i must be non-negative, got {self.annual_carrying_rate}"
+            )
+        if self.handling_cost_per_quintal < 0.0:
+            raise ValueError(
+                f"Handling cost must be non-negative, got {self.handling_cost_per_quintal}"
+            )
+
+
+def calculate_immediate_sale_proceeds(
+    quantity_quintals: float,
+    current_price: float,
+    transaction_cost_per_quintal: float = 0.0
+) -> Dict[str, float]:
+    """
+    Calculate immediate sale gross and net proceeds at Date T.
+    
+    Returns:
+      gross_proceeds: Q * P_T
+      transaction_cost: Q * transaction_cost_per_quintal
+      net_proceeds: gross_proceeds - transaction_cost
+    """
+    if quantity_quintals <= 0.0:
+        raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
+    if current_price <= 0.0:
+        raise ValueError(f"Current price P_T must be positive, got {current_price}")
+    if transaction_cost_per_quintal < 0.0:
+        raise ValueError(f"Transaction cost cannot be negative, got {transaction_cost_per_quintal}")
+
+    gross = quantity_quintals * current_price
+    trans = quantity_quintals * transaction_cost_per_quintal
+    net = gross - trans
+    return {
+        "gross_proceeds": gross,
+        "transaction_cost": trans,
+        "net_proceeds": net
+    }
+
+
+def calculate_storage_sale_proceeds(
+    quantity_quintals: float,
+    current_price: float,
+    future_price: float,
+    params: EconomicParameters
+) -> Dict[str, float]:
+    """
+    Calculate net storage proceeds for produce stored and sold at Date T+h.
+    
+    Carrying cost is calculated as:
+      Q * P_T * (i * h / 365)
+    and strictly represents EITHER financing interest OR opportunity cost of cash,
+    never both simultaneously (Safeguard A & B).
+    """
+    if quantity_quintals <= 0.0:
+        raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
+    if current_price <= 0.0:
+        raise ValueError(f"Current price P_T must be positive, got {current_price}")
+    if future_price <= 0.0:
+        raise ValueError(f"Future price P_Th must be positive, got {future_price}")
+
+    # Physical quantity remaining after loss
+    remaining_quantity = quantity_quintals * (1.0 - params.quantity_loss_fraction)
+
+    # Realized unit price after quality discount
+    effective_future_price = future_price * (1.0 - params.quality_discount_fraction)
+
+    # Gross storage revenue
+    gross_proceeds = remaining_quantity * effective_future_price
+
+    # Total incremental direct storage and handling cost
+    total_unit_storage_cost = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    storage_and_handling_cost = quantity_quintals * total_unit_storage_cost
+
+    # Financing / Opportunity carrying cost
+    if params.carrying_cost_type in ('financing', 'opportunity') and params.annual_carrying_rate > 0.0:
+        carrying_cost = (
+            quantity_quintals * current_price * params.annual_carrying_rate * params.holding_period_days / 365.0
+        )
+    else:
+        carrying_cost = 0.0
+
+    # Transaction cost at future sale
+    future_trans_cost = remaining_quantity * params.transaction_cost_later
+
+    net_proceeds = gross_proceeds - storage_and_handling_cost - carrying_cost - future_trans_cost
+
+    return {
+        "remaining_quantity_quintals": remaining_quantity,
+        "effective_future_price": effective_future_price,
+        "gross_proceeds": gross_proceeds,
+        "storage_and_handling_cost": storage_and_handling_cost,
+        "carrying_cost": carrying_cost,
+        "future_transaction_cost": future_trans_cost,
+        "net_proceeds": net_proceeds
+    }
+
+
+def calculate_break_even_future_price(
+    current_price: float,
+    params: EconomicParameters
+) -> Dict[str, float]:
+    """
+    Calculate the exact future price P_break_even required for storage to match immediate sale.
+    
+    Formula:
+      P_break_even = [P_T * (1 + i * h / 365) + c_s + c_handling + Delta_trans] / [(1 - L) * (1 - d_q)]
+      where Delta_trans = c_trans_later * (1 - L) - c_trans_now
+    """
+    if current_price <= 0.0:
+        raise ValueError(f"Current price P_T must be positive, got {current_price}")
+
+    effective_loss_multiplier = (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction)
+    if effective_loss_multiplier <= 0.0:
+        raise ZeroDivisionError("Effective quantity retention after loss is zero; break-even is impossible.")
+
+    rate_factor = (
+        (params.annual_carrying_rate * params.holding_period_days / 365.0)
+        if params.carrying_cost_type in ('financing', 'opportunity') else 0.0
+    )
+
+    total_direct_costs = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    
+    # Net transaction cost differential per initial quintal
+    trans_diff = (
+        params.transaction_cost_later * (1.0 - params.quantity_loss_fraction)
+        - params.transaction_cost_now
+    )
+
+    numerator = current_price * (1.0 + rate_factor) + total_direct_costs + trans_diff
+    p_break_even = numerator / effective_loss_multiplier
+
+    required_pct_change = ((p_break_even - current_price) / current_price) * 100.0
+
+    return {
+        "break_even_price": p_break_even,
+        "required_percentage_increase": required_pct_change,
+        "current_price": current_price
+    }
+
+
+def evaluate_sell_vs_store(
+    quantity_quintals: float,
+    current_price: float,
+    future_price: float,
+    params: EconomicParameters
+) -> Dict[str, Any]:
+    """
+    Complete sell-versus-store economic evaluation for a single decision point.
+    
+    Returns structured results including incremental net benefit (Delta_R),
+    per-quintal benefit (delta_r), break-even price, and economic recommendation.
+    """
+    sell_res = calculate_immediate_sale_proceeds(
+        quantity_quintals=quantity_quintals,
+        current_price=current_price,
+        transaction_cost_per_quintal=params.transaction_cost_now
+    )
+
+    store_res = calculate_storage_sale_proceeds(
+        quantity_quintals=quantity_quintals,
+        current_price=current_price,
+        future_price=future_price,
+        params=params
+    )
+
+    break_even = calculate_break_even_future_price(
+        current_price=current_price,
+        params=params
+    )
+
+    r_sell = sell_res["net_proceeds"]
+    r_store = store_res["net_proceeds"]
+    delta_r = r_store - r_sell
+    delta_r_per_quintal = delta_r / quantity_quintals
+
+    # Determine economic recommendation
+    tolerance = 1e-6
+    if delta_r > tolerance:
+        action = "STORE"
+    elif delta_r < -tolerance:
+        action = "SELL"
+    else:
+        action = "INDIFFERENT"
+
+    actual_pct_change = ((future_price - current_price) / current_price) * 100.0
+
+    return {
+        "action": action,
+        "quantity_quintals": quantity_quintals,
+        "current_price": current_price,
+        "future_price": future_price,
+        "actual_percentage_change": actual_pct_change,
+        "r_sell_net": r_sell,
+        "r_store_net": r_store,
+        "incremental_benefit": delta_r,
+        "incremental_benefit_per_quintal": delta_r_per_quintal,
+        "break_even_price": break_even["break_even_price"],
+        "required_percentage_increase": break_even["required_percentage_increase"],
+        "storage_cost_incurred": store_res["storage_and_handling_cost"],
+        "carrying_cost_incurred": store_res["carrying_cost"],
+        "physical_loss_quintals": quantity_quintals * params.quantity_loss_fraction,
+        "params": params
+    }
+
+
+def get_default_scenarios() -> Dict[str, EconomicParameters]:
+    """
+    Standard calibrated scenarios based on CWC tariffs (FY 2026-27),
+    MoFPI post-harvest loss studies (2022), and Indian agricultural credit rates.
+    """
+    return {
+        "Conservative": EconomicParameters(
+            storage_cost_per_quintal=35.0,        # ₹17.3 CWC slab + ₹17.7 local loading/handling
+            quantity_loss_fraction=0.020,         # 2.0% physical loss (higher perishable shrinkage)
+            annual_carrying_rate=0.12,            # 12% p.a. informal/micro-credit borrowing rate
+            holding_period_days=7,
+            carrying_cost_type='financing',
+            quality_discount_fraction=0.010,      # 1% quality markdown on sale
+            scenario_name="Conservative"
+        ),
+        "Central": EconomicParameters(
+            storage_cost_per_quintal=20.0,        # ₹17.3 CWC standard warehouse reference + ₹2.7 basic handling
+            quantity_loss_fraction=0.010,         # 1.0% physical loss over 7 days
+            annual_carrying_rate=0.07,            # 7% p.a. Kisan Credit Card (KCC) rate
+            holding_period_days=7,
+            carrying_cost_type='opportunity',
+            quality_discount_fraction=0.000,
+            scenario_name="Central"
+        ),
+        "Optimistic": EconomicParameters(
+            storage_cost_per_quintal=10.0,        # Ambient on-farm / low-cost cooperative storage
+            quantity_loss_fraction=0.005,         # 0.5% physical loss for durable grains
+            annual_carrying_rate=0.04,            # 4% p.a. prompt-repayment subvention KCC rate
+            holding_period_days=7,
+            carrying_cost_type='opportunity',
+            quality_discount_fraction=0.000,
+            scenario_name="Optimistic"
+        )
+    }
+
+
+def generate_sensitivity_matrix(
+    base_prices=(1500.0, 2500.0, 3500.0),
+    storage_costs=(10.0, 20.0, 35.0, 50.0),
+    loss_fractions=(0.005, 0.010, 0.020, 0.050),
+    annual_rates=(0.04, 0.07, 0.12)
+) -> list:
+    """
+    Generate sensitivity records exploring required break-even future prices
+    and required percentage price increases across variations in costs, losses, and rates.
+    """
+    records = []
+    for p_base in base_prices:
+        for c_s in storage_costs:
+            for l in loss_fractions:
+                for r in annual_rates:
+                    params = EconomicParameters(
+                        storage_cost_per_quintal=c_s,
+                        quantity_loss_fraction=l,
+                        annual_carrying_rate=r,
+                        holding_period_days=7,
+                        carrying_cost_type='opportunity'
+                    )
+                    be = calculate_break_even_future_price(p_base, params)
+                    records.append({
+                        "Base_Price_Rupees_Per_Qtl": p_base,
+                        "Storage_Cost_Rupees_Per_Qtl": c_s,
+                        "Loss_Fraction": l,
+                        "Loss_Percent": l * 100.0,
+                        "Annual_Carrying_Rate": r,
+                        "Annual_Carrying_Rate_Percent": r * 100.0,
+                        "Holding_Period_Days": 7,
+                        "Break_Even_Future_Price_Rupees_Per_Qtl": round(be["break_even_price"], 2),
+                        "Required_Price_Increase_Percent": round(be["required_percentage_increase"], 2)
+                    })
+    return records
+

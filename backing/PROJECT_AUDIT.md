@@ -3,7 +3,7 @@
 **Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)  
 **Branch:** `main`  
 **Current Audit Status:** Fully Consolidated & Verified (Phases 0, 1, 2, and 3 Verified on `main`)  
-**Master Document Version:** 1.5.0 (Updated: October 10, 2026)
+**Master Document Version:** 1.6.0 (Updated: October 10, 2026)
 
 ---
 
@@ -405,8 +405,64 @@ Prior to beginning Phase 4, the operational application pipeline (`run_pipeline.
   `python3 run_pipeline.py` $\to$ **Exit code 0** (All 8 pipeline steps executed successfully).
 
 ### 19.4 Operational Pipeline Limitations
-- **Not Ready for Farmer Advice:** No physical freight transport model, mandi taxes, or warehouse storage economics have been implemented (Phase 4 scope).
+- **Statistical Directional Prototype Only:** The predictive models produce statistical directional market condition signals only.
 - **Exploratory Test Set:** The historical test partition is exploratory and does not represent an untouched final holdout.
+
+---
+
+## 20. Phase 4: Economic Decision Support and Sell-versus-Store Validation
+
+### 20.1 Purpose and Research Scope
+Phase 4 implements and evaluates an empirical economic decision layer comparing immediate harvest sale at Date $T$ against holding produce for exactly seven calendar days ($T+7$). The objective is to establish whether statistical classification signals generate net economic returns after deducting storage fees, handling labor, physical quantity loss, quality degradation, and financing or opportunity costs.
+
+### 20.2 Mathematical Model and Definitions
+- **Immediate Sale:**
+  $$R_{\text{sell}} = Q \times P_T$$
+- **Gross Storage Proceeds:**
+  $$R_{\text{store\_gross}} = Q \times (1 - L) \times (1 - d_q) \times P_{T7}$$
+- **Net Storage Proceeds:**
+  $$R_{\text{store}} = R_{\text{store\_gross}} - Q \times (c_s + c_h) - Q \times P_T \times \left(\frac{i \times h}{365}\right)$$
+- **Incremental Net Benefit:**
+  $$\Delta R = R_{\text{store}} - R_{\text{sell}} = Q \left[ (1 - L)(1 - d_q) P_{T7} - P_T \left(1 + \frac{i \times h}{365}\right) - (c_s + c_h) \right]$$
+- **Break-Even Future Price:**
+  $$P_{\text{break\_even}} = \frac{P_T \left(1 + \frac{i \times h}{365}\right) + (c_s + c_h)}{(1 - L)(1 - d_q)}$$
+- **Economic Safeguards:**
+  1. Carrying cost represents strictly EITHER borrowing interest OR opportunity cost of cash, never both (Safeguards A & B).
+  2. Physical quantity loss ($L$) is strictly separated from quality markdown ($d_q$).
+  3. Non-positive prices, loss fractions $L \ge 1$, and non-positive quantities raise explicit validation errors.
+
+### 20.3 Calibrated Reference Benchmarks
+1. **Central Warehousing Corporation (CWC) Tariff FY 2026–27:**
+   - 7-day cumulative general storage slab (Lucknow Alamnagar RWC): ₹17.29 / quintal.
+   - Monthly reservation tariff: ₹17.70 / qtl (Lucknow) and ₹23.10 / qtl (Ghaziabad).
+   - Informs Central scenario direct cost benchmark (₹20.00 / qtl) and Conservative bound (₹35.00 / qtl).
+2. **Ministry of Food Processing Industries (MoFPI) Post-Harvest Food Loss Studies (2022):**
+   - Summarizes ICAR-CIPHET and NABCONS national supply-chain loss ranges (Cereals: 3.9%–5.9%; Fruits & Vegetables: 4.9%–11.6%).
+   - Informs 7-day storage shrinkage scenarios: Optimistic (0.5%), Central (1.0%), Conservative (2.0%).
+
+### 20.4 Chronological Backtest Benchmark Results
+Evaluated on exact calendar $T+7$ matches across the chronological Validation partition ($n = 5,671$) and Exploratory Test partition ($n = 9,551$) with 8-day purged embargo buffers:
+
+1. **Always Sell (Baseline):** Incremental return = ₹0.00 / qtl.
+2. **Always Store:** Strongly negative across scenarios. Under Central costs, average loss is **-₹30.32 / qtl (Val)** and **-₹28.29 / qtl (Test)**. Under Conservative costs, average loss is **-₹117.21 / qtl (Val)** and **-₹122.37 / qtl (Test)**.
+3. **Trailing Momentum (T):** Strongly negative (-₹68.02 to -₹80.72 / qtl) due to sharp mean-reversion in weekly mandi price spikes.
+4. **Model-Signal Policy (T):**
+   - Yields positive average incremental returns across all scenarios: **+₹33.55 / qtl (Val)** and **+₹42.21 / qtl (Test)** under Central assumptions.
+   - **CRITICAL OPERATIONAL RISK DEFICIT:**
+     - Storage win rate is only **37.8% – 37.9%**. In **62.2% of decisions where the model advises storage, the farmer would have been better off selling immediately**.
+     - Downside tail risk: 5th percentile outcome when stored is **-₹232.36 / qtl (Val)** and **-₹331.75 / qtl (Test)**, with worst-case drawdowns reaching **-₹3,674 to -₹18,742 / qtl** during sudden supply gluts.
+5. **Oracle Benchmark:** Theoretical upper bound (+₹234 to +₹305 / qtl, 100% win rate).
+
+### 20.5 Automated Test Suite Execution
+- **Economic Math & Safeguards ([`tests/test_economic_model.py`](../tests/test_economic_model.py)):** **17 passed** (including hand-calculated fixtures 1 and 2).
+- **Economic Backtest Policies ([`tests/test_economic_backtest.py`](../tests/test_economic_backtest.py)):** **4 passed** (causality, oracle bound, scenario monotonicity).
+- **Full Combined Repository Suite:**
+  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **78 passed, 0 failed in 6.08s** (Exit code 0).
+
+### 20.6 Operational Directive and Verdict
+- **Audit Verdict:** **PASS (Research and mathematical validation complete).**
+- **Operational Directive:** **STRICTLY NOT APPROVED FOR OPERATIONAL FARMER RECOMMENDATIONS.**
+  A 62% failure rate and severe downside tail risk are incompatible with smallholder farmer welfare and financial survival. Operational deployment must remain prohibited until multi-month storage horizons, physical cold chain logistics, and price floor guarantees are modeled and validated.
 
 
 
