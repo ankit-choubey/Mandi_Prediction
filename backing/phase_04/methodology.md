@@ -44,12 +44,12 @@ Five distinct operational policies are evaluated:
 
 ### Policy A: Always Sell Immediately (Baseline)
 - **Decision Rule at Date $T$:** SELL immediately.
-- **Proceeds:** $R_{\text{sell}} = Q \times P_T$.
+- **Proceeds:** $R_{\text{sell}} = Q \times (P_T - c_{\text{trans\_now}})$.
 - **Incremental Return vs Baseline:** Exactly ₹0.00 / quintal.
 
 ### Policy B: Always Store for 7 Days
 - **Decision Rule at Date $T$:** STORE produce for 7 days regardless of price signal.
-- **Proceeds:** $R_{\text{store}}(P_{T7})$.
+- **Proceeds:** $R_{\text{store}}(P_{T7}) = Q(1 - L)(1 - d_q)P_{T7} - Q(1 - L)c_{\text{trans\_later}} - Q(c_s + c_h) - Q P_T \times \text{rate\_factor}$, where $\text{rate\_factor} = (i \cdot h / 365)$ if `carrying_cost_type` $\in ('financing', 'opportunity')$ else $0.0$.
 - **Incremental Return:** $\Delta R = R_{\text{store}} - R_{\text{sell}}$.
 
 ### Policy C: Simple Price-Trend Policy (Information at $T$)

@@ -22,14 +22,16 @@ While the model-based policy achieves a positive *mean* incremental return (+₹
 
 ### 2.1 The "Win-Rate" Deficit (62% Loss Rate on Storage)
 - Under the Central Scenario, when the model advises storage, **storage beats immediate selling in only 37.8% – 37.9% of cases**.
-- Conversely, in **62.1% – 62.2% of instances where storage was triggered, the farmer would have been better off selling immediately**.
-- While a commercial trading firm with diversified capital can tolerate a 38% win rate if winners outweigh losers, a smallholder farmer operating with single-batch harvests cannot absorb repeated weekly losses.
+- Conversely, in **62.1% – 62.2% of instances where storage was triggered, immediate selling yielded higher net proceeds than 7-day storage**.
+- While positive expectation with a ~38% win rate can be tolerated in diversified trading contexts where large gains offset frequent losses, an unhedged decision rule with a ~62% loss frequency carries severe downside exposure for discrete, infrequent agricultural sales. Individual farmers' actual risk tolerances and cash flow constraints cannot be inferred from aggregate mandi price series, but this high loss frequency represents an objective obstacle to deploying unhedged binary recommendations.
 
 ### 2.2 Severe Downside Tail Risk
 - Agricultural commodity prices exhibit fat-tailed negative price shocks during seasonal price drops.
-- For stored batches, the **5th percentile outcome is -₹232.36 / quintal (Validation) and -₹331.75 / quintal (Exploratory Test)**.
-- Extreme worst-case losses reach **-₹3,674 / quintal (Validation)** and **-₹18,742 / quintal (Exploratory Test)** for specialty/perishable produce during acute downward market price swings.
-- A smallholder storing 10 quintals of produce risks losing ₹2,300 to ₹3,300 in a single bad week—often exceeding total household operating margins.
+- For stored batches, the **5th percentile outcome is -₹232.36 / quintal (Validation)** and **-₹331.75 / quintal (Exploratory Test)**.
+- Extreme worst-case losses identify acute downside tail risk in specific market partitions and cost scenarios:
+  - Validation Partition: **-₹3,674.71 / quintal (Central)**, **-₹3,776.20 / quintal (Conservative)**.
+  - Exploratory Test Partition: **-₹18,741.94 / quintal (Central)**, **-₹18,914.28 / quintal (Conservative)**.
+- A hypothetical producer storing 10 quintals of produce would face downside losses of ₹2,300 to ₹3,300 at the 5th percentile, and acute tail losses several orders of magnitude higher during market crashes. Household cash-flow margins and liquidity preferences cannot be measured directly from APMC trade records, but the simulated loss magnitudes demonstrate severe downside tail risk.
 
 ---
 

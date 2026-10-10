@@ -417,15 +417,17 @@ Phase 4 implements and evaluates an empirical economic decision layer comparing 
 
 ### 20.2 Mathematical Model and Definitions
 - **Immediate Sale:**
-  $$R_{\text{sell}} = Q \times P_T$$
+  $$R_{\text{sell}} = Q \times (P_T - c_{\text{trans\_now}})$$
 - **Gross Storage Proceeds:**
   $$R_{\text{store\_gross}} = Q \times (1 - L) \times (1 - d_q) \times P_{T7}$$
 - **Net Storage Proceeds:**
-  $$R_{\text{store}} = R_{\text{store\_gross}} - Q \times (c_s + c_h) - Q \times P_T \times \left(\frac{i \times h}{365}\right)$$
+  $$R_{\text{store}} = R_{\text{store\_gross}} - Q(1 - L)c_{\text{trans\_later}} - Q \times (c_s + c_h) - Q \times P_T \times \text{rate\_factor}$$
+  where $\text{rate\_factor} = \frac{i \times h}{365}$ when $\text{carrying\_cost\_type} \in (\text{'financing'}, \text{'opportunity'})$ and $0.0$ when $\text{carrying\_cost\_type} = \text{'none'}$.
 - **Incremental Net Benefit:**
-  $$\Delta R = R_{\text{store}} - R_{\text{sell}} = Q \left[ (1 - L)(1 - d_q) P_{T7} - P_T \left(1 + \frac{i \times h}{365}\right) - (c_s + c_h) \right]$$
+  $$\Delta R = R_{\text{store}} - R_{\text{sell}} = Q \left[ (1 - L)(1 - d_q) P_{T7} - P_T (1 + \text{rate\_factor}) - (c_s + c_h) - \Delta_{\text{trans}} \right]$$
+  where $\Delta_{\text{trans}} = (1 - L)c_{\text{trans\_later}} - c_{\text{trans\_now}}$.
 - **Break-Even Future Price:**
-  $$P_{\text{break\_even}} = \frac{P_T \left(1 + \frac{i \times h}{365}\right) + (c_s + c_h)}{(1 - L)(1 - d_q)}$$
+  $$P_{\text{break\_even}} = \frac{P_T (1 + \text{rate\_factor}) + (c_s + c_h) + \Delta_{\text{trans}}}{(1 - L)(1 - d_q)}$$
 - **Economic Safeguards:**
   1. Carrying cost represents strictly EITHER borrowing interest OR opportunity cost of cash, never both (Safeguards A & B).
   2. Physical quantity loss ($L$) is strictly separated from quality markdown ($d_q$).
@@ -446,7 +448,7 @@ Evaluated on exact calendar $T+7$ matches across the chronological Validation pa
 
 1. **Always Sell (Baseline):** Unconditional return = ₹0.00 / qtl; aggregate gain = ₹0.00.
 2. **Always Store:** Strongly negative across scenarios. Under Central costs, average loss is **-₹30.32 / eligible qtl (Val)** and **-₹28.29 / eligible qtl (Test)**. Under Conservative costs, average loss is **-₹117.21 / eligible qtl (Val)** and **-₹122.37 / eligible qtl (Test)**.
-3. **Trailing Momentum (T):** Strongly negative (-₹68.02 to -₹80.72 / eligible qtl) due to sharp mean-reversion in weekly mandi price spikes.
+3. **Trailing Momentum (T):** Strongly negative (-₹68.02 to -₹80.72 / eligible qtl); in this sample, trailing weekly price appreciation did not reliably persist into the subsequent 7-day holding window.
 4. **Model-Signal Policy (T):**
    - **Central Scenario:**
      - Unconditional return: **+₹33.55 / eligible qtl (Val)** and **+₹42.21 / eligible qtl (Test)**.
@@ -456,20 +458,22 @@ Evaluated on exact calendar $T+7$ matches across the chronological Validation pa
      - Aggregate net gain across all decisions (10 qtl/decision): **+₹1,902,741.76 (Val)** and **+₹4,031,741.12 (Test)**.
    - **CRITICAL OPERATIONAL RISK DEFICIT:**
      - Storage win rate is only **37.8% – 37.9%**. In **62.2% of decisions where the model advises storage, the farmer would have been better off selling immediately**.
-     - Downside tail risk: 5th percentile outcome when stored is **-₹232.36 / qtl (Val)** and **-₹331.75 / qtl (Test)**, with worst-case drawdowns reaching **-₹3,674 to -₹18,742 / qtl** during sudden downward price shocks.
+     - Downside tail risk: 5th percentile outcome when stored is **-₹232.36 / qtl (Val)** and **-₹331.75 / qtl (Test)**, with worst-case drawdowns identifying severe downside tail risk in specific market partitions and scenarios:
+       - Validation Partition: **-₹3,674.71 / qtl (Central)**, **-₹3,776.20 / qtl (Conservative)**.
+       - Exploratory Test Partition: **-₹18,741.94 / qtl (Central)**, **-₹18,914.28 / qtl (Conservative)**.
 5. **Oracle Benchmark:** Theoretical upper bound (+₹234 to +₹305 / eligible qtl, 100% win rate).
 
 ### 20.5 Automated Test Suite Execution
 - **Economic Math & Safeguards ([`tests/test_economic_model.py`](../tests/test_economic_model.py)):** **19 passed** (fixtures 1 & 2, properties 1–15, test 16 quality discount, test 17 sensitivity schemas).
-- **Economic Backtest Policies ([`tests/test_economic_backtest.py`](../tests/test_economic_backtest.py)):** **7 passed** (baseline, oracle bound, monotonicity, causality, aggregate vs mean gain, conditional vs unconditional, absence of unsupported arrival causality claims).
-- **Combined Targeted Economic Suite:** **26 passed in 0.87s** (Exit code 0).
+- **Economic Backtest Policies ([`tests/test_economic_backtest.py`](../tests/test_economic_backtest.py)):** **12 passed** (baseline, oracle bound, monotonicity, causality, aggregate vs mean gain, conditional vs unconditional, absence of arrival claims, nonzero transaction costs, carrying cost type none, quality markdown impact, oracle bound under complex costs, per-row canonical model equivalence).
+- **Combined Targeted Economic Suite:** **31 passed in 1.29s** (Exit code 0).
 - **Full Combined Repository Regression Suite:**
-  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **83 passed, 0 failed in 6.07s** (Exit code 0).
+  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **88 passed, 0 failed** (Exit code 0).
 
 ### 20.6 Operational Directive and Verdict
 - **Audit Verdict:** **PASS (Methodology, mathematical formulas, and pipeline outputs verified; local farmgate parameters unvalidated).**
 - **Operational Directive:** **STRICTLY NOT APPROVED FOR OPERATIONAL FARMER RECOMMENDATIONS.**
-  A 62% failure rate and severe downside tail risk are incompatible with smallholder farmer welfare and financial survival. Operational deployment must remain prohibited until multi-month storage horizons, physical cold chain logistics, and price floor guarantees are modeled and validated.
+  An unhedged decision rule with a ~62% loss frequency when storing and severe downside tail risk is incompatible with practical deployment. Individual farmer risk preferences, household liquidity buffers, and operating margins cannot be observed from aggregate APMC trade archives, but the empirical loss distribution alone precludes operational recommendation. Operational deployment must remain prohibited until multi-month storage horizons, physical cold chain logistics, and price floor guarantees are modeled and validated.
 
 
 

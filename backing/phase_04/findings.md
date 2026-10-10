@@ -18,7 +18,7 @@ Phase 4 evaluated the empirical economic feasibility of using machine-learning m
    - Under central storage costs (₹20/qtl storage, 1% physical loss, 7% KCC opportunity interest), an "Always Store" policy produces an average **loss of -₹30.32 / eligible quintal (Validation)** and **-₹28.29 / eligible quintal (Exploratory Test)**.
    - Under conservative costs (₹35/qtl, 2% loss, 12% interest), blind storage loses **-₹117.21 / eligible quintal** and **-₹122.37 / eligible quintal**, winning in fewer than 19% of market dates.
 2. **Simple Trailing Momentum Fails:**
-   - Storing based on whether trailing 7-day momentum exceeds break-even loses **-₹68.02 / eligible qtl (Validation)** and **-₹80.72 / eligible qtl (Exploratory Test)** due to aggressive weekly price mean-reversion in wholesale mandis.
+   - Storing based on whether trailing 7-day momentum exceeds break-even loses **-₹68.02 / eligible qtl (Validation)** and **-₹80.72 / eligible qtl (Exploratory Test)**; in this sample, trailing weekly price appreciation did not reliably persist into the subsequent 7-day holding window.
 3. **Model Selectivity Generates Positive Mean Returns but Unacceptable Smallholder Risk:**
    - Storing only when the gradient-boosted classifier forecasts a `Favorable` market condition ($> +2.5\%$ appreciation) yields positive average incremental returns across all scenarios:
      - **Central Scenario:** **+₹33.55 / eligible qtl** (Validation) and **+₹42.21 / eligible qtl** (Exploratory Test); conditional on storage, returns average **+₹190.27 / stored qtl** (Validation) and **+₹215.60 / stored qtl** (Exploratory Test).
@@ -26,10 +26,12 @@ Phase 4 evaluated the empirical economic feasibility of using machine-learning m
      - **Optimistic Scenario:** **+₹36.82 / eligible qtl** (Validation) and **+₹46.12 / eligible qtl** (Exploratory Test); conditional on storage: **+₹208.80 / stored qtl** (Validation) and **+₹235.53 / stored qtl** (Exploratory Test).
    - **CRITICAL OPERATIONAL RISK DEFICIT:**
      - The **storage win rate is only 37.8% – 37.9%**. In **62.2% of decisions where the model advises storage, storing resulted in a net financial loss compared to selling immediately**.
-     - Severe downside tail risk: The 5th percentile outcome when stored is **-₹232.36 / qtl (Validation)** and **-₹331.75 / qtl (Exploratory Test)**, with worst-case losses exceeding **-₹3,674 to -₹18,742 / qtl** during sudden downward price shocks.
-   - Smallholder farmers operating near subsistence cannot withstand a 62% failure rate or catastrophic downside drawdowns.
+     - Severe downside tail risk: The 5th percentile outcome when stored is **-₹232.36 / qtl (Validation)** and **-₹331.75 / qtl (Exploratory Test)**. Worst-case losses identify acute tail risk in specific market partitions and cost scenarios:
+       - Validation Partition: **-₹3,674.71 / qtl (Central)**, **-₹3,776.20 / qtl (Conservative)**.
+       - Exploratory Test Partition: **-₹18,741.94 / qtl (Central)**, **-₹18,914.28 / qtl (Conservative)**.
+   - An unhedged decision rule with a 62.2% loss frequency and heavy downside tail distribution represents an unacceptable risk profile for practical deployment. Individual farmers' risk preferences, household liquidity buffers, and operating margins cannot be observed or inferred from aggregate APMC mandi price series, but the empirical loss distribution alone precludes operational recommendation.
 4. **Phase 4 Determination:**
-   The economic decision formulas and pipeline are unit-tested and computationally verified. However, **farmer-facing recommendations are strictly NOT approved**. Local storage rates, physical shrinkage, quality degradation, and liquidity costs remain illustrative assumptions informed by public references rather than locally validated farmgate measurements.
+   The economic decision formulas and pipeline are unit-tested and computationally verified. However, **farmer-facing recommendations are strictly NOT approved**. Reported backtest outcomes represent simulated results under stylized assumptions, distinct from independently validated field trial evidence. Local storage rates, physical shrinkage, quality degradation, and liquidity costs remain illustrative assumptions informed by public benchmarks rather than locally validated farmgate measurements. Furthermore, the May–August 2026 test partition is explicitly an exploratory historical evaluation window, not an untouched blind holdout.
 
 ---
 

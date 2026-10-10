@@ -28,30 +28,33 @@ The economic decision-support model evaluates whether a farmer should sell harve
 ## 2. Definitive Mathematical Formulas
 
 ### 2.1 Immediate Sale Baseline
-$$R_{\text{sell}} = Q \times P_T$$
-- Assumes harvest is sold at current spot modal price.
-- Gross baseline representation (handling costs that are identical between immediate sale and storage sale cancel out).
+6650R_{\text{sell}} = Q \times (P_T - c_{\text{trans\_now}})6650
+- Immediate sale proceeds net of immediate transaction/freight friction {\text{trans\_now}}$.
+- Gross baseline representation when transaction costs are zero or symmetric.
 
 ### 2.2 Storage Sale Gross Proceeds
-$$R_{\text{store\_gross}} = Q \times (1 - L) \times (1 - d_q) \times P_{T7}$$
-- Physical quantity sold is reduced by $Q \times L$.
-- Realized price is adjusted for any quality discount $P_{T7} \times (1 - d_q)$.
+6650R_{\text{store\_gross}} = Q \times (1 - L) \times (1 - d_q) \times P_{T7}6650
+- Physical quantity sold is reduced by  \times L$.
+- Realized price is adjusted for quality markdown {T7} \times (1 - d_q)$ applied exactly once.
 
 ### 2.3 Net Storage Proceeds
-$$R_{\text{store}} = R_{\text{store\_gross}} - Q \times (c_s + c_h) - Q \times P_T \times \left(\frac{i \times h}{365}\right)$$
+6650R_{\text{store}} = R_{\text{store\_gross}} - Q(1 - L)c_{\text{trans\_later}} - Q \times (c_s + c_h) - Q \times P_T \times \text{rate\_factor}6650
+- Later-sale transaction cost {\text{trans\_later}}$ is assessed strictly on remaining physical quantity (1 - L)$.
+- Carrying rate factor $\text{rate\_factor} = \frac{i \times h}{365}$ when $\text{carrying\_cost\_type} \in (\text{'financing'}, \text{'opportunity'})$; when $\text{carrying\_cost\_type} = \text{'none'}, \text{rate\_factor} = 0.0$.
 - Safeguard A & B: Carrying cost represents EITHER borrowing interest OR opportunity cost of cash, never both simultaneously.
 
 ### 2.4 Incremental Benefit ($\Delta R$)
-$$\Delta R = R_{\text{store}} - R_{\text{sell}} = Q \left[ (1 - L)(1 - d_q) P_{T7} - P_T \left(1 + \frac{i \times h}{365}\right) - (c_s + c_h) \right]$$
+6650\Delta R = R_{\text{store}} - R_{\text{sell}} = Q \left[ (1 - L)(1 - d_q) P_{T7} - P_T (1 + \text{rate\_factor}) - (c_s + c_h) - \Delta_{\text{trans}} \right]6650
+where $\Delta_{\text{trans}} = (1 - L)c_{\text{trans\_later}} - c_{\text{trans\_now}}$.
 Per-quintal net benefit ($\Delta r = \Delta R / Q$):
-$$\Delta r = (1 - L)(1 - d_q) P_{T7} - P_T \left(1 + \frac{i \times h}{365}\right) - (c_s + c_h)$$
-Notice that for any positive batch size $Q > 0$, $\text{sign}(\Delta R) \equiv \text{sign}(\Delta r)$.
+6650\Delta r = (1 - L)(1 - d_q) P_{T7} - P_T (1 + \text{rate\_factor}) - (c_s + c_h) - \Delta_{\text{trans}}6650
+Notice that for any positive batch size  > 0$, $\text{sign}(\Delta R) \equiv \text{sign}(\Delta r)$.
 
-### 2.5 Break-Even Future Price ($P_{\text{break\_even}}$)
+### 2.5 Break-Even Future Price ({\text{break\_even}}$)
 Setting $\Delta R = 0$ yields the exact future price required for storage to equal immediate sale:
-$$P_{\text{break\_even}} = \frac{P_T \left(1 + \frac{i \times h}{365}\right) + (c_s + c_h)}{(1 - L)(1 - d_q)}$$
+6650P_{\text{break\_even}} = \frac{P_T (1 + \text{rate\_factor}) + (c_s + c_h) + \Delta_{\text{trans}}}{(1 - L)(1 - d_q)}6650
 Required percentage price increase ($\Delta P_{\text{break\_even}}\%$):
-$$\Delta P_{\text{break\_even}}\% = \left(\frac{P_{\text{break\_even}} - P_T}{P_T}\right) \times 100$$
+6650\Delta P_{\text{break\_even}}\% = \left(\frac{P_{\text{break\_even}} - P_T}{P_T}\right) \times 1006650
 
 ---
 

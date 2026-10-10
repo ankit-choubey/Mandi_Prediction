@@ -31,6 +31,7 @@ from src.economic_model import (
     generate_sensitivity_matrix_with_quality_discount,
     evaluate_sell_vs_store,
     calculate_break_even_future_price,
+    calculate_incremental_benefit_per_quintal,
 )
 from src.data_loader import load_and_clean_mandi_data
 from src.feature_engineering import build_features_and_target, FEATURE_COLUMNS
@@ -80,18 +81,13 @@ def run_economic_backtest(
     # 7-day momentum at T
     p_change_7d = data_df['Price_Change_7d'].fillna(0.0).values
 
-    # Storage benefit per quintal for storing:
-    # delta_r_store[i] = (1 - L)(1 - dq) * P_T7 - P_T * (1 + i * h / 365) - c_s
-    l_eff = (1.0 - scenario.quantity_loss_fraction) * (1.0 - scenario.quality_discount_fraction)
-    rate_factor = scenario.annual_carrying_rate * scenario.holding_period_days / 365.0
-    c_s = scenario.storage_cost_per_quintal + scenario.handling_cost_per_quintal
-
-    delta_r_per_qtl = l_eff * p_t7 - p_t * (1.0 + rate_factor) - c_s
+    # Storage benefit per quintal for storing (canonical formula strictly shared with economic_model)
+    delta_r_per_qtl = calculate_incremental_benefit_per_quintal(p_t, p_t7, scenario)
     actual_store_won = delta_r_per_qtl > 0.0
 
-    # Required percentage increase to break even for each row
-    p_be = (p_t * (1.0 + rate_factor) + c_s) / l_eff
-    req_pct_increase = ((p_be - p_t) / p_t) * 100.0
+    # Required percentage increase to break even for each row (canonical formula)
+    be_res = calculate_break_even_future_price(p_t, scenario)
+    req_pct_increase = be_res["required_percentage_increase"]
 
     # Policy Decisions (1 = STORE, 0 = SELL):
     # A. Always Sell

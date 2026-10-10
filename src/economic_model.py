@@ -39,7 +39,8 @@ CRITICAL SAFEGUARDS:
 """
 
 from dataclasses import dataclass
-from typing import Optional, Dict, Any, Literal
+from typing import Optional, Dict, Any, Literal, Union
+import numpy as np
 
 
 @dataclass(frozen=True)
@@ -173,17 +174,21 @@ def calculate_storage_sale_proceeds(
 
 
 def calculate_break_even_future_price(
-    current_price: float,
+    current_price: Union[float, np.ndarray],
     params: EconomicParameters
-) -> Dict[str, float]:
+) -> Dict[str, Any]:
     """
     Calculate the exact future price P_break_even required for storage to match immediate sale.
 
     Formula:
       P_break_even = [P_T * (1 + i * h / 365) + c_s + c_handling + Delta_trans] / [(1 - L) * (1 - d_q)]
       where Delta_trans = c_trans_later * (1 - L) - c_trans_now
+            rate_factor = (i * h / 365) if carrying_cost_type in ('financing', 'opportunity') else 0.0
+
+    Supports both scalar float and numpy array inputs.
     """
-    if current_price <= 0.0:
+    current_price_arr = np.asarray(current_price)
+    if np.any(current_price_arr <= 0.0):
         raise ValueError(f"Current price P_T must be positive, got {current_price}")
 
     effective_loss_multiplier = (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction)
@@ -203,16 +208,62 @@ def calculate_break_even_future_price(
         - params.transaction_cost_now
     )
 
-    numerator = current_price * (1.0 + rate_factor) + total_direct_costs + trans_diff
+    numerator = current_price_arr * (1.0 + rate_factor) + total_direct_costs + trans_diff
     p_break_even = numerator / effective_loss_multiplier
 
-    required_pct_change = ((p_break_even - current_price) / current_price) * 100.0
+    required_pct_change = ((p_break_even - current_price_arr) / current_price_arr) * 100.0
 
-    return {
-        "break_even_price": p_break_even,
-        "required_percentage_increase": required_pct_change,
-        "current_price": current_price
-    }
+    if np.isscalar(current_price):
+        return {
+            "break_even_price": float(p_break_even),
+            "required_percentage_increase": float(required_pct_change),
+            "current_price": float(current_price)
+        }
+    else:
+        return {
+            "break_even_price": p_break_even,
+            "required_percentage_increase": required_pct_change,
+            "current_price": current_price_arr
+        }
+
+
+def calculate_incremental_benefit_per_quintal(
+    current_price: Union[float, np.ndarray],
+    future_price: Union[float, np.ndarray],
+    params: EconomicParameters
+) -> Union[float, np.ndarray]:
+    """
+    Calculate the net incremental benefit of storage per initial quintal (Delta_R / Q).
+    Canonical formula strictly matching evaluate_sell_vs_store:
+      Delta_r = R_store/Q - R_sell/Q
+              = (1 - L)(1 - d_q) * P_Th - P_T * (1 + rate_factor) - (c_s + c_handling) - trans_diff
+      where trans_diff = c_trans_later * (1 - L) - c_trans_now
+            rate_factor = (i * h / 365) if carrying_cost_type in ('financing', 'opportunity') else 0.0
+
+    Supports both scalar float and numpy array inputs.
+    """
+    p_t = np.asarray(current_price)
+    p_th = np.asarray(future_price)
+    if np.any(p_t <= 0.0):
+        raise ValueError(f"Current price P_T must be positive, got {current_price}")
+    if np.any(p_th <= 0.0):
+        raise ValueError(f"Future price P_Th must be positive, got {future_price}")
+
+    l_eff = (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction)
+    rate_factor = (
+        (params.annual_carrying_rate * params.holding_period_days / 365.0)
+        if params.carrying_cost_type in ('financing', 'opportunity') else 0.0
+    )
+    total_direct_costs = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    trans_diff = (
+        params.transaction_cost_later * (1.0 - params.quantity_loss_fraction)
+        - params.transaction_cost_now
+    )
+
+    delta_r = l_eff * p_th - p_t * (1.0 + rate_factor) - total_direct_costs - trans_diff
+    if np.isscalar(current_price) and np.isscalar(future_price):
+        return float(delta_r)
+    return delta_r
 
 
 def evaluate_sell_vs_store(

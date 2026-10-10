@@ -203,3 +203,170 @@ def test_absence_of_unsupported_arrival_causality_claims():
         for pat in unsupported_patterns:
             matches = pat.findall(content)
             assert len(matches) == 0, f"Found forbidden causal arrival phrase {matches} in {filepath}"
+
+
+def test_backtest_with_nonzero_transaction_costs():
+    """
+    Verify backtest accounts for nonzero transaction_cost_now and transaction_cost_later,
+    consistently with evaluate_sell_vs_store:
+      - immediate transaction costs reduce immediate-sale proceeds
+      - later transaction costs are charged on remaining physical quantity Q * (1 - L)
+    """
+    from src.economic_model import evaluate_sell_vs_store
+    df_synth = pd.DataFrame({
+        'Modal_Price': [2000.0, 2500.0, 3000.0],
+        'Modal_Price_T7': [2100.0, 2600.0, 3100.0],
+        'Price_Change_7d': [2.0, 3.0, 1.0]
+    })
+    preds = np.array([2, 2, 2])
+    scenario = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.02,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+        transaction_cost_now=15.0,
+        transaction_cost_later=20.0,
+        carrying_cost_type='opportunity'
+    )
+    res = run_economic_backtest(df_synth, preds, scenario, quantity_per_decision=10.0)
+
+    # Evaluate each row individually using canonical evaluate_sell_vs_store
+    for i, row in df_synth.iterrows():
+        eval_row = evaluate_sell_vs_store(10.0, row['Modal_Price'], row['Modal_Price_T7'], scenario)
+        be_row = calculate_break_even_future_price(row['Modal_Price'], scenario)
+        assert eval_row['break_even_price'] == pytest.approx(be_row['break_even_price'])
+
+    # Backtest mean return stored must match average of individual evaluate_sell_vs_store
+    model_stats = res["Model Signal (T)"]
+    individual_delta_rs = [
+        evaluate_sell_vs_store(10.0, r['Modal_Price'], r['Modal_Price_T7'], scenario)['incremental_benefit_per_quintal']
+        for _, r in df_synth.iterrows()
+    ]
+    assert pytest.approx(model_stats["mean_incremental_return_rupees_per_stored_qtl"], abs=0.01) == np.mean(individual_delta_rs)
+
+
+def test_backtest_carrying_cost_type_none_with_positive_rate():
+    """
+    Verify that when carrying_cost_type='none', carrying cost is strictly zero,
+    even if annual_carrying_rate is positive (Task 1 & 2).
+    """
+    df_synth = pd.DataFrame({
+        'Modal_Price': [2000.0, 2500.0],
+        'Modal_Price_T7': [2200.0, 2700.0],
+        'Price_Change_7d': [5.0, 5.0]
+    })
+    preds = np.array([2, 2])
+    sc_none = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.15,
+        holding_period_days=7,
+        carrying_cost_type='none'
+    )
+    sc_opp = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.15,
+        holding_period_days=7,
+        carrying_cost_type='opportunity'
+    )
+    res_none = run_economic_backtest(df_synth, preds, sc_none)
+    res_opp = run_economic_backtest(df_synth, preds, sc_opp)
+
+    # When carrying_cost_type='none', returns must be strictly higher than when carrying cost is charged
+    ret_none = res_none["Always Store"]["mean_incremental_return_rupees_per_stored_qtl"]
+    ret_opp = res_opp["Always Store"]["mean_incremental_return_rupees_per_stored_qtl"]
+    assert ret_none > ret_opp
+    # Difference must equal exactly the carrying cost per quintal
+    expected_carrying_diff = np.mean([p * 0.15 * 7 / 365.0 for p in [2000.0, 2500.0]])
+    assert pytest.approx(ret_none - ret_opp, abs=0.05) == expected_carrying_diff
+
+
+def test_backtest_quality_markdown_affects_breakeven_and_return():
+    """
+    Verify quality markdown d_q is applied exactly once to future price,
+    strictly increases break-even price, and lowers realized return.
+    """
+    df_synth = pd.DataFrame({
+        'Modal_Price': [2500.0],
+        'Modal_Price_T7': [2650.0],
+        'Price_Change_7d': [6.0]
+    })
+    preds = np.array([2])
+    sc_no_dq = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        quality_discount_fraction=0.0
+    )
+    sc_with_dq = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        quality_discount_fraction=0.03  # 3% markdown
+    )
+    res_no = run_economic_backtest(df_synth, preds, sc_no_dq)
+    res_dq = run_economic_backtest(df_synth, preds, sc_with_dq)
+
+    ret_no = res_no["Always Store"]["mean_incremental_return_rupees_per_stored_qtl"]
+    ret_dq = res_dq["Always Store"]["mean_incremental_return_rupees_per_stored_qtl"]
+    assert ret_no > ret_dq
+    # Check exact gross markdown: (1 - 0.01) * 2650 * 0.03 = 0.99 * 79.5 = 78.705
+    assert pytest.approx(ret_no - ret_dq, abs=0.05) == 0.99 * 2650.0 * 0.03
+
+
+def test_backtest_oracle_upper_bound_with_complex_costs():
+    """
+    Verify oracle remains upper bound across complex configurations
+    (nonzero transaction costs, quality markdown, positive carry rate).
+    """
+    df_synth = pd.DataFrame({
+        'Modal_Price': [1500.0, 2000.0, 2500.0, 3000.0, 3500.0],
+        'Modal_Price_T7': [1450.0, 2150.0, 2400.0, 3300.0, 3200.0],
+        'Price_Change_7d': [-2.0, 7.0, -1.0, 9.0, -5.0]
+    })
+    preds = np.array([0, 2, 0, 2, 0])
+    scenario = EconomicParameters(
+        storage_cost_per_quintal=30.0,
+        handling_cost_per_quintal=5.0,
+        quantity_loss_fraction=0.02,
+        annual_carrying_rate=0.10,
+        holding_period_days=7,
+        transaction_cost_now=10.0,
+        transaction_cost_later=15.0,
+        quality_discount_fraction=0.02,
+        carrying_cost_type='financing'
+    )
+    res = run_economic_backtest(df_synth, preds, scenario, quantity_per_decision=10.0)
+    oracle_gain = res["Oracle Benchmark (Upper Bound)"]["aggregate_net_incremental_gain_rupees_10qtl_all_decisions"]
+    for pol_name, stats in res.items():
+        pol_gain = stats["aggregate_net_incremental_gain_rupees_10qtl_all_decisions"]
+        assert oracle_gain >= pol_gain, f"Oracle {oracle_gain} failed to beat {pol_name} {pol_gain}"
+
+
+def test_backtest_canonical_model_per_row_equivalence():
+    """
+    Regression test verifying exact equivalence between run_economic_backtest
+    and evaluate_sell_vs_store on each individual decision row.
+    """
+    from src.economic_model import calculate_incremental_benefit_per_quintal, evaluate_sell_vs_store
+    prices_t = np.array([1800.0, 2200.0, 2600.0, 3100.0])
+    prices_t7 = np.array([1950.0, 2100.0, 2850.0, 3000.0])
+    scenario = EconomicParameters(
+        storage_cost_per_quintal=25.0,
+        handling_cost_per_quintal=5.0,
+        quantity_loss_fraction=0.015,
+        annual_carrying_rate=0.08,
+        holding_period_days=7,
+        transaction_cost_now=8.0,
+        transaction_cost_later=12.0,
+        quality_discount_fraction=0.01,
+        carrying_cost_type='opportunity'
+    )
+    # Vectorized incremental benefit
+    vec_delta_r = calculate_incremental_benefit_per_quintal(prices_t, prices_t7, scenario)
+
+    # Loop each row via evaluate_sell_vs_store
+    for i in range(len(prices_t)):
+        single_eval = evaluate_sell_vs_store(10.0, prices_t[i], prices_t7[i], scenario)
+        assert pytest.approx(vec_delta_r[i], rel=1e-6) == single_eval["incremental_benefit_per_quintal"]
