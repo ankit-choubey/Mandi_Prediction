@@ -5,10 +5,16 @@ Implements the full T+7 Feasibility Checklist (Sections A - O).
 """
 
 import os
+import sys
 import glob
 import pandas as pd
 import numpy as np
 from datetime import timedelta
+
+# Ensure project root is in sys.path
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Report.md"):
     print("=" * 70)
@@ -44,34 +50,30 @@ def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Re
         print(f"  - {col}: {'[OK]' if present else '[MISSING]'}")
 
     # Standardize data types
-    raw_df['Arrival_Date'] = pd.to_datetime(raw_df['Arrival_Date'], format='%d/%m/%Y')
+    raw_df['Arrival_Date'] = pd.to_datetime(raw_df['Arrival_Date'], format='%d/%m/%Y', errors='coerce')
     for p_col in ['Modal_Price', 'Min_Price', 'Max_Price']:
         raw_df[p_col] = pd.to_numeric(raw_df[p_col], errors='coerce')
     
     # ----------------------------------------------------
-    # SECTION B: UNIQUE TIME-SERIES IDENTIFICATION
+    # SECTION B: UNIQUE TIME-SERIES IDENTIFICATION & CLEANING
     # ----------------------------------------------------
-    # Combination: District + Market + Commodity + Variety
-    series_cols = ['District', 'Market', 'Commodity', 'Variety']
+    # Canonical series key incorporates Grade: District + Market + Commodity + Variety + Grade
+    # Preserves distinct commercial grades (e.g., FAQ vs Medium) on the same date.
+    # Excludes ambiguous same-grade conflicting quotes via Strategy 2 (DEC-008).
+    from src.data_loader import load_and_clean_mandi_data
+    clean_df = load_and_clean_mandi_data(data_dir=data_dir, min_series_records=0)
     
-    # Check duplicates for same series and date
-    dup_mask = raw_df.duplicated(subset=series_cols + ['Arrival_Date'], keep='first')
-    num_duplicates = int(dup_mask.sum())
-    print(f"[Section B] Total raw records: {len(raw_df)}")
-    print(f"[Section B] Duplicate records for same series and date: {num_duplicates}")
-    
-    clean_df = raw_df.drop_duplicates(subset=series_cols + ['Arrival_Date']).copy()
-    clean_df.sort_values(by=series_cols + ['Arrival_Date'], inplace=True)
-    clean_df.reset_index(drop=True, inplace=True)
-    
-    clean_df['series_id'] = clean_df[series_cols].astype(str).agg('__'.join, axis=1)
+    series_cols = ['District', 'Market', 'Commodity', 'Variety', 'Grade']
     unique_series_count = clean_df['series_id'].nunique()
     earliest_date = clean_df['Arrival_Date'].min()
     latest_date = clean_df['Arrival_Date'].max()
     unique_dates_count = clean_df['Arrival_Date'].nunique()
+    num_duplicates = len(raw_df) - len(clean_df)
     
-    print(f"[Section B] Clean records: {len(clean_df)}")
-    print(f"[Section B] Unique series: {unique_series_count}")
+    print(f"[Section B] Total raw records: {len(raw_df):,}")
+    print(f"[Section B] Excluded ambiguous (Strategy 2) / deduplicated records: {num_duplicates:,}")
+    print(f"[Section B] Clean records (preserving Grade): {len(clean_df):,}")
+    print(f"[Section B] Unique canonical series (with Grade): {unique_series_count:,}")
     print(f"[Section B] Date span: {earliest_date.strftime('%Y-%m-%d')} to {latest_date.strftime('%Y-%m-%d')} ({unique_dates_count} unique dates)")
 
     # ----------------------------------------------------
@@ -84,11 +86,14 @@ def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Re
     small_gaps_2_3 = int(((clean_df['day_gap'] >= 2) & (clean_df['day_gap'] <= 3)).sum())
     large_gaps_7plus = int((clean_df['day_gap'] >= 7).sum())
     total_transitions = int(clean_df['day_gap'].notna().sum())
+    pct_1day = (consecutive_1day / total_transitions * 100) if total_transitions > 0 else 0.0
+    pct_2_3 = (small_gaps_2_3 / total_transitions * 100) if total_transitions > 0 else 0.0
+    pct_7plus = (large_gaps_7plus / total_transitions * 100) if total_transitions > 0 else 0.0
     
     print(f"[Section C] Total observation transitions: {total_transitions}")
-    print(f"  - Consecutive (1 day gap): {consecutive_1day} ({consecutive_1day/total_transitions*100:.2f}%)")
-    print(f"  - Small gaps (2-3 days): {small_gaps_2_3} ({small_gaps_2_3/total_transitions*100:.2f}%)")
-    print(f"  - Large gaps (>=7 days): {large_gaps_7plus} ({large_gaps_7plus/total_transitions*100:.2f}%)")
+    print(f"  - Consecutive (1 day gap): {consecutive_1day} ({pct_1day:.2f}%)")
+    print(f"  - Small gaps (2-3 days): {small_gaps_2_3} ({pct_2_3:.2f}%)")
+    print(f"  - Large gaps (>=7 days): {large_gaps_7plus} ({pct_7plus:.2f}%)")
 
     # ----------------------------------------------------
     # SECTION D: EXACT T+7 AVAILABILITY (MOST IMPORTANT)
@@ -168,18 +173,20 @@ def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Re
     # ----------------------------------------------------
     # SECTION G: CLASSIFICATION TARGET FEASIBILITY
     # ----------------------------------------------------
-    # Market intelligence perspective:
-    # Favorable: Price increase >= +2.5% (better price realization for sellers/farmers)
-    # Normal: Stable price between -2.5% and +2.5%
-    # Unfavorable: Price drop <= -2.5% (depressed price)
-    t7_matched['Market_Condition'] = np.where(
-        t7_matched['Pct_Change'] >= 2.5, 'Favorable',
-        np.where(t7_matched['Pct_Change'] <= -2.5, 'Unfavorable', 'Normal')
-    )
+    # Market intelligence perspective (Strictly following DEC-015 agreed convention):
+    # Favorable: Price increase > +2.5%
+    # Normal: Stable price between -2.5% and +2.5% (inclusive)
+    # Unfavorable: Price drop < -2.5%
+    conditions = [
+        t7_matched['Pct_Change'] > 2.5,
+        t7_matched['Pct_Change'] < -2.5
+    ]
+    choices = ['Favorable', 'Unfavorable']
+    t7_matched['Market_Condition'] = np.select(conditions, choices, default='Normal')
     class_counts = t7_matched['Market_Condition'].value_counts()
     class_pcts = t7_matched['Market_Condition'].value_counts(normalize=True) * 100
     
-    print(f"[Section G] Target Classification Feasibility (Threshold: +/-2.5%):")
+    print(f"[Section G] Target Classification Feasibility (Threshold: +/-2.5%, DEC-015):")
     for cls in ['Favorable', 'Normal', 'Unfavorable']:
         c_count = int(class_counts.get(cls, 0))
         c_pct = float(class_pcts.get(cls, 0.0))
@@ -271,6 +278,8 @@ def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Re
         "Unique mandis": clean_df['Market'].nunique(),
         "Unique commodities": clean_df['Commodity'].nunique(),
         "Unique varieties": clean_df['Variety'].nunique(),
+        "Unique grades": clean_df['Grade'].nunique() if 'Grade' in clean_df.columns else 0,
+        "Unique canonical series (with Grade)": unique_series_count,
         "Unique District-Market-Commodity-Variety series": unique_series_count,
         "Records with exact T+7": valid_t7_pairs,
         "Records without T+7": missing_t7_pairs,
@@ -295,13 +304,13 @@ def run_feasibility_analysis(data_dir=".", output_report_path="T7_Feasibility_Re
 
 ## Executive Summary
 This document reports the comprehensive feasibility audit mandated by `T7_Feasibility_Checklist.txt` before training any predictive models.
-The objective is to verify whether the 5-district APMC mandi dataset can realistically support exact 7-calendar-day forward market condition classification ($T \to T+7$) without artificial row shifting or data leakage.
+The objective is to verify whether the 5-district APMC mandi dataset can realistically support exact 7-calendar-day forward market condition classification ($T \\to T+7$) without artificial row shifting, grade collapsing, or data leakage.
 
 The audit confirms **exceptional feasibility**:
-- **75.24% exact T+7 availability** (117,176 valid pairs) across calendar dates.
-- **779 series** with $\\ge 20$ paired observations, and **565 series** with $\\ge 50$ pairs.
-- Well-balanced, robust distribution across **Favorable** (28.4%), **Normal** (43.4%), and **Unfavorable** (28.2%) market conditions.
-- Strong concurrent multi-mandi reporting (71.3% multi-mandi overlap) enabling rich neighbouring-mandi intelligence.
+- **{t7_availability_pct:.2f}% exact T+7 availability** ({valid_t7_pairs:,} valid pairs) across calendar dates.
+- **{series_ge_20:,} series** with $\\ge 20$ paired observations, and **{series_ge_50:,} series** with $\\ge 50$ pairs.
+- Robust distribution across **Favorable** ({float(class_pcts.get('Favorable', 0)):.1f}%), **Normal** ({float(class_pcts.get('Normal', 0)):.1f}%), and **Unfavorable** ({float(class_pcts.get('Unfavorable', 0)):.1f}%) market conditions under DEC-015 thresholds.
+- Strong concurrent multi-mandi reporting ({pct_dates_multi_mandi:.1f}% multi-mandi overlap) enabling rich neighbouring-mandi intelligence.
 
 ---
 
@@ -321,28 +330,28 @@ All 8 required core columns are present across all 5 district datasets:
 Additional columns present in source files: `Commodity_Code`, `Grade`, `State`.
 
 ### B. Unique Time-Series Identification
-A time-series is defined by the unique 4-tuple:
-`Series = (District, Market, Commodity, Variety)`
+A time-series is defined by the canonical 5-tuple incorporating commercial Grade:
+`Series = (District, Market, Commodity, Variety, Grade)`
 - **Raw records:** {len(raw_df):,}
-- **Duplicates on same date & series:** {num_duplicates:,} (removed to preserve time series integrity)
-- **Deduplicated records:** {len(clean_df):,}
-- **Unique individual series:** {unique_series_count:,}
+- **Excluded ambiguous (Strategy 2) / invalid records:** {num_duplicates:,}
+- **Deduplicated / Clean records:** {len(clean_df):,}
+- **Unique canonical series (with Grade):** {unique_series_count:,}
 - **Earliest observation:** {earliest_date.strftime('%d %B %Y')}
 - **Latest observation:** {latest_date.strftime('%d %B %Y')}
 - **Unique calendar dates:** {unique_dates_count:,}
 
 ### C. Date Continuity
 Analysis of day gaps between consecutive observations within each series:
-- **Consecutive daily observations (1 day gap):** {consecutive_1day:,} ({consecutive_1day/total_transitions*100:.2f}%)
-- **Small gaps (2–3 days):** {small_gaps_2_3:,} ({small_gaps_2_3/total_transitions*100:.2f}%)
-- **Large gaps ($>= 7$ days):** {large_gaps_7plus:,} ({large_gaps_7plus/total_transitions*100:.2f}%)
+- **Consecutive daily observations (1 day gap):** {consecutive_1day:,} ({pct_1day:.2f}%)
+- **Small gaps (2–3 days):** {small_gaps_2_3:,} ({pct_2_3:.2f}%)
+- **Large gaps ($>= 7$ days):** {large_gaps_7plus:,} ({pct_7plus:.2f}%)
 
 Most mandis operate 5–6 days a week with standard Sunday/holiday closures, which accounts for the predictable 2–3 day intervals.
 
 ### D. Exact T+7 Calendar Availability (Most Critical Check)
 The matching strictly requires:
 Target Date = Arrival_Date_T + 7 calendar days
-Matching must occur on the exact same `District + Market + Commodity + Variety`. The next available row was **never** substituted as T+7.
+Matching must occur on the exact same `District + Market + Commodity + Variety + Grade`. The next available row was **never** substituted as T+7.
 
 | Metric | Count / Value |
 |---|---|
@@ -370,10 +379,10 @@ Evaluating the percentage change: `Delta_P_Pct = ((Price_T7 - Price_T) / Price_T
 - **95th Percentile:** {price_change_stats['q95']:.2f}%
 
 ### G. Classification Target Feasibility
-Per Section 6 of the Project Overview, predicting continuous prices is replaced by classifying 3 discrete market conditions:
-- **Favorable (Delta_P >= +2.5%):** Price appreciation benefiting producers/sellers.
-- **Normal (-2.5% < Delta_P < +2.5%):** Stable market conditions.
-- **Unfavorable (Delta_P <= -2.5%):** Price decline indicating adverse conditions.
+Per Section 6 of the Project Overview and DEC-015, predicting continuous prices is replaced by classifying 3 discrete market conditions:
+- **Favorable (Delta_P > +2.5%):** Price appreciation benefiting producers/sellers.
+- **Normal (-2.5% <= Delta_P <= +2.5%):** Stable market conditions.
+- **Unfavorable (Delta_P < -2.5%):** Price decline indicating adverse conditions.
 
 | Class | Sample Count | Share (%) |
 |---|---|---|
@@ -427,7 +436,7 @@ Unique districts                                : {final_metrics['Unique distric
 Unique mandis                                   : {final_metrics['Unique mandis']}
 Unique commodities                              : {final_metrics['Unique commodities']}
 Unique varieties                                : {final_metrics['Unique varieties']}
-Unique District-Market-Commodity-Variety series : {final_metrics['Unique District-Market-Commodity-Variety series']:,}
+Unique canonical series (with Grade)            : {final_metrics['Unique canonical series (with Grade)']:,}
 
 Records with exact T+7                          : {final_metrics['Records with exact T+7']:,}
 Records without T+7                             : {final_metrics['Records without T+7']:,}
@@ -437,9 +446,9 @@ Series with >= 20 T+7 pairs                     : {final_metrics['Series with >=
 Series with >= 50 T+7 pairs                     : {final_metrics['Series with >=50 T+7 pairs']:,}
 
 Possible classification samples                 : {final_metrics['Total classification samples']:,}
-  - Favorable samples                           : {final_metrics['Favorable samples']:,} ({final_metrics['Favorable samples']/final_metrics['Total classification samples']*100:.2f}%)
-  - Normal samples                              : {final_metrics['Normal samples']:,} ({final_metrics['Normal samples']/final_metrics['Total classification samples']*100:.2f}%)
-  - Unfavorable samples                         : {final_metrics['Unfavorable samples']:,} ({final_metrics['Unfavorable samples']/final_metrics['Total classification samples']*100:.2f}%)
+  - Favorable samples                           : {final_metrics['Favorable samples']:,} ({float(class_pcts.get('Favorable', 0.0)):.2f}%)
+  - Normal samples                              : {final_metrics['Normal samples']:,} ({float(class_pcts.get('Normal', 0.0)):.2f}%)
+  - Unfavorable samples                         : {final_metrics['Unfavorable samples']:,} ({float(class_pcts.get('Unfavorable', 0.0)):.2f}%)
 ======================================================================
 ```
 
@@ -448,11 +457,11 @@ Possible classification samples                 : {final_metrics['Total classifi
 ## O. Final Decision
 
 ### Assessment Checklist:
-- [x] **High T+7 availability:** 75.24% of all records have an exact calendar T+7 match.
-- [x] **Many usable series:** 779 series have $>= 20$ pairs; 565 have $>= 50$ pairs.
-- [x] **Enough samples per class:** Over 33,000 samples each in Favorable and Unfavorable, and 50,000 in Normal.
-- [x] **Reasonable price variation:** Standard deviation of 18.1%, with realistic agricultural dynamics.
-- [x] **Sufficient mandi overlap:** 71.3% concurrent multi-mandi observations.
+- [x] **High T+7 availability:** {t7_availability_pct:.2f}% of clean records have an exact calendar T+7 match.
+- [x] **Many usable series:** {series_ge_20:,} series have $>= 20$ pairs; {series_ge_50:,} have $>= 50$ pairs.
+- [x] **Enough samples per class:** Over {int(class_counts.get('Favorable', 0)):,} Favorable, {int(class_counts.get('Unfavorable', 0)):,} Unfavorable, and {int(class_counts.get('Normal', 0)):,} Normal.
+- [x] **Reasonable price variation:** Standard deviation of {price_change_stats['std']:.2f}%, with realistic agricultural dynamics.
+- [x] **Sufficient mandi overlap:** {pct_dates_multi_mandi:.2f}% concurrent multi-mandi observations.
 
 ### **Final Verdict:**
 **GOOD: Proceed with T+7 Prediction**

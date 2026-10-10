@@ -8,11 +8,11 @@
 Every morning, hundreds of thousands of farmers across India bring their freshly harvested crops to government wholesale agricultural markets (APMC Mandis). When they arrive at the mandi gate, they face complete uncertainty: *Will they receive a fair price today, or will a sudden glut crash prices and force them to sell at a loss?*
 
 This project implements the **APMC Mandi Market Intelligence System**. In strict alignment with project requirements:
-1. **Target Formulation**: Point regression (trying to predict noisy exact decimal prices) was completely removed. Instead, the problem is formulated as a robust **3-class market condition classification task**:
-   - **Favorable**: Expected price rise (>= +2.5%), advising farmers to hold or capitalize on profitable price realization.
-   - **Normal**: Price stability (between -2.5% and +2.5%), indicating steady clearing conditions.
-   - **Unfavorable**: Expected price decline (<= -2.5%), providing early warning against market distress.
-2. **Feasibility Audit**: The complete **T+7 Feasibility Checklist (Sections A through O)** was executed. The dataset demonstrated exceptional viability with **75.24% exact calendar T+7 availability** across 117,176 matched pairs.
+1. **Target Formulation**: Point regression (trying to predict noisy exact decimal prices) was completely removed. Instead, the problem is formulated as a robust **3-class market condition classification task** (DEC-015):
+   - **Favorable**: Expected price rise (> +2.5%), advising farmers to hold or capitalize on profitable price realization.
+   - **Normal**: Price stability (-2.5% to +2.5%, inclusive), indicating steady clearing conditions.
+   - **Unfavorable**: Expected price decline (< -2.5%), providing early warning against market distress.
+2. **Feasibility Audit**: The complete **T+7 Feasibility Checklist (Sections A through O)** was executed. The dataset demonstrated exceptional viability with **74.17% exact calendar T+7 availability** across 116,819 matched pairs.
 3. **Dedicated Exploratory Data Analysis (EDA)**: Conducted full statistical profiling across 5 districts, analyzing class balance, price distribution, commodity transaction volume, district price variations, and Indian crop seasonality (*Kharif*, *Rabi*, *Zaid*).
 4. **Spatial & Temporal Feature Engineering**: Engineered 27 predictive features combining historical price lags, momentum, 7-day rolling volatility, intraday trading spreads, district-level averages, and neighbouring-mandi arbitrage differentials.
 5. **Zero-Leakage Chronological Validation**: Strict temporal partitioning (Train: 70%, Validation: 15%, Test: 15%) guarantees zero lookahead data leakage.
@@ -33,14 +33,14 @@ The primary empirical dataset comprises daily market records from major APMC man
 | Attribute | Empirical Finding |
 |---|---|
 | **Raw Records** | 160,192 |
-| **Deduplicated Valid Records** | 155,741 |
-| **Duplicates Removed** | 4,451 |
+| **Deduplicated Valid Records** | 157,512 |
+| **Duplicates Removed** | 2,680 |
 | **Districts Represented** | 5 (`Ghaziabad`, `Jhansi`, `Kanpur`, `Lucknow`, `Unnao`) |
 | **Active Mandis** | 42 |
 | **Distinct Commodities** | 130 (Top: Wheat, Potato, Onion, Tomato, Rice) |
 | **Distinct Varieties** | 210 |
-| **Unique Time-Series Units** | 2,044 |
-| **Usable Series (>= 20 T+7 pairs)** | 779 |
+| **Unique Canonical Time-Series Units** | 2,390 |
+| **Usable Series (>= 20 T+7 pairs)** | 794 |
 
 #### 1.2 Data Preprocessing Highlights
 - **Schema Alignment**: Cleaned column definitions (`Arrival_Date`, `Commodity`, `Variety`, `District`, `Market`, `Min_Price`, `Max_Price`, `Modal_Price`).
@@ -58,32 +58,32 @@ Before building the predictive models, the checklist specified in `T7_Feasibilit
                   T+7 FEASIBILITY AUDIT SUMMARY TABLE
 ======================================================================
 Total raw records                               : 160,192
-Duplicate records removed                       : 4,451
-Total clean records                             : 155,741
+Duplicate records removed                       : 2,680
+Total clean records                             : 157,512
 Unique districts                                : 5
 Unique mandis                                   : 42
 Unique commodities                              : 130
 Unique varieties                                : 210
-Unique District-Market-Commodity-Variety series : 2,044
+Unique canonical series (with Grade)            : 2,390
 
-Records with exact T+7                          : 117,176
-Records without T+7                             : 38,565
-T+7 availability %                              : 75.24%
+Records with exact T+7                          : 116,819
+Records without T+7                             : 40,693
+T+7 availability %                              : 74.17%
 
-Series with >= 20 T+7 pairs                     : 779
-Series with >= 50 T+7 pairs                     : 565
+Series with >= 20 T+7 pairs                     : 794
+Series with >= 50 T+7 pairs                     : 576
 
-Possible classification samples                 : 117,176
-  - Favorable samples                           : 23,118 (19.73%)
-  - Normal samples                              : 67,775 (57.84%)
-  - Unfavorable samples                         : 26,283 (22.43%)
+Possible classification samples                 : 116,819
+  - Favorable samples                           : 22,088 (18.91%)
+  - Normal samples                              : 69,408 (59.41%)
+  - Unfavorable samples                         : 25,323 (21.68%)
 ======================================================================
 ```
 
 **Key Conclusions from the Audit:**
-- **Exact Calendar Matching**: Matching was strictly enforced such that `Target Date = T + 7 calendar days` within the same series. An availability of **75.24%** confirms reliable continuity.
-- **Class Balance**: Normal market stability forms 58.1% of observations, with Favorable (19.6%) and Unfavorable (22.3%) exhibiting healthy proportions, preventing minority class starvation.
-- **Multi-Mandi Reporting**: 72.3% of commodity-date instances feature 2 or more reporting mandis on the same calendar day, demonstrating high feasibility for spatial cross-mandi feature extraction.
+- **Exact Calendar Matching**: Matching was strictly enforced such that `Target Date = T + 7 calendar days` within the same series (preserving commercial Grade). An availability of **74.17%** confirms reliable continuity.
+- **Class Balance**: Normal market stability forms 59.4% of observations, with Favorable (18.9%) and Unfavorable (21.7%) exhibiting healthy proportions, preventing minority class starvation.
+- **Multi-Mandi Reporting**: Spatial overlap provides concurrent observations across mandis on the same date, demonstrating high feasibility for spatial cross-mandi feature extraction.
 
 ---
 

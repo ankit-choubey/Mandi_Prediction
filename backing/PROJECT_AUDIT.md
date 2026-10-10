@@ -3,7 +3,7 @@
 **Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)  
 **Branch:** `main`  
 **Current Audit Status:** Fully Consolidated & Verified (Phases 0, 1, 2, and 3 Verified on `main`)  
-**Master Document Version:** 1.4.0 (Updated: October 10, 2026)  
+**Master Document Version:** 1.5.0 (Updated: October 10, 2026)
 
 ---
 
@@ -23,25 +23,26 @@ To determine objectively whether the data, predictive models, spatial features, 
 
 ## 2. What the Current Repository Actually Implements
 
-An end-to-end procedural pipeline orchestrated via [`run_pipeline.py`](../run_pipeline.py):
+An end-to-end procedural pipeline orchestrated via [`run_pipeline.py`](../run_pipeline.py), fully remediated against Phase 0–3 audit standards:
 
 1. **Ingestion & Filtering ([`src/data_loader.py`](../src/data_loader.py)):**
    - Ingests 5 district CSV files (`Gaziabaad.csv`, `Jhansi.csv`, `Kanpur.csv`, `Lukhnow.csv`, `Unnao.csv`).
    - Normalizes district spelling (`Gaziabaad` $\to$ `Ghaziabad`, `Lukhnow` $\to$ `Lucknow`).
-   - Parses dates (`%d/%m/%Y`), deduplicates exact series-date tuples, and filters out series with fewer than 20 records.
+   - Incorporates commercial `Grade` into canonical series key: `(District, Market, Commodity, Variety, Grade)`.
+   - Excludes 2,664 ambiguous same-grade conflicting quotes across 1,321 dates under Strategy 2 (DEC-008); purges identical duplicates and non-positive prices (`Modal_Price <= 0`).
 2. **Feature Engineering & Target Generation ([`src/feature_engineering.py`](../src/feature_engineering.py)):**
    - Constructs intraday spread features (`Max_Price - Min_Price`).
-   - Computes historical lags via row shifts: `shift(1)`, `shift(3)`, `shift(7)`.
-   - Computes rolling moving averages and standard deviation over 3 and 7 observations.
+   - Enforces exact calendar date lags: $T-1, T-3, T-7$. Market closures (e.g. Sundays) produce explicit `NaN` (zero row-shift substitution).
+   - Computes causal rolling moving averages and volatility with explicit burn-in ($min\_periods=3 \implies \text{NaN}$) without backward-filling or artificial zero fills.
    - Extracts spatial neighbor signals across defined district pairs (Kanpur $\leftrightarrow$ Unnao $\leftrightarrow$ Lucknow).
-   - Generates a discrete 3-class target via exact calendar day inner merge on $T+7$ using a static $\pm 2.5\%$ price change threshold.
+   - Generates a discrete 3-class target via exact calendar day inner merge on $T+7$ using agreed DEC-015 thresholds (Favorable: $> +2.5\%$, Normal: $[-2.5\%, +2.5\%]$, Unfavorable: $< -2.5\%$).
 3. **Model Suite ([`src/models.py`](../src/models.py)):**
    - Trains 5 pure classifiers: Decision Tree, Random Forest, Extra Trees, Gradient Boosting, and a Soft-Voting Ensemble (combining GB, RF, ET).
-4. **Validation ([`src/evaluate.py`](../src/evaluate.py)):**
-   - Applies chronological partitioning: 70% Train, 15% Validation, 15% Test based on sorted calendar dates.
-   - Computes accuracy, macro/weighted precision, recall, F1, confusion matrices, and feature importance.
+4. **Validation & Candidate Selection ([`src/evaluate.py`](../src/evaluate.py)):**
+   - Chronological partitioning with 8-day embargo buffer purging at Train/Val and Val/Test boundaries to prevent $T+7$ realization leakage.
+   - Strict validation-only candidate model selection (highest Validation Macro F1); historical test window is evaluated once and designated as an exploratory historical test partition.
 5. **Advisory Inferences ([`src/intelligence_system.py`](../src/intelligence_system.py)):**
-   - Generates advisory recommendations based on predicted market condition classes.
+   - Generates market intelligence cards featuring prominent research prototype disclaimers (not production ready for operational farmer advice or binding commercial decisions).
 
 ---
 
@@ -87,25 +88,28 @@ An end-to-end procedural pipeline orchestrated via [`run_pipeline.py`](../run_pi
 
 ## 5. Target Definitions and Forecasting Horizons
 
-### Current Formulation
-The target predicts price change over exactly 7 calendar days:
+### Formulation and Class Boundaries (DEC-015)
+The target predicts price change over exactly 7 calendar days within the canonical series:
 $$R_7 = \left(\frac{P_{T+7} - P_T}{P_T}\right) \times 100$$
-Discrete classes:
-- **Favorable (Class 2):** $R_7 \ge +2.5\%$
-- **Normal (Class 1):** $-2.5\% < R_7 < +2.5\%$
-- **Unfavorable (Class 0):** $R_7 \le -2.5\%$
+Per the accepted DEC-015 standard (reconciling legacy discrepancies):
+- **Favorable (Class 2):** $R_7 > +2.5\%$
+- **Normal (Class 1):** $-2.5\% \le R_7 \le +2.5\%$ (inclusive)
+- **Unfavorable (Class 0):** $R_7 < -2.5\%$
 
-### Empirical Distribution of $R_7$ ($n = 116,361$)
-- Mean: $+0.6306\%$ | Median: $0.0000\%$ | Std Dev: $18.0922\%$
-- 25th Percentile: $-1.9608\%$ | 75th Percentile: $+1.5000\%$ | IQR: $3.4608\%$
-- **Sticky Prices:** Exactly 0.00% change occurs in **19,914 records (17.11%)**.
-- **Class Breakdown:**
-  - Normal: 67,337 records (**57.87%**)
-  - Unfavorable: 26,095 records (**22.43%**)
-  - Favorable: 22,929 records (**19.71%**)
+*(Historical note: Early Phase 0 exploratory code had inconsistently applied non-strict inequalities $R_7 \ge +2.5\%$ or $R_7 \le -2.5\%$, which were formally superseded by DEC-015).*
 
-### Defect Identified
-Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\pm 2.5\%$ band captures ~58% of the data. This creates severe majority-class imbalance.
+### Canonical Empirical Distribution of $R_7$ ($n = 116,819$ Matched Pairs)
+Evaluated on clean data preserving commercial `Grade` and applying Strategy 2 duplicate exclusion:
+- Mean: $+0.50\%$ | Median: $0.00\%$ | Std Dev: $16.65\%$
+- 25th Percentile: $-1.84\%$ | 75th Percentile: $+1.40\%$
+- **Sticky Wholesale Prices:** Exactly 0.00% price change occurs in ~17.8% of records due to mandi quote persistence.
+- **Class Breakdown (DEC-015):**
+  - **Normal:** 69,408 records (**59.41%**)
+  - **Unfavorable:** 25,323 records (**21.68%**)
+  - **Favorable:** 22,088 records (**18.91%**)
+
+### Defect Identified & Benchmark Standard
+Because wholesale mandi prices exhibit strong modal stickiness (interquartile range $-1.84\%$ to $+1.40\%$), the static $\pm 2.5\%$ band captures ~59.4% of the data in the "Normal" class. Consequently, any classification model must be rigorously benchmarked against the naive majority-class baseline (~59.4%), and accuracy alone cannot serve as the evaluation criterion.
 
 ---
 
@@ -114,27 +118,25 @@ Because 50% of all observations fall within $[-1.96\%, +1.50\%]$, the static $\p
 | Assumption | Repository Implementation | Audit Status | Evaluation |
 |---|---|---|---|
 | **Exact Horizon** | Target merged strictly at $Arrival\_Date + 7\text{ days}$ | **VERIFIED** | Methodologically correct; prevents horizon substitution. |
-| **Observation Lag as Time Lag** | `Lag_Price_7 = shift(7)` | **FAIL** | Flawed. In 79.86% of cases, `shift(7)` is NOT 7 calendar days ago (mean gap: 11.45 days). |
-| **Static Economic Threshold** | Fixed $\pm 2.5\%$ for all commodities | **QUESTIONABLE** | Fails to account for commodity volatility differences (Wheat $\sigma=10.1\%$ vs Tomato $\sigma=19.9\%$). |
+| **Observation Lag as Time Lag** | Historical code used `Lag_Price_7 = shift(7)` (79.86% non-7-day gap). **Remediated** in `src/feature_engineering.py` via exact calendar joins ($T-1, T-3, T-7$) with explicit `NaN` upon closures. | **REMEDIATED & VERIFIED** | Exact calendar joins eliminate lookback distortion; zero row-substitution permitted. |
+| **Static Economic Threshold** | Fixed $\pm 2.5\%$ for all commodities (DEC-015: $> 2.5\%$, $[-2.5\%, +2.5\%]$, $< -2.5\%$) | **QUESTIONABLE** | Fails to account for commodity volatility differences (Wheat $\sigma=10.1\%$ vs Tomato $\sigma=19.9\%$). Captures ~59.4% in Normal class. |
 | **Homogeneous Pricing Units** | Direct price comparisons | **PARTIALLY VERIFIED** | Standard crops are ₹/quintal, but Wood and specialty items exhibit extreme unit dispersion (up to 34.6x ratio). |
 
 ---
 
 ## 7. Feature Availability and Leakage Risks
 
-- **Temporal Leakage:** Features at row $T$ are computed using rows with index $\le T$. However, because data is sorted by `(series_id, Arrival_Date)`, chronological order within each series is preserved.
-- **Lookahead Leakage:** Zero lookahead leakage observed in feature engineering; target lookup is strictly separated into future lookup table.
-- **Asymmetry Risk:** Target predicts strictly 7 calendar days forward, but lag features look back variable calendar days (8–16 days), distorting momentum signals.
+- **Temporal & Lookahead Leakage:** Remediated in application pipeline (`src/feature_engineering.py`, `src/evaluate.py`). Features use exact calendar joins and strictly causal rolling windows ($min\_periods=3 \implies \text{NaN}$, zero backward-filling). Chronological splitting applies 8-day horizon embargo buffer purging to prevent $T+7$ realization leakage across partitions.
+- **Asymmetry Risk:** Remediated by replacing row-based shifts with exact calendar joins ($T-1, T-3, T-7$), ensuring temporal symmetry between backward lag windows and forward forecast horizon.
 
 ---
 
 ## 8. Validation Protocol and Baseline Comparisons
 
 ### Protocol
-- **Method:** Chronological split by calendar date:
-  - Train: Earliest 70% unique dates (2024-09-01 to 2026-01-20; 98,882 records)
-  - Validation: Next 15% dates (2026-01-21 to 2026-05-08; 7,082 records)
-  - Test: Final 15% dates (2026-05-09 to 2026-08-25; 10,397 records)
+- **Historical Exploratory Baseline Split:** Chronological split by calendar date (unbuffered): Train 70% (98,882 records), Val 15% (7,082 records), Test 15% (10,397 records).
+- **Corrected Horizon-Aware Split:** Chronological partitioning with 8-day embargo buffers purging origins whose $T+7$ realizations overlap into subsequent partitions. Candidate model selection is conducted strictly on the validation partition (highest Validation Macro F1).
+- **Exploratory Designation:** The historical test window is explicitly designated as an **exploratory test partition**, not an untouched final holdout.
 
 ### Baseline Comparison
 - **Test Set Majority Class ("Normal"):** **54.00%** (5,614 / 10,397 records).
@@ -343,7 +345,7 @@ All historical work across the 4 audit branches (`audit/phase-00-inspection`, `a
 | `audit/phase-01-data-integrity` | `8a691dd` | 1 commit ahead of Phase 0 (`8a691dd`) | **A: Already integrated** | Ancestor of Phase 2; Phase 1 data audit artifacts and tests present in `main`. | 8/8 passing |
 | `audit/phase-02-methodology` | `4206c9c` | 1 commit ahead of Phase 1 (`4206c9c`) | **A: Already integrated** | Direct ancestor of Phase 2 correction pass. | 17/17 passing |
 | `audit/phase-02-correction-pass` | `e8a935f` | 1 commit ahead of Phase 2 (`e8a935f`) | **B & C: Consolidated via merge** | Merged into `main` (`4dea174`). Resolved 16 duplicate file conflicts by retaining `main`'s versions (`2d317e1`), which contain verified causal volatility fixes, zero backward-fill, and corrected test conventions. | 17/17 passing |
-| `main` | `103d8cf4a67be5952fb7724731a219468a39849c` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, merge `4dea174`, and docs `103d8cf` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, and 3. | Combined 45/45 passing |
+| `main` | `a2c3e4cf9127d76fb5604692ade5fe5631cfc738` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, merge `4dea174`, docs `103d8cf`, and feat `a2c3e4c` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, 3, and pipeline/feasibility reconciliation. | Combined 57/57 passing |
  
 ### 18.3 Verification Suite Results
 Executed from repository root on `main`:
@@ -356,43 +358,49 @@ Executed from repository root on `main`:
  
 ### 18.4 Repository & Source Data Integrity
 - `data/raw/` untouched: 0 diffs against origin baseline.
-- `src/` untouched: 0 diffs against origin baseline.
 - All 4 historical audit branches merged into `main` before deletion.
 
 ---
 
-## 19. Production Application Pipeline Verification (Pre-Phase 4 Remediation)
+## 19. Production Application Pipeline & Feasibility Reconciliation (Pre-Phase 4 Final Pass)
 
 ### 19.1 Purpose and Audit Scope
-Prior to beginning Phase 4, the operational application pipeline (`run_pipeline.py` and `src/`) was audited against the accepted mathematical and statistical methodology established across Phases 0–3. The application had previously diverged from audit findings by utilizing row-based shifts, unbuffered temporal splits, test-set-directed model selection, unrepresented grade keys, and unhedged advisory claims.
+Prior to beginning Phase 4, the operational application pipeline (`run_pipeline.py` and `src/`) and the feasibility module (`src/feasibility.py` and `T7_Feasibility_Report.md`) were audited against the accepted mathematical and statistical methodology established across Phases 0–3. The audit identified and closed all remaining consistency gaps between raw feasibility metrics, application data loading, and master audit documentation.
 
-### 19.2 Remediations Applied to Application Code
-1. **Series Identity & Duplicate Handling (`src/data_loader.py`):**
+### 19.2 Remediations Applied to Application & Feasibility Code
+1. **Series Identity & Duplicate Handling (`src/data_loader.py`, `src/feasibility.py`):**
    - Incorporated `Grade` into canonical series key: `['District', 'Market', 'Commodity', 'Variety', 'Grade']`.
    - Prevented silent dropping of distinct commercial grades (e.g. FAQ vs Medium).
    - Applied Strategy 2 (DEC-008): Excluded 2,664 ambiguous same-grade conflicting quotes across 1,321 dates.
    - Filtered invalid non-positive prices (`Modal_Price <= 0`).
-2. **Exact Calendar Lag Features & Causal Volatility (`src/feature_engineering.py`):**
+2. **Feasibility Audit Reconciliation (`src/feasibility.py`):**
+   - Replaced legacy 4-tuple series definition and `keep='first'` duplicate dropping with canonical data loading (`min_series_records=0`).
+   - Grade preservation eliminates cross-grade false pairings (e.g., FAQ matched to Medium at T+7).
+   - Recomputed canonical metrics: 160,192 raw records $\to$ 2,680 excluded/deduplicated $\to$ 157,512 clean records across 2,390 canonical series; 116,819 exact calendar T+7 matches (**74.17% availability**); 794 usable series ($\ge 20$ pairs) and 576 strong series ($\ge 50$ pairs).
+   - Reconciled target class distribution to DEC-015: Favorable: 22,088 (**18.91%**), Normal: 69,408 (**59.41%**), Unfavorable: 25,323 (**21.68%**).
+3. **Exact Calendar Lag Features & Causal Volatility (`src/feature_engineering.py`):**
    - Replaced row-based `shift(1, 3, 7)` with exact calendar date joins ($T-1, T-3, T-7$).
    - Explicit `NaN` returned when markets were closed (e.g. Sunday closure); zero substitution of next available date.
    - Enforced causal rolling volatility with explicit burn-in ($min\_periods=3 \implies \text{NaN}$) without backward-filling or artificial zero fills.
-   - Applied agreed target boundary conventions (DEC-015: Favorable $> 2.5\%$, Normal $[-2.5\%, +2.5\%]$, Unfavorable $< -2.5\%$).
-3. **Horizon-Aware Temporal Splitting & Embargo Purging (`src/evaluate.py`):**
+   - Applied agreed target boundary conventions (DEC-015: Favorable $> +2.5\%$, Normal $[-2.5\%, +2.5\%]$, Unfavorable $< -2.5\%$).
+4. **Horizon-Aware Temporal Splitting & Embargo Purging (`src/evaluate.py`):**
    - Implemented 8-day embargo buffer purging at Train/Val and Val/Test partition boundaries.
    - Guarantees zero target realization ($T+7$) lookahead leakage across partition boundaries.
-4. **Validation-Only Candidate Model Selection (`src/evaluate.py`, `run_pipeline.py`):**
+5. **Validation-Only Candidate Model Selection (`src/evaluate.py`, `run_pipeline.py`):**
    - Replaced test-set model selection with strict validation-based selection (highest Validation Macro F1).
    - Selected candidate is frozen before evaluating on the exploratory historical test window.
    - Explicitly designates historical test window as exploratory rather than an untouched holdout.
-5. **Research Prototype Disclaimers (`src/intelligence_system.py`):**
+6. **Research Prototype Disclaimers (`src/intelligence_system.py`):**
    - Added prominent operational and financial disclaimers to terminal cards and intelligence payloads.
    - Explicitly states the system is an experimental statistical prototype and NOT production-ready for operational farmer advice or binding commercial storage decisions.
 
 ### 19.3 Automated Test Results
 - **Production Pipeline Suite ([`tests/test_production_pipeline.py`](../tests/test_production_pipeline.py)):**
-  `python3 -m pytest tests/test_production_pipeline.py -v` $\to$ **7 passed in 2.28s** (Exit code 0).
+  `python3 -m pytest tests/test_production_pipeline.py -v` $\to$ **7 passed** (Exit code 0).
+- **Feasibility Reconciliation Suite ([`tests/test_feasibility_reconciliation.py`](../tests/test_feasibility_reconciliation.py)):**
+  `python3 -m pytest tests/test_feasibility_reconciliation.py -v` $\to$ **5 passed** (Exit code 0).
 - **Full Combined Verification Suite:**
-  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **52 passed, 0 failed in 5.75s** (Exit code 0).
+  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **57 passed, 0 failed** (Exit code 0).
 - **End-to-End Pipeline Execution:**
   `python3 run_pipeline.py` $\to$ **Exit code 0** (All 8 pipeline steps executed successfully).
 
