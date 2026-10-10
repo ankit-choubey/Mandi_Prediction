@@ -1,0 +1,3 @@
+horizon,threshold_definition,total_matched_records,favorable_count,favorable_pct,normal_count,normal_pct,unfavorable_count,unfavorable_pct,exact_zero_change_count,exact_zero_change_pct,exact_plus_2_5_edge_cases,exact_minus_2_5_edge_cases,pct_change_mean,pct_change_median,pct_change_std,pct_change_q25,pct_change_q75,pct_change_iqr
+T+3,"Fixed +/-2.5% [<= -2.5: Unfav, >= +2.5: Fav, else: Normal]",110349,16558,15.01,75261,68.2,18530,16.79,29408,26.65,147,110,0.7025,0.0,22.4592,-1.0989,0.8523,1.9512
+T+7,"Fixed +/-2.5% [<= -2.5: Unfav, >= +2.5: Fav, else: Normal]",117176,23118,19.73,67775,57.84,26283,22.43,20085,17.14,131,141,0.6346,0.0,18.1136,-1.9608,1.5002,3.4609

@@ -1,0 +1,83 @@
+[{"stream_name":"stderr","time":10.599255828,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.599314027,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.599319247,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.599322211,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.61794729,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.617988616,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.617994451,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.617998938,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.313513215,"data":"[ENV] Python Version: 3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]\n"}
+,{"stream_name":"stdout","time":13.313548501,"data":"[ENV] Platform: Linux-6.18.48+-x86_64-with-glibc2.39\n"}
+,{"stream_name":"stdout","time":13.313554006,"data":"[ENV] Current Working Directory: /kaggle/working\n"}
+,{"stream_name":"stdout","time":14.739039736,"data":"[PKG] pandas: 2.3.3\n"}
+,{"stream_name":"stdout","time":14.739083198,"data":"[PKG] numpy: 2.1.3\n"}
+,{"stream_name":"stdout","time":14.739088329,"data":"[PKG] scipy: 1.16.3\n"}
+,{"stream_name":"stdout","time":16.963847555,"data":"[PKG] sklearn: 1.6.1\n"}
+,{"stream_name":"stdout","time":16.963881731,"data":"[PKG] matplotlib: 3.10.0\n"}
+,{"stream_name":"stdout","time":17.286774124,"data":"[PKG] seaborn: 0.13.2\n"}
+,{"stream_name":"stdout","time":17.315299419,"data":"[CONFIG] Resolved Data Directory: /kaggle/input/datasets/theankitchoubey/up-apmc-mandi-raw-dataset\n"}
+,{"stream_name":"stdout","time":17.315359212,"data":"[CONFIG] Path exists: True\n"}
+,{"stream_name":"stdout","time":17.338009865,"data":"[DISCOVERY] Discovered 5 CSV files in '/kaggle/input/datasets/theankitchoubey/up-apmc-mandi-raw-dataset':\n"}
+,{"stream_name":"stdout","time":17.338045535,"data":"  - Gaziabaad.csv (3.49 MB)\n"}
+,{"stream_name":"stdout","time":17.338050568,"data":"  - Jhansi.csv (1.86 MB)\n"}
+,{"stream_name":"stdout","time":17.338054626,"data":"  - Kanpur.csv (3.53 MB)\n"}
+,{"stream_name":"stdout","time":17.338058486,"data":"  - Lukhnow.csv (1.76 MB)\n"}
+,{"stream_name":"stdout","time":17.338062415,"data":"  - Unnao.csv (2.45 MB)\n"}
+,{"stream_name":"stdout","time":17.638537249,"data":"         File  File_Size_MB  Row_Count  Column_Count\n"}
+,{"stream_name":"stdout","time":17.638575569,"data":"Gaziabaad.csv          3.49      41495            11\n"}
+,{"stream_name":"stdout","time":17.638582152,"data":"   Jhansi.csv          1.86      23625            11\n"}
+,{"stream_name":"stdout","time":17.638586518,"data":"   Kanpur.csv          3.53      42644            11\n"}
+,{"stream_name":"stdout","time":17.638590401,"data":"  Lukhnow.csv          1.76      21063            11\n"}
+,{"stream_name":"stdout","time":17.638594327,"data":"    Unnao.csv          2.45      31365            11\n"}
+,{"stream_name":"stdout","time":17.638598414,"data":"\n"}
+,{"stream_name":"stdout","time":17.63860221,"data":"[SAMPLE RECORD from first file]:\n"}
+,{"stream_name":"stdout","time":17.638607867,"data":"  Arrival_Date: 04/09/2024\n"}
+,{"stream_name":"stdout","time":17.638658947,"data":"  Commodity: Onion\n"}
+,{"stream_name":"stdout","time":17.638688566,"data":"  Commodity_Code: 23\n"}
+,{"stream_name":"stdout","time":17.638696765,"data":"  District: Ghaziabad\n"}
+,{"stream_name":"stdout","time":17.638699409,"data":"  Grade: FAQ\n"}
+,{"stream_name":"stdout","time":17.638701998,"data":"  Market: Ghaziabad\n"}
+,{"stream_name":"stdout","time":17.638704478,"data":"  Max_Price: 3800\n"}
+,{"stream_name":"stdout","time":17.638706934,"data":"  Min_Price: 3700\n"}
+,{"stream_name":"stdout","time":17.638709393,"data":"  Modal_Price: 3750\n"}
+,{"stream_name":"stdout","time":17.638711938,"data":"  State: Uttar Pradesh\n"}
+,{"stream_name":"stdout","time":17.638714484,"data":"  Variety: Red\n"}
+,{"stream_name":"stdout","time":17.673274794,"data":"[COLUMNS] Candidate Domain Mapping:\n"}
+,{"stream_name":"stdout","time":17.673342222,"data":"  - Date        : Arrival_Date\n"}
+,{"stream_name":"stdout","time":17.673349048,"data":"  - District    : District\n"}
+,{"stream_name":"stdout","time":17.673353812,"data":"  - Market      : Market\n"}
+,{"stream_name":"stdout","time":17.673358625,"data":"  - Commodity   : Commodity\n"}
+,{"stream_name":"stdout","time":17.673363057,"data":"  - Variety     : Variety\n"}
+,{"stream_name":"stdout","time":17.673367676,"data":"  - Modal_Price : Modal_Price\n"}
+,{"stream_name":"stdout","time":17.673371661,"data":"  - Min_Price   : Min_Price\n"}
+,{"stream_name":"stdout","time":17.673375477,"data":"  - Max_Price   : Max_Price\n"}
+,{"stream_name":"stdout","time":17.673379286,"data":"  - Arrivals    : None\n"}
+,{"stream_name":"stdout","time":17.673383941,"data":"\n"}
+,{"stream_name":"stdout","time":17.67338819,"data":"[DATE CHECK] Sample dates checked: 100 | Failed parse: 0\n"}
+,{"stream_name":"stdout","time":17.673393197,"data":"[DATE CHECK] Format '%d/%m/%Y' parsed successfully: True\n"}
+,{"stream_name":"stdout","time":18.204182089,"data":"[AUDIT] Total records scanned: 160,192\n"}
+,{"stream_name":"stdout","time":18.204220923,"data":"[AUDIT] Earliest date: 2024-09-01 | Latest date: 2026-09-01\n"}
+,{"stream_name":"stdout","time":18.204226452,"data":"[AUDIT] Price order violations (Min \u003e Modal or Modal \u003e Max): 6 (0.0037%)\n"}
+,{"stream_name":"stdout","time":18.204231365,"data":"[AUDIT] Zero or negative prices: 6\n"}
+,{"stream_name":"stdout","time":18.204235615,"data":"\n"}
+,{"stream_name":"stdout","time":18.204239419,"data":"[MISSINGNESS SUMMARY across all files]:\n"}
+,{"stream_name":"stdout","time":18.204243556,"data":"  Arrival_Date   : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204247325,"data":"  Commodity      : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204251073000002,"data":"  Commodity_Code : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.20425485,"data":"  District       : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204258689,"data":"  Grade          : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204262661,"data":"  Market         : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204267199,"data":"  Max_Price      : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204271279,"data":"  Min_Price      : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204275227,"data":"  Modal_Price    : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.204278959,"data":"  State          : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stdout","time":18.20428254,"data":"  Variety        : 0 nulls (0.0000%)\n"}
+,{"stream_name":"stderr","time":22.155926629,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":22.156087311,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":22.400228494,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":22.400263581,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":23.408126835,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":23.509501057,"data":"[NbConvertApp] Writing 23100 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":26.778382123,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":27.501490741,"data":"[NbConvertApp] Writing 319882 bytes to __results__.html\n"}
+]
