@@ -37,24 +37,26 @@ python3 backing/phase_03/tests/run_phase03_experiment.py
 - `backing/phase_03/logs/phase03_execution.log`
 
 ### 2. Run the Phase 3 Test Suite
-Run the 12 automated unit and integration tests verifying leakage resistance, embargo purging, and denominator reconciliation:
+Run the 16 automated unit and integration tests verifying leakage resistance, embargo purging, holdout integrity review, candidate selection logic, zero-return conventions, and warning diagnostics:
 ```bash
 python3 -m pytest backing/phase_03/tests/test_phase03_methodology.py -v
 ```
-*Expected Result*: `12 passed in < 3s`
+*Expected Result*: `16 passed in < 3s`
 
 ### 3. Run the Full Repository Audit Test Suite (Phases 1, 2, 3)
-Run all 37 audit tests across the complete project lifecycle:
+Run all 41 audit tests across the complete project lifecycle:
 ```bash
 python3 -m pytest backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v
 ```
-*Expected Result*: `37 passed in < 5s`
+*Expected Result*: `41 passed in < 5s`
 
 ---
 
 ## Key Output File Locations
 
 - Findings Report: `backing/phase_03/findings.md`
+- Holdout Integrity Review: `backing/phase_03/evidence/holdout_integrity_review.md`
+- Warning Diagnostics & Resolution: `backing/phase_03/evidence/warning_diagnostics.md`
 - Feature Specification: `backing/phase_03/evidence/feature_specification.md`
 - Temporal Split Details: `backing/phase_03/evidence/temporal_split.md`
 - Methodology Decisions: `backing/phase_03/evidence/methodology_decisions.md`

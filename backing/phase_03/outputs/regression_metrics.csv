@@ -1,9 +1,9 @@
 model_name,partition,observation_count,mae,rmse,directional_accuracy_pct,baseline_mae_delta,baseline_rmse_delta,model_configuration
-Zero_Return_Persistence_Benchmark,VALIDATION,2914,9.8106,38.7629,0.0,0.0,0.0,Assumes 0.0% price change over 7 days (wholesale stickiness persistence)
-Zero_Return_Persistence_Benchmark,FINAL_TEST,12625,11.0573,35.2714,0.0,-0.0,-0.0,Assumes 0.0% price change over 7 days (wholesale stickiness persistence)
+Zero_Return_Persistence_Benchmark,VALIDATION,2914,9.8106,38.7629,N/A,0.0,0.0,Assumes 0.0% price change over 7 days (wholesale stickiness persistence)
+Zero_Return_Persistence_Benchmark,EXPLORATORY_TEST,12625,11.0573,35.2714,N/A,-0.0,-0.0,Assumes 0.0% price change over 7 days (wholesale stickiness persistence)
 Mean_Return_Baseline,VALIDATION,2914,9.8263,38.7599,37.23,+0.0157,-0.003,Predicts historical mean training return (0.059%)
-Mean_Return_Baseline,FINAL_TEST,12625,11.074,35.2656,36.66,+0.0167,-0.0058,Predicts historical mean training return (0.059%)
+Mean_Return_Baseline,EXPLORATORY_TEST,12625,11.074,35.2656,36.66,+0.0167,-0.0058,Predicts historical mean training return (0.059%)
 Ridge_Regression,VALIDATION,2914,10.1852,38.5092,42.66,+0.3746,-0.2537,Linear L2-regularized Ridge Regression (alpha=10.0)
-Ridge_Regression,FINAL_TEST,12625,11.8775,35.4245,39.06,+0.8202,+0.1531,Linear L2-regularized Ridge Regression (alpha=10.0)
+Ridge_Regression,EXPLORATORY_TEST,12625,11.8775,35.4245,39.06,+0.8202,+0.1531,Linear L2-regularized Ridge Regression (alpha=10.0)
 LightGBM_Regressor,VALIDATION,2914,11.6743,38.7772,36.38,+1.8637,+0.0143,"LightGBM Regressor (100 trees, max_depth=5, lr=0.05)"
-LightGBM_Regressor,FINAL_TEST,12625,13.2008,34.8204,35.79,+2.1435,-0.451,"LightGBM Regressor (100 trees, max_depth=5, lr=0.05)"
+LightGBM_Regressor,EXPLORATORY_TEST,12625,13.2008,34.8204,35.79,+2.1435,-0.451,"LightGBM Regressor (100 trees, max_depth=5, lr=0.05)"

@@ -13,7 +13,7 @@ Phase 3 enforces a strictly chronological, horizon-aware train / validation / te
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **TRAIN** | 2024-09-01 to 2026-01-17 | 2024-09-08 to 2026-01-24 | 134,706 | 100,650 | 60.26% | 18.07% | 21.68% | 72 |
 | **VALIDATION** | 2026-01-25 to 2026-03-31 | 2026-02-01 to 2026-04-07 | 4,213 | 2,914 | 47.15% | 26.66% | 26.18% | 565 |
-| **FINAL TEST** | 2026-04-08 to 2026-08-25 | 2026-04-15 to 2026-09-01 | 18,599 | 12,625 | 55.90% | 23.50% | 20.59% | 0 (Held-out) |
+| **EXPLORATORY TEST** | 2026-04-08 to 2026-08-25 | 2026-04-15 to 2026-09-01 | 18,599 | 12,625 | 55.90% | 23.50% | 20.59% | 0 (Exploratory Holdout) |
 | **TOTAL** | **2024-09-01 to 2026-08-25** | **2024-09-08 to 2026-09-01** | **157,518** | **116,189** | — | — | — | **637** |
 
 *Note: Total matched targets before purging = 116,826. 100,650 + 72 + 2,914 + 565 + 12,625 = 116,826 exactly.*
@@ -35,13 +35,14 @@ The outcome of a prediction made at origin date $T$ is not realized until calend
 ### 2. Validation Boundary Purge (Validation Embargo)
 - Validation origin boundary ends on **2026-03-31**.
 - Its target realization date falls on $2026-03-31 + 7 = \textbf{2026-04-07}$.
-- Any observation with origin between **2026-04-01 and 2026-04-07** would have its target outcome realized on or after **2026-04-08** (the start of the final test period).
+- Any observation with origin between **2026-04-01 and 2026-04-07** would have its target outcome realized on or after **2026-04-08** (the start of the exploratory test period).
 - **Rule**: All 565 observations originating between 2026-04-01 and 2026-04-07 are purged from validation to prevent future test-period prices from entering validation labels.
 
-### 3. Final Test Holdout Integrity
-- The Final Test period begins on **2026-04-08** and runs through **2026-08-25** (with target realizations extending to 2026-09-01, the master dataset endpoint).
-- It remains completely untouched during model selection, hyperparameter decisions, feature design, and transformer fitting.
-- Only a single frozen candidate model was evaluated once on this holdout partition.
+### 3. Exploratory Test Holdout Status & Review
+- The Exploratory Test period begins on **2026-04-08** and runs through **2026-08-25** (with target realizations extending to 2026-09-01, the master dataset endpoint).
+- Because multiple candidate models were evaluated on this window during initial benchmarking, this partition is explicitly classified as an **exploratory / development holdout**, NOT an untouched single-use final test.
+- Candidate model selection was strictly determined by the **Validation Partition** (`2026-01-25` to `2026-03-31`).
+- Since all data in the master dataset ends on 2026-09-01, an independent future observation period is required for any claim of true final out-of-sample testing.
 
 ---
 

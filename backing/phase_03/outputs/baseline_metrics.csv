@@ -1,9 +1,9 @@
 baseline_name,partition,observation_count,accuracy,balanced_accuracy,macro_f1,description
 Majority_Class_Baseline,VALIDATION,2914,47.15,33.33,0.2136,Always predicts training majority class (Normal)
-Majority_Class_Baseline,FINAL_TEST,12625,55.9,33.33,0.2391,Always predicts training majority class (Normal)
+Majority_Class_Baseline,EXPLORATORY_TEST,12625,55.9,33.33,0.2391,Always predicts training majority class (Normal)
 Historical_Frequency_Baseline,VALIDATION,2914,39.36,34.12,0.3367,Sampled according to training empirical class distribution (seed=42)
-Historical_Frequency_Baseline,FINAL_TEST,12625,42.78,33.41,0.3327,Sampled according to training empirical class distribution (seed=42)
+Historical_Frequency_Baseline,EXPLORATORY_TEST,12625,42.78,33.41,0.3327,Sampled according to training empirical class distribution (seed=42)
 Historical_Momentum_Rule,VALIDATION,2914,44.13,35.76,0.3422,"Extrapolates past 7-day price momentum direction (Favorable if >2.5%, Unfavorable if <-2.5%, else Normal)"
-Historical_Momentum_Rule,FINAL_TEST,12625,52.63,38.81,0.3839,"Extrapolates past 7-day price momentum direction (Favorable if >2.5%, Unfavorable if <-2.5%, else Normal)"
+Historical_Momentum_Rule,EXPLORATORY_TEST,12625,52.63,38.81,0.3839,"Extrapolates past 7-day price momentum direction (Favorable if >2.5%, Unfavorable if <-2.5%, else Normal)"
 Persistence_NoChange_Benchmark,VALIDATION,2914,47.15,33.33,0.2136,Assumes wholesale price stickiness persistence (0% change = Normal class)
-Persistence_NoChange_Benchmark,FINAL_TEST,12625,55.9,33.33,0.2391,Assumes wholesale price stickiness persistence (0% change = Normal class)
+Persistence_NoChange_Benchmark,EXPLORATORY_TEST,12625,55.9,33.33,0.2391,Assumes wholesale price stickiness persistence (0% change = Normal class)

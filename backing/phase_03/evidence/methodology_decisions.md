@@ -60,11 +60,33 @@ Four non-trivial, leakage-safe baselines were implemented:
 
 ## 5. Model Selection Decision on Validation Data
 
-On the validation set ($n=2,914$):
+Candidate model selection was performed strictly using the **Validation Partition** ($n=2,914$, origin dates `2026-01-25` to `2026-03-31`):
 - Majority Baseline: Balanced Acc = **33.33%**, Macro F1 = **0.2136**
+- Historical Momentum Rule: Balanced Acc = **35.76%**, Macro F1 = **0.3422**
 - Logistic Regression: Balanced Acc = **39.89%**, Macro F1 = **0.3672**
 - Decision Tree: Balanced Acc = **39.52%**, Macro F1 = **0.3626**
 - Random Forest: Balanced Acc = **37.79%**, Macro F1 = **0.3362**
-- LightGBM: Balanced Acc = **44.53%**, Macro F1 = **0.4369**
+- **LightGBM**: Balanced Acc = **44.53%**, Macro F1 = **0.4369**
 
-**LightGBM** achieved the highest Macro F1 (0.4369) and Balanced Accuracy (44.53%) on validation data without overfitting, and was frozen as the single primary candidate for final untouched holdout evaluation.
+**LightGBM** achieved the highest Macro F1 (0.4369) and Balanced Accuracy (44.53%) on validation data without overfitting, and was frozen as the single primary candidate. Test holdout performance (60.40% acc, 0.4616 Macro F1) is reported as an exploratory historical baseline, NOT as an unexamined holdout.
+
+---
+
+## 6. Zero-Return Persistence Metric Convention
+For the `Zero_Return_Persistence_Benchmark`, the predicted return is strictly $0.0\%$. Under the standard directional sign evaluation:
+$$\text{Directional Match} = \mathbf{1}_{\{y_{\text{true}} \times \hat{y} > 0\}}$$
+Because $\hat{y} = 0$, $y_{\text{true}} \times 0 = 0$, which is never strictly greater than zero.
+Evaluating this as 0% directional accuracy is misleading because a 0 prediction has no positive or negative directional sign.
+**Decision**: In accordance with methodological standards, directional accuracy for the Zero-Return benchmark is formally designated **`N/A`** (with explanation), while its MAE (9.81% Val, 11.06% Test) and RMSE (38.76% Val, 35.27% Test) are preserved as the primary continuous benchmarks.
+
+---
+
+## 7. Numerical Diagnostics for Logistic Regression
+The 1,350 RuntimeWarnings in Logistic Regression were empirically traced to Apple Accelerate BLAS hardware FPU denormal flags during SIMD matrix multiplication on zero/sparse matrices in NumPy 2.x on macOS arm64.
+All fitted model coefficients were verified to be 100% finite and non-NaN. Scoped handling via `np.errstate(divide='ignore', over='ignore', invalid='ignore')` resolves spurious hardware flags while preserving true algorithmic convergence checks (0 ConvergenceWarnings under max_iter=1000).
+
+---
+
+## 8. Disclaimers on Farmer Decision Utility
+While LightGBM demonstrates statistically significant predictive improvements over majority baselines, **no claim is made that the model is ready or superior for real-world farmer sell/store recommendations**. A real-world decision requires explicit modeling of storage losses, cold storage electricity charges, bagging fees, local transport costs, and risk aversion, which are outside the scope of Phase 3 baseline modeling.
+

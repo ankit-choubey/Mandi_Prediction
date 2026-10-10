@@ -3,19 +3,23 @@ platform darwin -- Python 3.14.0, pytest-9.1.1, pluggy-1.6.0 -- /Library/Framewo
 cachedir: .pytest_cache
 rootdir: /Users/theankit/Documents/AK/Projects/Mandi_Prediction
 plugins: anyio-4.11.0
-collecting ... collected 12 items
+collecting ... collected 16 items
 
-backing/phase_03/tests/test_phase03_methodology.py::test_temporal_split_chronological_ordering PASSED [  8%]
-backing/phase_03/tests/test_phase03_methodology.py::test_target_realizations_respect_embargo_and_boundaries PASSED [ 16%]
-backing/phase_03/tests/test_phase03_methodology.py::test_embargo_buffer_purging_counts PASSED [ 25%]
-backing/phase_03/tests/test_phase03_methodology.py::test_feature_audit_no_future_leakage PASSED [ 33%]
-backing/phase_03/tests/test_phase03_methodology.py::test_feature_invariance_to_future_data PASSED [ 41%]
-backing/phase_03/tests/test_phase03_methodology.py::test_causal_historical_volatility_no_backward_filling PASSED [ 50%]
-backing/phase_03/tests/test_phase03_methodology.py::test_preprocessing_fitted_on_training_only PASSED [ 58%]
-backing/phase_03/tests/test_phase03_methodology.py::test_target_definition_fixed_thresholds PASSED [ 66%]
-backing/phase_03/tests/test_phase03_methodology.py::test_observation_counts_and_denominators PASSED [ 75%]
-backing/phase_03/tests/test_phase03_methodology.py::test_confusion_matrix_sums_match_denominators PASSED [ 83%]
-backing/phase_03/tests/test_phase03_methodology.py::test_majority_baseline_predicts_exclusively_normal PASSED [ 91%]
-backing/phase_03/tests/test_phase03_methodology.py::test_no_row_multiplication_or_duplicate_keys PASSED [100%]
+backing/phase_03/tests/test_phase03_methodology.py::test_temporal_split_chronological_ordering PASSED [  6%]
+backing/phase_03/tests/test_phase03_methodology.py::test_target_realizations_respect_embargo_and_boundaries PASSED [ 12%]
+backing/phase_03/tests/test_phase03_methodology.py::test_embargo_buffer_purging_counts PASSED [ 18%]
+backing/phase_03/tests/test_phase03_methodology.py::test_feature_audit_no_future_leakage PASSED [ 25%]
+backing/phase_03/tests/test_phase03_methodology.py::test_feature_invariance_to_future_data PASSED [ 31%]
+backing/phase_03/tests/test_phase03_methodology.py::test_causal_historical_volatility_no_backward_filling PASSED [ 37%]
+backing/phase_03/tests/test_phase03_methodology.py::test_preprocessing_fitted_on_training_only PASSED [ 43%]
+backing/phase_03/tests/test_phase03_methodology.py::test_target_definition_fixed_thresholds PASSED [ 50%]
+backing/phase_03/tests/test_phase03_methodology.py::test_observation_counts_and_denominators PASSED [ 56%]
+backing/phase_03/tests/test_phase03_methodology.py::test_confusion_matrix_sums_match_denominators PASSED [ 62%]
+backing/phase_03/tests/test_phase03_methodology.py::test_majority_baseline_predicts_exclusively_normal PASSED [ 68%]
+backing/phase_03/tests/test_phase03_methodology.py::test_no_row_multiplication_or_duplicate_keys PASSED [ 75%]
+backing/phase_03/tests/test_phase03_methodology.py::test_holdout_integrity_no_false_untouched_claims PASSED [ 81%]
+backing/phase_03/tests/test_phase03_methodology.py::test_candidate_selection_uses_validation_metrics_only PASSED [ 87%]
+backing/phase_03/tests/test_phase03_methodology.py::test_zero_return_directional_accuracy_convention PASSED [ 93%]
+backing/phase_03/tests/test_phase03_methodology.py::test_warning_diagnostics_and_disposition PASSED [100%]
 
-============================== 12 passed in 1.92s ==============================
+============================== 16 passed in 1.84s ==============================

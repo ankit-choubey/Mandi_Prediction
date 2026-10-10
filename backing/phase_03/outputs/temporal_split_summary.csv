@@ -1,4 +1,4 @@
 partition_name,start_date,end_date,target_realization_start,target_realization_end,eligible_origins,valid_target_count,normal_count,normal_pct,favorable_count,favorable_pct,unfavorable_count,unfavorable_pct,boundary_truncated_count,embargo_purged_count
 TRAIN,2024-09-01,2026-01-17,2024-09-08,2026-01-24,126469,100650,60647,60.26,18183,18.07,21820,21.68,0,72
 VALIDATION,2026-01-25,2026-03-31,2026-02-01,2026-04-07,5640,2914,1374,47.15,777,26.66,763,26.18,0,565
-FINAL_TEST,2026-04-08,2026-08-25,2026-04-15,2026-09-01,23144,12625,7058,55.9,2967,23.5,2600,20.59,985,0
+EXPLORATORY_TEST,2026-04-08,2026-08-25,2026-04-15,2026-09-01,23144,12625,7058,55.9,2967,23.5,2600,20.59,985,0
