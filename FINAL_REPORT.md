@@ -121,13 +121,13 @@ To prevent temporal data leakage, records were partitioned chronologically by ca
 The models were evaluated on the held-out **chronological test set** using Accuracy, Macro-Averaged Precision, Recall, F1-Score, and Weighted F1-Score.
 
 #### 5.1 Comparative Benchmark Table
-| Model | Test Accuracy | Precision (Macro) | Recall (Macro) | F1-Score (Macro) | F1-Score (Weighted) |
-|---|---|---|---|---|---|
-| **Decision Tree** | 0.4934 | 0.4928 | 0.4851 | 0.4616 | 0.5090 |
-| **Random Forest** | 0.5312 | 0.5251 | 0.5271 | 0.5086 | 0.5490 |
-| **Extra Trees** | 0.4996 | 0.4696 | 0.4530 | 0.4470 | 0.5066 |
-| **Gradient Boosting** | 0.5876 | 0.5287 | 0.5169 | 0.5209 | 0.5832 |
-| **Voting Ensemble** | 0.5625 | 0.5229 | 0.5166 | 0.5139 | 0.5701 |
+| Model | Candidate Selected | Val Accuracy | Val Macro F1 | Exploratory Test Acc | Exploratory Test Macro F1 | Exploratory Test Weighted F1 |
+|---|---|---|---|---|---|---|
+| **Decision Tree** | No | 0.3996 | 0.3828 | 0.4916 | 0.4563 | 0.5138 |
+| **Random Forest** | No | 0.4493 | 0.4361 | 0.5176 | 0.4835 | 0.5379 |
+| **Extra Trees** | No | 0.4313 | 0.3953 | 0.5057 | 0.4333 | 0.5062 |
+| **Gradient Boosting** | ⭐ YES | 0.5445 | 0.4872 | 0.6020 | 0.5244 | 0.5944 |
+| **Voting Ensemble** | No | 0.4964 | 0.4575 | 0.5647 | 0.4984 | 0.5677 |
 
 
 #### 5.2 Key Evaluation Findings
@@ -138,16 +138,16 @@ The models were evaluated on the held-out **chronological test set** using Accur
 #### 5.3 Top 10 Most Influential Features (Random Forest MDI)
 | Rank | Feature | Importance Score | Domain Rationale |
 |---|---|---|---|
-| 1 | `Roll_Std_Price_7` | 0.1163 | Core momentum and comparative pricing signal |
-| 2 | `Price_Change_7d` | 0.0980 | Core momentum and comparative pricing signal |
-| 3 | `Min_Price` | 0.0548 | Core momentum and comparative pricing signal |
-| 4 | `Price_to_RollMean7_Ratio` | 0.0546 | Core momentum and comparative pricing signal |
-| 5 | `Month` | 0.0499 | Core momentum and comparative pricing signal |
-| 6 | `Price_Ratio_Target_vs_Neighbor` | 0.0463 | Core momentum and comparative pricing signal |
-| 7 | `Price_Intraday_Spread_Ratio` | 0.0457 | Core momentum and comparative pricing signal |
-| 8 | `Mandi_vs_District_Ratio` | 0.0447 | Core momentum and comparative pricing signal |
-| 9 | `District_Commodity_MeanPrice` | 0.0411 | Core momentum and comparative pricing signal |
-| 10 | `Price_Diff_Target_vs_Neighbor` | 0.0406 | Core momentum and comparative pricing signal |
+| 1 | `Roll_Std_Price_7` | 0.1321 | Core momentum and comparative pricing signal |
+| 2 | `Price_to_RollMean7_Ratio` | 0.0787 | Core momentum and comparative pricing signal |
+| 3 | `Price_Change_7d` | 0.0734 | Core momentum and comparative pricing signal |
+| 4 | `Price_Intraday_Spread_Ratio` | 0.0598 | Core momentum and comparative pricing signal |
+| 5 | `Month` | 0.0511 | Core momentum and comparative pricing signal |
+| 6 | `District_Commodity_MeanPrice` | 0.0507 | Core momentum and comparative pricing signal |
+| 7 | `Min_Price` | 0.0490 | Core momentum and comparative pricing signal |
+| 8 | `Price_Ratio_Target_vs_Neighbor` | 0.0429 | Core momentum and comparative pricing signal |
+| 9 | `Modal_Price` | 0.0417 | Core momentum and comparative pricing signal |
+| 10 | `Price_Diff_Target_vs_Neighbor` | 0.0390 | Core momentum and comparative pricing signal |
 
 The analysis indicates that **price-to-rolling-mean ratios**, **7-day price momentum**, and **neighbouring mandi price differentials** constitute the primary drivers of future 7-day market direction.
 
@@ -162,71 +162,83 @@ The system includes a dedicated inference engine that produces structured intell
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : Lucknow
-    • Mandi / Market     : Banthara APMC
+    • Mandi / Market     : Lucknow APMC
     • Commodity          : Wheat (Dara)
     • Observation Date   : 2026-08-25
 
   CURRENT MARKET STATUS (T):
-    • Modal Price        : Rs. 2,625.54 / Quintal
-    • Price Range        : Rs. 2,500.00 - 2,780.00 (Spread: Rs. 280.00)
-    • 7-Day Rolling Avg  : Rs. 2,588.71
-    • 7-Day Price Change : +1.24%
-    • 7-Day Volatility   : Rs. 25.16
+    • Modal Price        : Rs. 2,425.00 / Quintal
+    • Price Range        : Rs. 2,425.00 - 2,425.00 (Spread: Rs. 0.00)
+    • 7-Day Rolling Avg  : Rs. 2,448.71
+    • 7-Day Price Change : -6.37%
+    • 7-Day Volatility   : Rs. 65.08
 
   REGIONAL & NEIGHBOURING INTELLIGENCE:
     • District Mean Price: Rs. 2,522.64 across 4 mandi(s)
-    • Mandi Premium/Disc : +4.08% vs District Average
+    • Mandi Premium/Disc : -3.87% vs District Average
     • Neighbour Mean Price: Rs. 2,498.51
-    • Neighbour Diff     : Rs. +127.03 (Higher than neighbours (Inflow likely))
+    • Neighbour Diff     : Rs. -73.51 (Target price lower than neighbour average)
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> NORMAL <<<
-  Confidence Probability: 47.47%
-  Class Probabilities  : {'Unfavorable': 29.85, 'Normal': 47.47, 'Favorable': 22.68}
-  Ground Truth Outcome : Normal (Actual: Rs. 2,686.69 [+2.33%])
+  INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Confidence Probability: 68.04%
+  Class Probabilities  : {'Unfavorable': 15.13, 'Normal': 68.04, 'Favorable': 16.83}
+  Historical Outcome   : Favorable (Actual: Rs. 2,547.84 [+5.07%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : Kanpur
-    • Mandi / Market     : Kanpur(Grain) APMC
+    • Mandi / Market     : Uttaripura APMC
     • Commodity          : Potato (Other)
     • Observation Date   : 2026-08-25
 
   CURRENT MARKET STATUS (T):
     • Modal Price        : Rs. 550.00 / Quintal
     • Price Range        : Rs. 550.00 - 550.00 (Spread: Rs. 0.00)
-    • 7-Day Rolling Avg  : Rs. 565.13
+    • 7-Day Rolling Avg  : Rs. 564.54
     • 7-Day Price Change : -8.33%
-    • 7-Day Volatility   : Rs. 23.92
+    • 7-Day Volatility   : Rs. 38.33
 
   REGIONAL & NEIGHBOURING INTELLIGENCE:
     • District Mean Price: Rs. 550.00 across 3 mandi(s)
     • Mandi Premium/Disc : +0.00% vs District Average
     • Neighbour Mean Price: Rs. 700.00
-    • Neighbour Diff     : Rs. -150.00 (Lower than neighbours (Outflow likely))
+    • Neighbour Diff     : Rs. -150.00 (Target price lower than neighbour average)
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> FAVORABLE <<<
-  Confidence Probability: 57.03%
-  Class Probabilities  : {'Unfavorable': 18.34, 'Normal': 24.63, 'Favorable': 57.03}
-  Ground Truth Outcome : Normal (Actual: Rs. 550.00 [+0.00%])
+  INDICATED T+7 MARKET CONDITION: >>> FAVORABLE <<<
+  Confidence Probability: 38.8%
+  Class Probabilities  : {'Unfavorable': 33.62, 'Normal': 27.58, 'Favorable': 38.8}
+  Historical Outcome   : Normal (Actual: Rs. 550.00 [+0.00%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : Ghaziabad
@@ -245,52 +257,64 @@ The system includes a dedicated inference engine that produces structured intell
     • District Mean Price: Rs. 3,219.64 across 3 mandi(s)
     • Mandi Premium/Disc : +8.79% vs District Average
     • Neighbour Mean Price: Rs. 3,219.64
-    • Neighbour Diff     : Rs. +282.95 (Higher than neighbours (Inflow likely))
+    • Neighbour Diff     : Rs. +282.95 (Target price higher than neighbour average)
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> FAVORABLE <<<
-  Confidence Probability: 41.47%
-  Class Probabilities  : {'Unfavorable': 29.86, 'Normal': 28.67, 'Favorable': 41.47}
-  Ground Truth Outcome : Favorable (Actual: Rs. 4,000.00 [+14.20%])
+  INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Confidence Probability: 38.73%
+  Class Probabilities  : {'Unfavorable': 23.75, 'Normal': 38.73, 'Favorable': 37.52}
+  Historical Outcome   : Favorable (Actual: Rs. 4,000.00 [+14.20%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : Jhansi
-    • Mandi / Market     : Jhansi APMC
+    • Mandi / Market     : Moth APMC
     • Commodity          : Wheat (Other)
     • Observation Date   : 2026-08-25
 
   CURRENT MARKET STATUS (T):
-    • Modal Price        : Rs. 2,371.78 / Quintal
-    • Price Range        : Rs. 2,351.00 - 2,652.00 (Spread: Rs. 301.00)
-    • 7-Day Rolling Avg  : Rs. 2,362.45
+    • Modal Price        : Rs. 2,613.98 / Quintal
+    • Price Range        : Rs. 2,585.00 - 2,625.00 (Spread: Rs. 40.00)
+    • 7-Day Rolling Avg  : Rs. 2,585.01
     • 7-Day Price Change : +0.88%
-    • 7-Day Volatility   : Rs. 22.07
+    • 7-Day Volatility   : Rs. 25.77
 
   REGIONAL & NEIGHBOURING INTELLIGENCE:
     • District Mean Price: Rs. 2,475.63 across 7 mandi(s)
-    • Mandi Premium/Disc : -4.20% vs District Average
+    • Mandi Premium/Disc : +5.59% vs District Average
     • Neighbour Mean Price: Rs. 2,475.63
-    • Neighbour Diff     : Rs. -103.85 (Lower than neighbours (Outflow likely))
+    • Neighbour Diff     : Rs. +138.35 (Target price higher than neighbour average)
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> NORMAL <<<
-  Confidence Probability: 42.99%
-  Class Probabilities  : {'Unfavorable': 20.0, 'Normal': 42.99, 'Favorable': 37.01}
-  Ground Truth Outcome : Normal (Actual: Rs. 2,409.69 [+1.60%])
+  INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Confidence Probability: 75.16%
+  Class Probabilities  : {'Unfavorable': 14.97, 'Normal': 75.16, 'Favorable': 9.88}
+  Historical Outcome   : Normal (Actual: Rs. 2,662.47 [+1.86%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : Unnao
@@ -302,21 +326,27 @@ The system includes a dedicated inference engine that produces structured intell
     • Modal Price        : Rs. 2,502.45 / Quintal
     • Price Range        : Rs. 2,490.00 - 2,550.36 (Spread: Rs. 60.36)
     • 7-Day Rolling Avg  : Rs. 2,479.74
-    • 7-Day Price Change : +3.62%
+    • 7-Day Price Change : -0.94%
     • 7-Day Volatility   : Rs. 91.15
 
   REGIONAL & NEIGHBOURING INTELLIGENCE:
     • District Mean Price: Rs. 2,502.45 across 1 mandi(s)
     • Mandi Premium/Disc : +0.00% vs District Average
     • Neighbour Mean Price: Rs. 2,611.93
-    • Neighbour Diff     : Rs. -109.48 (Lower than neighbours (Outflow likely))
+    • Neighbour Diff     : Rs. -109.48 (Target price lower than neighbour average)
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> FAVORABLE <<<
-  Confidence Probability: 37.72%
-  Class Probabilities  : {'Unfavorable': 24.74, 'Normal': 37.54, 'Favorable': 37.72}
-  Ground Truth Outcome : Normal (Actual: Rs. 2,513.27 [+0.43%])
+  INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Confidence Probability: 42.73%
+  Class Probabilities  : {'Unfavorable': 30.24, 'Normal': 42.73, 'Favorable': 27.02}
+  Historical Outcome   : Normal (Actual: Rs. 2,513.27 [+0.43%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 ```
 
 ---

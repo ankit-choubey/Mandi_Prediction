@@ -27,9 +27,9 @@ Percentage Change = ((Price_T7 - Price_T) / Price_T) * 100
 ```
 
 With the empirically grounded threshold of $\pm 2.5\%$:
-- **Normal (Steady Market)**: 67,609 records (58.10%)
-- **Unfavorable (Bearish Drop)**: 25,954 records (22.30%)
-- **Favorable (Bullish Rise)**: 22,798 records (19.59%)
+- **Normal (Steady Market)**: 68,895 records (59.48%)
+- **Unfavorable (Bearish Drop)**: 25,069 records (21.64%)
+- **Favorable (Bullish Rise)**: 21,869 records (18.88%)
 
 **Key Insight**: Class representation is well balanced without severe minority-class starvation. A simple majority baseline would achieve only 58.1%, requiring genuine predictive learning to detect market breakouts.
 
@@ -37,11 +37,11 @@ With the empirically grounded threshold of $\pm 2.5\%$:
 
 ### 3. Commodity Analysis
 The dataset encompasses staples, cash crops, and high-perishability vegetables. Top commodities by valid paired observation volume:
-1. **Wheat**: 8,345 records (high stability, continuous trading)
-2. **Potato**: 6,216 records (seasonal gluts, cold-storage driven)
-3. **Onion**: 5,642 records (high volatility, price surges)
-4. **Tomato**: 5,528 records (extreme perishability, short cycle shocks)
-5. **Rice**: 4,180 records (staple grain, steady support prices)
+1. **Wheat**: 8,297 records (high stability, continuous trading)
+2. **Potato**: 6,324 records (seasonal gluts, cold-storage driven)
+3. **Onion**: 6,027 records (high volatility, price surges)
+4. **Tomato**: 5,665 records (extreme perishability, short cycle shocks)
+5. **Rice**: 4,097 records (staple grain, steady support prices)
 
 ---
 
@@ -54,9 +54,9 @@ The dataset encompasses staples, cash crops, and high-perishability vegetables. 
 ---
 
 ### 5. Crop Seasonality Breakdown
-- **Kharif Season (July - October)**: Characterized by arrival of monsoon crops, higher moisture perishability, and post-monsoon harvest flows. Mean Price: Rs. 3750.30.
-- **Rabi Season (November - March)**: Major winter cereal harvest (Wheat, Mustard, Gram). Mean Price: Rs. 3609.87.
-- **Zaid Season (April - June)**: Summer vegetables and melons. Higher price dispersion. Mean Price: Rs. 3453.36.
+- **Kharif Season (July - October)**: Characterized by arrival of monsoon crops, higher moisture perishability, and post-monsoon harvest flows. Mean Price: Rs. 3747.67.
+- **Rabi Season (November - March)**: Major winter cereal harvest (Wheat, Mustard, Gram). Mean Price: Rs. 3617.14.
+- **Zaid Season (April - June)**: Summer vegetables and melons. Higher price dispersion. Mean Price: Rs. 3436.14.
 
 ---
 

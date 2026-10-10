@@ -85,13 +85,19 @@ class MandiMarketIntelligenceEngine:
             "neighbouring_summary": {
                 "neighbor_avg_price": round(float(row.get('Neighbor_Commodity_MeanPrice', row['Modal_Price'])), 2),
                 "price_difference": round(float(row.get('Price_Diff_Target_vs_Neighbor', 0)), 2),
-                "arbitrage_indicator": "Higher than neighbours (Inflow likely)" if row.get('Price_Diff_Target_vs_Neighbor', 0) > 0 else "Lower than neighbours (Outflow likely)"
+                "spatial_comparison": "Target price higher than neighbour average" if row.get('Price_Diff_Target_vs_Neighbor', 0) > 0 else "Target price lower than neighbour average"
             },
             "actual_outcome_T7": {
                 "actual_price_T7": float(row.get('Modal_Price_T7', np.nan)),
                 "actual_pct_change": round(float(row.get('Pct_Change_T7', 0)), 2),
                 "actual_condition": row.get('Market_Condition', 'Unknown')
-            }
+            },
+            "disclaimer": (
+                "EXPERIMENTAL STATISTICAL RESEARCH PROTOTYPE ONLY. NOT PRODUCTION-READY FOR "
+                "OPERATIONAL FARMER ADVISORY OR BINDING FINANCIAL/STORAGE DECISIONS. Spatial price "
+                "differentials exclude transportation freight, handling, mandi cess, and transit spoilage. "
+                "Storage decisions carry real-world warehouse fees, spoilage risk, and cost of capital."
+            )
         }
         return intelligence
 
@@ -102,7 +108,7 @@ class MandiMarketIntelligenceEngine:
         card = f"""
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
-║           District-Level Future Market Condition Advisory            ║
+║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
   LOCATION & COMMODITY:
     • District           : {intel['district']}
@@ -121,13 +127,19 @@ class MandiMarketIntelligenceEngine:
     • District Mean Price: Rs. {intel['district_summary']['district_avg_price']:,.2f} across {intel['district_summary']['reporting_mandis']} mandi(s)
     • Mandi Premium/Disc : {intel['district_summary']['mandi_vs_district_pct']:+.2f}% vs District Average
     • Neighbour Mean Price: Rs. {intel['neighbouring_summary']['neighbor_avg_price']:,.2f}
-    • Neighbour Diff     : Rs. {intel['neighbouring_summary']['price_difference']:+.2f} ({intel['neighbouring_summary']['arbitrage_indicator']})
+    • Neighbour Diff     : Rs. {intel['neighbouring_summary']['price_difference']:+.2f} ({intel['neighbouring_summary']['spatial_comparison']})
 
   ----------------------------------------------------------------------
-  EXPECTED T+7 MARKET CONDITION: >>> {intel['expected_condition_T7'].upper()} <<<
+  INDICATED T+7 MARKET CONDITION: >>> {intel['expected_condition_T7'].upper()} <<<
   Confidence Probability: {intel['condition_confidence']}%
   Class Probabilities  : {intel['all_probabilities']}
-  Ground Truth Outcome : {intel['actual_outcome_T7']['actual_condition']} (Actual: Rs. {intel['actual_outcome_T7']['actual_price_T7']:,.2f} [{intel['actual_outcome_T7']['actual_pct_change']:+.2f}%])
+  Historical Outcome   : {intel['actual_outcome_T7']['actual_condition']} (Actual: Rs. {intel['actual_outcome_T7']['actual_price_T7']:,.2f} [{intel['actual_outcome_T7']['actual_pct_change']:+.2f}%])
   ----------------------------------------------------------------------
+  ⚠️  RESEARCH PROTOTYPE DISCLAIMER — NOT AN OPERATIONAL FARMER ADVISORY:
+  • This prototype provides exploratory statistical forecasts for research only.
+  • NOT PRODUCTION READY: Net economic margins, warehouse storage costs,
+    spoilage risk, and freight costs have NOT been validated (Phase 4 pending).
+  • Do NOT base farm harvesting, storage, or commercial selling decisions on this tool.
+  ══════════════════════════════════════════════════════════════════════
 """
         return card

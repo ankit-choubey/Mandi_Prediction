@@ -343,7 +343,7 @@ All historical work across the 4 audit branches (`audit/phase-00-inspection`, `a
 | `audit/phase-01-data-integrity` | `8a691dd` | 1 commit ahead of Phase 0 (`8a691dd`) | **A: Already integrated** | Ancestor of Phase 2; Phase 1 data audit artifacts and tests present in `main`. | 8/8 passing |
 | `audit/phase-02-methodology` | `4206c9c` | 1 commit ahead of Phase 1 (`4206c9c`) | **A: Already integrated** | Direct ancestor of Phase 2 correction pass. | 17/17 passing |
 | `audit/phase-02-correction-pass` | `e8a935f` | 1 commit ahead of Phase 2 (`e8a935f`) | **B & C: Consolidated via merge** | Merged into `main` (`4dea174`). Resolved 16 duplicate file conflicts by retaining `main`'s versions (`2d317e1`), which contain verified causal volatility fixes, zero backward-fill, and corrected test conventions. | 17/17 passing |
-| `main` | `4dea174` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, and merge `4dea174` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, and 3. | Combined 45/45 passing |
+| `main` | `103d8cf4a67be5952fb7724731a219468a39849c` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, merge `4dea174`, and docs `103d8cf` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, and 3. | Combined 45/45 passing |
  
 ### 18.3 Verification Suite Results
 Executed from repository root on `main`:
@@ -358,5 +358,47 @@ Executed from repository root on `main`:
 - `data/raw/` untouched: 0 diffs against origin baseline.
 - `src/` untouched: 0 diffs against origin baseline.
 - All 4 historical audit branches merged into `main` before deletion.
+
+---
+
+## 19. Production Application Pipeline Verification (Pre-Phase 4 Remediation)
+
+### 19.1 Purpose and Audit Scope
+Prior to beginning Phase 4, the operational application pipeline (`run_pipeline.py` and `src/`) was audited against the accepted mathematical and statistical methodology established across Phases 0–3. The application had previously diverged from audit findings by utilizing row-based shifts, unbuffered temporal splits, test-set-directed model selection, unrepresented grade keys, and unhedged advisory claims.
+
+### 19.2 Remediations Applied to Application Code
+1. **Series Identity & Duplicate Handling (`src/data_loader.py`):**
+   - Incorporated `Grade` into canonical series key: `['District', 'Market', 'Commodity', 'Variety', 'Grade']`.
+   - Prevented silent dropping of distinct commercial grades (e.g. FAQ vs Medium).
+   - Applied Strategy 2 (DEC-008): Excluded 2,664 ambiguous same-grade conflicting quotes across 1,321 dates.
+   - Filtered invalid non-positive prices (`Modal_Price <= 0`).
+2. **Exact Calendar Lag Features & Causal Volatility (`src/feature_engineering.py`):**
+   - Replaced row-based `shift(1, 3, 7)` with exact calendar date joins ($T-1, T-3, T-7$).
+   - Explicit `NaN` returned when markets were closed (e.g. Sunday closure); zero substitution of next available date.
+   - Enforced causal rolling volatility with explicit burn-in ($min\_periods=3 \implies \text{NaN}$) without backward-filling or artificial zero fills.
+   - Applied agreed target boundary conventions (DEC-015: Favorable $> 2.5\%$, Normal $[-2.5\%, +2.5\%]$, Unfavorable $< -2.5\%$).
+3. **Horizon-Aware Temporal Splitting & Embargo Purging (`src/evaluate.py`):**
+   - Implemented 8-day embargo buffer purging at Train/Val and Val/Test partition boundaries.
+   - Guarantees zero target realization ($T+7$) lookahead leakage across partition boundaries.
+4. **Validation-Only Candidate Model Selection (`src/evaluate.py`, `run_pipeline.py`):**
+   - Replaced test-set model selection with strict validation-based selection (highest Validation Macro F1).
+   - Selected candidate is frozen before evaluating on the exploratory historical test window.
+   - Explicitly designates historical test window as exploratory rather than an untouched holdout.
+5. **Research Prototype Disclaimers (`src/intelligence_system.py`):**
+   - Added prominent operational and financial disclaimers to terminal cards and intelligence payloads.
+   - Explicitly states the system is an experimental statistical prototype and NOT production-ready for operational farmer advice or binding commercial storage decisions.
+
+### 19.3 Automated Test Results
+- **Production Pipeline Suite ([`tests/test_production_pipeline.py`](../tests/test_production_pipeline.py)):**
+  `python3 -m pytest tests/test_production_pipeline.py -v` $\to$ **7 passed in 2.28s** (Exit code 0).
+- **Full Combined Verification Suite:**
+  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **52 passed, 0 failed in 5.75s** (Exit code 0).
+- **End-to-End Pipeline Execution:**
+  `python3 run_pipeline.py` $\to$ **Exit code 0** (All 8 pipeline steps executed successfully).
+
+### 19.4 Operational Pipeline Limitations
+- **Not Ready for Farmer Advice:** No physical freight transport model, mandi taxes, or warehouse storage economics have been implemented (Phase 4 scope).
+- **Exploratory Test Set:** The historical test partition is exploratory and does not represent an untouched final holdout.
+
 
 

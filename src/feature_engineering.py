@@ -38,28 +38,32 @@ def build_features_and_target(df, threshold_pct=2.5):
     df['Price_Intraday_Spread_Ratio'] = df['Price_Intraday_Spread'] / (df['Modal_Price'] + 1e-5)
     
     # ---------------------------------------------------------
-    # 2. Historical Lags & Rolling Features per Series
+    # 2. Historical Exact-Calendar Lags & Rolling Features per Series
     # ---------------------------------------------------------
-    # Note: To ensure accurate temporal calculations within each series,
-    # we compute lags and rolling windows over the time series.
-    # Group by series_id
+    # Enforce exact calendar date joins for T-1, T-3, T-7.
+    # Missing dates (e.g. Sunday closure) yield explicit NaN (no next-available substitution).
+    lag_lookup = df[['series_id', 'Arrival_Date', 'Modal_Price']].drop_duplicates().copy()
+    for k in [1, 3, 7]:
+        df[f'_Lag_Date_{k}'] = df['Arrival_Date'] - timedelta(days=k)
+        df = pd.merge(
+            df,
+            lag_lookup.rename(columns={'Modal_Price': f'Lag_Price_{k}', 'Arrival_Date': f'_Lag_Date_{k}'}),
+            on=['series_id', f'_Lag_Date_{k}'],
+            how='left'
+        )
+        df.drop(columns=[f'_Lag_Date_{k}'], inplace=True)
+    
+    # Recent price changes (momentum) strictly relative to exact calendar lags
+    df['Price_Change_1d'] = ((df['Modal_Price'] - df['Lag_Price_1']) / df['Lag_Price_1']) * 100
+    df['Price_Change_3d'] = ((df['Modal_Price'] - df['Lag_Price_3']) / df['Lag_Price_3']) * 100
+    df['Price_Change_7d'] = ((df['Modal_Price'] - df['Lag_Price_7']) / df['Lag_Price_7']) * 100
+    
+    # Rolling averages and volatility (strictly causal, up to date T)
     grouped = df.groupby('series_id')
-    
-    df['Lag_Price_1'] = grouped['Modal_Price'].shift(1)
-    df['Lag_Price_3'] = grouped['Modal_Price'].shift(3)
-    df['Lag_Price_7'] = grouped['Modal_Price'].shift(7)
-    
-    # Recent price changes (momentum)
-    df['Price_Change_1d'] = (df['Modal_Price'] - df['Lag_Price_1']) / (df['Lag_Price_1'] + 1e-5) * 100
-    df['Price_Change_3d'] = (df['Modal_Price'] - df['Lag_Price_3']) / (df['Lag_Price_3'] + 1e-5) * 100
-    df['Price_Change_7d'] = (df['Modal_Price'] - df['Lag_Price_7']) / (df['Lag_Price_7'] + 1e-5) * 100
-    
-    # Rolling averages and volatility (using closed='left' logic via shift to prevent including current price, or rolling up to T)
-    # At prediction time T, current price Modal_Price is known.
-    # Rolling 3-day and 7-day average up to T:
     df['Roll_Mean_Price_3'] = grouped['Modal_Price'].transform(lambda s: s.rolling(window=3, min_periods=1).mean())
     df['Roll_Mean_Price_7'] = grouped['Modal_Price'].transform(lambda s: s.rolling(window=7, min_periods=1).mean())
-    df['Roll_Std_Price_7'] = grouped['Modal_Price'].transform(lambda s: s.rolling(window=7, min_periods=2).std()).fillna(0)
+    # Causal volatility with explicit burn-in (min_periods=3). Preserves NaN for insufficient history (no bfill, no fillna(0))
+    df['Roll_Std_Price_7'] = grouped['Modal_Price'].transform(lambda s: s.rolling(window=7, min_periods=3).std())
     
     # Ratio of current price to rolling moving averages
     df['Price_to_RollMean3_Ratio'] = df['Modal_Price'] / (df['Roll_Mean_Price_3'] + 1e-5)
@@ -152,13 +156,13 @@ def build_features_and_target(df, threshold_pct=2.5):
     matched['Price_Change_T7'] = matched['Modal_Price_T7'] - matched['Modal_Price']
     matched['Pct_Change_T7'] = (matched['Price_Change_T7'] / (matched['Modal_Price'] + 1e-5)) * 100
     
-    # Assign discrete 3-class target:
-    # Favorable: Price increase >= threshold_pct (profitable for farmer/seller)
-    # Normal: Price fluctuation within (-threshold_pct, +threshold_pct)
-    # Unfavorable: Price drop <= -threshold_pct
+    # Assign discrete 3-class target strictly following DEC-015:
+    # Favorable: Price increase > +threshold_pct
+    # Normal: Price fluctuation within [-threshold_pct, +threshold_pct]
+    # Unfavorable: Price drop < -threshold_pct
     conditions = [
-        matched['Pct_Change_T7'] >= threshold_pct,
-        matched['Pct_Change_T7'] <= -threshold_pct
+        matched['Pct_Change_T7'] > threshold_pct,
+        matched['Pct_Change_T7'] < -threshold_pct
     ]
     choices = ['Favorable', 'Unfavorable']
     matched['Market_Condition'] = np.select(conditions, choices, default='Normal')

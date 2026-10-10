@@ -75,21 +75,21 @@ def run_full_pipeline():
     # Step 6: Training & Evaluating All 5 Pure Classification Models
     # -------------------------------------------------------------
     print("\n[STEP 6/8] Training & Evaluating 5 Pure Classification Models...")
-    eval_results, trained_models = train_and_evaluate_all(
+    eval_results, trained_models, best_candidate_name = train_and_evaluate_all(
         train_df, val_df, test_df, output_dir=os.path.join(PROJECT_ROOT, "results")
     )
     
     comparison_table = generate_comparison_markdown(eval_results)
-    print("\n" + "=" * 60)
-    print("MODEL COMPARISON ON TEST SET (CHRONOLOGICAL SPLIT)")
-    print("=" * 60)
+    print("\n" + "=" * 70)
+    print("MODEL PERFORMANCE: VALIDATION SELECTION & EXPLORATORY TEST EVALUATION")
+    print("=" * 70)
     print(comparison_table)
     
     # -------------------------------------------------------------
     # Step 7: Market Intelligence Engine Demonstrations
     # -------------------------------------------------------------
-    print("\n[STEP 7/8] Generating Market Intelligence Case Studies...")
-    best_model_name = "Voting Ensemble" if "Voting Ensemble" in trained_models else "Gradient Boosting"
+    print("\n[STEP 7/8] Generating Market Intelligence Research Demonstrations...")
+    best_model_name = best_candidate_name
     best_model = trained_models[best_model_name]
     engine = MandiMarketIntelligenceEngine(best_model, test_df)
     

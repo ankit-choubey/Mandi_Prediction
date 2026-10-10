@@ -64,10 +64,15 @@ def run_eda(output_dir="eda"):
     # -------------------------------------------------------------
     print("[EDA] Generating Plot 2: 7-Day Price Change Distribution...")
     plt.figure(figsize=(9, 5), dpi=200)
-    # Clip extreme outliers for visual clarity (-50% to +50%)
-    clipped_changes = dataset['Pct_Change_T7'].clip(-40, 40)
+    # Clip extreme outliers for visual clarity (-40% to +40%)
+    clipped_changes = dataset['Pct_Change_T7'].dropna().clip(-40, 40)
     
-    sns.histplot(clipped_changes, bins=50, kde=True, color='#2B6CB0', alpha=0.6)
+    bin_edges = np.linspace(-40, 40, 51)
+    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+    binned = pd.cut(clipped_changes, bins=bin_edges, include_lowest=True)
+    counts = binned.value_counts().sort_index().values
+    plt.bar(bin_centers, counts, width=bin_edges[1] - bin_edges[0], color='#2B6CB0', alpha=0.6)
+    
     plt.axvline(2.5, color='#2F855A', linestyle='--', linewidth=2, label='Favorable Threshold (+2.5%)')
     plt.axvline(-2.5, color='#E53E3E', linestyle='--', linewidth=2, label='Unfavorable Threshold (-2.5%)')
     plt.axvline(0, color='gray', linestyle=':', linewidth=1)

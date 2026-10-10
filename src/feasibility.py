@@ -299,7 +299,7 @@ The objective is to verify whether the 5-district APMC mandi dataset can realist
 
 The audit confirms **exceptional feasibility**:
 - **75.24% exact T+7 availability** (117,176 valid pairs) across calendar dates.
-- **779 series** with $\ge 20$ paired observations, and **565 series** with $\ge 50$ pairs.
+- **779 series** with $\\ge 20$ paired observations, and **565 series** with $\\ge 50$ pairs.
 - Well-balanced, robust distribution across **Favorable** (28.4%), **Normal** (43.4%), and **Unfavorable** (28.2%) market conditions.
 - Strong concurrent multi-mandi reporting (71.3% multi-mandi overlap) enabling rich neighbouring-mandi intelligence.
 
