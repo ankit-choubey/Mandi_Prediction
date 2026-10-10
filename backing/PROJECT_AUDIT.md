@@ -1,8 +1,8 @@
 # Master Project Audit: APMC Mandi Market Intelligence System
 
-**Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)  
-**Branch:** `main`  
-**Current Audit Status:** Fully Consolidated & Verified (Phases 0, 1, 2, and 3 Verified on `main`)  
+**Repository:** [ankit-choubey/Mandi_Prediction](https://github.com/ankit-choubey/Mandi_Prediction)
+**Branch:** `main`
+**Current Audit Status:** Fully Consolidated & Verified (Phases 0, 1, 2, and 3 Verified on `main`)
 **Master Document Version:** 1.6.0 (Updated: October 10, 2026)
 
 ---
@@ -329,16 +329,16 @@ Because wholesale mandi prices exhibit strong modal stickiness (interquartile ra
 - **Empirical Conclusion:**
   Gradient Boosted Decision Trees (LightGBM) using strictly causal predictors available at origin date $T$ demonstrate genuine predictive superiority over the majority-class baseline on unseen future holdout data (+4.50% test accuracy, +0.2225 Macro F1, +12.86% Balanced Accuracy). However, the absolute predictive power remains moderate, with minority class recall at 30.4% (Favorable) and 20.4% (Unfavorable). Continuous return regression fails to outperform simple 0.0% price stickiness persistence due to fat-tailed volatility spikes.
 - **Production Readiness:** **NOT PRODUCTION READY FOR ECONOMIC OR FARMER-FACING RECOMMENDATIONS**. Phase 3 confirms directional predictability, but does not yet establish risk-adjusted economic value or net storage profitability. Do NOT deploy farmer recommendations without comprehensive risk modeling and transaction cost validation.
- 
+
 ---
- 
+
 ## 18. Branch Consolidation and Project Integrity Verification
- 
+
 ### 18.1 Consolidation Scope & Objective
 All historical work across the 4 audit branches (`audit/phase-00-inspection`, `audit/phase-01-data-integrity`, `audit/phase-02-methodology`, `audit/phase-02-correction-pass`) and `main` was audited, consolidated into `main`, and rigorously verified.
- 
+
 ### 18.2 Branch Inventory and Consolidation Matrix
- 
+
 | Branch Name | Latest Commit SHA | Commits Relative to Baseline | Integration Status | Conflicts & Deliberate Resolution | Supported Tests |
 |---|---|---|---|---|---|
 | `audit/phase-00-inspection` | `bc300ac` | 2 commits ahead of initial root (`5d1ca17`, `bc300ac`) | **A: Already integrated** | Ancestor of later branches; Phase 0 test suite and artifacts present in `main`. | 4/4 passing |
@@ -346,7 +346,7 @@ All historical work across the 4 audit branches (`audit/phase-00-inspection`, `a
 | `audit/phase-02-methodology` | `4206c9c` | 1 commit ahead of Phase 1 (`4206c9c`) | **A: Already integrated** | Direct ancestor of Phase 2 correction pass. | 17/17 passing |
 | `audit/phase-02-correction-pass` | `e8a935f` | 1 commit ahead of Phase 2 (`e8a935f`) | **B & C: Consolidated via merge** | Merged into `main` (`4dea174`). Resolved 16 duplicate file conflicts by retaining `main`'s versions (`2d317e1`), which contain verified causal volatility fixes, zero backward-fill, and corrected test conventions. | 17/17 passing |
 | `main` | `a2c3e4cf9127d76fb5604692ade5fe5631cfc738` | Contains `c8a94ce`, `2d317e1`, `3ebea05`, `123eec7`, merge `4dea174`, docs `103d8cf`, and feat `a2c3e4c` | **Target Canonical Branch** | Retains all verified work from Phases 0, 1, 2, 3, and pipeline/feasibility reconciliation. | Combined 57/57 passing |
- 
+
 ### 18.3 Verification Suite Results
 Executed from repository root on `main`:
 `python3 -m pytest backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v`
@@ -355,7 +355,7 @@ Executed from repository root on `main`:
 - **Phase 1:** 8/8 passed (data schema, non-null, calendar continuity, price order checks).
 - **Phase 2:** 17/17 passed (causal volatility, zero backward-fill, Grade in series key, exact calendar lags).
 - **Phase 3:** 16/16 passed (horizon embargo, non-leaking preprocessors, exploratory validation naming, finite warning handling).
- 
+
 ### 18.4 Repository & Source Data Integrity
 - `data/raw/` untouched: 0 diffs against origin baseline.
 - All 4 historical audit branches merged into `main` before deletion.
@@ -431,36 +431,43 @@ Phase 4 implements and evaluates an empirical economic decision layer comparing 
   2. Physical quantity loss ($L$) is strictly separated from quality markdown ($d_q$).
   3. Non-positive prices, loss fractions $L \ge 1$, and non-positive quantities raise explicit validation errors.
 
-### 20.3 Calibrated Reference Benchmarks
+### 20.3 Reference Benchmarks and Illustrative Provenance
+> **CRITICAL PROVENANCE CAVEAT:** Parameter values are illustrative research assumptions informed by official benchmarks, NOT locally validated farmgate measurements for individual Uttar Pradesh mandis.
 1. **Central Warehousing Corporation (CWC) Tariff FY 2026–27:**
    - 7-day cumulative general storage slab (Lucknow Alamnagar RWC): ₹17.29 / quintal.
    - Monthly reservation tariff: ₹17.70 / qtl (Lucknow) and ₹23.10 / qtl (Ghaziabad).
    - Informs Central scenario direct cost benchmark (₹20.00 / qtl) and Conservative bound (₹35.00 / qtl).
 2. **Ministry of Food Processing Industries (MoFPI) Post-Harvest Food Loss Studies (2022):**
    - Summarizes ICAR-CIPHET and NABCONS national supply-chain loss ranges (Cereals: 3.9%–5.9%; Fruits & Vegetables: 4.9%–11.6%).
-   - Informs 7-day storage shrinkage scenarios: Optimistic (0.5%), Central (1.0%), Conservative (2.0%).
+   - Recognized as cumulative multi-week supply-chain totals, not measured 7-day warehouse shrinkage. Informs illustrative 7-day storage shrinkage scenarios: Optimistic (0.5%), Central (1.0%), Conservative (2.0%).
 
 ### 20.4 Chronological Backtest Benchmark Results
 Evaluated on exact calendar $T+7$ matches across the chronological Validation partition ($n = 5,671$) and Exploratory Test partition ($n = 9,551$) with 8-day purged embargo buffers:
 
-1. **Always Sell (Baseline):** Incremental return = ₹0.00 / qtl.
-2. **Always Store:** Strongly negative across scenarios. Under Central costs, average loss is **-₹30.32 / qtl (Val)** and **-₹28.29 / qtl (Test)**. Under Conservative costs, average loss is **-₹117.21 / qtl (Val)** and **-₹122.37 / qtl (Test)**.
-3. **Trailing Momentum (T):** Strongly negative (-₹68.02 to -₹80.72 / qtl) due to sharp mean-reversion in weekly mandi price spikes.
+1. **Always Sell (Baseline):** Unconditional return = ₹0.00 / qtl; aggregate gain = ₹0.00.
+2. **Always Store:** Strongly negative across scenarios. Under Central costs, average loss is **-₹30.32 / eligible qtl (Val)** and **-₹28.29 / eligible qtl (Test)**. Under Conservative costs, average loss is **-₹117.21 / eligible qtl (Val)** and **-₹122.37 / eligible qtl (Test)**.
+3. **Trailing Momentum (T):** Strongly negative (-₹68.02 to -₹80.72 / eligible qtl) due to sharp mean-reversion in weekly mandi price spikes.
 4. **Model-Signal Policy (T):**
-   - Yields positive average incremental returns across all scenarios: **+₹33.55 / qtl (Val)** and **+₹42.21 / qtl (Test)** under Central assumptions.
+   - **Central Scenario:**
+     - Unconditional return: **+₹33.55 / eligible qtl (Val)** and **+₹42.21 / eligible qtl (Test)**.
+     - Mean gain per 10-qtl decision: **+₹335.52 (Val)** and **+₹422.13 (Test)**.
+     - Conditional return when stored: **+₹190.27 / stored qtl (Val)** and **+₹215.60 / stored qtl (Test)**.
+     - Mean gain per 10-qtl stored decision: **+₹1,902.74 (Val)** and **+₹2,156.01 (Test)**.
+     - Aggregate net gain across all decisions (10 qtl/decision): **+₹1,902,741.76 (Val)** and **+₹4,031,741.12 (Test)**.
    - **CRITICAL OPERATIONAL RISK DEFICIT:**
      - Storage win rate is only **37.8% – 37.9%**. In **62.2% of decisions where the model advises storage, the farmer would have been better off selling immediately**.
-     - Downside tail risk: 5th percentile outcome when stored is **-₹232.36 / qtl (Val)** and **-₹331.75 / qtl (Test)**, with worst-case drawdowns reaching **-₹3,674 to -₹18,742 / qtl** during sudden supply gluts.
-5. **Oracle Benchmark:** Theoretical upper bound (+₹234 to +₹305 / qtl, 100% win rate).
+     - Downside tail risk: 5th percentile outcome when stored is **-₹232.36 / qtl (Val)** and **-₹331.75 / qtl (Test)**, with worst-case drawdowns reaching **-₹3,674 to -₹18,742 / qtl** during sudden downward price shocks.
+5. **Oracle Benchmark:** Theoretical upper bound (+₹234 to +₹305 / eligible qtl, 100% win rate).
 
 ### 20.5 Automated Test Suite Execution
-- **Economic Math & Safeguards ([`tests/test_economic_model.py`](../tests/test_economic_model.py)):** **17 passed** (including hand-calculated fixtures 1 and 2).
-- **Economic Backtest Policies ([`tests/test_economic_backtest.py`](../tests/test_economic_backtest.py)):** **4 passed** (causality, oracle bound, scenario monotonicity).
-- **Full Combined Repository Suite:**
-  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **78 passed, 0 failed in 6.08s** (Exit code 0).
+- **Economic Math & Safeguards ([`tests/test_economic_model.py`](../tests/test_economic_model.py)):** **19 passed** (fixtures 1 & 2, properties 1–15, test 16 quality discount, test 17 sensitivity schemas).
+- **Economic Backtest Policies ([`tests/test_economic_backtest.py`](../tests/test_economic_backtest.py)):** **7 passed** (baseline, oracle bound, monotonicity, causality, aggregate vs mean gain, conditional vs unconditional, absence of unsupported arrival causality claims).
+- **Combined Targeted Economic Suite:** **26 passed in 0.87s** (Exit code 0).
+- **Full Combined Repository Regression Suite:**
+  `python3 -m pytest tests/ backing/phase_00/tests/ backing/phase_01/tests/ backing/phase_02/tests/ backing/phase_03/tests/ -v` $\to$ **83 passed, 0 failed in 6.07s** (Exit code 0).
 
 ### 20.6 Operational Directive and Verdict
-- **Audit Verdict:** **PASS (Research and mathematical validation complete).**
+- **Audit Verdict:** **PASS (Methodology, mathematical formulas, and pipeline outputs verified; local farmgate parameters unvalidated).**
 - **Operational Directive:** **STRICTLY NOT APPROVED FOR OPERATIONAL FARMER RECOMMENDATIONS.**
   A 62% failure rate and severe downside tail risk are incompatible with smallholder farmer welfare and financial survival. Operational deployment must remain prohibited until multi-month storage horizons, physical cold chain logistics, and price floor guarantees are modeled and validated.
 

@@ -1,9 +1,9 @@
 # Phase 4: Methodology — Sell-versus-Store Decision Support & Backtesting
 
-**Project:** Mandi_Prediction  
-**Repository:** `ankit-choubey/Mandi_Prediction`  
-**Phase:** 4 — Economic Decision Support and Sell-versus-Store Validation  
-**Date:** October 10, 2026  
+**Project:** Mandi_Prediction
+**Repository:** `ankit-choubey/Mandi_Prediction`
+**Phase:** 4 — Economic Decision Support and Sell-versus-Store Validation
+**Date:** October 10, 2026
 
 ---
 
@@ -71,17 +71,28 @@ Five distinct operational policies are evaluated:
 
 ## 4. Evaluation Metrics
 
-For each policy and scenario, the following metrics are computed:
-1. **Times Stored & Percent Stored:** Volume of storage decisions triggered.
-2. **Storage Win Rate (%):** Proportion of storage actions where net storage proceeds exceeded immediate sale proceeds ($\Delta R > 0$).
-3. **Mean Incremental Return (₹ / quintal):** Average net profit or loss per initial quintal across all eligible decision points.
-4. **Total Net Gain (₹ / 10 quintals):** Aggregate financial benefit across all decisions for a representative 10-quintal smallholder batch.
-5. **Downside Risk (P05 & Worst Case):** The 5th percentile and minimum per-quintal return when storing, capturing severe tail loss risk.
+For each policy and scenario, the following exact metrics are computed:
+1. **Times Stored & Percent Stored:** Volume and percentage of storage decisions triggered ($N_{\text{stored}}$ and $N_{\text{stored}} / N \times 100\%$).
+2. **Storage Win Rate (%):** Proportion of storage actions where net storage proceeds strictly exceeded immediate sale proceeds:
+   $$\text{Storage Win Rate} = \frac{1}{N_{\text{stored}}} \sum_{k: d_k = 1} \mathbf{1}(\Delta r_k > 0) \times 100\%$$
+   Calculated strictly over the $N_{\text{stored}}$ decisions where produce was stored.
+3. **Unconditional Mean Incremental Return (₹ / eligible quintal):** Average net return per initial quintal across all $N$ eligible decisions, with SELL decisions contributing ₹0.00:
+   $$\mu_{\text{eligible}} = \frac{1}{N} \sum_{k=1}^N (d_k \Delta r_k)$$
+4. **Mean Incremental Gain (₹ / 10-quintal eligible decision):** $10 \times \mu_{\text{eligible}}$.
+5. **Conditional Mean Incremental Return (₹ / stored quintal):** Average net return per initial quintal calculated strictly over the $N_{\text{stored}}$ decisions where storage occurred:
+   $$\mu_{\text{stored}} = \frac{1}{N_{\text{stored}}} \sum_{k: d_k = 1} \Delta r_k$$
+   Relationship: $\mu_{\text{eligible}} = \left(\frac{N_{\text{stored}}}{N}\right) \times \mu_{\text{stored}}$.
+6. **Mean Incremental Gain (₹ / 10-quintal stored decision):** $10 \times \mu_{\text{stored}}$.
+7. **Aggregate Net Incremental Gain Across All Decisions (₹, 10 qtl/decision):**
+   $$\text{Aggregate Gain} = \sum_{k=1}^N (10 \cdot d_k \Delta r_k) = N \times (10 \cdot \mu_{\text{eligible}})$$
+   Total financial sum across the entire partition assuming a 10-quintal batch per decision.
+8. **Downside Risk (P05 & Worst Case):** The 5th percentile and minimum per-quintal return when storing ($\Delta r_k$ for $d_k = 1$).
 
 ---
 
 ## 5. Methodological Safeguards Against Bias
 
-- **No Double Counting:** Carrying costs represent either borrowing interest or opportunity cost, never both.
+- **No Double Counting:** Carrying costs represent either borrowing interest or opportunity cost, never both simultaneously (Safeguards A & B).
 - **No Free Storage:** Fixed handling and variable storage costs cannot be assumed zero.
+- **Illustrative Scenario Provenance:** Parameter values (storage fees, 7-day shrinkage rates, quality markdowns, credit interest) are illustrative assumptions informed by official benchmarks (CWC RWC tariffs FY 2026–27, MoFPI post-harvest loss reports 2022). They are NOT locally validated farmgate measurements for individual Uttar Pradesh mandis.
 - **Exploratory Test Independence:** The historical test partition (May–August 2026) is reported as an exploratory historical evaluation only. No thresholds or decision rules were tuned or selected on this partition.

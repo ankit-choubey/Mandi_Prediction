@@ -379,3 +379,66 @@ def test_15_costs_that_cancel_between_strategies():
     res_cancel = evaluate_sell_vs_store(10.0, 2000.0, 2100.0, params_trans_cancel)
 
     assert math.isclose(res_no["incremental_benefit"], res_cancel["incremental_benefit"], rel_tol=1e-6)
+
+
+def test_16_quality_markdown_discount():
+    """
+    Test 16: Nonzero quality markdown d_q reduces realized sale price and increases break-even.
+    Formula: P_break_even = [P_T * (1 + i * h / 365) + c_s] / [(1 - L) * (1 - d_q)]
+
+    Hand-calculated fixture:
+    P_T = 2500, c_s = 20, i = 0.07, h = 7, L = 0.01, d_q = 0.01
+    Numerator = 2500 * (1 + 0.07 * 7 / 365) + 20 = 2503.356164 + 20 = 2523.356164
+    Denominator = (1 - 0.01) * (1 - 0.01) = 0.99 * 0.99 = 0.9801
+    Expected P_break_even = 2523.356164 / 0.9801 = 2574.5905
+    Expected req pct increase = ((2574.5905 - 2500) / 2500) * 100 = 2.9836%
+    """
+    params_no_dq = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+        quality_discount_fraction=0.0
+    )
+    params_with_dq = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+        quality_discount_fraction=0.01
+    )
+
+    be_no_dq = calculate_break_even_future_price(2500.0, params_no_dq)
+    be_with_dq = calculate_break_even_future_price(2500.0, params_with_dq)
+
+    # d_q must strictly increase break-even price
+    assert be_with_dq["break_even_price"] > be_no_dq["break_even_price"]
+    assert math.isclose(be_with_dq["break_even_price"], 2574.5905, rel_tol=1e-4)
+    assert math.isclose(be_with_dq["required_percentage_increase"], 2.9836, rel_tol=1e-3)
+
+
+def test_17_sensitivity_matrix_schemas_and_quality_discount():
+    """
+    Test 17: Schema verification for baseline and expanded sensitivity grids.
+    Both must include Quality_Discount_Fraction and round appropriately.
+    """
+    from src.economic_model import (
+        generate_sensitivity_matrix,
+        generate_sensitivity_matrix_with_quality_discount
+    )
+    sens_base = generate_sensitivity_matrix(
+        base_prices=(2000.0,), storage_costs=(20.0,), loss_fractions=(0.01,), annual_rates=(0.07,)
+    )
+    assert len(sens_base) == 1
+    row_base = sens_base[0]
+    assert "Quality_Discount_Fraction" in row_base
+    assert row_base["Quality_Discount_Fraction"] == 0.0
+
+    sens_dq = generate_sensitivity_matrix_with_quality_discount(
+        base_prices=(2000.0,), storage_costs=(20.0,), loss_fractions=(0.01,),
+        annual_rates=(0.07,), quality_discounts=(0.0, 0.02)
+    )
+    assert len(sens_dq) == 2
+    assert sens_dq[0]["Quality_Discount_Fraction"] == 0.0
+    assert sens_dq[1]["Quality_Discount_Fraction"] == 0.02
+    assert sens_dq[1]["Break_Even_Future_Price_Rupees_Per_Qtl"] > sens_dq[0]["Break_Even_Future_Price_Rupees_Per_Qtl"]

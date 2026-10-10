@@ -91,7 +91,7 @@ def calculate_immediate_sale_proceeds(
 ) -> Dict[str, float]:
     """
     Calculate immediate sale gross and net proceeds at Date T.
-    
+
     Returns:
       gross_proceeds: Q * P_T
       transaction_cost: Q * transaction_cost_per_quintal
@@ -122,7 +122,7 @@ def calculate_storage_sale_proceeds(
 ) -> Dict[str, float]:
     """
     Calculate net storage proceeds for produce stored and sold at Date T+h.
-    
+
     Carrying cost is calculated as:
       Q * P_T * (i * h / 365)
     and strictly represents EITHER financing interest OR opportunity cost of cash,
@@ -178,7 +178,7 @@ def calculate_break_even_future_price(
 ) -> Dict[str, float]:
     """
     Calculate the exact future price P_break_even required for storage to match immediate sale.
-    
+
     Formula:
       P_break_even = [P_T * (1 + i * h / 365) + c_s + c_handling + Delta_trans] / [(1 - L) * (1 - d_q)]
       where Delta_trans = c_trans_later * (1 - L) - c_trans_now
@@ -196,7 +196,7 @@ def calculate_break_even_future_price(
     )
 
     total_direct_costs = params.storage_cost_per_quintal + params.handling_cost_per_quintal
-    
+
     # Net transaction cost differential per initial quintal
     trans_diff = (
         params.transaction_cost_later * (1.0 - params.quantity_loss_fraction)
@@ -223,7 +223,7 @@ def evaluate_sell_vs_store(
 ) -> Dict[str, Any]:
     """
     Complete sell-versus-store economic evaluation for a single decision point.
-    
+
     Returns structured results including incremental net benefit (Delta_R),
     per-quintal benefit (delta_r), break-even price, and economic recommendation.
     """
@@ -282,32 +282,38 @@ def evaluate_sell_vs_store(
 
 def get_default_scenarios() -> Dict[str, EconomicParameters]:
     """
-    Standard calibrated scenarios based on CWC tariffs (FY 2026-27),
-    MoFPI post-harvest loss studies (2022), and Indian agricultural credit rates.
+    Illustrative reference-informed scenarios.
+
+    IMPORTANT PROVENANCE CAVEAT:
+    These parameter values represent illustrative research assumptions informed by
+    official benchmarks (CWC RWC tariffs FY 2026-27, MoFPI/ICAR-CIPHET post-harvest
+    loss reports 2022, and Indian agricultural credit benchmarks).
+    They are NOT locally validated farmgate measurements and should not be construed
+    as empirical farmer-level parameters for individual APMC mandis.
     """
     return {
         "Conservative": EconomicParameters(
-            storage_cost_per_quintal=35.0,        # ₹17.3 CWC slab + ₹17.7 local loading/handling
-            quantity_loss_fraction=0.020,         # 2.0% physical loss (higher perishable shrinkage)
-            annual_carrying_rate=0.12,            # 12% p.a. informal/micro-credit borrowing rate
+            storage_cost_per_quintal=35.0,        # Illustrative: ₹17.3 CWC slab benchmark + ₹17.7 local handling/porterage
+            quantity_loss_fraction=0.020,         # Illustrative: 2.0% 7-day shrinkage assumption for vulnerable produce
+            annual_carrying_rate=0.12,            # Illustrative: 12% p.a. informal/micro-credit borrowing rate benchmark
             holding_period_days=7,
             carrying_cost_type='financing',
-            quality_discount_fraction=0.010,      # 1% quality markdown on sale
+            quality_discount_fraction=0.010,      # Illustrative: 1% quality markdown on sale
             scenario_name="Conservative"
         ),
         "Central": EconomicParameters(
-            storage_cost_per_quintal=20.0,        # ₹17.3 CWC standard warehouse reference + ₹2.7 basic handling
-            quantity_loss_fraction=0.010,         # 1.0% physical loss over 7 days
-            annual_carrying_rate=0.07,            # 7% p.a. Kisan Credit Card (KCC) rate
+            storage_cost_per_quintal=20.0,        # Illustrative: ₹17.3 CWC standard warehouse reference + ₹2.7 basic handling
+            quantity_loss_fraction=0.010,         # Illustrative: 1.0% physical shrinkage assumption over 7 days
+            annual_carrying_rate=0.07,            # Illustrative: 7% p.a. Kisan Credit Card (KCC) rate benchmark
             holding_period_days=7,
             carrying_cost_type='opportunity',
             quality_discount_fraction=0.000,
             scenario_name="Central"
         ),
         "Optimistic": EconomicParameters(
-            storage_cost_per_quintal=10.0,        # Ambient on-farm / low-cost cooperative storage
-            quantity_loss_fraction=0.005,         # 0.5% physical loss for durable grains
-            annual_carrying_rate=0.04,            # 4% p.a. prompt-repayment subvention KCC rate
+            storage_cost_per_quintal=10.0,        # Illustrative: Low-cost on-farm / cooperative PACS storage assumption
+            quantity_loss_fraction=0.005,         # Illustrative: 0.5% physical loss assumption for durable grains
+            annual_carrying_rate=0.04,            # Illustrative: 4% p.a. prompt-repayment subvention KCC rate benchmark
             holding_period_days=7,
             carrying_cost_type='opportunity',
             quality_discount_fraction=0.000,
@@ -324,7 +330,8 @@ def generate_sensitivity_matrix(
 ) -> list:
     """
     Generate sensitivity records exploring required break-even future prices
-    and required percentage price increases across variations in costs, losses, and rates.
+    and required percentage price increases across variations in costs, losses, and rates,
+    holding quality markdown d_q = 0.0.
     """
     records = []
     for p_base in base_prices:
@@ -336,7 +343,8 @@ def generate_sensitivity_matrix(
                         quantity_loss_fraction=l,
                         annual_carrying_rate=r,
                         holding_period_days=7,
-                        carrying_cost_type='opportunity'
+                        carrying_cost_type='opportunity',
+                        quality_discount_fraction=0.0
                     )
                     be = calculate_break_even_future_price(p_base, params)
                     records.append({
@@ -344,11 +352,55 @@ def generate_sensitivity_matrix(
                         "Storage_Cost_Rupees_Per_Qtl": c_s,
                         "Loss_Fraction": l,
                         "Loss_Percent": l * 100.0,
+                        "Quality_Discount_Fraction": 0.0,
+                        "Quality_Discount_Percent": 0.0,
                         "Annual_Carrying_Rate": r,
                         "Annual_Carrying_Rate_Percent": r * 100.0,
                         "Holding_Period_Days": 7,
                         "Break_Even_Future_Price_Rupees_Per_Qtl": round(be["break_even_price"], 2),
                         "Required_Price_Increase_Percent": round(be["required_percentage_increase"], 2)
                     })
+    return records
+
+
+def generate_sensitivity_matrix_with_quality_discount(
+    base_prices=(1500.0, 2500.0, 3500.0),
+    storage_costs=(10.0, 20.0, 35.0, 50.0),
+    loss_fractions=(0.005, 0.010, 0.020, 0.050),
+    annual_rates=(0.04, 0.07, 0.12),
+    quality_discounts=(0.0, 0.010, 0.030, 0.050)
+) -> list:
+    """
+    Generate an expanded sensitivity matrix varying quality discount d_q
+    alongside storage costs, losses, and carrying rates.
+    """
+    records = []
+    for p_base in base_prices:
+        for c_s in storage_costs:
+            for l in loss_fractions:
+                for r in annual_rates:
+                    for dq in quality_discounts:
+                        params = EconomicParameters(
+                            storage_cost_per_quintal=c_s,
+                            quantity_loss_fraction=l,
+                            annual_carrying_rate=r,
+                            holding_period_days=7,
+                            carrying_cost_type='opportunity',
+                            quality_discount_fraction=dq
+                        )
+                        be = calculate_break_even_future_price(p_base, params)
+                        records.append({
+                            "Base_Price_Rupees_Per_Qtl": p_base,
+                            "Storage_Cost_Rupees_Per_Qtl": c_s,
+                            "Loss_Fraction": l,
+                            "Loss_Percent": l * 100.0,
+                            "Quality_Discount_Fraction": dq,
+                            "Quality_Discount_Percent": dq * 100.0,
+                            "Annual_Carrying_Rate": r,
+                            "Annual_Carrying_Rate_Percent": r * 100.0,
+                            "Holding_Period_Days": 7,
+                            "Break_Even_Future_Price_Rupees_Per_Qtl": round(be["break_even_price"], 2),
+                            "Required_Price_Increase_Percent": round(be["required_percentage_increase"], 2)
+                        })
     return records
 

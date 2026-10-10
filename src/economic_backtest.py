@@ -28,6 +28,7 @@ from src.economic_model import (
     EconomicParameters,
     get_default_scenarios,
     generate_sensitivity_matrix,
+    generate_sensitivity_matrix_with_quality_discount,
     evaluate_sell_vs_store,
     calculate_break_even_future_price,
 )
@@ -64,6 +65,14 @@ def run_economic_backtest(
 ) -> Dict[str, Any]:
     """
     Evaluate all 5 decision policies on a given dataset partition under a specific scenario.
+
+    Reports:
+      - Unconditional mean incremental return per eligible quintal (SELL decisions contribute 0.0)
+      - Mean incremental gain per 10-quintal eligible decision
+      - Conditional mean incremental return per stored quintal (only over STORE decisions)
+      - Mean incremental gain per 10-quintal stored decision
+      - Aggregate net incremental gain across all eligible decisions (each 10 quintals)
+      - Storage win rate (percentage of stored decisions where incremental benefit > 0)
     """
     n = len(data_df)
     p_t = data_df['Modal_Price'].values
@@ -110,35 +119,45 @@ def run_economic_backtest(
 
     policy_results = {}
     for pol_name, dec in policies.items():
-        # Realized net incremental gain vs Always Sell per quintal:
-        # If dec == 1 (STORE): realized gain is delta_r_per_qtl
-        # If dec == 0 (SELL): realized gain is 0.0
-        realized_delta_per_qtl = dec * delta_r_per_qtl
-        total_realized_delta = np.sum(realized_delta_per_qtl * quantity_per_decision)
-        mean_delta_per_qtl = np.mean(realized_delta_per_qtl)
-
-        # Total stored decisions
         n_stored = int(np.sum(dec))
         pct_stored = (n_stored / n) * 100.0 if n > 0 else 0.0
 
-        # Successful storage rate (when stored, did it actually beat sell?)
-        if n_stored > 0:
-            success_rate = (np.sum((dec == 1) & actual_store_won) / n_stored) * 100.0
-        else:
-            success_rate = 0.0
+        # Unconditional return per eligible quintal (SELL decisions contribute 0.0)
+        # Denominator: n (Eligible_Decisions)
+        realized_delta_per_qtl = dec * delta_r_per_qtl
+        mean_return_eligible_qtl = float(np.mean(realized_delta_per_qtl)) if n > 0 else 0.0
+        mean_gain_10qtl_eligible = mean_return_eligible_qtl * quantity_per_decision
 
-        # Downside outcomes: 5th percentile of realized per-quintal outcome when stored
+        # Conditional return per stored quintal (calculated strictly over STORE decisions)
+        # Denominator: n_stored (Times_Stored)
         stored_outcomes = delta_r_per_qtl[dec == 1]
-        p05_stored = float(np.percentile(stored_outcomes, 5)) if len(stored_outcomes) > 0 else 0.0
-        min_stored = float(np.min(stored_outcomes)) if len(stored_outcomes) > 0 else 0.0
+        if n_stored > 0:
+            mean_return_stored_qtl = float(np.mean(stored_outcomes))
+            mean_gain_10qtl_stored = mean_return_stored_qtl * quantity_per_decision
+            success_rate = (np.sum(stored_outcomes > 0.0) / n_stored) * 100.0
+            p05_stored = float(np.percentile(stored_outcomes, 5))
+            min_stored = float(np.min(stored_outcomes))
+        else:
+            mean_return_stored_qtl = 0.0
+            mean_gain_10qtl_stored = 0.0
+            success_rate = 0.0
+            p05_stored = 0.0
+            min_stored = 0.0
+
+        # Aggregate net incremental gain across all eligible decisions (each 10 quintals)
+        # Formula: sum(dec * delta_r_per_qtl * 10) == n * mean_gain_10qtl_eligible
+        aggregate_net_gain_10qtl_all = float(np.sum(realized_delta_per_qtl * quantity_per_decision))
 
         policy_results[pol_name] = {
             "decisions_evaluated": n,
             "times_stored": n_stored,
             "percent_stored": round(pct_stored, 2),
             "storage_win_rate_percent": round(success_rate, 2),
-            "mean_incremental_return_rupees_per_qtl": round(float(mean_delta_per_qtl), 2),
-            "total_net_incremental_gain_rupees": round(float(total_realized_delta), 2),
+            "mean_incremental_return_rupees_per_eligible_qtl": round(mean_return_eligible_qtl, 2),
+            "mean_incremental_gain_rupees_10qtl_per_eligible_decision": round(mean_gain_10qtl_eligible, 2),
+            "mean_incremental_return_rupees_per_stored_qtl": round(mean_return_stored_qtl, 2),
+            "mean_incremental_gain_rupees_10qtl_per_stored_decision": round(mean_gain_10qtl_stored, 2),
+            "aggregate_net_incremental_gain_rupees_10qtl_all_decisions": round(aggregate_net_gain_10qtl_all, 2),
             "worst_case_per_quintal_rupees": round(min_stored, 2),
             "5th_percentile_per_quintal_rupees": round(p05_stored, 2)
         }
@@ -158,13 +177,19 @@ def run_full_economic_study(output_dir: str = "backing/phase_04"):
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(os.path.join(output_dir, "outputs"), exist_ok=True)
 
-    # 1. Generate Sensitivity Matrix
-    print("[1/5] Generating Theoretical Sensitivity Matrix...")
+    # 1. Generate Sensitivity Matrices
+    print("[1/5] Generating Theoretical Sensitivity Matrices...")
     sensitivity_records = generate_sensitivity_matrix()
     sens_df = pd.DataFrame(sensitivity_records)
     sens_path = os.path.join(output_dir, "economic_sensitivity.csv")
     sens_df.to_csv(sens_path, index=False)
-    print(f"  -> Saved {len(sens_df)} sensitivity records to {sens_path}")
+    print(f"  -> Saved {len(sens_df)} baseline sensitivity records (d_q=0.0) to {sens_path}")
+
+    sens_dq_records = generate_sensitivity_matrix_with_quality_discount()
+    sens_dq_df = pd.DataFrame(sens_dq_records)
+    sens_dq_path = os.path.join(output_dir, "economic_sensitivity_quality_discount.csv")
+    sens_dq_df.to_csv(sens_dq_path, index=False)
+    print(f"  -> Saved {len(sens_dq_df)} quality-discount sensitivity records to {sens_dq_path}")
 
     # 2. Ingest Data and Build Features
     print("\n[2/5] Ingesting Mandi Dataset & Engineering Features...")
@@ -183,7 +208,7 @@ def run_full_economic_study(output_dir: str = "backing/phase_04"):
     # 4. Train Validated Classifier on Train Partition Only
     print("\n[4/5] Training Baseline Classifier on Training Partition Only...")
     clf = train_baseline_classifier_for_economic_policy(train_df, val_df)
-    
+
     # Generate predictions strictly out-of-sample
     val_X = val_df[FEATURE_COLUMNS].fillna(0.0)
     val_preds = clf.predict(val_X)
@@ -213,8 +238,11 @@ def run_full_economic_study(output_dir: str = "backing/phase_04"):
                     "Times_Stored": stats["times_stored"],
                     "Percent_Stored": stats["percent_stored"],
                     "Storage_Win_Rate_Percent": stats["storage_win_rate_percent"],
-                    "Mean_Incremental_Return_Rupees_Per_Qtl": stats["mean_incremental_return_rupees_per_qtl"],
-                    "Total_Net_Gain_Rupees_Per_10Qtl": stats["total_net_incremental_gain_rupees"],
+                    "Mean_Incremental_Return_Rupees_Per_Eligible_Qtl": stats["mean_incremental_return_rupees_per_eligible_qtl"],
+                    "Mean_Incremental_Gain_Rupees_10Qtl_Per_Eligible_Decision": stats["mean_incremental_gain_rupees_10qtl_per_eligible_decision"],
+                    "Mean_Incremental_Return_Rupees_Per_Stored_Qtl": stats["mean_incremental_return_rupees_per_stored_qtl"],
+                    "Mean_Incremental_Gain_Rupees_10Qtl_Per_Stored_Decision": stats["mean_incremental_gain_rupees_10qtl_per_stored_decision"],
+                    "Aggregate_Net_Incremental_Gain_Rupees_10Qtl_All_Decisions": stats["aggregate_net_incremental_gain_rupees_10qtl_all_decisions"],
                     "Worst_Case_Per_Qtl_Rupees": stats["worst_case_per_quintal_rupees"],
                     "P05_Per_Qtl_Rupees": stats["5th_percentile_per_quintal_rupees"]
                 }
@@ -233,7 +261,6 @@ def run_full_economic_study(output_dir: str = "backing/phase_04"):
         sub_test = test_df[test_df['Commodity'] == comm]
         if len(sub_test) == 0:
             continue
-        sub_indices = sub_test.index
         # Match test_preds indexing
         test_df_reset = test_df.reset_index(drop=True)
         sub_mask = (test_df_reset['Commodity'] == comm).values
@@ -245,8 +272,10 @@ def run_full_economic_study(output_dir: str = "backing/phase_04"):
                 "Commodity": comm,
                 "Policy": pol_name,
                 "Sample_Count": stats["decisions_evaluated"],
+                "Times_Stored": stats["times_stored"],
                 "Storage_Win_Rate_Percent": stats["storage_win_rate_percent"],
-                "Mean_Incremental_Return_Rupees_Per_Qtl": stats["mean_incremental_return_rupees_per_qtl"],
+                "Mean_Incremental_Return_Rupees_Per_Eligible_Qtl": stats["mean_incremental_return_rupees_per_eligible_qtl"],
+                "Mean_Incremental_Return_Rupees_Per_Stored_Qtl": stats["mean_incremental_return_rupees_per_stored_qtl"],
                 "P05_Per_Qtl_Rupees": stats["5th_percentile_per_quintal_rupees"]
             })
     comm_df = pd.DataFrame(comm_records)

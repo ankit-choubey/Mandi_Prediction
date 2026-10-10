@@ -1,9 +1,9 @@
 # Phase 4: Economic Assumptions and Calibrated Parameters
 
-**Project:** Mandi_Prediction  
-**Repository:** `ankit-choubey/Mandi_Prediction`  
-**Phase:** 4 — Economic Decision Support and Sell-versus-Store Validation  
-**Date:** October 10, 2026  
+**Project:** Mandi_Prediction
+**Repository:** `ankit-choubey/Mandi_Prediction`
+**Phase:** 4 — Economic Decision Support and Sell-versus-Store Validation
+**Date:** October 10, 2026
 
 ---
 
@@ -57,7 +57,11 @@ $$\Delta P_{\text{break\_even}}\% = \left(\frac{P_{\text{break\_even}} - P_T}{P_
 
 ## 3. Calibrated Scenario Definitions
 
-Based on official reference documentation ([CWC Tariff FY 2026–27](./references/source_manifest.md#2-document-1-official-warehousing-tariff-reference) and [MoFPI Post-Harvest Loss Report 2022](./references/source_manifest.md#3-document-2-official-agricultural-post-harvest-loss-reference)), three scenarios are formally structured:
+> **CRITICAL PROVENANCE CAVEAT:**
+> The parameter values defined below are **illustrative research assumptions informed by official reference benchmarks**, NOT locally validated farmgate parameters.
+> - Published CWC tariffs ([CWC Tariff FY 2026–27](./references/source_manifest.md#2-document-1-official-warehousing-tariff-reference)) represent railside and regional public terminal benchmarks; they do NOT measure decentralized village warehouse, cold storage, or APMC yard storage fees paid by individual farmers in Uttar Pradesh.
+> - National post-harvest loss figures ([MoFPI Post-Harvest Loss Report 2022](./references/source_manifest.md#3-document-2-official-agricultural-post-harvest-loss-reference)) quantify cumulative losses across the entire multi-week supply chain; they do NOT represent exact physical shrinkage over exactly 7 calendar days of storage.
+> - These values are used to establish plausible sensitivity bounds, not to assert empirical farmer costs.
 
 | Parameter | Optimistic Scenario | Central (Benchmark) Scenario | Conservative Scenario |
 |---|---|---|---|
@@ -85,3 +89,15 @@ Evaluating the required 7-day price appreciation across benchmark commodity pric
 - The statistical classification target (DEC-015) defines a `Favorable` market condition as price appreciation $> +2.5\%$.
 - In the **Central Scenario**, the economic break-even threshold is $+1.71\%$ to $+2.49\%$, which is close to the $+2.5\%$ threshold.
 - However, in the **Conservative Scenario**, break-even requires **$+4.33\%$ to $+5.74\%$** appreciation. A generic `Favorable` prediction ($> +2.5\%$) is **insufficient** to guarantee net profitability under conservative costs.
+
+---
+
+## 5. Sensitivity Output Artifacts
+
+Two sensitivity matrix outputs are generated and tracked:
+1. [`backing/phase_04/economic_sensitivity.csv`](./economic_sensitivity.csv) (144 records):
+   - Varies $P_T \in \{1500, 2500, 3500\}$, $c_s \in \{10, 20, 35, 50\}$, $L \in \{0.5\%, 1.0\%, 2.0\%, 5.0\%\}$, and $i \in \{4\%, 7\%, 12\%\}$.
+   - Explicitly holds quality markdown $d_q = 0.0$ (`Quality_Discount_Fraction = 0.0`).
+2. [`backing/phase_04/economic_sensitivity_quality_discount.csv`](./economic_sensitivity_quality_discount.csv) (576 records):
+   - Expands the parameter grid by varying quality discount $d_q \in \{0.0, 1.0\%, 3.0\%, 5.0\%\}$.
+   - Demonstrates that for perishable commodities where storage causes visual or moisture decay, a modest 3% quality markdown increases the required break-even threshold on Wheat ($P_T = 2500$) from $+1.95\%$ to $+5.11\%$, reinforcing the prohibitive economic risk of short-term storage without cold chain guarantees.

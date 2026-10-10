@@ -1,26 +1,26 @@
-Commodity,Policy,Sample_Count,Storage_Win_Rate_Percent,Mean_Incremental_Return_Rupees_Per_Qtl,P05_Per_Qtl_Rupees
-Wheat,Always Sell,2424,0.0,0.0,0.0
-Wheat,Always Store,2424,8.79,-44.41,-119.19
-Wheat,Trend Momentum (T),2424,5.19,-4.66,-228.43
-Wheat,Model Signal (T),2424,15.38,-0.22,-189.07
-Wheat,Oracle Benchmark (Upper Bound),2424,100.0,6.6,1.99
-Potato,Always Sell,572,0.0,0.0,0.0
-Potato,Always Store,572,11.19,-27.42,-175.31
-Potato,Trend Momentum (T),572,10.2,-5.34,-481.21
-Potato,Model Signal (T),572,20.52,5.66,-106.98
-Potato,Oracle Benchmark (Upper Bound),572,100.0,24.02,25.19
-Onion,Always Sell,380,0.0,0.0,0.0
-Onion,Always Store,380,39.47,87.87,-320.44
-Onion,Trend Momentum (T),380,48.54,27.32,-332.11
-Onion,Model Signal (T),380,55.26,46.47,-234.57
-Onion,Oracle Benchmark (Upper Bound),380,100.0,149.2,17.63
-Tomato,Always Sell,342,0.0,0.0,0.0
-Tomato,Always Store,342,26.02,-14.63,-444.07
-Tomato,Trend Momentum (T),342,25.97,-34.8,-797.15
-Tomato,Model Signal (T),342,35.29,-3.14,-337.13
-Tomato,Oracle Benchmark (Upper Bound),342,100.0,97.18,84.07
-Rice,Always Sell,374,0.0,0.0,0.0
-Rice,Always Store,374,35.03,51.28,-3518.74
-Rice,Trend Momentum (T),374,23.19,-242.63,-5212.32
-Rice,Model Signal (T),374,55.32,148.81,-658.71
-Rice,Oracle Benchmark (Upper Bound),374,100.0,596.23,21.9
+Commodity,Policy,Sample_Count,Times_Stored,Storage_Win_Rate_Percent,Mean_Incremental_Return_Rupees_Per_Eligible_Qtl,Mean_Incremental_Return_Rupees_Per_Stored_Qtl,P05_Per_Qtl_Rupees
+Wheat,Always Sell,2424,0,0.0,0.0,0.0,0.0
+Wheat,Always Store,2424,2424,8.79,-44.41,-44.41,-119.19
+Wheat,Trend Momentum (T),2424,154,5.19,-4.66,-73.42,-228.43
+Wheat,Model Signal (T),2424,13,15.38,-0.22,-40.39,-189.07
+Wheat,Oracle Benchmark (Upper Bound),2424,213,100.0,6.6,75.14,1.99
+Potato,Always Sell,572,0,0.0,0.0,0.0,0.0
+Potato,Always Store,572,572,11.19,-27.42,-27.42,-175.31
+Potato,Trend Momentum (T),572,49,10.2,-5.34,-62.39,-481.21
+Potato,Model Signal (T),572,229,20.52,5.66,14.14,-106.98
+Potato,Oracle Benchmark (Upper Bound),572,64,100.0,24.02,214.71,25.19
+Onion,Always Sell,380,0,0.0,0.0,0.0,0.0
+Onion,Always Store,380,380,39.47,87.87,87.87,-320.44
+Onion,Trend Momentum (T),380,103,48.54,27.32,100.81,-332.11
+Onion,Model Signal (T),380,114,55.26,46.47,154.89,-234.57
+Onion,Oracle Benchmark (Upper Bound),380,150,100.0,149.2,377.96,17.63
+Tomato,Always Sell,342,0,0.0,0.0,0.0,0.0
+Tomato,Always Store,342,342,26.02,-14.63,-14.63,-444.07
+Tomato,Trend Momentum (T),342,77,25.97,-34.8,-154.56,-797.15
+Tomato,Model Signal (T),342,102,35.29,-3.14,-10.54,-337.13
+Tomato,Oracle Benchmark (Upper Bound),342,89,100.0,97.18,373.44,84.07
+Rice,Always Sell,374,0,0.0,0.0,0.0,0.0
+Rice,Always Store,374,374,35.03,51.28,51.28,-3518.74
+Rice,Trend Momentum (T),374,69,23.19,-242.63,-1315.1,-5212.32
+Rice,Model Signal (T),374,94,55.32,148.81,592.06,-658.71
+Rice,Oracle Benchmark (Upper Bound),374,131,100.0,596.23,1702.21,21.9
