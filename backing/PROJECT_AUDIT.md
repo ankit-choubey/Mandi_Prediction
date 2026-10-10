@@ -475,5 +475,46 @@ Evaluated on exact calendar $T+7$ matches across the chronological Validation pa
 - **Operational Directive:** **STRICTLY NOT APPROVED FOR OPERATIONAL FARMER RECOMMENDATIONS.**
   An unhedged decision rule with a ~62% loss frequency when storing and severe downside tail risk is incompatible with practical deployment. Individual farmer risk preferences, household liquidity buffers, and operating margins cannot be observed from aggregate APMC trade archives, but the empirical loss distribution alone precludes operational recommendation. Operational deployment must remain prohibited until multi-month storage horizons, physical cold chain logistics, and price floor guarantees are modeled and validated.
 
+## 21. Phase 5: Robustness, Statistical Uncertainty, and Generalization Audit
 
+### 21.1 Purpose and Research Scope
+Phase 5 systematically audits whether the predictive and economic findings from Phases 3 and 4 are robust to sampling variation, intra-series correlation, alternative cost boundaries, commodity/market heterogeneity, temporal shifts, and decision rule thresholds.
+
+### 21.2 Baseline Reproduction
+- All 5 raw dataset files verified by cryptographic SHA-256 hashes against original archives.
+- 160,192 raw records -> 157,512 Strategy 2 clean records -> 150,687 active series records (`min_series_records >= 20`) -> 115,833 exact calendar $T+7$ target pairs independently reproduced.
+- Exact chronological partitions: Train ($n=99,881$), Val ($n=5,671$), Exploratory Test ($n=9,551$) with 8-day purged embargo buffers.
+- Baseline classification performance verified: Validation Macro F1 = 0.4957, Balanced Accuracy = 49.48%; Exploratory Test Macro F1 = 0.5041, Balanced Accuracy = 49.59%.
+
+### 21.3 Cluster Bootstrap Statistical Uncertainty (500 Iterations)
+Resampling entire canonical series clusters (354 clusters on Val, 357 on Test) accounts for intra-series serial dependence:
+- **Macro F1:** Validation 95% CI: **[0.4710, 0.5193]**; Exploratory Test 95% CI: **[0.4822, 0.5242]**.
+- **Model Win Rate (Central):** Validation 95% CI: **[32.48%, 44.43%]**; Exploratory Test 95% CI: **[32.88%, 42.48%]**. Proves that even under cluster-level sampling variation, the storage win rate is bounded strictly below 45%.
+- **Model Incremental Return (Central, ₹/qtl):** Validation 95% CI: **[+₹16.53, +₹54.97]**; Exploratory Test 95% CI: **[+₹27.37, +₹57.21]**.
+- **Governance Caveat:** Confidence intervals excluding zero reflect simulation properties under assumed tariffs, not proof of real-world profitability.
+
+### 21.4 Economic Sensitivity and Break-Even Tipping Points
+- All 144 baseline and 576 quality-discount sensitivity records in Phase 4 verified 100% consistent with `src/economic_model.py`.
+- Positive expected return persists under central tariffs, but flips negative when physical loss $L \ge 5\%$, quality markdown $d_q \ge 5\%-8\%$, or storage/handling friction exceeds ₹75/qtl.
+
+### 21.5 Commodity, Market, and Temporal Heterogeneity
+- Subgroup rule: evaluated strictly for subgroups with $N \ge 250$ eligible decisions.
+- **Commodity Divergence:** Wheat produces negative net returns (-₹0.22/qtl eligible, -₹40.39/stored qtl) with a 15.38% win rate; Tomatoes produce negative net returns (-₹3.14/qtl eligible) with a 35.29% win rate. Gains are concentrated in semi-perishables (Onion, Rice).
+- **Market Divergence:** 5 of 17 mandis (Uttaripura, Choubepur, Gurusarai, Purwa, Mauranipur) produce negative net returns under the model policy.
+- **Temporal Stability:** The model policy maintains positive mean returns month-over-month (+₹6.24 to +₹62.92/qtl), but the storage win rate never exceeds 47% in any individual month.
+
+### 21.6 Decision Rule Audit
+- Comparing argmax ($\hat{Y}=2$) against probability thresholds $P(\text{Favorable}) \ge \tau \in [0.30, 0.60]$.
+- Requiring high confidence ($\tau = 0.60$) raises win rate marginally to 46.8%–46.9%, but chokes decision volume down to 2.8%–3.9% and collapses net return by 70%–78%. No threshold achieves a $> 50\%$ win rate.
+
+### 21.7 Test Suite Execution & Updated Test Counts
+- Added [`tests/test_phase05_robustness.py`](../tests/test_phase05_robustness.py): 6 passed (cluster bootstrap reproducibility, subgroup threshold enforcement, decision rule monotonicity, cluster key preservation, tipping point monotonicity, mandatory disclaimers).
+- Combined Repository Regression Suite: **94 passed, 0 failed** (Exit code 0).
+
+### 21.8 Four-Tier Evidence Classification and Final Verdict
+- **Tier A (Independently Reproduced):** Pipeline counts, partition dates, baseline predictive metrics, and canonical economic formulas.
+- **Tier B (Supported by Exploratory Evidence):** Model selectivity advantage over Always Store and Trend; bootstrap interval bounds.
+- **Tier C (Sensitive to Assumptions):** Break-even tipping points; geographic/commodity performance concentration.
+- **Tier D (Not Established):** Economic causality; farmgate realized prices; physical smallholder warehouse feasibility.
+- **Final Verdict:** **PASS (Audit & Robustness Methodology Verified; Operational Deployment Strictly Prohibited).**
 
