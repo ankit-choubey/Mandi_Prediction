@@ -1,0 +1,9 @@
+Configuration,Crop,N_Obs,Majority_Acc,Test_Acc,Lift,Balanced_Acc,Macro_F1,Prec_Unfav,Prec_Fav,Rec_Unfav,Rec_Fav
+Baseline_27_Features,Potato,572,76.92,46.33,-30.59,50.66,0.4497,0.6944,0.1538,0.4167,0.6667
+Baseline_27_Features,Onion,380,47.89,55.79,7.89,50.3,0.4903,0.2903,0.537,0.375,0.3867
+Baseline_27_Features,Tomato,342,51.17,56.14,4.97,51.96,0.5205,0.52,0.3667,0.5065,0.3667
+Baseline_27_Features,Wheat,2424,87.25,85.93,-1.32,35.32,0.3491,0.1915,0.1667,0.0687,0.0112
+Enhanced_39_Features,Potato,572,76.92,42.13,-34.79,48.25,0.4178,0.5625,0.1358,0.45,0.6111
+Enhanced_39_Features,Onion,380,47.89,56.05,8.16,50.56,0.4899,0.2368,0.5714,0.375,0.4
+Enhanced_39_Features,Tomato,342,51.17,54.97,3.8,52.08,0.5155,0.4125,0.4071,0.4286,0.5111
+Enhanced_39_Features,Wheat,2424,87.25,86.39,-0.87,38.6,0.4,0.3036,0.5,0.1298,0.0506

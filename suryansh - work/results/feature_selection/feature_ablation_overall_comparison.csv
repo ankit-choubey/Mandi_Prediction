@@ -1,0 +1,3 @@
+Model_Configuration,Num_Features,Fit_Time_Sec,Val_Accuracy,Val_Balanced_Acc,Val_Macro_F1,Test_Majority_Baseline_Acc,Test_Accuracy,Test_Accuracy_Lift,Test_Balanced_Accuracy,Test_Macro_F1,Test_Weighted_F1
+Baseline_27_Features,27,161.1,55.88,50.02,0.4987,55.55,60.9,5.35,51.79,0.5253,0.5977
+Enhanced_39_Features,39,259.6,56.36,50.43,0.503,55.55,60.86,5.31,52.62,0.5314,0.6012
