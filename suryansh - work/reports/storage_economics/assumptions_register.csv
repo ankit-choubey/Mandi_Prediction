@@ -2,11 +2,14 @@ parameter_name,symbol,crop,nominal_value,unit,sensitivity_min,sensitivity_max,ju
 Initial Batch Quantity,Q_0,All Crops,100.0,Quintals,10.0,500.0,Standard truckload / tractor-trolley lot size for commercial wholesale sale,Fixed Benchmark
 Storage Duration,H,Potato & Onion,7,Calendar Days,3,14,Matches the fixed T+7 prediction horizon of the classification model,Fixed Benchmark
 Physical Loss Rate - Onion,L_phys,Onion,1.85,%,1.00,4.00,Based on ICAR-CIPHET weekly ventilated storage shrink rates in Northern India,Empirically Documented
-Physical Loss Rate - Potato,L_phys,Potato,0.65,%,0.30,1.50,Based on ICAR-CIPHET cold store weekly shrink rate under 2-4 deg C,Empirically Documented
-Storage Fee - Onion,C_store,Onion,18.00,₹ / Quintal / 7-days,12.00,25.00,CWC UP Regional Warehouse weekly slab for general agricultural godown,Documented Tariff
-Storage Fee - Potato,C_store,Potato,7.00,₹ / Quintal / 7-days,5.00,12.00,Pro-rated weekly share of UP state-regulated seasonal cold store charges,Documented Tariff
+Physical Loss Rate - Potato (Cold Chilled),L_phys,Potato,0.15,%,0.05,0.50,Marginal weekly moisture loss under controlled 2-4 deg C and 90-95% RH,Empirically Documented
+Physical Loss Rate - Potato (On-Farm Ambient),L_phys,Potato,2.20,%,1.50,3.50,Weekly moisture and fungal rot loss in ambient traditional pits/heaps,Empirically Documented
+Storage Fee - Onion,C_store,Onion,5.00,₹ / Quintal / 7-days,3.00,10.00,Depreciation and maintenance of traditional ventilated chawl,Empirical Commercial Reality
+Storage Fee - Potato (Regime 1: New Seasonal Entry),C_store,Potato,280.00,₹ / Quintal (Seasonal Lump-Sum),260.00,320.00,UP Regulation of Cold Storage Act; non-divisible March-Nov seasonal slot fee (infeasible for 7d),Documented Statutory Tariff
+Storage Fee - Potato (Regime 2: Sunk Parchi Delay),C_store,Potato,0.00,₹ / Quintal / 7-days,0.00,0.00,Marginal holding fee on pre-existing seasonal receipt (fee already sunk in March),Institutional Reality
+Storage Fee - Potato (Regime 3: On-Farm Pit),C_store,Potato,0.00,₹ / Quintal / 7-days,0.00,0.00,Traditional farm-gate straw heap holding (zero rent; 2.20% weekly moisture/rot loss),Agro-Commercial Reality
 Double-Handling Labor,C_labor,All Crops,6.50,₹ / Quintal,4.00,10.00,Loading into store, stacking, destacking, and loading onto return trolley,Empirically Documented
-Local Shuttle Haulage,C_trans,All Crops,8.00,₹ / Quintal,0.00,15.00,Short-haul tractor transport from mandi yard to nearby off-site warehouse,Scenario Parameter
+Empirical Freight & Haulage Function,C_trans,All Crops,36.00,₹ / Quintal (Mean UP Haul),14.84,93.93,"Empirical distance model: C(d) = 7.00 + 1.207*d; weighted UP average distance 24.2 km (Lucknow 18.7km to Jhansi 47.2km)",Empirical Survey Model
 APMC Mandi Cess,tau_mandi,All Crops,1.50,% of Gross Value,1.00,2.50,Statutory market user fee mandated by UP Krishi Utpadan Mandi Samiti,Statutory Rule
 Annual Capital Cost Rate,r_annual,All Crops,12.00,% per annum,7.00,18.00,Commercial short-term Kisan Credit Card interest rate for crop loans,Monetary Benchmark
 Quality Markdown - Onion,delta_grade,Onion,2.50,% of Future Price,0.00,6.00,Average price penalty for bulb softness/sprouting after 7-day ambient holding,Empirically Documented
