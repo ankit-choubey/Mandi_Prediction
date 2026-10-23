@@ -2,28 +2,73 @@
 Targeted Data Profiling for Candidate Crops: Potato, Onion, Tomato, Wheat
 APMC Mandi Market Intelligence Project
 Investigator: Suryansh
+
+Supports both 5-Year Expanded Panel and 2-Year Baseline Datasets.
 """
 
 import os
+import sys
 import glob
+import argparse
 import pandas as pd
 import numpy as np
 from datetime import timedelta
 
-SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Potential roots
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-candidate_raw_dirs = [
-    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "data", "raw")),
-    os.path.abspath(os.path.join(WORKSPACE_ROOT, "data", "raw"))
-]
-RAW_DATA_DIR = next((d for d in candidate_raw_dirs if os.path.isdir(d)), candidate_raw_dirs[0])
-OUTPUT_DIR = os.path.join(WORKSPACE_ROOT, "reports", "phase_02_crop_suitability")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 CANDIDATE_CROPS = ["Potato", "Onion", "Tomato", "Wheat"]
 
-def run_candidate_profiling():
-    csv_files = sorted(glob.glob(os.path.join(RAW_DATA_DIR, "*.csv")))
-    print(f"Loading raw CSVs from {RAW_DATA_DIR}...")
+
+def resolve_data_dir(user_path=None):
+    if user_path:
+        # Check direct path
+        if os.path.isdir(user_path):
+            return os.path.abspath(user_path)
+        # Check against common anchor directories
+        for base in [os.getcwd(), PROJECT_ROOT, WORKSPACE_ROOT, "/kaggle/working/Mandi_Prediction", "/kaggle/working"]:
+            p = os.path.join(base, user_path)
+            if os.path.isdir(p):
+                return os.path.abspath(p)
+
+    # Defaults: prioritize 5 year dataset
+    search_dirs = [
+        os.path.join(PROJECT_ROOT, "5 year dataset"),
+        os.path.join(WORKSPACE_ROOT, "5 year dataset"),
+        os.path.join(os.getcwd(), "5 year dataset"),
+        "/kaggle/working/Mandi_Prediction/5 year dataset",
+        os.path.join(PROJECT_ROOT, "data", "raw"),
+        os.path.join(WORKSPACE_ROOT, "data", "raw"),
+        os.path.join(os.getcwd(), "data", "raw"),
+    ]
+    for d in search_dirs:
+        if os.path.isdir(d):
+            return os.path.abspath(d)
+    return user_path or "5 year dataset"
+
+
+def resolve_output_dir(user_path=None):
+    if user_path:
+        if os.path.isabs(user_path):
+            return user_path
+        return os.path.abspath(os.path.join(os.getcwd(), user_path))
+    return os.path.join(WORKSPACE_ROOT, "reports", "phase_02_crop_suitability")
+
+
+def run_candidate_profiling(data_dir=None, output_dir=None, output_suffix="5year"):
+    target_data_dir = resolve_data_dir(data_dir)
+    target_output_dir = resolve_output_dir(output_dir)
+    os.makedirs(target_output_dir, exist_ok=True)
+    
+    csv_files = sorted(glob.glob(os.path.join(target_data_dir, "*.csv")))
+    print(f"Loading raw CSVs from {target_data_dir}...")
+    print(f"Found {len(csv_files)} files: {[os.path.basename(f) for f in csv_files]}")
+    
+    if not csv_files:
+        raise FileNotFoundError(f"No CSV files found in {target_data_dir}")
+
     dfs = []
     for f in csv_files:
         df_temp = pd.read_csv(f)
@@ -159,102 +204,73 @@ def run_candidate_profiling():
         n_districts = len(districts)
         mandis = sorted(clean_crop['Market'].unique())
         n_mandis = len(mandis)
-        varieties = sorted(clean_crop['Variety'].unique())
-        n_varieties = len(varieties)
-        grades = sorted(clean_crop['Grade'].unique())
-        n_grades = len(grades)
-        n_series = clean_crop['series_id'].nunique()
+        canonical_series = clean_crop['series_id'].nunique()
         
-        # Prices
-        prices = clean_crop['Modal_Price']
-        p_mean = prices.mean()
-        p_std = prices.std()
-        p_min = prices.min()
-        p_25 = prices.quantile(0.25)
-        p_med = prices.median()
-        p_75 = prices.quantile(0.75)
-        p_max = prices.max()
+        # Data Quality
+        price_order_valid_pct = (raw_crop['Price_Order_Valid']).mean() * 100
+        positive_price_pct = (raw_crop['Positive_Price']).mean() * 100
+        ambiguous_rows_cnt = raw_crop['is_ambiguous'].sum()
+        ambiguous_rows_pct = ambiguous_rows_cnt / len(raw_crop) * 100 if len(raw_crop) > 0 else 0
         
-        # Intraday spread
-        spread = clean_crop['Max_Price'] - clean_crop['Min_Price']
-        spread_ratio = (spread / clean_crop['Modal_Price']) * 100
-        mean_spread_pct = spread_ratio.mean()
+        # T+7 Matching Feasibility
+        matched_count = len(matched_crop)
+        t7_availability_pct = (matched_count / len(clean_crop) * 100) if len(clean_crop) > 0 else 0
         
-        # Matching & T+7
-        raw_rows = len(raw_crop)
-        clean_rows = len(clean_crop)
-        matched_pairs = len(matched_crop)
-        t7_match_rate = (matched_pairs / clean_rows * 100) if clean_rows > 0 else 0
+        # 7-day return distribution
+        ret = matched_crop['Return_7d']
+        ret_mean = ret.mean() if len(ret) > 0 else np.nan
+        ret_std = ret.std() if len(ret) > 0 else np.nan
+        ret_median = ret.median() if len(ret) > 0 else np.nan
+        ret_iqr = (ret.quantile(0.75) - ret.quantile(0.25)) if len(ret) > 0 else np.nan
+        ret_min = ret.min() if len(ret) > 0 else np.nan
+        ret_max = ret.max() if len(ret) > 0 else np.nan
         
-        # Target returns & Volatility
-        returns = matched_crop['Return_7d']
-        r_mean = returns.mean()
-        r_std = returns.std()
-        r_med = returns.median()
-        zero_return_pct = (returns == 0.0).mean() * 100 if len(returns) > 0 else 0
-        
-        # Class distribution
-        class_counts = matched_crop['Class_DEC015'].value_counts()
-        n_fav = class_counts.get('Favorable', 0)
-        n_norm = class_counts.get('Normal', 0)
-        n_unfav = class_counts.get('Unfavorable', 0)
-        
-        pct_fav = (n_fav / matched_pairs * 100) if matched_pairs > 0 else 0
-        pct_norm = (n_norm / matched_pairs * 100) if matched_pairs > 0 else 0
-        pct_unfav = (n_unfav / matched_pairs * 100) if matched_pairs > 0 else 0
+        # Class distribution overall
+        cls_counts = matched_crop['Class_DEC015'].value_counts(normalize=True) * 100
+        pct_norm = cls_counts.get('Normal', 0.0)
+        pct_fav = cls_counts.get('Favorable', 0.0)
+        pct_unfav = cls_counts.get('Unfavorable', 0.0)
         
         # Partition breakdown
         train_n = (matched_crop['Partition'] == 'Train').sum()
         val_n = (matched_crop['Partition'] == 'Val').sum()
         test_n = (matched_crop['Partition'] == 'Exploratory_Test').sum()
         
-        # Test partition class balance
-        test_crop = matched_crop[matched_crop['Partition'] == 'Exploratory_Test']
-        test_fav = (test_crop['Class_DEC015'] == 'Favorable').sum()
-        test_norm = (test_crop['Class_DEC015'] == 'Normal').sum()
-        test_unfav = (test_crop['Class_DEC015'] == 'Unfavorable').sum()
-
+        test_part = matched_crop[matched_crop['Partition'] == 'Exploratory_Test']
+        test_cls_counts = test_part['Class_DEC015'].value_counts()
+        test_norm = test_cls_counts.get('Normal', 0)
+        test_fav = test_cls_counts.get('Favorable', 0)
+        test_unfav = test_cls_counts.get('Unfavorable', 0)
+        
         crop_metrics.append({
             'Crop': crop,
-            'Raw_Rows': raw_rows,
-            'Clean_Rows': clean_rows,
-            'Excluded_Conflicting_Rows': raw_crop['is_ambiguous'].sum(),
-            'Price_Order_Violations': (~raw_crop['Price_Order_Valid']).sum(),
-            'Non_Positive_Price_Rows': (~raw_crop['Positive_Price']).sum(),
-            'Unique_Districts_Count': n_districts,
-            'Districts_List': "; ".join(districts),
-            'Unique_Markets_Count': n_mandis,
-            'Unique_Varieties_Count': n_varieties,
-            'Top_Varieties': "; ".join(clean_crop['Variety'].value_counts().head(3).index),
-            'Unique_Grades_Count': n_grades,
-            'Grades_List': "; ".join(grades),
-            'Canonical_Series_Count': n_series,
-            'Date_Min': min_date.strftime('%Y-%m-%d') if pd.notnull(min_date) else 'N/A',
-            'Date_Max': max_date.strftime('%Y-%m-%d') if pd.notnull(max_date) else 'N/A',
+            'Raw_Rows': len(raw_crop),
+            'Clean_Rows': len(clean_crop),
+            'Price_Order_Valid_Pct': round(price_order_valid_pct, 2),
+            'Positive_Price_Pct': round(positive_price_pct, 2),
+            'Ambiguous_Conflicting_Rows': ambiguous_rows_cnt,
+            'Ambiguous_Conflicting_Pct': round(ambiguous_rows_pct, 2),
+            'Canonical_Series_Count': canonical_series,
+            'District_Count': n_districts,
+            'Districts_List': ", ".join(districts),
+            'Market_Count': n_mandis,
+            'Min_Date': str(min_date.date()) if pd.notnull(min_date) else None,
+            'Max_Date': str(max_date.date()) if pd.notnull(max_date) else None,
+            'Unique_Trading_Dates': unique_dates,
             'Calendar_Span_Days': calendar_span_days,
-            'Unique_Dates_Count': unique_dates,
-            'Pct_Consecutive_1d_Gaps': round(pct_consecutive_1d, 2),
+            'Consecutive_1Day_Gaps_Pct': round(pct_consecutive_1d, 2),
             'Median_Gap_Days': median_gap,
             'Max_Gap_Days': max_gap,
-            'Price_Mean_Rs': round(p_mean, 2),
-            'Price_Std_Rs': round(p_std, 2),
-            'Price_Min_Rs': round(p_min, 2),
-            'Price_Q25_Rs': round(p_25, 2),
-            'Price_Median_Rs': round(p_med, 2),
-            'Price_Q75_Rs': round(p_75, 2),
-            'Price_Max_Rs': round(p_max, 2),
-            'Mean_Intraday_Spread_Pct': round(mean_spread_pct, 2),
-            'Matched_T7_Pairs': matched_pairs,
-            'T7_Availability_Pct': round(t7_match_rate, 2),
-            'Return_7d_Mean_Pct': round(r_mean, 2),
-            'Return_7d_Std_Pct': round(r_std, 2),
-            'Return_7d_Median_Pct': round(r_med, 2),
-            'Exact_Zero_Return_Pct': round(zero_return_pct, 2),
-            'Class_Normal_Count': n_norm,
+            'Matched_T7_Pairs': matched_count,
+            'T7_Availability_Pct': round(t7_availability_pct, 2),
+            'Return_7d_Mean_Pct': round(ret_mean, 2),
+            'Return_7d_Std_Pct': round(ret_std, 2),
+            'Return_7d_Median_Pct': round(ret_median, 2),
+            'Return_7d_IQR_Pct': round(ret_iqr, 2),
+            'Return_7d_Min_Pct': round(ret_min, 2),
+            'Return_7d_Max_Pct': round(ret_max, 2),
             'Class_Normal_Pct': round(pct_norm, 2),
-            'Class_Favorable_Count': n_fav,
             'Class_Favorable_Pct': round(pct_fav, 2),
-            'Class_Unfavorable_Count': n_unfav,
             'Class_Unfavorable_Pct': round(pct_unfav, 2),
             'Train_Pairs_Count': train_n,
             'Val_Pairs_Count': val_n,
@@ -265,12 +281,25 @@ def run_candidate_profiling():
         })
         
     metrics_df = pd.DataFrame(crop_metrics)
-    csv_out_path = os.path.join(OUTPUT_DIR, "measured_crop_metrics.csv")
+    csv_out_path = os.path.join(target_output_dir, f"measured_crop_metrics_{output_suffix}.csv")
     metrics_df.to_csv(csv_out_path, index=False)
-    print(f"\nSaved measured metrics to: {csv_out_path}")
+    print(f"\nSaved {output_suffix} measured metrics to: {csv_out_path}")
+    
+    # Also update canonical measured_crop_metrics.csv
+    canonical_path = os.path.join(target_output_dir, "measured_crop_metrics.csv")
+    metrics_df.to_csv(canonical_path, index=False)
+    print(f"Updated canonical metrics to: {canonical_path}")
+    
     return metrics_df
 
+
 if __name__ == "__main__":
-    df = run_candidate_profiling()
+    parser = argparse.ArgumentParser(description="Profile candidate agricultural commodities.")
+    parser.add_argument("--data-dir", type=str, default=None, help="Path to raw CSV dataset.")
+    parser.add_argument("--output-dir", type=str, default=None, help="Path to reports directory.")
+    parser.add_argument("--suffix", type=str, default="5year", help="File suffix for metrics CSV.")
+    args = parser.parse_args()
+    
+    df = run_candidate_profiling(data_dir=args.data_dir, output_dir=args.output_dir, output_suffix=args.suffix)
     print("\nSummary Results:")
     print(df[['Crop', 'Raw_Rows', 'Clean_Rows', 'Canonical_Series_Count', 'Matched_T7_Pairs', 'T7_Availability_Pct', 'Return_7d_Std_Pct', 'Class_Normal_Pct']])
