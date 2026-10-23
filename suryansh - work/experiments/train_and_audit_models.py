@@ -6,7 +6,9 @@ Investigator: Suryansh
 
 import os
 import sys
+import glob
 import time
+import argparse
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -35,27 +37,53 @@ from sklearn.metrics import (
     log_loss
 )
 
-SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-candidate_data_dirs = [
-    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "data", "raw")),
-    os.path.abspath(os.path.join(WORKSPACE_ROOT, "data", "raw"))
-]
-DATA_DIR = next((d for d in candidate_data_dirs if os.path.isdir(d)), candidate_data_dirs[0])
-OUTPUT_DIR = os.path.join(WORKSPACE_ROOT, "reports", "phase_03_classification_protocol")
-FIGURES_DIR = os.path.join(WORKSPACE_ROOT, "figures")
-LOGS_DIR = os.path.join(WORKSPACE_ROOT, "logs")
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(FIGURES_DIR, exist_ok=True)
-os.makedirs(LOGS_DIR, exist_ok=True)
+
+def resolve_data_dir(user_path=None):
+    if user_path:
+        if os.path.isdir(user_path):
+            return os.path.abspath(user_path)
+        for base in [os.getcwd(), PROJECT_ROOT, WORKSPACE_ROOT, "/kaggle/working/Mandi_Prediction", "/kaggle/working"]:
+            p = os.path.join(base, user_path)
+            if os.path.isdir(p):
+                return os.path.abspath(p)
+
+    search_dirs = [
+        os.path.join(PROJECT_ROOT, "5 year dataset"),
+        os.path.join(WORKSPACE_ROOT, "5 year dataset"),
+        os.path.join(os.getcwd(), "5 year dataset"),
+        "/kaggle/working/Mandi_Prediction/5 year dataset",
+        os.path.join(PROJECT_ROOT, "data", "raw"),
+        os.path.join(WORKSPACE_ROOT, "data", "raw"),
+        os.path.join(os.getcwd(), "data", "raw"),
+    ]
+    for d in search_dirs:
+        if os.path.isdir(d):
+            return os.path.abspath(d)
+    return user_path or "5 year dataset"
+
+
+def resolve_output_dir(user_path=None):
+    if user_path:
+        if os.path.isabs(user_path):
+            return user_path
+        return os.path.abspath(os.path.join(os.getcwd(), user_path))
+    return os.path.join(WORKSPACE_ROOT, "reports", "phase_03_classification_protocol")
+
 
 # -----------------------------------------------------------------------------
 # 1. DATA INGESTION & CLEANING (Strategy 2)
 # -----------------------------------------------------------------------------
-def load_data():
-    csv_files = sorted([os.path.join(DATA_DIR, f) for f in os.listdir(DATA_DIR) if f.endswith('.csv')])
-    print(f"[DataLoader] Ingesting {len(csv_files)} raw district files...")
+def load_data(data_dir=None):
+    target_data_dir = resolve_data_dir(data_dir)
+    csv_files = sorted(glob.glob(os.path.join(target_data_dir, "*.csv")))
+    print(f"[DataLoader] Ingesting {len(csv_files)} raw district files from {target_data_dir}...")
+    if not csv_files:
+        raise FileNotFoundError(f"No CSV files found in {target_data_dir}")
+        
     dfs = [pd.read_csv(f) for f in csv_files]
     df = pd.concat(dfs, ignore_index=True)
     raw_count = len(df)
@@ -279,9 +307,16 @@ MODEL_CONFIGS = {
 # -----------------------------------------------------------------------------
 # 5. EXECUTION & EVALUATION
 # -----------------------------------------------------------------------------
-def run_live_pipeline():
+def run_live_pipeline(data_dir=None, output_dir=None):
     start_time = time.time()
-    raw_df = load_data()
+    target_output_dir = resolve_output_dir(output_dir)
+    figures_dir = os.path.join(target_output_dir, "figures")
+    logs_dir = os.path.join(target_output_dir, "logs")
+    os.makedirs(target_output_dir, exist_ok=True)
+    os.makedirs(figures_dir, exist_ok=True)
+    os.makedirs(logs_dir, exist_ok=True)
+    
+    raw_df = load_data(data_dir)
     dataset = engineer_features_and_target(raw_df)
     train_df, val_df, test_df = split_data(dataset)
     
@@ -300,7 +335,7 @@ def run_live_pipeline():
             'Preprocessing': 'SimpleImputer(strategy=median)',
             'Hyperparameters': str(cfg['params'])
         })
-    pd.DataFrame(param_records).to_csv(os.path.join(OUTPUT_DIR, "live_model_parameter_matrix.csv"), index=False)
+    pd.DataFrame(param_records).to_csv(os.path.join(target_output_dir, "live_model_parameter_matrix.csv"), index=False)
     
     # Train models
     fitted_pipelines = {}
@@ -341,7 +376,7 @@ def run_live_pipeline():
         'Average_Importance': (rf_importances + gb_importances) / 2
     }).sort_values(by='Average_Importance', ascending=False).reset_index(drop=True)
     fi_df['Rank'] = np.arange(1, len(fi_df) + 1)
-    fi_df.to_csv(os.path.join(OUTPUT_DIR, "live_feature_importance_matrix.csv"), index=False)
+    fi_df.to_csv(os.path.join(target_output_dir, "live_feature_importance_matrix.csv"), index=False)
     
     # Plot Feature Importance
     plt.figure(figsize=(10, 8), dpi=200)
@@ -349,7 +384,7 @@ def run_live_pipeline():
     plt.title('Feature Importance (Mean of RF and GB MDI)', fontsize=12, weight='bold')
     plt.xlabel('Importance Score')
     plt.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR, "live_feature_importance_ranking.png"))
+    plt.savefig(os.path.join(figures_dir, "live_feature_importance_ranking.png"))
     plt.close()
     
     # STAGE 2: TEST EVALUATION ACROSS ALL CROPS AND THE 4 APPROVED CROPS
@@ -373,6 +408,8 @@ def run_live_pipeline():
     ]
     
     for sub_name, sub_df in subgroups:
+        if len(sub_df) == 0:
+            continue
         y_true = sub_df['Target_Class'].values
         y_pred = sub_df['Predicted_Class'].values
         
@@ -424,18 +461,24 @@ def run_live_pipeline():
         plt.xlabel('Predicted Condition')
         plt.ylabel('True Condition')
         plt.tight_layout()
-        plt.savefig(os.path.join(FIGURES_DIR, f"live_cm_{sub_name.lower()}.png"))
+        plt.savefig(os.path.join(figures_dir, f"live_cm_{sub_name.lower()}.png"))
         plt.close()
         
     perf_df = pd.DataFrame(performance_records)
-    perf_df.to_csv(os.path.join(OUTPUT_DIR, "live_baseline_performance_matrix.csv"), index=False)
+    perf_df.to_csv(os.path.join(target_output_dir, "live_baseline_performance_matrix.csv"), index=False)
     
     elapsed = time.time() - start_time
     print(f"\n[Execution Completed] Full training and evaluation pipeline executed in {elapsed:.1f}s.")
     return perf_df, fi_df
 
+
 if __name__ == "__main__":
-    p_df, f_df = run_live_pipeline()
+    parser = argparse.ArgumentParser(description="Train and audit classification models.")
+    parser.add_argument("--data-dir", type=str, default=None, help="Path to raw CSV dataset.")
+    parser.add_argument("--output-dir", type=str, default=None, help="Path to reports directory.")
+    args = parser.parse_args()
+    
+    p_df, f_df = run_live_pipeline(data_dir=args.data_dir, output_dir=args.output_dir)
     print("\nLIVE TEST BENCHMARK RESULTS:")
     print(p_df[['Subgroup', 'N_Test_Obs', 'Majority_Baseline_Acc', 'Model_Test_Acc', 'Accuracy_Lift', 'Balanced_Accuracy', 'Macro_F1']].to_string(index=False))
     print("\nTOP 10 FINAL FEATURES BY IMPORTANCE:")
