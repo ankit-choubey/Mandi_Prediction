@@ -10,8 +10,15 @@ import pandas as pd
 import numpy as np
 from datetime import timedelta
 
-RAW_DATA_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
-OUTPUT_DIR = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work/reports/phase_02_crop_suitability"
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_raw_dirs = [
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "data", "raw")),
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "data", "raw"))
+]
+RAW_DATA_DIR = next((d for d in candidate_raw_dirs if os.path.isdir(d)), candidate_raw_dirs[0])
+OUTPUT_DIR = os.path.join(WORKSPACE_ROOT, "reports", "phase_02_crop_suitability")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 CANDIDATE_CROPS = ["Potato", "Onion", "Tomato", "Wheat"]
 
 def run_candidate_profiling():

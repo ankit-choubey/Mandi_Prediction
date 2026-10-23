@@ -52,20 +52,27 @@ We tested five alternative mathematical formulations for discretizing continuous
 
 ## 3. Multi-Horizon Continuous Regression Benchmark vs Persistence
 
+> [!WARNING]
+> **PROVISIONAL BENCHMARK NOTICE (WORKSTREAM D AUDIT):**
+> 1. **Chronological Split Realization Overlap:** The regression models below were partitioned by row-count (`len(valid) * 0.70`) rather than unique calendar dates, without explicitly purging the $h$-day horizon boundary overlap into the test set.
+> 2. **Inference Method Clarification:** The test previously labeled "Diebold-Mariano" was an unadjusted row-level normal approximation of subsampled loss differentials ($n=5,000$). It did **not** incorporate Newey-West autocovariance weighting to adjust for serial dependence of multi-step forecast errors ($h > 1$). Stored $p$-values of `0.0` represent numerical floating-point underflow and should be interpreted as $p < 0.0001$.
+> 3. **T+7 Statistical Indifference:** At $T+7$, the loss differential statistic ($DM = +0.06$, $p = 0.954$) indicates **no statistically significant difference** between Persistence and LightGBM squared errors under this approximation.
+> 4. **Provisional Status:** All regression comparisons must remain provisional until recomputed under the repaired unique calendar split and robust Newey-West Diebold-Mariano procedure.
+
 We trained out-of-sample LightGBM regressors across all five horizons on 70% chronological training partitions and evaluated them on untouched 30% chronological test holdouts ($n \approx 34,000$ per horizon).
 
-### Table 3.1: Regression Benchmark Across All 5 Horizons
+### Table 3.1: Regression Benchmark Across All 5 Horizons (Provisional)
 
-| Horizon | Holding Days | Test Observations | Persistence MAE (%) | Mean Baseline MAE (%) | LightGBM Regressor MAE (%) | LightGBM vs Persistence $\Delta$ MAE (%) | Wilcoxon Stat ($p$-value) | Diebold-Mariano Stat ($p$-value) | Scientific Conclusion |
-|---|---|---|---|---|---|---|---|---|
-| **T+1** | 1 | 33,905 | **5.52%** | 5.57% | 5.91% | +0.39% | $W=3.83 \times 10^6$ ($p < 10^{-15}$) | $DM = +2.09$ ($p = 0.036$) | **Persistence Superior** |
-| **T+3** | 3 | 32,685 | **6.52%** | 6.55% | 7.31% | +0.79% | $W=3.80 \times 10^6$ ($p < 10^{-15}$) | $DM = -2.96$ ($p = 0.003$) | **Persistence Superior** |
-| **T+7** | 7 | 34,750 | **7.19%** | 7.23% | 8.59% | +1.40% | $W=3.49 \times 10^6$ ($p < 10^{-15}$) | $DM = +0.06$ ($p = 0.954$) | **Persistence Superior** |
-| **T+14** | 14 | 33,603 | **8.90%** | 8.95% | 11.36% | +2.46% | $W=3.32 \times 10^6$ ($p < 10^{-15}$) | $DM = -7.41$ ($p < 10^{-15}$) | **Persistence Superior** |
-| **T+30** | 30 | 28,365 | **11.56%** | 11.67% | 16.40% | +4.84% | $W=3.08 \times 10^6$ ($p < 10^{-15}$) | $DM = -7.72$ ($p < 10^{-15}$) | **Persistence Superior** |
+| Horizon | Holding Days | Test Observations | Persistence MAE (%) | Mean Baseline MAE (%) | LightGBM Regressor MAE (%) | LightGBM vs Persistence $\Delta$ MAE (%) | Wilcoxon Stat ($p$-value) | Subsampled Normal Approx Stat ($p$-value) | Scientific Conclusion & Inference Status |
+|---|---|---|---|---|---|---|---|---|---|
+| **T+1** | 1 | 33,905 | **5.52%** | 5.57% | 5.91% | +0.39% | $W=3.83 \times 10^6$ ($p < 0.0001$) | $Z = +2.09$ ($p = 0.037$) | **Persistence Superior** (Significant at 5% level) |
+| **T+3** | 3 | 32,685 | **6.52%** | 6.55% | 7.31% | +0.79% | $W=3.80 \times 10^6$ ($p < 0.0001$) | $Z = -2.96$ ($p = 0.003$) | **Persistence Superior** (Significant at 1% level) |
+| **T+7** | 7 | 34,750 | **7.19%** | 7.23% | 8.59% | +1.40% | $W=3.49 \times 10^6$ ($p < 0.0001$) | $Z = +0.06$ ($p = 0.954$) | **Provisional: No Statistically Significant Difference** |
+| **T+14** | 14 | 33,603 | **8.90%** | 8.95% | 11.36% | +2.46% | $W=3.32 \times 10^6$ ($p < 0.0001$) | $Z = -7.41$ ($p < 0.0001$) | **Persistence Superior** (Significant, $p < 0.0001$) |
+| **T+30** | 30 | 28,365 | **11.56%** | 11.67% | 16.40% | +4.84% | $W=3.08 \times 10^6$ ($p < 0.0001$) | $Z = -7.72$ ($p < 0.0001$) | **Persistence Superior** (Significant, $p < 0.0001$) |
 
-### Definite Mathematical Conclusion:
-In **5 out of 5 horizons (100%)**, zero-return persistence beats machine learning regression. LightGBM's absolute error degrades progressively from +0.39% worse at $T+1$ to **+4.84% worse at $T+30$**. Continuous point price regression must be formally abandoned in favor of classification.
+### Provisional Mathematical Conclusion:
+In point forecast regression, zero-return persistence achieves lower MAE than LightGBM across all tested horizons. However, because $T+7$ squared error differences are statistically indistinguishable ($p=0.954$) and the split allowed overlap across the test boundary, continuous price forecasting must be re-evaluated under a clean embargoed calendar benchmark.
 
 ---
 

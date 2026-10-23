@@ -18,7 +18,13 @@ from sklearn.metrics import (
     log_loss
 )
 
-PRED_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/backing/phase_05/outputs"
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_pred_dirs = [
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "backing", "phase_05", "outputs")),
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "backing", "phase_05", "outputs"))
+]
+PRED_DIR = next((d for d in candidate_pred_dirs if os.path.isdir(d)), candidate_pred_dirs[0])
 CROPS = ["Potato", "Onion", "Tomato", "Wheat"]
 CLASS_NAMES = ['Unfavorable', 'Normal', 'Favorable']
 
@@ -115,7 +121,9 @@ def audit_baseline_predictions():
             })
             
     res_df = pd.DataFrame(records)
-    out_csv = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work/reports/phase_03_classification_protocol/baseline_metrics_summary.csv"
+    out_dir = os.path.join(WORKSPACE_ROOT, "reports", "phase_03_classification_protocol")
+    os.makedirs(out_dir, exist_ok=True)
+    out_csv = os.path.join(out_dir, "baseline_metrics_summary.csv")
     res_df.to_csv(out_csv, index=False)
     print(f"Saved baseline metrics to {out_csv}")
     return res_df

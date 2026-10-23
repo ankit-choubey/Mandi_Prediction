@@ -2,16 +2,10 @@
 Comprehensive Feature Selection, Testing, and Validation Pipeline
 APMC Mandi Market Intelligence System
 Investigator: Suryansh
+Repaired for Workstream C: Unique calendar weather panel, causal lags, and portable paths.
 
-Performs 5 statistical and ML tests across candidate external & market features:
-1. Mutual Information (mutual_info_classif)
-2. ANOVA F-statistic (f_classif)
-3. Random Forest Mean Decrease in Impurity (MDI)
-4. Gradient Boosting MDI
-5. Directional Pearson Correlation with 7-day Return
-
-Ranks all candidates to select the BEST EXTRA 12 FEATURES.
-Validates the Enhanced Model (27 Baseline + 12 Extra = 39 Features) against the Baseline.
+NOTE: The previous 27-vs-39 feature ablation result is PROVISIONAL and REQUIRES A FRESH
+EXPERIMENT under this repaired weather pipeline and split procedure.
 """
 
 import os
@@ -41,8 +35,13 @@ from sklearn.metrics import (
     log_loss
 )
 
-WORKSPACE_ROOT = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work"
-DATA_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_data_dirs = [
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "data", "raw")),
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "data", "raw"))
+]
+DATA_DIR = next((d for d in candidate_data_dirs if os.path.isdir(d)), candidate_data_dirs[0])
 WEATHER_CSV = os.path.join(WORKSPACE_ROOT, "dataset_research", "raw_external", "nasa_power_weather_up_2024_2026.csv")
 RESULTS_DIR = os.path.join(WORKSPACE_ROOT, "results", "feature_selection")
 FIGURES_DIR = os.path.join(WORKSPACE_ROOT, "figures")
@@ -102,14 +101,51 @@ def load_all_data():
     clean_df.reset_index(drop=True, inplace=True)
     print(f"[DataLoader] Clean records: {len(clean_df):,} across {clean_df['series_id'].nunique():,} series.")
     
-    # Load Weather Data
+    # Load Weather Data onto a unique (District, Arrival_Date) calendar panel (Workstream C repair)
     print(f"[DataLoader] Ingesting NASA POWER weather data from {WEATHER_CSV}...")
     w_df = pd.read_csv(WEATHER_CSV)
     w_df['Arrival_Date'] = pd.to_datetime(w_df['Arrival_Date'])
     
-    # Merge weather deterministically on District and Arrival_Date
-    merged_df = pd.merge(clean_df, w_df, on=['District', 'Arrival_Date'], how='left')
-    print(f"[DataLoader] Merged dataset: {len(merged_df):,} records with weather signals.")
+    # 1. Build unique weather panel keyed by (District, Arrival_Date)
+    w_panel = w_df.drop_duplicates(subset=['District', 'Arrival_Date']).copy()
+    
+    # 2. Sort panel strictly by calendar date before computing lags and rolling windows
+    w_panel.sort_values(by=['District', 'Arrival_Date'], inplace=True)
+    w_panel.reset_index(drop=True, inplace=True)
+    
+    # 3. Preserve NASA POWER missing values (-999) as NaN, NOT zero dry days
+    w_panel.loc[w_panel['Precipitation_mm'] < -900, 'Precipitation_mm'] = np.nan
+    for c in ['Temp_Max_C', 'Temp_Min_C', 'Relative_Humidity_Pct']:
+        if c in w_panel.columns:
+            w_panel.loc[w_panel[c] < -900, c] = np.nan
+            
+    # 4. Compute all weather lags and rolling features on the unique calendar weather panel
+    w_grouped = w_panel.groupby('District')
+    w_panel['Precipitation_Lag1'] = w_grouped['Precipitation_mm'].shift(1)
+    w_panel['Precipitation_Sum_3d'] = w_grouped['Precipitation_mm'].transform(lambda s: s.shift(1).rolling(3, min_periods=1).sum())
+    w_panel['Precipitation_Sum_7d'] = w_grouped['Precipitation_mm'].transform(lambda s: s.shift(1).rolling(7, min_periods=1).sum())
+    w_panel['Extreme_Rain_Flag'] = (w_panel['Precipitation_Sum_3d'] > 20.0).astype(int)
+    
+    w_panel['Temp_Max_Lag1'] = w_grouped['Temp_Max_C'].shift(1)
+    w_panel['Temp_Max_RollMean3'] = w_grouped['Temp_Max_C'].transform(lambda s: s.shift(1).rolling(3, min_periods=1).mean())
+    # Causal diurnal range lagged to T-1 for availability at trading cutoff
+    w_panel['Temp_Diurnal_Range'] = (w_panel['Temp_Max_C'] - w_panel['Temp_Min_C']).groupby(w_panel['District']).shift(1)
+    w_panel['Relative_Humidity_Mean7'] = w_grouped['Relative_Humidity_Pct'].transform(lambda s: s.shift(1).rolling(7, min_periods=1).mean())
+    
+    weather_feature_cols = [
+        'District', 'Arrival_Date',
+        'Precipitation_Lag1', 'Precipitation_Sum_3d', 'Precipitation_Sum_7d', 'Extreme_Rain_Flag',
+        'Temp_Max_Lag1', 'Temp_Max_RollMean3', 'Temp_Diurnal_Range', 'Relative_Humidity_Mean7'
+    ]
+    
+    # 5. Merge weather features into price records deterministically
+    n_before = len(clean_df)
+    merged_df = pd.merge(clean_df, w_panel[weather_feature_cols], on=['District', 'Arrival_Date'], how='left')
+    n_after = len(merged_df)
+    
+    # 6. Verify weather join does not multiply price rows
+    assert n_before == n_after, f"Weather join error: row count changed from {n_before} to {n_after}!"
+    print(f"[DataLoader] Merged dataset: {len(merged_df):,} records with calendar-aligned weather signals (100% row preservation verified).")
     return merged_df
 
 # -----------------------------------------------------------------------------
@@ -201,16 +237,11 @@ def engineer_all_features(df):
     # =========================================================================
     # CANDIDATE EXTRA FEATURES (16 CANDIDATES)
     # =========================================================================
-    # 1. Weather Signals (NASA POWER - Causal Lagged to T-1 and T-3)
-    df['Precipitation_Lag1'] = df.groupby('District')['Precipitation_mm'].shift(1)
-    df['Precipitation_Sum_3d'] = df.groupby('District')['Precipitation_mm'].transform(lambda s: s.shift(1).rolling(3, min_periods=1).sum())
-    df['Precipitation_Sum_7d'] = df.groupby('District')['Precipitation_mm'].transform(lambda s: s.shift(1).rolling(7, min_periods=1).sum())
-    df['Extreme_Rain_Flag'] = (df['Precipitation_Sum_3d'] > 20.0).astype(int)
-    
-    df['Temp_Max_Lag1'] = df.groupby('District')['Temp_Max_C'].shift(1)
-    df['Temp_Max_RollMean3'] = df.groupby('District')['Temp_Max_C'].transform(lambda s: s.shift(1).rolling(3, min_periods=1).mean())
-    df['Temp_Diurnal_Range'] = df['Temp_Max_C'] - df['Temp_Min_C']
-    df['Relative_Humidity_Mean7'] = df.groupby('District')['Relative_Humidity_Pct'].transform(lambda s: s.shift(1).rolling(7, min_periods=1).mean())
+    # 1. Weather Signals (NASA POWER - Causal Lagged to T-1 on Calendar Panel)
+    # Note: Precipitation_Lag1, Precipitation_Sum_3d, Precipitation_Sum_7d, Extreme_Rain_Flag,
+    # Temp_Max_Lag1, Temp_Max_RollMean3, Temp_Diurnal_Range, and Relative_Humidity_Mean7
+    # are pre-computed on the unique (District, Arrival_Date) calendar weather panel in load_all_data()
+    # to guarantee exact calendar day shifts and prevent cross-commodity row-shift bugs.
     
     # 2. Advanced Dynamic Price & Market Breadth Signals
     df['Price_Acceleration_7d'] = df['Price_Change_3d'] - df['Price_Change_7d']

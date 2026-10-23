@@ -1,6 +1,6 @@
-horizon,holding_days,test_observations,persistence_mae_pct,persistence_rmse_pct,mean_baseline_mae_pct,mean_baseline_rmse_pct,lightgbm_mae_pct,lightgbm_rmse_pct,mae_delta_pct,lightgbm_beats_persistence,wilcoxon_stat,wilcoxon_p_value,diebold_mariano_stat,diebold_mariano_p_value,scientific_conclusion
-T+1,1,33905,5.52,24.43,5.57,24.42,5.91,24.36,0.39,NO (Persistence Superior),3830793.5,0.0,2.09,0.03651,Persistence wins (modal stickiness)
-T+3,3,32685,6.52,36.52,6.55,36.52,7.31,36.4,0.79,NO (Persistence Superior),3797373.5,0.0,-2.96,0.00303,Persistence wins (modal stickiness)
-T+7,7,34750,7.19,26.24,7.23,26.23,8.59,26.43,1.39,NO (Persistence Superior),3488006.0,0.0,0.06,0.95403,Persistence wins (modal stickiness)
-T+14,14,33603,8.9,30.09,8.95,30.08,11.36,30.59,2.46,NO (Persistence Superior),3324518.0,0.0,-7.41,0.0,Persistence wins (modal stickiness)
-T+30,30,28365,11.56,27.92,11.67,27.9,16.4,30.58,4.83,NO (Persistence Superior),3080075.5,0.0,-7.72,0.0,Persistence wins (modal stickiness)
+horizon,holding_days,test_observations,persistence_mae_pct,persistence_rmse_pct,mean_baseline_mae_pct,mean_baseline_rmse_pct,lightgbm_mae_pct,lightgbm_rmse_pct,mae_delta_pct,lightgbm_beats_persistence,wilcoxon_stat,wilcoxon_p_value,diebold_mariano_stat,diebold_mariano_p_value,inference_method,benchmark_status,scientific_conclusion
+T+1,1,33905,5.52,24.43,5.57,24.42,5.91,24.36,0.39,NO (Persistence Superior),3830793.5,< 0.0001,2.09,0.03651,Subsampled Normal Approx (Non-robust),PROVISIONAL,Significant difference at 5% level (p=0.037)
+T+3,3,32685,6.52,36.52,6.55,36.52,7.31,36.4,0.79,NO (Persistence Superior),3797373.5,< 0.0001,-2.96,0.00303,Subsampled Normal Approx (Non-robust),PROVISIONAL,Significant difference at 1% level (p=0.003)
+T+7,7,34750,7.19,26.24,7.23,26.23,8.59,26.43,1.39,NO (Persistence Superior),3488006.0,< 0.0001,0.06,0.95403,Subsampled Normal Approx (Non-robust),PROVISIONAL,No statistically significant difference (p=0.954)
+T+14,14,33603,8.9,30.09,8.95,30.08,11.36,30.59,2.46,NO (Persistence Superior),3324518.0,< 0.0001,-7.41,< 0.0001,Subsampled Normal Approx (Non-robust),PROVISIONAL,Significant difference (p < 0.0001)
+T+30,30,28365,11.56,27.92,11.67,27.9,16.4,30.58,4.83,NO (Persistence Superior),3080075.5,< 0.0001,-7.72,< 0.0001,Subsampled Normal Approx (Non-robust),PROVISIONAL,Significant difference (p < 0.0001)

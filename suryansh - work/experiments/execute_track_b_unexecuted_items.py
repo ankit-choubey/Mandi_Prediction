@@ -25,13 +25,11 @@ SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
 WORKSPACE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 candidate_raw = [
     os.path.join(WORKSPACE_DIR, "data/raw"),
-    os.path.abspath(os.path.join(WORKSPACE_DIR, "../Mandi_Prediction/data/raw")),
-    os.path.abspath(os.path.join(WORKSPACE_DIR, "../data/raw")),
-    "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+    os.path.abspath(os.path.join(WORKSPACE_DIR, "..", "data", "raw")),
 ]
-RAW_DATA_DIR = next((p for p in candidate_raw if os.path.isdir(p)), candidate_raw[-1])
-EXTERNAL_DIR = os.path.join(WORKSPACE_DIR, "dataset_research/raw_external")
-REPORTS_DIR = os.path.join(WORKSPACE_DIR, "reports/storage_economics")
+RAW_DATA_DIR = next((p for p in candidate_raw if os.path.isdir(p)), os.path.abspath(os.path.join(WORKSPACE_DIR, "..", "data", "raw")))
+EXTERNAL_DIR = os.path.join(WORKSPACE_DIR, "dataset_research", "raw_external", "quarantine")
+REPORTS_DIR = os.path.join(WORKSPACE_DIR, "reports", "storage_economics")
 os.makedirs(EXTERNAL_DIR, exist_ok=True)
 os.makedirs(REPORTS_DIR, exist_ok=True)
 
@@ -96,9 +94,9 @@ des_production_data = [
     {"State": "Uttar Pradesh", "District": "Ghaziabad", "Commodity": "Tomato", "Crop_Year": 2025, "Season": "Annual", "Area_Hectares": 1900, "Production_Tonnes": 46550, "Yield_Kg_Per_Ha": 24500.0},
 ]
 df_des = pd.DataFrame(des_production_data)
-des_csv_path = os.path.join(EXTERNAL_DIR, "des_up_district_crop_production_statistics.csv")
+des_csv_path = os.path.join(EXTERNAL_DIR, "SYNTHETIC_des_up_district_crop_production_statistics.csv")
 df_des.to_csv(des_csv_path, index=False)
-print(f"   Saved official DES production database: {des_csv_path} ({len(df_des)} records)")
+print(f"   Saved illustrative synthetic DES production database: {des_csv_path} ({len(df_des)} records)")
 
 # ==============================================================================
 # 2. CONSTRUCT & MERGE DAILY ARRIVAL QUANTITY DATASET (CALIBRATED CEDA/APMC MODEL)
@@ -161,11 +159,11 @@ def generate_calibrated_arrivals(row):
 
 df_master["Arrival_Quantity_Qtl"] = df_master.apply(generate_calibrated_arrivals, axis=1)
 
-# Save the external arrival volume dataset
-arrivals_csv_path = os.path.join(EXTERNAL_DIR, "ceda_calibrated_mandi_arrivals_up_2024_2026.csv")
+# Save the synthetic external arrival volume dataset
+arrivals_csv_path = os.path.join(EXTERNAL_DIR, "SYNTHETIC_ceda_calibrated_mandi_arrivals_up_2024_2026.csv")
 df_arrivals_export = df_master[["District", "Market", "Commodity", "Variety", "Grade", "Arrival_Date", "Arrival_Quantity_Qtl"]].copy()
 df_arrivals_export.to_csv(arrivals_csv_path, index=False)
-print(f"   Saved daily arrival volume series: {arrivals_csv_path} ({len(df_arrivals_export)} records)")
+print(f"   Saved calibrated synthetic daily arrival volume series: {arrivals_csv_path} ({len(df_arrivals_export)} records)")
 
 # Apply strict T-1 lag to prevent lookahead target leakage at prediction date T
 df_master["Lagged_Arrival_Quantity_Qtl"] = df_master.groupby(["Commodity", "Market", "Variety", "Grade"])["Arrival_Quantity_Qtl"].shift(1)

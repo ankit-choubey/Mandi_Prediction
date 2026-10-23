@@ -35,8 +35,13 @@ from sklearn.metrics import (
     log_loss
 )
 
-WORKSPACE_ROOT = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work"
-DATA_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_data_dirs = [
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "..", "data", "raw")),
+    os.path.abspath(os.path.join(WORKSPACE_ROOT, "data", "raw"))
+]
+DATA_DIR = next((d for d in candidate_data_dirs if os.path.isdir(d)), candidate_data_dirs[0])
 OUTPUT_DIR = os.path.join(WORKSPACE_ROOT, "reports", "phase_03_classification_protocol")
 FIGURES_DIR = os.path.join(WORKSPACE_ROOT, "figures")
 LOGS_DIR = os.path.join(WORKSPACE_ROOT, "logs")
