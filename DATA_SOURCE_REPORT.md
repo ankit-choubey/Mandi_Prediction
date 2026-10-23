@@ -1,23 +1,35 @@
-# DATA_SOURCE_REPORT.md: Data Source Audit & Official API Verification
+# DATA_SOURCE_REPORT.md: Data Source Audit, 5-Year Dataset Inspection & Official API Verification
 
 **Repository:** `ankit-choubey/Mandi_Prediction`  
 **Investigation Track:** Track B — Data Source & API Access Audit  
 **Auditor:** Suryansh  
-**Execution Timestamp (UTC):** `2026-10-23T08:46:43Z`  
-**Local Timestamp (IST):** `2026-10-23 14:16:43`  
+**Execution Timestamp (UTC):** `2026-10-23T09:25:41Z`  
+**Local Timestamp (IST):** `2026-10-23 14:55:41`  
 
 ---
 
-## 1. Executive Summary & Status Alert
+## 1. Executive Summary & Critical Status Alerts
 
 > [!WARNING]
 > **API FETCHING STATUS: NOT WORKING (ACCESS BLOCKED)**  
-> Direct live API data fetching from `api.data.gov.in` is **currently not working** because **no valid OGD API key is configured in the environment**.
-> - Querying without an API key yields: `HTTP 400 Bad Request` (`{"error": "Authorization field missing"}`).
-> - Querying with an invalid/placeholder key yields: `HTTP 403 Forbidden` (`{"error": "Key not authorised"}`).
-> - Passing the key via HTTP headers is unsupported (`HTTP 400`); the endpoint strictly mandates `?api-key=<KEY>` in the query string.
+> Direct live API data fetching from `api.data.gov.in` is **currently blocked / not working** because **no valid OGD API key is configured in the environment**:
+> - **Query without API key:** `HTTP 400 Bad Request` $\implies$ `{"error": "Authorization field missing"}`
+> - **Query with invalid / dummy key:** `HTTP 403 Forbidden` $\implies$ `{"error": "Key not authorised"}`
+> - **Query with header authentication:** `HTTP 400 Bad Request` $\implies$ The platform strictly requires the key to be passed as a URL query parameter (`?api-key=...`).
 > 
-> The local repository already contains a clean, complete 2-year historical extraction (160,192 records through `2026-09-01`). A complete programmatic downloader cannot proceed until a valid personal developer key is exported to the environment (`DATA_GOV_IN_API_KEY`).
+> To enable live fetching, you must export a valid personal API key obtained from [data.gov.in](https://data.gov.in/):
+> ```bash
+> export DATA_GOV_IN_API_KEY="your_actual_ogd_api_key_here"
+> ```
+
+> [!NOTE]
+> **MAJOR UPDATE: 5-YEAR DATASET DELIVERED**  
+> The repository now includes the full 5-year agricultural market dataset located at:  
+> [`/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset`](file:///Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5%20year%20dataset)  
+> - **Total Records:** **472,385 observations** across 5 Uttar Pradesh districts.  
+> - **Date Range:** **September 01, 2021 to September 30, 2026** (1,856 calendar days / 5 full years + 1 month).  
+> - **Target Crop Volume:** **93,491 records** across Potato, Onion, Tomato, and Wheat.  
+> - **Quality:** **0 null values** across all essential columns (prices, dates, commodities, grades, and markets). Exactly 27 non-positive price rows ($0.0057\%$) require standard data cleaning.
 
 ---
 
@@ -36,61 +48,80 @@
 3. **`convert_report_to_docx.py`:**
    - Automated conversion utility transforming `FINAL_REPORT.md` into formatted `FINAL_REPORT.docx`.
 
-### 2.2 Raw Data Files & Record Counts
-Located in `data/raw/`:
+---
+
+### 2.2 Raw Data Inventory & Comparison (2-Year Baseline vs. 5-Year Expansion)
+
+The repository now houses two tiers of raw data files:
+1. **2-Year Baseline Dataset (`data/raw/`):** 160,192 records (Sep 2024 – Sep 2026).
+2. **5-Year Expanded Dataset (`5 year dataset/`):** 472,385 records (Sep 2021 – Sep 2026).
+
+```text
+===================================================================================================================================
+DISTRICT    2-YEAR RAW FILE (data/raw/)     5-YEAR EXPANDED FILE (5 year dataset/)  DATE RANGE (5-YEAR)      5-YEAR TARGET CROPS
+===================================================================================================================================
+Ghaziabad   Gaziabaad.csv (41,495 rows)     GHAZIABAD.csv (132,478 rows / 11.6 MB)  2021-09-01 to 2026-09-30 Potato: 5,453 | Onion: 5,152
+                                                                                                             Tomato: 5,095 | Wheat: 3,818
+Jhansi      Jhansi.csv    (23,625 rows)     JHANSI.csv    (83,972 rows  / 6.9 MB)   2021-09-01 to 2026-09-30 Potato: 6,790 | Onion: 7,329
+                                                                                                             Tomato: 6,260 | Wheat: 6,234
+Kanpur      Kanpur.csv    (42,644 rows)     KANPUR.csv    (113,319 rows / 9.8 MB)   2021-09-01 to 2026-09-30 Potato: 5,847 | Onion: 4,306
+                                                                                                             Tomato: 4,575 | Wheat: 7,229
+Lucknow     Lukhnow.csv   (21,063 rows)     LUKHNOW.csv   (54,876 rows  / 4.8 MB)   2021-09-01 to 2026-09-30 Potato: 1,679 | Onion: 1,632
+                                                                                                             Tomato: 1,553 | Wheat: 3,184
+Unnao       Unnao.csv     (31,365 rows)     UNNAO.csv     (87,740 rows  / 7.1 MB)   2021-09-01 to 2026-09-30 Potato: 4,243 | Onion: 4,046
+                                                                                                             Tomato: 3,917 | Wheat: 5,149
+===================================================================================================================================
+TOTALS      5 files: 160,192 rows (13.7 MB) 5 files: 472,385 rows (40.3 MB)         2021-09-01 to 2026-09-30 4 Crops: 93,491 records
+===================================================================================================================================
+```
+
+---
+
+### 2.3 Tabular Schema & Data Types (Identical Across Both Tiers)
+
+Both the 2-year and 5-year datasets share the identical 11-column tabular structure:
 
 ```text
 ========================================================================================================================
-RAW FILE NAME     FILE SIZE (BYTES)  TOTAL RECORDS  MIN ARRIVAL DATE  MAX ARRIVAL DATE  TARGET DISTRICT
+COLUMN NAME      RAW DATA TYPE   EXAMPLE VALUE     NULL COUNT (5-YR)  SEMANTIC MEANING & NOTES
 ========================================================================================================================
-Gaziabaad.csv     3,656,537 bytes    41,495 rows    2024-09-01        2026-09-01        Ghaziabad
-Jhansi.csv        1,947,875 bytes    23,625 rows    2024-09-01        2026-09-01        Jhansi
-Kanpur.csv        3,705,373 bytes    42,644 rows    2024-09-01        2026-09-01        Kanpur
-Lukhnow.csv       1,840,744 bytes    21,063 rows    2024-09-01        2026-09-01        Lucknow
-Unnao.csv         2,570,462 bytes    31,365 rows    2024-09-01        2026-09-01        Unnao
-========================================================================================================================
-TOTAL             13,721,991 bytes   160,192 rows   2024-09-01        2026-09-01        5 UP APMC Hubs
+Arrival_Date     String (Date)   "04/09/2021"      0 nulls            Transaction date in DD/MM/YYYY format
+Commodity        String          "Onion"           0 nulls            Agricultural crop commodity title (110 unique)
+Commodity_Code   Integer         23                0 nulls            AGMARKNET numerical commodity identifier
+District         String          "Ghaziabad"       0 nulls            Administrative revenue district
+Grade            String          "FAQ"             0 nulls            Commercial lot grade (FAQ, Medium, Large)
+Market           String          "Ghaziabad"       0 nulls            Specific APMC wholesale market yard name
+Min_Price        Float / Int     3700.0            0 nulls            Minimum auction price in ₹ / Quintal (100 kg)
+Max_Price        Float / Int     3800.0            0 nulls            Maximum auction price in ₹ / Quintal
+Modal_Price      Float / Int     3750.0            0 nulls            Modal (most frequent) clearing price in ₹ / Quintal
+State            String          "Uttar Pradesh"   0 nulls            State jurisdiction
+Variety          String          "Red"             0 nulls            Botanical or commercial cultivar variety
 ========================================================================================================================
 ```
 
-### 2.3 Raw Data Schema
-All 5 raw CSV files share an identical 11-column tabular schema:
+> **Key Negative Finding:** **Daily arrival volumes (quantities traded or received in quintals or metric tonnes) are strictly absent** across both the 2-year and 5-year raw CSV files, confirming that the underlying OGD resource (`9ef84268-d588-465a-a308-a864a43d0070`) exclusively publishes wholesale prices.
 
-```text
-========================================================================================================================
-COLUMN NAME      RAW DATA TYPE   EXAMPLE VALUE     SEMANTIC MEANING & NOTES
-========================================================================================================================
-Arrival_Date     String (Date)   "04/09/2024"      Trading date in DD/MM/YYYY format
-Commodity        String          "Onion"           Agricultural crop commodity title
-Commodity_Code   Integer         23                AGMARKNET numerical commodity identifier
-District         String          "Ghaziabad"       Administrative revenue district
-Grade            String          "FAQ"             Commercial lot grade (Fair Average Quality / FAQ)
-Market           String          "Ghaziabad"       Specific APMC wholesale market yard name
-Min_Price        Float / Int     3700              Minimum auction price in ₹ / Quintal (100 kg)
-Max_Price        Float / Int     3800              Maximum auction price in ₹ / Quintal
-Modal_Price      Float / Int     3750              Modal (most frequent) clearing price in ₹ / Quintal
-State            String          "Uttar Pradesh"   State jurisdiction
-Variety          String          "Red"             Botanical or commercial cultivar variety
-========================================================================================================================
-```
-*Critical Data Finding:* **Arrival quantities (physical volume received or traded in quintals or metric tonnes) are strictly absent** from all local raw CSV files.
+---
 
 ### 2.4 Project Dependencies
-- **Core Scientific Libraries:** `numpy` ($\ge 1.24$), `pandas` ($\ge 2.0$), `scipy` ($\ge 1.10$)
+- **Core Scientific Computation:** `numpy` ($\ge 1.24$), `pandas` ($\ge 2.0$), `scipy` ($\ge 1.10$)
 - **Machine Learning Suite:** `scikit-learn` (`sklearn`), `lightgbm`
 - **Visualization:** `matplotlib`, `seaborn`
-- **Reporting & Utilities:** `python-docx` (`docx`), `argparse`
+- **Document Generation:** `python-docx` (`docx`), `argparse`
 - **Testing & Quality Assurance:** `pytest` ($\ge 7.0$)
 - **Standard Library Modules:** `os`, `sys`, `time`, `datetime`, `math`, `re`, `glob`, `shutil`, `dataclasses`, `typing`, `json`, `hashlib`, `urllib`, `ssl`, `csv`
 
+---
+
 ### 2.5 Existing Test Suite
-Located in `tests/`:
-1. `tests/test_production_pipeline.py`: Tests grade preservation, Strategy 2 duplicate exclusion, calendar date lags ($T-1, T-3, T-7$), chronological splitting with zero lookahead, and pipeline smoke tests.
+Located in [`tests/`](file:///Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/tests/):
+1. `tests/test_production_pipeline.py`: Grade preservation, Strategy 2 duplicate exclusion, calendar date lags ($T-1, T-3, T-7$), chronological splitting, and pipeline smoke tests.
 2. `tests/test_economic_model.py`: Unit tests for sell-versus-store formulas, break-even prices, and non-negative cost assertions.
 3. `tests/test_economic_backtest.py`: Policy backtesting engine testing 5 decision rules across 7-day holding windows.
 4. `tests/test_feasibility_reconciliation.py`: Mathematical consistency assertions for $T+7$ classification targets.
 5. `tests/test_phase05_robustness.py`: Uncertainty analysis, bootstrap confidence intervals, and subgroup market heterogeneity.
 6. `tests/test_phase06b_data_validation.py`: Data requirements matrix, join compatibility, and threshold traps.
+7. `tests/test_data_foundation.py`: 11 automated verification tests (raw integrity, row accounting, NaN preservation, path portability).
 
 ---
 
@@ -102,9 +133,9 @@ Located in `tests/`:
 - **Platform:** Open Government Data (OGD) Platform India (`data.gov.in`)
 - **Resource ID:** `9ef84268-d588-465a-a308-a864a43d0070`
 - **API Base Endpoint:** `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070`
-- **Catalog Webpage:** [`https://www.data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi`](https://www.data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi)
+- **Catalog Webpage:** [`data.gov.in Catalog Page`](https://www.data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi)
 
-### 3.2 Live Empirical Test Results (UTC: 2026-10-23T08:46:43Z)
+### 3.2 Live Empirical Test Results (UTC: 2026-10-23T09:25:41Z)
 
 ```text
 ========================================================================================================================
@@ -160,8 +191,9 @@ Test 4: Catalog Web Page   GET https://www.data.gov.in/resource/...            2
 4. **Pagination Behavior:**
    - Controlled via query parameters `offset` (0-indexed integer) and `limit` (records per page, default 10, max 10,000).
    - The response envelope returns `total` (source-reported total matching records) and `count` (number of records in current payload).
-5. **Latest Actual Arrival Date in Local Data:**
-   - **`2026-09-01`** across all five district files in `data/raw/`.
+5. **Latest Actual Arrival Date:**
+   - **`2026-09-30`** in the newly provided 5-year dataset (`5 year dataset/`).
+   - `2026-09-01` in the 2-year baseline dataset (`data/raw/`).
 6. **Arrival Volumes Absence Confirmed:**
    - The schema confirmed on the OGD catalog matches the 11 columns of local raw CSVs. **Arrival quantities are omitted entirely from this resource.**
 
@@ -188,13 +220,16 @@ ISS-04     Sunday Mandi Closures     Transaction volume drops ~45% on Sun    Exp
 
 ## 5. Recommended Next Steps
 
-1. **Obtain / Configure OGD API Key:**
+1. **Configure Environment Variable:**
    - Register a free developer account at [`https://data.gov.in/`](https://data.gov.in/).
    - Set the key in your local environment prior to launching any live downloader:
      ```bash
      export DATA_GOV_IN_API_KEY="your_actual_api_key_here"
      ```
 2. **Do Not Implement Bulk Downloader Yet:**
-   - In accordance with task instructions, bulk downloading is deferred. The repository already possesses 160,192 verified historical observations spanning September 2024 to September 2026.
-3. **Address Arrival Volume Gap via Secondary Source:**
+   - In accordance with task instructions, bulk downloading is deferred. The repository already possesses **472,385 verified historical observations spanning September 2021 to September 2026**.
+3. **Transition Path for 5-Year Dataset Integration:**
+   - The provided 5-year dataset expands the temporal observation window from 731 days to **1,856 days**, tripling the sample size for target crops (93,491 records).
+   - In a future phase, update `data_loader.py` to optionally point to `5 year dataset/` to evaluate long-term multi-year model stability.
+4. **Address Arrival Volume Gap via Secondary Source:**
    - Because resource `9ef84268...` lacks arrival volume fields, acquire arrival quantities from the CEDA Agri-Market data portal or official UP Mandi Parishad records using the calibrated series documented in `track_b_gap_execution_report.md`.
