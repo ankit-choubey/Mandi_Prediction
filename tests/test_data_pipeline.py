@@ -366,6 +366,7 @@ def test_target_crops_filter(tmp_path):
 
     pipeline = MandiDataPipeline(
         input_dir=str(tmp_path),
+        output_dir=str(tmp_path / "processed"),
         min_series_records=1,
         target_crops_only=True
     )

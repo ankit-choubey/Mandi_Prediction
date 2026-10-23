@@ -1,0 +1,115 @@
+{
+  "version": "1.0.0",
+  "engine": "MandiDataValidator",
+  "execution_timestamp_utc": "2026-10-23T09:52:05.823480+00:00",
+  "duration_seconds": 28.279,
+  "natural_key": [
+    "State",
+    "District",
+    "Market",
+    "Commodity",
+    "Variety",
+    "Grade",
+    "Arrival_Date"
+  ],
+  "source_files": [
+    {
+      "file_name": "GHAZIABAD.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/GHAZIABAD.csv",
+      "size_bytes": 11616749,
+      "sha256": "17d2ccca09866a8272fa290e7c0c1816c74b6fc9dd56607548656ade4b8787ef",
+      "raw_rows": 132478,
+      "valid_rows": 132474,
+      "invalid_rows": 4
+    },
+    {
+      "file_name": "JHANSI.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/JHANSI.csv",
+      "size_bytes": 6904178,
+      "sha256": "179d7d330914b7e130673f83c3931b5a2cc1935c5555a19e4f417cd73ed8a2e3",
+      "raw_rows": 83972,
+      "valid_rows": 83959,
+      "invalid_rows": 13
+    },
+    {
+      "file_name": "KANPUR.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/KANPUR.csv",
+      "size_bytes": 9843548,
+      "sha256": "c89551a32fcd4cb02d4bc85cb50de532b2478d9806fb4d8cd9ae859bf1b06d7f",
+      "raw_rows": 113319,
+      "valid_rows": 113310,
+      "invalid_rows": 9
+    },
+    {
+      "file_name": "LUKHNOW.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/LUKHNOW.csv",
+      "size_bytes": 4809204,
+      "sha256": "19bb57961c67cc439e2798ddb23d63cade9320bdb8659929f656a79d31f59e8a",
+      "raw_rows": 54876,
+      "valid_rows": 54876,
+      "invalid_rows": 0
+    },
+    {
+      "file_name": "UNNAO.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/UNNAO.csv",
+      "size_bytes": 7141707,
+      "sha256": "e64405faf71070193b10a4477a8c259ad08eae6c9051872dbc545e507c115fc4",
+      "raw_rows": 87740,
+      "valid_rows": 87739,
+      "invalid_rows": 1
+    }
+  ],
+  "counts": {
+    "total_input_raw_records": 472385,
+    "total_accepted_clean_records": 462350,
+    "total_quarantined_invalid_records": 27,
+    "total_quarantined_conflicting_records": 2936,
+    "total_exact_duplicates_deduplicated": 0,
+    "total_low_observation_series_dropped_rows": 7072,
+    "unique_series_retained": 1297,
+    "unique_districts": [
+      "Ghaziabad",
+      "Jhansi",
+      "Kanpur",
+      "Lucknow",
+      "Unnao"
+    ],
+    "unique_markets_count": 41,
+    "unique_commodities_count": 108
+  },
+  "failure_tallies": {
+    "missing_required_fields": 0,
+    "invalid_dates": 0,
+    "unparseable_prices": 0,
+    "non_positive_prices": 34,
+    "min_greater_than_max": 15,
+    "modal_less_than_min": 0,
+    "modal_greater_than_max": 22,
+    "inconsistent_districts_normalized": 0
+  },
+  "temporal_coverage": {
+    "earliest_arrival_date": "2021-09-01",
+    "latest_arrival_date": "2026-09-30",
+    "calendar_days_spanned": 1856
+  },
+  "published_artifacts": {
+    "accepted_dataset_csv": {
+      "path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/processed/mandi_5year_validated.csv",
+      "size_bytes": 63435793,
+      "sha256": "20a198682c3f5382a25276a916e258f8fef4aa777c9c6d1cebe6e7c03a206dfa",
+      "row_count": 462350
+    },
+    "quarantined_invalid_csv": {
+      "path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/quarantine/quarantined_invalid_records.csv",
+      "size_bytes": 10848,
+      "sha256": "a71956fa5f92084aa8595fb54d48b48a7ebe99fef7a1c49f745c4e2178c1ff4e",
+      "row_count": 27
+    },
+    "quarantined_conflicting_csv": {
+      "path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/quarantine/quarantined_conflicting_records.csv",
+      "size_bytes": 1210155,
+      "sha256": "cbecfb510cf6873e4fb698309fe34b1f35555df885bcaf44e84510461e49b0aa",
+      "row_count": 2936
+    }
+  }
+}
