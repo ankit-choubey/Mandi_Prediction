@@ -1,0 +1,63 @@
+{
+  "endpoint": "POST https://api.ceda.ashoka.edu.in/v1/agmarknet/quantities",
+  "authentication": "Bearer Token (Header Authorization: Bearer <token>)",
+  "request_payload_format": {
+    "state": "Uttar Pradesh",
+    "district": "Kanpur",
+    "commodity": "Potato",
+    "start_date": "2024-09-01",
+    "end_date": "2024-09-05"
+  },
+  "response_schema": {
+    "fields": [
+      "market_id",
+      "market_name",
+      "commodity_name",
+      "arrival_date",
+      "arrivals_in_qtl",
+      "unit"
+    ],
+    "sample_records": [
+      {
+        "market_id": 1042,
+        "market_name": "Kanpur (Grain)",
+        "commodity_name": "Potato",
+        "arrival_date": "2024-09-01",
+        "arrivals_in_qtl": 1420.5,
+        "unit": "Quintals"
+      },
+      {
+        "market_id": 1042,
+        "market_name": "Kanpur (Grain)",
+        "commodity_name": "Potato",
+        "arrival_date": "2024-09-02",
+        "arrivals_in_qtl": 1650.0,
+        "unit": "Quintals"
+      },
+      {
+        "market_id": 1042,
+        "market_name": "Kanpur (Grain)",
+        "commodity_name": "Potato",
+        "arrival_date": "2024-09-03",
+        "arrivals_in_qtl": 1380.0,
+        "unit": "Quintals"
+      },
+      {
+        "market_id": 1042,
+        "market_name": "Kanpur (Grain)",
+        "commodity_name": "Potato",
+        "arrival_date": "2024-09-04",
+        "arrivals_in_qtl": 1510.0,
+        "unit": "Quintals"
+      },
+      {
+        "market_id": 1042,
+        "market_name": "Kanpur (Grain)",
+        "commodity_name": "Potato",
+        "arrival_date": "2024-09-05",
+        "arrivals_in_qtl": 1190.0,
+        "unit": "Quintals"
+      }
+    ]
+  }
+}

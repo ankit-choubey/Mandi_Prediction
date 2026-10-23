@@ -1,0 +1,5 @@
+crop,harvest_loss_pct,farm_storage_loss_pct,transport_loss_pct,total_post_harvest_loss_pct,recommended_7d_spoilage_rate,reference_source
+Potato,2.15,0.78,1.40,7.32,0.015,ICAR-CIPHET National Study (Jha et al.)
+Onion,1.80,3.20,1.50,8.20,0.035,ICAR-CIPHET National Study (Jha et al.)
+Tomato,4.20,4.50,3.74,12.44,0.080,ICAR-CIPHET National Study (Jha et al.)
+Wheat,1.45,0.86,0.62,4.93,0.005,ICAR-CIPHET National Study (Jha et al.)

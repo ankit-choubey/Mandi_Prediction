@@ -1,0 +1,49 @@
+{
+  "portal": "UPAg - Unified Portal for Agricultural Statistics",
+  "endpoint": "POST https://data.upag.gov.in/v1/upag/api-data-share/data",
+  "authentication": "OAuth2 / Session Token via POST /v1/upag/api-data-share/login (Institutional ID & Password)",
+  "frequency": "Annual / Seasonal Advance Estimates",
+  "geographic_level": "District",
+  "sample_records": [
+    {
+      "state": "Uttar Pradesh",
+      "district": "Kanpur Nagar",
+      "crop_year": "2023-24",
+      "season": "Rabi",
+      "crop": "Wheat",
+      "area_hectares": 142500,
+      "production_tonnes": 456000,
+      "yield_kg_per_ha": 3200.0
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Kanpur Nagar",
+      "crop_year": "2023-24",
+      "season": "Rabi",
+      "crop": "Potato",
+      "area_hectares": 18400,
+      "production_tonnes": 441600,
+      "yield_kg_per_ha": 24000.0
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Lucknow",
+      "crop_year": "2023-24",
+      "season": "Rabi",
+      "crop": "Wheat",
+      "area_hectares": 98200,
+      "production_tonnes": 304420,
+      "yield_kg_per_ha": 3100.0
+    },
+    {
+      "state": "Uttar Pradesh",
+      "district": "Lucknow",
+      "crop_year": "2023-24",
+      "season": "Rabi",
+      "crop": "Potato",
+      "area_hectares": 12100,
+      "production_tonnes": 290400,
+      "yield_kg_per_ha": 24000.0
+    }
+  ]
+}
