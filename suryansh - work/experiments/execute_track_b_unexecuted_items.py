@@ -20,9 +20,16 @@ from datetime import datetime
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 
-WORKSPACE_DIR = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work"
-REPO_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction"
-RAW_DATA_DIR = os.path.join(REPO_DIR, "data/raw")
+# Dynamic portable path resolution
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_raw = [
+    os.path.join(WORKSPACE_DIR, "data/raw"),
+    os.path.abspath(os.path.join(WORKSPACE_DIR, "../Mandi_Prediction/data/raw")),
+    os.path.abspath(os.path.join(WORKSPACE_DIR, "../data/raw")),
+    "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+]
+RAW_DATA_DIR = next((p for p in candidate_raw if os.path.isdir(p)), candidate_raw[-1])
 EXTERNAL_DIR = os.path.join(WORKSPACE_DIR, "dataset_research/raw_external")
 REPORTS_DIR = os.path.join(WORKSPACE_DIR, "reports/storage_economics")
 os.makedirs(EXTERNAL_DIR, exist_ok=True)

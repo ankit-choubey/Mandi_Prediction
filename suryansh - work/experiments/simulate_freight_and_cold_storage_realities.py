@@ -12,8 +12,16 @@ import os
 import numpy as np
 import pandas as pd
 
-WORKSPACE_DIR = "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work"
-RAW_DATA_DIR = "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+# Dynamic portable path resolution
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+WORKSPACE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+candidate_raw = [
+    os.path.join(WORKSPACE_DIR, "data/raw"),
+    os.path.abspath(os.path.join(WORKSPACE_DIR, "../Mandi_Prediction/data/raw")),
+    os.path.abspath(os.path.join(WORKSPACE_DIR, "../data/raw")),
+    "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/raw"
+]
+RAW_DATA_DIR = next((p for p in candidate_raw if os.path.isdir(p)), candidate_raw[-1])
 
 def build_freight_haulage_survey_model():
     print("[1/3] Building Empirical Village-to-Mandi Distance & Freight Cost Model...")
