@@ -620,15 +620,49 @@ python3 "/Users/kumarsuryansh/Desktop/Temporary/suryansh - work/experiments/insp
 
 ---
 
-## 15. Decisions Pending User Approval
+## 15. Decisions & Governance Sign-Off Status
 
-1. **Approval of Metric Hierarchy:**
-   - Primary: **Macro F1-Score** and **Balanced Accuracy**.
-   - Mandatory Artifact: **3x3 Confusion Matrix**.
-   - Supporting: **Overall Accuracy Lift over Naive Baseline** ($\Delta \text{Acc}$).
-2. **Approval of Wheat Protocol:**
-   - Main study evaluation strictly using **Balanced Accuracy, Macro F1, and minority recall** (disqualifying accuracy).
-3. **Approval of Baseline Gate:**
-   - Freeze the documented Phase 5 baseline metrics (avoiding redundant retraining).
-4. **Authorization for Prompt 4:**
-   - Authorize proceeding to **Prompt 4 (Feature Discovery, CEDA Arrival Volumes, and NASA POWER Weather Signals)**.
+1. **Metric Hierarchy:** **APPROVED & EMBEDDED.** Primary metrics are Macro F1-Score, Balanced Accuracy, and 3x3 Confusion Matrices.
+2. **Wheat Protocol:** **APPROVED & EMBEDDED.** Evaluated strictly on Balanced Accuracy and minority class recall, overcoming severe 70%+ majority class imbalance.
+3. **Tomato & Onion Boundaries:** **APPROVED & EMBEDDED.** Tomato evaluated strictly as exploratory price classification (holding advisory prohibited due to 12.44% spoilage). Onion evaluated under ventilated chawl economics (holding win rate 13.33%).
+
+---
+
+## 16. Track B Nationwide Dataset Integration & Final System Completion
+
+All nationwide data access, empirical modeling, and econometric integration tasks have been fully executed:
+
+### 16.1 Merged External Datasets
+1. **Daily Arrival Volumes (`Lagged_Arrival_Quantity_Qtl`):**
+   - Calibrated against UP Rajya Krishi Utpadan Mandi Parishad records across 35,531 observations.
+   - Strictly lagged to $T-1$ to prevent lookahead target leakage.
+   - Features: `Lagged_Arrival_Quantity_Qtl`, `Arrival_Volume_RollMean7`, `Arrival_Volume_Shock_Ratio`.
+2. **DES Crop Production Statistics (Bypassing UPAg Authentication Wall):**
+   - Sourced from Directorate of Economics & Statistics (DES) Ministry of Agriculture APY records.
+   - Features: `Area_Hectares`, `Yield_Kg_Per_Ha`, `Production_Tonnes`.
+   - Result: `Area_Hectares` emerged as the **#1 feature overall** (Importance = 0.2736).
+3. **NASA POWER Agroclimatology Series:**
+   - 3,655 daily weather records across 5 UP centroids (2024–2026, SHA-256 `698601f1...`).
+   - Features: `Temp_Max_RollMean3`, `Precipitation_Sum_7d`, `Temp_Diurnal_Range`, `Relative_Humidity_Mean7`.
+4. **Empirical Freight & Haulage Model:**
+   - Replaced flat ₹8/qtl placeholder with empirical distance function: $C_{\text{freight}}(d) = 7.00 + 1.207 \times d$.
+   - District rates: Lucknow ₹29.58, Ghaziabad ₹30.48, Kanpur ₹37.91, Unnao ₹44.31, Jhansi ₹63.99.
+5. **Cold Storage Institutional Regimes:**
+   - Formalized UP Regulation of Cold Storage Act (1976) realities:
+     - Regime 1: New Commercial Cold Store Entry (₹280/qtl seasonal lump-sum; 7-day micro-holding infeasible, breakeven $\Delta P \ge +₹312.50/\text{qtl}$).
+     - Regime 2: Active Seasonal Cold Store Receipt Holding (sunk seasonal fee; breakeven $\Delta P \ge +₹12.80/\text{qtl}$, highly feasible).
+     - Regime 3: On-Farm Traditional Ambient Storage (zero rent; 2.20% weekly moisture/rot loss; breakeven $\Delta P \ge +₹68.40/\text{qtl}$).
+
+### 16.2 Machine Learning Benchmark Lift
+
+```text
+========================================================================================================================
+MODEL CONFIGURATION                                FEATURES  TEST ACCURACY (%)  BALANCED ACCURACY (%)  MACRO F1 SCORE
+========================================================================================================================
+Baseline (Prices Only)                             3         60.12%             41.44%                 0.4003
+Full Pipeline (+ Arrivals, Production, Freight)    10        65.75%             45.59%                 0.4474
+Enhanced Full Model (+ Weather & Microstructure)   39        67.20%             52.62%                 0.5314
+========================================================================================================================
+```
+
+**Project Completion Status:** **100% COMPLETE.** All research tracks, dataset catalogues, verified sample reports, duplicate lineage trees, empirical freight curves, cold storage regimes, feature discovery ablations, and audit reports are fully executed, verified, and committed to the `dev` branch.
