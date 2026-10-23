@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_name": "MandiDataPipeline",
+  "execution_timestamp_utc": "2026-10-23T09:42:01.807191+00:00",
+  "duration_seconds": 9.477,
+  "configuration": {
+    "input_dir": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset",
+    "output_dir": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/processed",
+    "output_filename": "mandi_5year_processed.csv",
+    "manifest_filename": "processing_manifest.json",
+    "min_series_records": 20,
+    "exclude_ambiguous_same_grade": true,
+    "target_crops_only": false,
+    "date_format": "%Y-%m-%d"
+  },
+  "source_files_audit": [
+    {
+      "file_name": "GHAZIABAD.csv",
+      "source_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/GHAZIABAD.csv",
+      "size_bytes": 11616749,
+      "sha256": "17d2ccca09866a8272fa290e7c0c1816c74b6fc9dd56607548656ade4b8787ef",
+      "raw_row_count": 132478,
+      "valid_row_count": 132474,
+      "dropped_row_count": 4,
+      "dropped_reasons": {
+        "missing_dates": 0,
+        "missing_prices": 0,
+        "non_positive_prices": 4,
+        "missing_series_metadata": 0
+      }
+    },
+    {
+      "file_name": "JHANSI.csv",
+      "source_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/JHANSI.csv",
+      "size_bytes": 6904178,
+      "sha256": "179d7d330914b7e130673f83c3931b5a2cc1935c5555a19e4f417cd73ed8a2e3",
+      "raw_row_count": 83972,
+      "valid_row_count": 83959,
+      "dropped_row_count": 13,
+      "dropped_reasons": {
+        "missing_dates": 0,
+        "missing_prices": 0,
+        "non_positive_prices": 13,
+        "missing_series_metadata": 0
+      }
+    },
+    {
+      "file_name": "KANPUR.csv",
+      "source_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/KANPUR.csv",
+      "size_bytes": 9843548,
+      "sha256": "c89551a32fcd4cb02d4bc85cb50de532b2478d9806fb4d8cd9ae859bf1b06d7f",
+      "raw_row_count": 113319,
+      "valid_row_count": 113310,
+      "dropped_row_count": 9,
+      "dropped_reasons": {
+        "missing_dates": 0,
+        "missing_prices": 0,
+        "non_positive_prices": 9,
+        "missing_series_metadata": 0
+      }
+    },
+    {
+      "file_name": "LUKHNOW.csv",
+      "source_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/LUKHNOW.csv",
+      "size_bytes": 4809204,
+      "sha256": "19bb57961c67cc439e2798ddb23d63cade9320bdb8659929f656a79d31f59e8a",
+      "raw_row_count": 54876,
+      "valid_row_count": 54876,
+      "dropped_row_count": 0,
+      "dropped_reasons": {
+        "missing_dates": 0,
+        "missing_prices": 0,
+        "non_positive_prices": 0,
+        "missing_series_metadata": 0
+      }
+    },
+    {
+      "file_name": "UNNAO.csv",
+      "source_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/5 year dataset/UNNAO.csv",
+      "size_bytes": 7141707,
+      "sha256": "e64405faf71070193b10a4477a8c259ad08eae6c9051872dbc545e507c115fc4",
+      "raw_row_count": 87740,
+      "valid_row_count": 87739,
+      "dropped_row_count": 1,
+      "dropped_reasons": {
+        "missing_dates": 0,
+        "missing_prices": 0,
+        "non_positive_prices": 1,
+        "missing_series_metadata": 0
+      }
+    }
+  ],
+  "summary_metrics": {
+    "total_source_files": 5,
+    "total_raw_rows": 472385,
+    "total_valid_parsed_rows": 472358,
+    "total_dropped_raw_rows": 27,
+    "ambiguous_same_grade_excluded_rows": 2936,
+    "exact_duplicates_deduplicated": 0,
+    "low_observation_series_dropped_rows": 7072,
+    "final_clean_rows": 462350,
+    "unique_series_count": 1297,
+    "unique_districts": [
+      "Ghaziabad",
+      "Jhansi",
+      "Kanpur",
+      "Lucknow",
+      "Unnao"
+    ],
+    "unique_markets_count": 41,
+    "unique_commodities_count": 108,
+    "date_range": {
+      "earliest_arrival_date": "2021-09-01",
+      "latest_arrival_date": "2026-09-30",
+      "total_calendar_days_spanned": 1856
+    }
+  },
+  "schema_columns": {
+    "Arrival_Date": "datetime64[us]",
+    "District": "str",
+    "Market": "str",
+    "Commodity": "str",
+    "Variety": "str",
+    "Grade": "str",
+    "Min_Price": "float64",
+    "Max_Price": "float64",
+    "Modal_Price": "float64",
+    "Commodity_Code": "int64",
+    "State": "str",
+    "series_id": "str"
+  },
+  "output_artifacts": [
+    {
+      "artifact_type": "processed_dataset_csv",
+      "file_name": "mandi_5year_processed.csv",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/processed/mandi_5year_processed.csv",
+      "size_bytes": 63435793,
+      "sha256": "20a198682c3f5382a25276a916e258f8fef4aa777c9c6d1cebe6e7c03a206dfa",
+      "row_count": 462350
+    },
+    {
+      "artifact_type": "processing_manifest_json",
+      "file_name": "processing_manifest.json",
+      "file_path": "/Users/kumarsuryansh/Desktop/Temporary/Mandi_Prediction/data/processed/processing_manifest.json",
+      "size_bytes": 4689,
+      "sha256": "71100a79e44749abb54b735d341b8733ea7a8ab06c2a273153c428dd109b840c",
+      "row_count": null
+    }
+  ]
+}
