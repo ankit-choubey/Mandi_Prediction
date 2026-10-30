@@ -66,11 +66,12 @@ class FreshnessStatus(str, Enum):
 
 class RecommendationStatus(str, Enum):
     """Recommendation safety status for farmer-facing advisories."""
-    ACTIVE = "ACTIVE"                    # Permitted; current market observation
+    ACTIVE = "ACTIVE"                    # Permitted; current verified market observation
     DELAYED = "DELAYED"                  # Permitted with explicit delay disclosure
     BLOCKED = "BLOCKED"                  # Blocked; stale, missing, down, uninitialized, or future
     HISTORICAL_ONLY = "HISTORICAL_ONLY"  # Permitted strictly for retrospective research/backtest
     DEMO = "DEMO"                        # Permitted strictly as simulated demonstration
+    SIMULATION_ONLY = "SIMULATION_ONLY"  # Pure mathematical evaluation without observation context; not an active advice
 
 
 BLOCKED_RECOMMENDATION_MESSAGE = (

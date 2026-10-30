@@ -337,13 +337,15 @@ def evaluate_sell_vs_store(
 
     actual_pct_change = ((future_price - current_price) / current_price) * 100.0
 
-    # Evaluate safety gate if context is provided
+    # Evaluate safety gate if context or gate is provided
     gate_applied = (
         observation_date is not None
+        or reference_date is not None
         or operational_state is not None
         or is_demo
         or is_historical_analysis
         or not source_available
+        or safety_gate is not None
     )
 
     gate_decision: Optional[SafetyGateDecision] = None
@@ -376,15 +378,28 @@ def evaluate_sell_vs_store(
         rec_status = gate_decision.recommendation_status
         message = gate_decision.message
         blocked_reason = gate_decision.blocked_reason or BLOCKED_RECOMMENDATION_MESSAGE
-    else:
+        is_actionable_advisory = False
+    elif gate_decision:
         action = raw_action
-        rec_status = gate_decision.recommendation_status if gate_decision else "ACTIVE"
-        message = gate_decision.message if gate_decision else f"Recommendation evaluated for {action}."
+        rec_status = gate_decision.recommendation_status
+        message = gate_decision.message
         blocked_reason = None
+        is_actionable_advisory = (rec_status in (RecommendationStatus.ACTIVE.value, RecommendationStatus.DELAYED.value))
+    else:
+        # Pure mathematical simulation without verified observation context
+        action = raw_action
+        rec_status = RecommendationStatus.SIMULATION_ONLY.value
+        message = (
+            "Pure mathematical simulation without verified observation date or market freshness. "
+            "This output is for research/parameter testing and cannot be presented as an active farmer recommendation."
+        )
+        blocked_reason = None
+        is_actionable_advisory = False
 
     payload: Dict[str, Any] = {
         "action": action,
         "raw_economic_action": raw_action,
+        "is_actionable_advisory": is_actionable_advisory,
         "quantity_quintals": quantity_quintals,
         "current_price": current_price,
         "future_price": future_price,
@@ -428,10 +443,33 @@ def evaluate_farmer_storage_recommendation(
     """
     Primary farmer-facing storage recommendation interface with mandatory safety gating.
 
-    Requires an explicit observation date. If observation date is omitted, stale, future-dated,
-    or if the source is down/uninitialized, the recommendation is blocked with:
+    Requires an explicit, verified observation date. If observation date is omitted,
+    stale (>5 days), future-dated, or if the source is down/uninitialized, the recommendation
+    is hard-blocked with action='BLOCKED' and recommendation_status='BLOCKED':
     "Insufficient information to recommend storage. Latest market-price data is stale or unavailable."
     """
+    ref_d: Optional[date] = None
+    if reference_date is not None:
+        if isinstance(reference_date, datetime):
+            ref_d = reference_date.date()
+        elif isinstance(reference_date, date):
+            ref_d = reference_date
+        elif isinstance(reference_date, str):
+            try:
+                ref_d = datetime.strptime(reference_date[:10], "%Y-%m-%d").date()
+            except ValueError:
+                ref_d = None
+
+    gate = safety_gate or RecommendationSafetyGate(current_ref_date=ref_d)
+    gate_decision = gate.evaluate_gate(
+        observation_date=observation_date,
+        operational_state=operational_state,
+        is_demo=is_demo,
+        is_historical_analysis=is_historical_analysis,
+        source_available=source_available,
+        has_verified_fresh_alternative=has_verified_fresh_alternative
+    )
+
     return evaluate_sell_vs_store(
         quantity_quintals=quantity_quintals,
         current_price=current_price,
@@ -444,7 +482,7 @@ def evaluate_farmer_storage_recommendation(
         is_historical_analysis=is_historical_analysis,
         source_available=source_available,
         has_verified_fresh_alternative=has_verified_fresh_alternative,
-        safety_gate=safety_gate
+        safety_gate=gate
     )
 
 

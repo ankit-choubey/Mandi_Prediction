@@ -381,6 +381,9 @@ class TestRecommendationSafetyGate(unittest.TestCase):
         self.assertAlmostEqual(res_pure["r_store_net"], 25470.0, places=2)
         self.assertAlmostEqual(res_pure["incremental_benefit"], 470.0, places=2)
         self.assertEqual(res_pure["action"], "STORE")
+        # Critical architectural check: missing observation context MUST NOT produce ACTIVE
+        self.assertEqual(res_pure["recommendation_status"], RecommendationStatus.SIMULATION_ONLY.value)
+        self.assertFalse(res_pure["is_actionable_advisory"])
 
         # Gated mode with fresh observation date (1 day lag)
         res_fresh = evaluate_sell_vs_store(
@@ -396,6 +399,38 @@ class TestRecommendationSafetyGate(unittest.TestCase):
         self.assertAlmostEqual(res_fresh["incremental_benefit"], 470.0, places=2)
         self.assertEqual(res_fresh["action"], "STORE")
         self.assertEqual(res_fresh["recommendation_status"], "ACTIVE")
+        self.assertTrue(res_fresh["is_actionable_advisory"])
+
+    # -------------------------------------------------------------------------
+    # Requirement 13: Farmer-facing recommendation requires observation context
+    # -------------------------------------------------------------------------
+    def test_13_farmer_facing_recommendation_requires_observation_context(self):
+        """Farmer-facing wrapper without observation date must be BLOCKED, never ACTIVE."""
+        res_no_date = evaluate_farmer_storage_recommendation(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=None,
+            reference_date=self.ref_date
+        )
+        self.assertEqual(res_no_date["action"], "BLOCKED")
+        self.assertEqual(res_no_date["recommendation_status"], "BLOCKED")
+        self.assertFalse(res_no_date["is_actionable_advisory"])
+        self.assertEqual(res_no_date["message"], BLOCKED_RECOMMENDATION_MESSAGE)
+
+        # Farmer-facing with fresh observation produces ACTIVE
+        res_with_date = evaluate_farmer_storage_recommendation(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date="2026-10-24",
+            reference_date=self.ref_date
+        )
+        self.assertEqual(res_with_date["action"], "STORE")
+        self.assertEqual(res_with_date["recommendation_status"], "ACTIVE")
+        self.assertTrue(res_with_date["is_actionable_advisory"])
 
 
 if __name__ == "__main__":

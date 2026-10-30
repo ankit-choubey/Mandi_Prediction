@@ -113,12 +113,14 @@ To protect farmers from binding storage fees (₹20–₹50/qtl) or distress sel
   }
   ```
 
-### 4.3 Historical Research vs. Active Farmer Advisory
-* **Historical Research / Backtesting Mode (`is_historical_analysis=True`):**
+### 4.3 Pure Simulation vs. Historical Backtest vs. Active Farmer Advisory
+* **Pure Mathematical Simulation (`recommendation_status="SIMULATION_ONLY"`):**
+  When functions such as `evaluate_sell_vs_store()` are invoked with only price parameters and without observation context, the output calculates mathematical arbitrage and break-even points, but is strictly designated `SIMULATION_ONLY` (`is_actionable_advisory=False`). It must never be presented as an active farmer recommendation.
+* **Historical Research / Backtesting Mode (`is_historical_analysis=True`, `recommendation_status="HISTORICAL_ONLY"`):**
   Retrospective model training, threshold evaluation, and backtesting on past partitions (e.g. 2021–2026 data) are permitted. Outputs are tagged with:
   `"Historical analysis only; not an active market advisory."`
-* **Active Farmer-Facing Advisory Mode (`is_historical_analysis=False`):**
-  Must meet all freshness criteria. If data is stale, the system displays historical context for reference only, but hard-blocks any commercial "STORE" or "SELL" recommendation.
+* **Active Farmer-Facing Advisory Mode (`is_actionable_advisory=True`, `recommendation_status="ACTIVE"` or `"DELAYED"`):**
+  Available strictly via farmer-facing interfaces (e.g. `evaluate_farmer_storage_recommendation()`) backed by verified observation date context within acceptable freshness thresholds ($\le 5$ calendar days). If data is stale, missing, down, or future-dated, the active recommendation is hard-blocked with `action="BLOCKED"`.
 
 ### 4.4 Demo Mode Identification & Isolation
 * When executed with `--demo`, the system runs an isolated integration verification.
