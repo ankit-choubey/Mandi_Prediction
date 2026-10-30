@@ -64,6 +64,21 @@ class FreshnessStatus(str, Enum):
     UNKNOWN = "UNKNOWN"      # Cannot be determined
 
 
+class RecommendationStatus(str, Enum):
+    """Recommendation safety status for farmer-facing advisories."""
+    ACTIVE = "ACTIVE"                    # Permitted; current market observation
+    DELAYED = "DELAYED"                  # Permitted with explicit delay disclosure
+    BLOCKED = "BLOCKED"                  # Blocked; stale, missing, down, uninitialized, or future
+    HISTORICAL_ONLY = "HISTORICAL_ONLY"  # Permitted strictly for retrospective research/backtest
+    DEMO = "DEMO"                        # Permitted strictly as simulated demonstration
+
+
+BLOCKED_RECOMMENDATION_MESSAGE = (
+    "Insufficient information to recommend storage. "
+    "Latest market-price data is stale or unavailable."
+)
+
+
 @dataclass
 class ReconciliationLedger:
     """Reconciliation metrics matching Section 8 of the execution plan."""
@@ -158,8 +173,10 @@ class HealthStatusEngine:
 
         lag_days = (self.ref_date - obs_date).days
 
-        # Negative lag means future date or timezone edge; treat as CURRENT but flag
-        if lag_days <= self.freshness_current_days:
+        # Future-dated observation (lag < 0): rejected from CURRENT, flagged as UNKNOWN
+        if lag_days < 0:
+            return FreshnessStatus.UNKNOWN, lag_days
+        elif lag_days <= self.freshness_current_days:
             return FreshnessStatus.CURRENT, lag_days
         elif lag_days <= self.freshness_delayed_days:
             return FreshnessStatus.DELAYED, lag_days
@@ -281,7 +298,11 @@ class HealthStatusEngine:
         warnings = []
         if total_quarantined > 0:
             warnings.append(f"{total_quarantined} records quarantined ({invalid_q} invalid price/bounds, {conflict_q} conflicting same-day quotes).")
-        if freshness_status == FreshnessStatus.STALE:
+        if not latest_obs_str:
+            warnings.append("MISSING OBSERVATION DATE WARNING: Dataset contains no valid observation date.")
+        elif lag_days is not None and lag_days < 0:
+            warnings.append(f"FUTURE-DATED OBSERVATION WARNING: Latest observation ({latest_obs_str}) is {abs(lag_days)} days ahead of reference date ({self.ref_date}).")
+        elif freshness_status == FreshnessStatus.STALE:
             warnings.append(f"STALE DATA WARNING: Latest observation ({latest_obs_str}) is {lag_days} days behind reference date ({self.ref_date}).")
         elif freshness_status == FreshnessStatus.DELAYED:
             warnings.append(f"DELAYED DATA NOTICE: Latest observation ({latest_obs_str}) is {lag_days} days old.")
@@ -337,4 +358,228 @@ class HealthStatusEngine:
             is_source_live=False,
             source_available=source_available,
             is_partial=is_partial
+        )
+
+
+@dataclass
+class SafetyGateDecision:
+    """Standardized decision payload produced by the recommendation safety gate."""
+    is_permitted: bool
+    recommendation_status: str       # "ACTIVE", "DELAYED", "BLOCKED", "HISTORICAL_ONLY", "DEMO"
+    freshness_status: str            # "CURRENT", "DELAYED", "STALE", "UNKNOWN"
+    operational_state: str           # e.g., "SUCCESS", "STALE_DATA", "SOURCE_DOWN", etc.
+    observation_date: Optional[str]
+    reference_date: str
+    lag_days: Optional[int]
+    message: str
+    blocked_reason: Optional[str] = None
+    warning: Optional[str] = None
+    is_demo: bool = False
+    is_historical: bool = False
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+class RecommendationSafetyGate:
+    """
+    Operational Safety Gate for Farmer-Facing Advisory and Storage Recommendations.
+
+    Enforces that active recommendations (such as sell vs store decisions or market condition advice)
+    cannot be issued on stale market quotes, missing dates, future dates, uninitialized pipelines,
+    or downed sources without verified fresh alternative feeds.
+    """
+
+    def __init__(
+        self,
+        current_ref_date: Optional[date] = None,
+        freshness_current_days: int = FRESHNESS_CURRENT_MAX_DAYS,
+        freshness_delayed_days: int = FRESHNESS_DELAYED_MAX_DAYS
+    ):
+        self.ref_date = current_ref_date or datetime.now(timezone.utc).date()
+        self.engine = HealthStatusEngine(
+            current_ref_date=self.ref_date,
+            freshness_current_days=freshness_current_days,
+            freshness_delayed_days=freshness_delayed_days
+        )
+
+    def evaluate_gate(
+        self,
+        observation_date: Optional[Union[str, date, datetime]] = None,
+        operational_state: Optional[OperationalState] = None,
+        is_demo: bool = False,
+        is_historical_analysis: bool = False,
+        source_available: bool = True,
+        has_verified_fresh_alternative: bool = False
+    ) -> SafetyGateDecision:
+        """
+        Evaluate whether a farmer-facing recommendation may proceed.
+        """
+        ref_str = self.ref_date.isoformat()
+
+        # Parse observation date to string YYYY-MM-DD
+        obs_str: Optional[str] = None
+        if observation_date is not None:
+            if isinstance(observation_date, (datetime, date)):
+                obs_str = observation_date.strftime("%Y-%m-%d")
+            else:
+                obs_str = str(observation_date).strip()[:10]
+
+        # 1. Demo Mode Isolation
+        if is_demo:
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.DEMO.value,
+                freshness_status=FreshnessStatus.UNKNOWN.value,
+                operational_state=operational_state.value if operational_state else OperationalState.UNCHANGED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=None,
+                message="DEMO MODE — Illustrative simulation only; not a real mandi feed.",
+                blocked_reason="Demo simulation data cannot be used for commercial or operational advice.",
+                warning="DEMO RUN: Not a real market observation.",
+                is_demo=True,
+                is_historical=False
+            )
+
+        # 2. Historical Research / Backtest Mode
+        if is_historical_analysis:
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
+            return SafetyGateDecision(
+                is_permitted=True,
+                recommendation_status=RecommendationStatus.HISTORICAL_ONLY.value,
+                freshness_status=freshness.value,
+                operational_state=operational_state.value if operational_state else OperationalState.SUCCESS.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message="Historical analysis only; not an active market advisory.",
+                blocked_reason=None,
+                warning="HISTORICAL EVALUATION: Output reflects past data for research and backtesting.",
+                is_demo=False,
+                is_historical=True
+            )
+
+        # 3. Uninitialized Pipeline
+        if operational_state == OperationalState.UNINITIALIZED:
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=FreshnessStatus.UNKNOWN.value,
+                operational_state=OperationalState.UNINITIALIZED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=None,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="System uninitialized; no validated market snapshot exists.",
+                warning="Pipeline is uninitialized.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 4. Source Down without Fresh Alternative
+        if (operational_state == OperationalState.SOURCE_DOWN or not source_available) and not has_verified_fresh_alternative:
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=freshness.value,
+                operational_state=OperationalState.SOURCE_DOWN.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="Upstream source is down and no fresh alternative data feed is verified.",
+                warning="Source unavailable; fallback data is not verified as current.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 5. Missing or Unparseable Observation Date
+        if not obs_str:
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=FreshnessStatus.UNKNOWN.value,
+                operational_state=operational_state.value if operational_state else OperationalState.STALE_DATA.value,
+                observation_date=None,
+                reference_date=ref_str,
+                lag_days=None,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="Observation date is missing or invalid; cannot confirm freshness.",
+                warning="Missing observation date cannot be treated as current.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        freshness, lag = self.engine.evaluate_freshness(obs_str)
+
+        # 6. Future-Dated Observation
+        if lag is not None and lag < 0:
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=FreshnessStatus.UNKNOWN.value,
+                operational_state=OperationalState.QUARANTINED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason=f"Observation date ({obs_str}) is in the future relative to reference date ({ref_str}).",
+                warning=f"Future-dated record ({abs(lag)} days ahead of reference date) rejected.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 7. Stale Data (lag > 5 days)
+        if freshness == FreshnessStatus.STALE:
+            op_st = operational_state.value if operational_state else OperationalState.STALE_DATA.value
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=FreshnessStatus.STALE.value,
+                operational_state=op_st,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason=f"Market data is stale ({lag} calendar days lag > threshold {self.engine.freshness_delayed_days} days).",
+                warning=f"STALE DATA WARNING: Latest observation is {lag} days old. Not a live price.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 8. Delayed Data (3 to 5 days lag)
+        if freshness == FreshnessStatus.DELAYED:
+            op_st = operational_state.value if operational_state else OperationalState.SUCCESS.value
+            return SafetyGateDecision(
+                is_permitted=True,
+                recommendation_status=RecommendationStatus.DELAYED.value,
+                freshness_status=FreshnessStatus.DELAYED.value,
+                operational_state=op_st,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=f"Notice: Market observations are delayed by {lag} days. Not a live or today's price quote.",
+                blocked_reason=None,
+                warning=f"DELAYED DATA NOTICE: Observation date is {obs_str} ({lag} days lag).",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 9. Current Data (0 to 2 days lag)
+        op_st = operational_state.value if operational_state else OperationalState.SUCCESS.value
+        return SafetyGateDecision(
+            is_permitted=True,
+            recommendation_status=RecommendationStatus.ACTIVE.value,
+            freshness_status=FreshnessStatus.CURRENT.value,
+            operational_state=op_st,
+            observation_date=obs_str,
+            reference_date=ref_str,
+            lag_days=lag,
+            message=f"Market data is current as of observation date {obs_str}.",
+            blocked_reason=None,
+            warning=None,
+            is_demo=False,
+            is_historical=False
         )

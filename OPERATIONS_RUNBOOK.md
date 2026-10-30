@@ -77,19 +77,55 @@ Every pipeline execution evaluates into one of seven mutually exclusive operatio
 
 ---
 
-## 4. Freshness Policy & Rules
+## 4. Freshness Policy & Recommendation Safety Gate
 
-Freshness evaluates the time lag between the **latest observed transaction date** and the current system date:
+### 4.1 Freshness Calculation & Thresholds
+Freshness evaluates the time lag between the **latest observed transaction date** and the current system reference date:
 
 $$\text{Lag}_{\text{days}} = \text{Date}_{\text{current}} - \text{Date}_{\text{latest observation}}$$
 
-| Freshness Status | Lag Threshold | Practical Agricultural Interpretation |
+| Freshness Status | Lag Threshold | System Interpretation & Advisory Behavior |
 |---|---|---|
-| **`CURRENT`** | $\le 2$ calendar days | Normal daily reporting cadence. APMC mandis report evening clearing data for $T-1$ or $T-2$. |
-| **`DELAYED`** | $3$ to $5$ calendar days | Weekend closure (Sundays) or local gazetted holiday. Normal operational buffer. |
-| **`STALE`** | $> 5$ calendar days | Strike, seasonal harvest hiatus, or upstream API reporting failure. Must trigger warning. |
+| **`CURRENT`** | $\le 2$ calendar days | Normal daily clearing cadence ($T-1$ or $T-2$). Active farmer recommendations permitted with observation date displayed. |
+| **`DELAYED`** | $3$ to $5$ calendar days | Weekend closure or gazetted holiday. Recommendations permitted with explicit delay disclosure; never described as live quotes. |
+| **`STALE`** | $> 5$ calendar days | Reporting hiatus or market closure. **Active storage/sell recommendations are strictly BLOCKED**. |
+| **`UNKNOWN`** | Missing, unparseable, or future | Observation date missing or future-dated. **Active recommendations strictly BLOCKED**. |
 
-> **CRITICAL DIRECTIVE:** A stale observation date **must never be disguised** by showing the server retrieval timestamp. Both dates must always appear side-by-side.
+> **CRITICAL DIRECTIVE:** A stale observation date **must never be disguised** by showing the server retrieval timestamp. Both dates must always appear side-by-side, and stale snapshots must carry the explicit warning: `STALE DATA — NOT A CURRENT PRICE`.
+
+### 4.2 Recommendation Safety Gate Enforcement
+To protect farmers from binding storage fees (₹20–₹50/qtl) or distress selling on obsolete quotes, the `RecommendationSafetyGate` evaluates every operational advisory before output is presented:
+
+* **When Active Recommendations are BLOCKED:**
+  1. Observation date exceeds 5 days lag (`FreshnessStatus.STALE`).
+  2. Upstream data source is unavailable (`SOURCE_DOWN`) without a separately verified fresh data feed.
+  3. Operational pipeline is uninitialized (`UNINITIALIZED`).
+  4. Observation date is missing, empty, or unparseable.
+  5. Observation date is in the future relative to system reference date.
+* **Standard Blocked Response Payload:**
+  When blocked, the system returns a machine-readable verdict with:
+  ```json
+  {
+    "action": "BLOCKED",
+    "recommendation_status": "BLOCKED",
+    "message": "Insufficient information to recommend storage. Latest market-price data is stale or unavailable.",
+    "blocked_reason": "Market data is stale (30 calendar days lag > threshold 5 days)."
+  }
+  ```
+
+### 4.3 Historical Research vs. Active Farmer Advisory
+* **Historical Research / Backtesting Mode (`is_historical_analysis=True`):**
+  Retrospective model training, threshold evaluation, and backtesting on past partitions (e.g. 2021–2026 data) are permitted. Outputs are tagged with:
+  `"Historical analysis only; not an active market advisory."`
+* **Active Farmer-Facing Advisory Mode (`is_historical_analysis=False`):**
+  Must meet all freshness criteria. If data is stale, the system displays historical context for reference only, but hard-blocks any commercial "STORE" or "SELL" recommendation.
+
+### 4.4 Demo Mode Identification & Isolation
+* When executed with `--demo`, the system runs an isolated integration verification.
+* Demo mode displays a prominent top warning banner:
+  `[DEMO MODE] SIMULATED INTEGRATION DEMONSTRATION RUN — Illustrative test run only; NOT a real mandi market data feed.`
+* In JSON output, `"is_demo": true` and `"recommendation_status": "DEMO"` ensure demo outputs cannot masquerade as real market quotes.
+* Live real-time streaming ingestion is not claimed; all observations originate from verified government APMC snapshots or explicit offline testing caches.
 
 ---
 
@@ -161,9 +197,10 @@ $$\text{Records Accepted} = \text{New Natural Keys} + \text{Unchanged Duplicates
 
 - [x] **Separate Timestamps:** Latest Observation Date (`2026-09-30`) and Retrieval Time (`2026-10-23`) rendered independently.
 - [x] **Operational States:** All 7 states modeled, documented, and covered by unit tests.
+- [x] **Recommendation Safety Gate:** Stale quotes (>5d lag), missing dates, future dates, down sources, and uninitialized states automatically block active farmer recommendations.
 - [x] **Reconciliation Ledger:** Record counts reconcile exactly without silent drops.
 - [x] **Deterministic Playback:** Dashboard reproduces directly from verified snapshot.
-- [x] **Automated Tests:** 15/15 operational unit tests passing (`tests/test_operational_output.py`).
-- [x] **Single Demo Command:** `python3 -m src.current_data_output --demo` provides immediate visual proof.
+- [x] **Automated Tests:** 117/117 full-suite unit and integration tests passing (`tests/test_recommendation_safety_gate.py` + `tests/test_operational_output.py`).
+- [x] **Single Demo Command:** `python3 -m src.current_data_output --demo` provides immediate visual proof with demo isolation banners.
 
 *Certified by: Om Awasthi — Operational Reliability & Current-Data Output Lead*

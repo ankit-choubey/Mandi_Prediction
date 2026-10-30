@@ -40,7 +40,17 @@ CRITICAL SAFEGUARDS:
 
 from dataclasses import dataclass
 from typing import Optional, Dict, Any, Literal, Union
+from datetime import date, datetime
 import numpy as np
+
+from src.health_status import (
+    RecommendationSafetyGate,
+    SafetyGateDecision,
+    RecommendationStatus,
+    OperationalState,
+    FreshnessStatus,
+    BLOCKED_RECOMMENDATION_MESSAGE
+)
 
 
 @dataclass(frozen=True)
@@ -270,13 +280,28 @@ def evaluate_sell_vs_store(
     quantity_quintals: float,
     current_price: float,
     future_price: float,
-    params: EconomicParameters
+    params: EconomicParameters,
+    observation_date: Optional[Union[str, date, datetime]] = None,
+    reference_date: Optional[Union[str, date, datetime]] = None,
+    operational_state: Optional[Any] = None,
+    is_demo: bool = False,
+    is_historical_analysis: bool = False,
+    source_available: bool = True,
+    has_verified_fresh_alternative: bool = False,
+    safety_gate: Optional[RecommendationSafetyGate] = None,
 ) -> Dict[str, Any]:
     """
     Complete sell-versus-store economic evaluation for a single decision point.
 
     Returns structured results including incremental net benefit (Delta_R),
     per-quintal benefit (delta_r), break-even price, and economic recommendation.
+
+    When observation_date, operational_state, is_demo, or is_historical_analysis is supplied,
+    the operational safety gate is evaluated. If data is STALE (>5 days), missing, future-dated,
+    down without fresh alternatives, or uninitialized:
+    - action is set to 'BLOCKED'
+    - recommendation_status is set to 'BLOCKED'
+    - message is set to BLOCKED_RECOMMENDATION_MESSAGE
     """
     sell_res = calculate_immediate_sale_proceeds(
         quantity_quintals=quantity_quintals,
@@ -301,19 +326,65 @@ def evaluate_sell_vs_store(
     delta_r = r_store - r_sell
     delta_r_per_quintal = delta_r / quantity_quintals
 
-    # Determine economic recommendation
+    # Determine default unconstrained economic action
     tolerance = 1e-6
     if delta_r > tolerance:
-        action = "STORE"
+        raw_action = "STORE"
     elif delta_r < -tolerance:
-        action = "SELL"
+        raw_action = "SELL"
     else:
-        action = "INDIFFERENT"
+        raw_action = "INDIFFERENT"
 
     actual_pct_change = ((future_price - current_price) / current_price) * 100.0
 
-    return {
+    # Evaluate safety gate if context is provided
+    gate_applied = (
+        observation_date is not None
+        or operational_state is not None
+        or is_demo
+        or is_historical_analysis
+        or not source_available
+    )
+
+    gate_decision: Optional[SafetyGateDecision] = None
+    if gate_applied:
+        # Convert string or datetime reference_date if needed
+        ref_d: Optional[date] = None
+        if reference_date is not None:
+            if isinstance(reference_date, datetime):
+                ref_d = reference_date.date()
+            elif isinstance(reference_date, date):
+                ref_d = reference_date
+            elif isinstance(reference_date, str):
+                try:
+                    ref_d = datetime.strptime(reference_date[:10], "%Y-%m-%d").date()
+                except ValueError:
+                    ref_d = None
+
+        gate = safety_gate or RecommendationSafetyGate(current_ref_date=ref_d)
+        gate_decision = gate.evaluate_gate(
+            observation_date=observation_date,
+            operational_state=operational_state,
+            is_demo=is_demo,
+            is_historical_analysis=is_historical_analysis,
+            source_available=source_available,
+            has_verified_fresh_alternative=has_verified_fresh_alternative
+        )
+
+    if gate_decision and not gate_decision.is_permitted:
+        action = "BLOCKED"
+        rec_status = gate_decision.recommendation_status
+        message = gate_decision.message
+        blocked_reason = gate_decision.blocked_reason or BLOCKED_RECOMMENDATION_MESSAGE
+    else:
+        action = raw_action
+        rec_status = gate_decision.recommendation_status if gate_decision else "ACTIVE"
+        message = gate_decision.message if gate_decision else f"Recommendation evaluated for {action}."
+        blocked_reason = None
+
+    payload: Dict[str, Any] = {
         "action": action,
+        "raw_economic_action": raw_action,
         "quantity_quintals": quantity_quintals,
         "current_price": current_price,
         "future_price": future_price,
@@ -327,8 +398,54 @@ def evaluate_sell_vs_store(
         "storage_cost_incurred": store_res["storage_and_handling_cost"],
         "carrying_cost_incurred": store_res["carrying_cost"],
         "physical_loss_quintals": quantity_quintals * params.quantity_loss_fraction,
-        "params": params
+        "params": params,
+        "recommendation_status": rec_status,
+        "message": message,
     }
+
+    if blocked_reason:
+        payload["blocked_reason"] = blocked_reason
+    if gate_decision:
+        payload["safety_gate"] = gate_decision.to_dict()
+
+    return payload
+
+
+def evaluate_farmer_storage_recommendation(
+    quantity_quintals: float,
+    current_price: float,
+    future_price: float,
+    params: EconomicParameters,
+    observation_date: Optional[Union[str, date, datetime]] = None,
+    reference_date: Optional[Union[str, date, datetime]] = None,
+    operational_state: Optional[Any] = None,
+    is_demo: bool = False,
+    is_historical_analysis: bool = False,
+    source_available: bool = True,
+    has_verified_fresh_alternative: bool = False,
+    safety_gate: Optional[RecommendationSafetyGate] = None,
+) -> Dict[str, Any]:
+    """
+    Primary farmer-facing storage recommendation interface with mandatory safety gating.
+
+    Requires an explicit observation date. If observation date is omitted, stale, future-dated,
+    or if the source is down/uninitialized, the recommendation is blocked with:
+    "Insufficient information to recommend storage. Latest market-price data is stale or unavailable."
+    """
+    return evaluate_sell_vs_store(
+        quantity_quintals=quantity_quintals,
+        current_price=current_price,
+        future_price=future_price,
+        params=params,
+        observation_date=observation_date,
+        reference_date=reference_date,
+        operational_state=operational_state,
+        is_demo=is_demo,
+        is_historical_analysis=is_historical_analysis,
+        source_available=source_available,
+        has_verified_fresh_alternative=has_verified_fresh_alternative,
+        safety_gate=safety_gate
+    )
 
 
 def get_default_scenarios() -> Dict[str, EconomicParameters]:

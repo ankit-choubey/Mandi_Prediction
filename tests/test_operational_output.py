@@ -161,6 +161,20 @@ class TestFreshnessPolicyAndTimestamps(unittest.TestCase):
         self.assertEqual(status, FreshnessStatus.STALE)
         self.assertEqual(lag, 25)
 
+    def test_freshness_future_date_rejected(self):
+        # 1 day future -> UNKNOWN, lag = -1
+        status, lag = self.engine.evaluate_freshness("2026-10-26")
+        self.assertNotEqual(status, FreshnessStatus.CURRENT)
+        self.assertEqual(status, FreshnessStatus.UNKNOWN)
+        self.assertEqual(lag, -1)
+
+    def test_freshness_missing_date_rejected(self):
+        # Missing date -> UNKNOWN, lag = None
+        status, lag = self.engine.evaluate_freshness(None)
+        self.assertNotEqual(status, FreshnessStatus.CURRENT)
+        self.assertEqual(status, FreshnessStatus.UNKNOWN)
+        self.assertIsNone(lag)
+
     def test_timestamp_separation_contract(self):
         """Verify that observation date and retrieval timestamp are strictly distinct."""
         mock_summary = {

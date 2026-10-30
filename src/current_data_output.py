@@ -29,6 +29,10 @@ from src.health_status import (
     OperationalState,
     FreshnessStatus,
     ReconciliationLedger,
+    RecommendationSafetyGate,
+    SafetyGateDecision,
+    RecommendationStatus,
+    BLOCKED_RECOMMENDATION_MESSAGE,
     DEFAULT_SOURCE_NAME,
     DEFAULT_RESOURCE_ID
 )
@@ -46,7 +50,9 @@ class CurrentDataReporter:
         repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.csv_path = validated_csv_path or os.path.join(repo_root, "data", "processed", "mandi_5year_validated.csv")
         self.summary_path = summary_json_path or os.path.join(repo_root, "data", "processed", "validation_summary.json")
+        self.ref_date = reference_date
         self.engine = HealthStatusEngine(current_ref_date=reference_date)
+        self.safety_gate = RecommendationSafetyGate(current_ref_date=reference_date)
 
     def load_report(
         self,
@@ -116,14 +122,63 @@ class CurrentDataReporter:
             "Max_Price": float(latest_row["Max_Price"]),
         }
 
+    def evaluate_safety_gate(
+        self,
+        report: Optional[HealthReport] = None,
+        observation_date: Optional[str] = None,
+        is_demo: bool = False,
+        is_historical: bool = False
+    ) -> SafetyGateDecision:
+        """Evaluate recommendation safety gate for this reporter instance."""
+        rep = report or self.load_report()
+        obs_d = observation_date or rep.latest_observation_date
+        return self.safety_gate.evaluate_gate(
+            observation_date=obs_d,
+            operational_state=rep.operational_state,
+            is_demo=is_demo,
+            is_historical_analysis=is_historical,
+            source_available=(not rep.is_fallback_active)
+        )
+
     def render_ascii_dashboard(
         self,
         report: HealthReport,
-        sample_query: Optional[Dict[str, Any]] = None
+        sample_query: Optional[Dict[str, Any]] = None,
+        is_demo: bool = False,
+        is_historical: bool = False
     ) -> str:
         """Render a clean, high-impact terminal dashboard."""
         lines = []
         width = 86
+
+        gate_decision = self.safety_gate.evaluate_gate(
+            observation_date=report.latest_observation_date,
+            operational_state=report.operational_state,
+            is_demo=is_demo,
+            is_historical_analysis=is_historical,
+            source_available=(not report.is_fallback_active)
+        )
+
+        if is_demo:
+            lines.append("*" * width)
+            lines.append("  [DEMO MODE] SIMULATED INTEGRATION DEMONSTRATION RUN")
+            lines.append("  • Illustrative test run only; NOT a real mandi market data feed.")
+            lines.append("  • Commercial and operational farmer recommendations are strictly disabled.")
+            lines.append("*" * width)
+        elif report.freshness_status == FreshnessStatus.STALE:
+            lines.append("*" * width)
+            lines.append("  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE (Illustrative display only)")
+            lines.append(f"  • Latest Mandi Observation : {report.latest_observation_date} ({report.freshness_lag_days} calendar days lag)")
+            lines.append("  • Active Advisory Status   : BLOCKED — HISTORICAL SNAPSHOT ONLY")
+            lines.append("  • Directive                : Insufficient information to recommend storage.")
+            lines.append("                               Latest market-price data is stale or unavailable.")
+            lines.append("*" * width)
+        elif report.freshness_status == FreshnessStatus.DELAYED:
+            lines.append("-" * width)
+            lines.append(f"  ⚠️  DELAYED DATA NOTICE: Observation is {report.freshness_lag_days} calendar days old ({report.latest_observation_date}).")
+            lines.append("  • Not a live or today's price quote.")
+            lines.append("-" * width)
+
         lines.append("=" * width)
         lines.append("           APMC MANDI MARKET INTELLIGENCE — CURRENT DATA & HEALTH REPORT           ")
         lines.append("=" * width)
@@ -160,6 +215,14 @@ class CurrentDataReporter:
         lines.append(f"  • Active Unique Series    : {rec.current_unique_keys:>10,}")
         if rec.snapshot_sha256:
             lines.append(f"  • Snapshot SHA-256 Checksum: {rec.snapshot_sha256[:32]}...")
+
+        lines.append("-" * width)
+        lines.append("FARMER ADVISORY SAFETY GATE:")
+        status_tag = f"[{gate_decision.recommendation_status}]"
+        lines.append(f"  • Recommendation Status   : {status_tag:<20} (Advice Permitted: {'YES' if gate_decision.is_permitted else 'NO (BLOCKED)'})")
+        lines.append(f"  • Safety Gate Directive   : {gate_decision.message}")
+        if gate_decision.blocked_reason:
+            lines.append(f"  • Blocking Detail         : {gate_decision.blocked_reason}")
 
         lines.append("-" * width)
         lines.append("GEOGRAPHIC & COMMODITY COVERAGE:")
@@ -222,13 +285,17 @@ def main():
             market=args.market
         )
 
+    gate_decision = reporter.evaluate_safety_gate(report=report, is_demo=args.demo)
+
     if args.json:
         output_payload = report.to_dict()
+        output_payload["is_demo"] = args.demo
+        output_payload["recommendation_safety_gate"] = gate_decision.to_dict()
         if lookup_sample:
             output_payload["sample_observation_lookup"] = lookup_sample
         print(json.dumps(output_payload, indent=2))
     else:
-        dashboard = reporter.render_ascii_dashboard(report, sample_query=lookup_sample)
+        dashboard = reporter.render_ascii_dashboard(report, sample_query=lookup_sample, is_demo=args.demo)
         print(dashboard)
 
 

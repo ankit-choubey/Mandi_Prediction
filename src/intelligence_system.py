@@ -11,17 +11,36 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from datetime import date, datetime
 import pandas as pd
 import numpy as np
 from src.feature_engineering import FEATURE_COLUMNS
 from src.evaluate import CLASS_NAMES
+from src.health_status import (
+    RecommendationSafetyGate,
+    RecommendationStatus,
+    FreshnessStatus,
+    BLOCKED_RECOMMENDATION_MESSAGE
+)
 
 class MandiMarketIntelligenceEngine:
-    def __init__(self, model_pipeline, feature_dataset):
+    def __init__(self, model_pipeline, feature_dataset, default_ref_date=None):
         self.model = model_pipeline
         self.dataset = feature_dataset
+        self.default_ref_date = default_ref_date
         
-    def generate_intelligence(self, district=None, commodity=None, variety=None, market=None, record_index=None):
+    def generate_intelligence(
+        self,
+        district=None,
+        commodity=None,
+        variety=None,
+        market=None,
+        record_index=None,
+        reference_date=None,
+        is_historical_analysis=False,
+        is_demo=False,
+        safety_gate=None
+    ):
         """
         Generates comprehensive market intelligence for a specific observation or filtered criteria.
         """
@@ -56,6 +75,15 @@ class MandiMarketIntelligenceEngine:
             for idx, cname in enumerate(CLASS_NAMES):
                 probs[cname] = round(float(proba_vals[idx]) * 100, 2)
                 
+        # Evaluate safety gate for observation
+        ref_d = reference_date or self.default_ref_date
+        gate = safety_gate or RecommendationSafetyGate(current_ref_date=ref_d)
+        decision = gate.evaluate_gate(
+            observation_date=row['Arrival_Date'],
+            is_demo=is_demo,
+            is_historical_analysis=is_historical_analysis
+        )
+
         # Format intelligence payload
         intelligence = {
             "date": row['Arrival_Date'].strftime('%Y-%m-%d'),
@@ -70,6 +98,15 @@ class MandiMarketIntelligenceEngine:
             "expected_condition_T7": pred_condition,
             "condition_confidence": probs.get(pred_condition, None),
             "all_probabilities": probs,
+            "safety_gate": decision.to_dict(),
+            "recommendation_status": decision.recommendation_status,
+            "is_permitted": decision.is_permitted,
+            "is_stale": (decision.freshness_status == FreshnessStatus.STALE.value),
+            "freshness_status": decision.freshness_status,
+            "freshness_lag_days": decision.lag_days,
+            "message": decision.message,
+            "blocked_reason": decision.blocked_reason,
+            "actionable_recommendation": "PERMITTED" if decision.is_permitted else "BLOCKED",
             "recent_trends": {
                 "change_1d_pct": round(float(row.get('Price_Change_1d', 0)), 2),
                 "change_3d_pct": round(float(row.get('Price_Change_3d', 0)), 2),
@@ -104,12 +141,38 @@ class MandiMarketIntelligenceEngine:
     def format_terminal_card(self, intel):
         if "error" in intel:
             return intel["error"]
+
+        safety_header = ""
+        rec_status = intel.get("recommendation_status")
+        if rec_status == "BLOCKED" or intel.get("is_stale"):
+            safety_header = f"""
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: {intel['date']} ({intel.get('freshness_lag_days', 'N/A')} days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+"""
+        elif rec_status == "DELAYED":
+            safety_header = f"""
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  DELAYED DATA NOTICE: Observation date is {intel['date']} ({intel.get('freshness_lag_days', 'N/A')} days lag).
+  • Not a live or today's price quote.
+  ══════════════════════════════════════════════════════════════════════
+"""
+        elif rec_status == "DEMO":
+            safety_header = """
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  DEMO SIMULATION: Illustrative test run only. Not a real mandi quote.
+  ══════════════════════════════════════════════════════════════════════
+"""
         
         card = f"""
 ╔══════════════════════════════════════════════════════════════════════╗
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
-╚══════════════════════════════════════════════════════════════════════╝
+╚══════════════════════════════════════════════════════════════════════╝{safety_header}
   LOCATION & COMMODITY:
     • District           : {intel['district']}
     • Mandi / Market     : {intel['market']}
@@ -131,6 +194,7 @@ class MandiMarketIntelligenceEngine:
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> {intel['expected_condition_T7'].upper()} <<<
+  Actionable Advisory  : {intel.get('actionable_recommendation', 'PERMITTED')}
   Confidence Probability: {intel['condition_confidence']}%
   Class Probabilities  : {intel['all_probabilities']}
   Historical Outcome   : {intel['actual_outcome_T7']['actual_condition']} (Actual: Rs. {intel['actual_outcome_T7']['actual_price_T7']:,.2f} [{intel['actual_outcome_T7']['actual_pct_change']:+.2f}%])
