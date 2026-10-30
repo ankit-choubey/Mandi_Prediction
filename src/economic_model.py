@@ -297,8 +297,8 @@ def evaluate_sell_vs_store(
     per-quintal benefit (delta_r), break-even price, and economic recommendation.
 
     When observation_date, operational_state, is_demo, or is_historical_analysis is supplied,
-    the operational safety gate is evaluated. If data is STALE (>5 days), missing, future-dated,
-    down without fresh alternatives, or uninitialized:
+    the operational safety gate is evaluated. If data is STALE (>5 days), missing, malformed, future-dated,
+    down without fresh alternatives, uninitialized, partial, or quarantined:
     - action is set to 'BLOCKED'
     - recommendation_status is set to 'BLOCKED'
     - message is set to BLOCKED_RECOMMENDATION_MESSAGE
@@ -443,9 +443,10 @@ def evaluate_farmer_storage_recommendation(
     """
     Primary farmer-facing storage recommendation interface with mandatory safety gating.
 
-    Requires an explicit, verified observation date. If observation date is omitted,
-    stale (>5 days), future-dated, or if the source is down/uninitialized, the recommendation
-    is hard-blocked with action='BLOCKED' and recommendation_status='BLOCKED':
+    Requires an explicit observation date. If observation date is omitted,
+    malformed, stale (>5 days), future-dated, or if the pipeline is down, uninitialized,
+    partial, or quarantined, the recommendation is hard-blocked with action='BLOCKED'
+    and recommendation_status='BLOCKED':
     "Insufficient information to recommend storage. Latest market-price data is stale or unavailable."
     """
     ref_d: Optional[date] = None

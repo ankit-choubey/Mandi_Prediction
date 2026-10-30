@@ -260,7 +260,147 @@ class TestRecommendationSafetyGate(unittest.TestCase):
         )
         self.assertEqual(res["action"], "STORE")
         self.assertEqual(res["recommendation_status"], "HISTORICAL_ONLY")
+        self.assertFalse(res["is_actionable_advisory"])
         self.assertIn("historical", res["message"].lower())
+
+    def test_09b_historical_mode_blocks_missing_or_malformed_or_future_dates(self):
+        """Historical mode must reject missing, malformed, or future dates, but permit valid past dates."""
+        # Missing date in historical mode
+        dec_missing = self.gate.evaluate_gate(
+            observation_date=None,
+            is_historical_analysis=True
+        )
+        self.assertFalse(dec_missing.is_permitted)
+        self.assertEqual(dec_missing.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("missing or malformed", dec_missing.blocked_reason.lower())
+
+        # Empty string date in historical mode
+        dec_empty = self.gate.evaluate_gate(
+            observation_date="",
+            is_historical_analysis=True
+        )
+        self.assertFalse(dec_empty.is_permitted)
+        self.assertEqual(dec_empty.recommendation_status, RecommendationStatus.BLOCKED.value)
+
+        # Malformed date in historical mode
+        dec_malformed = self.gate.evaluate_gate(
+            observation_date="invalid-date-format",
+            is_historical_analysis=True
+        )
+        self.assertFalse(dec_malformed.is_permitted)
+        self.assertEqual(dec_malformed.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("missing or malformed", dec_malformed.blocked_reason.lower())
+
+        # Future-dated observation in historical mode
+        dec_future = self.gate.evaluate_gate(
+            observation_date="2026-10-30",  # 5 days ahead of ref_date (2026-10-25)
+            is_historical_analysis=True
+        )
+        self.assertFalse(dec_future.is_permitted)
+        self.assertEqual(dec_future.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("future", dec_future.blocked_reason.lower())
+
+        # Economic model with missing historical date
+        res_missing = evaluate_sell_vs_store(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=None,
+            reference_date=self.ref_date,
+            is_historical_analysis=True
+        )
+        self.assertEqual(res_missing["action"], "BLOCKED")
+        self.assertEqual(res_missing["recommendation_status"], "BLOCKED")
+        self.assertFalse(res_missing["is_actionable_advisory"])
+
+        # Economic model with future historical date
+        res_future = evaluate_sell_vs_store(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date="2026-10-30",
+            reference_date=self.ref_date,
+            is_historical_analysis=True
+        )
+        self.assertEqual(res_future["action"], "BLOCKED")
+        self.assertEqual(res_future["recommendation_status"], "BLOCKED")
+        self.assertFalse(res_future["is_actionable_advisory"])
+
+    def test_09c_partial_and_quarantined_states_block_recommendations(self):
+        """OperationalState.PARTIAL and QUARANTINED must block recommendations even with fresh dates."""
+        fresh_date = "2026-10-24"  # 1 day lag
+
+        # Test PARTIAL state
+        dec_partial = self.gate.evaluate_gate(
+            observation_date=fresh_date,
+            operational_state=OperationalState.PARTIAL
+        )
+        self.assertFalse(dec_partial.is_permitted)
+        self.assertEqual(dec_partial.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("partial", dec_partial.blocked_reason.lower())
+
+        res_partial_econ = evaluate_sell_vs_store(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=fresh_date,
+            reference_date=self.ref_date,
+            operational_state=OperationalState.PARTIAL
+        )
+        self.assertEqual(res_partial_econ["action"], "BLOCKED")
+        self.assertEqual(res_partial_econ["recommendation_status"], RecommendationStatus.BLOCKED.value)
+        self.assertFalse(res_partial_econ["is_actionable_advisory"])
+
+        res_partial_farmer = evaluate_farmer_storage_recommendation(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=fresh_date,
+            reference_date=self.ref_date,
+            operational_state=OperationalState.PARTIAL
+        )
+        self.assertEqual(res_partial_farmer["action"], "BLOCKED")
+        self.assertEqual(res_partial_farmer["recommendation_status"], RecommendationStatus.BLOCKED.value)
+        self.assertFalse(res_partial_farmer["is_actionable_advisory"])
+
+        # Test QUARANTINED state
+        dec_quarantined = self.gate.evaluate_gate(
+            observation_date=fresh_date,
+            operational_state=OperationalState.QUARANTINED
+        )
+        self.assertFalse(dec_quarantined.is_permitted)
+        self.assertEqual(dec_quarantined.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("quarantined", dec_quarantined.blocked_reason.lower())
+
+        res_quar_econ = evaluate_sell_vs_store(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=fresh_date,
+            reference_date=self.ref_date,
+            operational_state=OperationalState.QUARANTINED
+        )
+        self.assertEqual(res_quar_econ["action"], "BLOCKED")
+        self.assertEqual(res_quar_econ["recommendation_status"], RecommendationStatus.BLOCKED.value)
+        self.assertFalse(res_quar_econ["is_actionable_advisory"])
+
+        res_quar_farmer = evaluate_farmer_storage_recommendation(
+            quantity_quintals=10.0,
+            current_price=2500.0,
+            future_price=2650.0,
+            params=self.params,
+            observation_date=fresh_date,
+            reference_date=self.ref_date,
+            operational_state=OperationalState.QUARANTINED
+        )
+        self.assertEqual(res_quar_farmer["action"], "BLOCKED")
+        self.assertEqual(res_quar_farmer["recommendation_status"], RecommendationStatus.BLOCKED.value)
+        self.assertFalse(res_quar_farmer["is_actionable_advisory"])
 
     # -------------------------------------------------------------------------
     # Requirement 10: Demo output cannot masquerade as real market observation

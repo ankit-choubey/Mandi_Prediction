@@ -100,8 +100,9 @@ To protect farmers from binding storage fees (₹20–₹50/qtl) or distress sel
   1. Observation date exceeds 5 days lag (`FreshnessStatus.STALE`).
   2. Upstream data source is unavailable (`SOURCE_DOWN`) without a separately verified fresh data feed.
   3. Operational pipeline is uninitialized (`UNINITIALIZED`).
-  4. Observation date is missing, empty, or unparseable.
-  5. Observation date is in the future relative to system reference date.
+  4. Operational pipeline is in degraded state (`PARTIAL` or `QUARANTINED`): because the system cannot reliably prove subset safety, recommendations default to blocked.
+  5. Observation date is missing, empty, or malformed.
+  6. Observation date is in the future relative to system reference date.
 * **Standard Blocked Response Payload:**
   When blocked, the system returns a machine-readable verdict with:
   ```json
@@ -117,17 +118,17 @@ To protect farmers from binding storage fees (₹20–₹50/qtl) or distress sel
 * **Pure Mathematical Simulation (`recommendation_status="SIMULATION_ONLY"`):**
   When functions such as `evaluate_sell_vs_store()` are invoked with only price parameters and without observation context, the output calculates mathematical arbitrage and break-even points, but is strictly designated `SIMULATION_ONLY` (`is_actionable_advisory=False`). It must never be presented as an active farmer recommendation.
 * **Historical Research / Backtesting Mode (`is_historical_analysis=True`, `recommendation_status="HISTORICAL_ONLY"`):**
-  Retrospective model training, threshold evaluation, and backtesting on past partitions (e.g. 2021–2026 data) are permitted. Outputs are tagged with:
+  Retrospective model training, threshold evaluation, and backtesting on past partitions (e.g. 2021–2026 data) are permitted. Valid, parseable historical observation dates return `HISTORICAL_ONLY` with `is_actionable_advisory=False`. However, historical mode strictly blocks missing, malformed, or future-dated observation dates (`action="BLOCKED"`). Outputs are tagged with:
   `"Historical analysis only; not an active market advisory."`
 * **Active Farmer-Facing Advisory Mode (`is_actionable_advisory=True`, `recommendation_status="ACTIVE"` or `"DELAYED"`):**
-  Available strictly via farmer-facing interfaces (e.g. `evaluate_farmer_storage_recommendation()`) backed by verified observation date context within acceptable freshness thresholds ($\le 5$ calendar days). If data is stale, missing, down, or future-dated, the active recommendation is hard-blocked with `action="BLOCKED"`.
+  Available strictly via farmer-facing interfaces (e.g. `evaluate_farmer_storage_recommendation()`) backed by observation dates within acceptable freshness thresholds ($\le 5$ calendar days) and clean operational states (`SUCCESS` or `UNCHANGED`). If data is stale, missing, malformed, down, uninitialized, partial, quarantined, or future-dated, the active recommendation is hard-blocked with `action="BLOCKED"`. The gate verifies date freshness and operational status; it does not claim independent upstream source authentication.
 
 ### 4.4 Demo Mode Identification & Isolation
 * When executed with `--demo`, the system runs an isolated integration verification.
 * Demo mode displays a prominent top warning banner:
-  `[DEMO MODE] SIMULATED INTEGRATION DEMONSTRATION RUN — Illustrative test run only; NOT a real mandi market data feed.`
-* In JSON output, `"is_demo": true` and `"recommendation_status": "DEMO"` ensure demo outputs cannot masquerade as real market quotes.
-* Live real-time streaming ingestion is not claimed; all observations originate from verified government APMC snapshots or explicit offline testing caches.
+  `[DEMO MODE] SIMULATED INTEGRATION DEMONSTRATION RUN — Illustrative simulation only; not an active market advisory.`
+* In JSON output, `"is_demo": true` and `"recommendation_status": "DEMO"` ensure demo outputs cannot masquerade as active farmer advice.
+* Live real-time streaming ingestion is not claimed; all observations originate from government APMC snapshots or explicit offline testing caches.
 
 ---
 

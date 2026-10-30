@@ -66,9 +66,9 @@ class FreshnessStatus(str, Enum):
 
 class RecommendationStatus(str, Enum):
     """Recommendation safety status for farmer-facing advisories."""
-    ACTIVE = "ACTIVE"                    # Permitted; current verified market observation
+    ACTIVE = "ACTIVE"                    # Permitted; market observation within configured freshness threshold
     DELAYED = "DELAYED"                  # Permitted with explicit delay disclosure
-    BLOCKED = "BLOCKED"                  # Blocked; stale, missing, down, uninitialized, or future
+    BLOCKED = "BLOCKED"                  # Blocked; stale, missing, malformed, down, uninitialized, partial, quarantined, or future
     HISTORICAL_ONLY = "HISTORICAL_ONLY"  # Permitted strictly for retrospective research/backtest
     DEMO = "DEMO"                        # Permitted strictly as simulated demonstration
     SIMULATION_ONLY = "SIMULATION_ONLY"  # Pure mathematical evaluation without observation context; not an active advice
@@ -418,13 +418,33 @@ class RecommendationSafetyGate:
         """
         ref_str = self.ref_date.isoformat()
 
-        # Parse observation date to string YYYY-MM-DD
+        # Parse observation date to string YYYY-MM-DD and check validity
         obs_str: Optional[str] = None
+        is_malformed_date: bool = False
+        parsed_obs_date: Optional[date] = None
+
         if observation_date is not None:
-            if isinstance(observation_date, (datetime, date)):
-                obs_str = observation_date.strftime("%Y-%m-%d")
+            if isinstance(observation_date, datetime):
+                parsed_obs_date = observation_date.date()
+                obs_str = parsed_obs_date.strftime("%Y-%m-%d")
+            elif isinstance(observation_date, date):
+                parsed_obs_date = observation_date
+                obs_str = parsed_obs_date.strftime("%Y-%m-%d")
             else:
-                obs_str = str(observation_date).strip()[:10]
+                raw_str = str(observation_date).strip()
+                if not raw_str:
+                    obs_str = None
+                else:
+                    cleaned = raw_str[:10]
+                    try:
+                        if "/" in cleaned:
+                            parsed_obs_date = datetime.strptime(cleaned, "%d/%m/%Y").date()
+                        else:
+                            parsed_obs_date = datetime.strptime(cleaned, "%Y-%m-%d").date()
+                        obs_str = parsed_obs_date.strftime("%Y-%m-%d")
+                    except Exception:
+                        obs_str = cleaned
+                        is_malformed_date = True
 
         # 1. Demo Mode Isolation
         if is_demo:
@@ -436,15 +456,48 @@ class RecommendationSafetyGate:
                 observation_date=obs_str,
                 reference_date=ref_str,
                 lag_days=None,
-                message="DEMO MODE — Illustrative simulation only; not a real mandi feed.",
+                message="DEMO MODE — Illustrative simulation only; not an active market advisory.",
                 blocked_reason="Demo simulation data cannot be used for commercial or operational advice.",
-                warning="DEMO RUN: Not a real market observation.",
+                warning="DEMO RUN: Not an active market advisory.",
                 is_demo=True,
                 is_historical=False
             )
 
-        # 2. Historical Research / Backtest Mode
+        # 2. Historical Research / Backtest Mode Validation
         if is_historical_analysis:
+            if not obs_str or is_malformed_date or parsed_obs_date is None:
+                return SafetyGateDecision(
+                    is_permitted=False,
+                    recommendation_status=RecommendationStatus.BLOCKED.value,
+                    freshness_status=FreshnessStatus.UNKNOWN.value,
+                    operational_state=operational_state.value if operational_state else OperationalState.STALE_DATA.value,
+                    observation_date=obs_str,
+                    reference_date=ref_str,
+                    lag_days=None,
+                    message=BLOCKED_RECOMMENDATION_MESSAGE,
+                    blocked_reason="Historical observation date is missing or malformed; cannot confirm timeline.",
+                    warning="Historical analysis requires a valid, parseable observation date.",
+                    is_demo=False,
+                    is_historical=True
+                )
+
+            hist_lag = (self.ref_date - parsed_obs_date).days
+            if hist_lag < 0:
+                return SafetyGateDecision(
+                    is_permitted=False,
+                    recommendation_status=RecommendationStatus.BLOCKED.value,
+                    freshness_status=FreshnessStatus.UNKNOWN.value,
+                    operational_state=operational_state.value if operational_state else OperationalState.QUARANTINED.value,
+                    observation_date=obs_str,
+                    reference_date=ref_str,
+                    lag_days=hist_lag,
+                    message=BLOCKED_RECOMMENDATION_MESSAGE,
+                    blocked_reason=f"Historical observation date ({obs_str}) is in the future relative to reference date ({ref_str}).",
+                    warning=f"Future-dated historical record ({abs(hist_lag)} days ahead of reference date) rejected.",
+                    is_demo=False,
+                    is_historical=True
+                )
+
             freshness, lag = self.engine.evaluate_freshness(obs_str)
             return SafetyGateDecision(
                 is_permitted=True,
@@ -496,32 +549,69 @@ class RecommendationSafetyGate:
                 is_historical=False
             )
 
-        # 5. Missing or Unparseable Observation Date
-        if not obs_str:
+        # 5. Degraded Operational States: PARTIAL and QUARANTINED
+        # Conservative policy: block recommendations because the current architecture
+        # cannot reliably prove that individual recommendations use an unaffected subset.
+        if operational_state == OperationalState.PARTIAL:
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=freshness.value,
+                operational_state=OperationalState.PARTIAL.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="Upstream data retrieval was partial/truncated; cannot verify dataset completeness.",
+                warning="PARTIAL DATA: Pipeline data ingestion was incomplete. Active recommendations are blocked.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        if operational_state == OperationalState.QUARANTINED:
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=freshness.value,
+                operational_state=OperationalState.QUARANTINED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="Dataset contains quarantined records with validation or conflict errors; subset safety cannot be proven.",
+                warning="QUARANTINED DATA: Validation errors detected in batch. Active recommendations are blocked.",
+                is_demo=False,
+                is_historical=False
+            )
+
+        # 6. Missing or Malformed Observation Date
+        if not obs_str or is_malformed_date:
             return SafetyGateDecision(
                 is_permitted=False,
                 recommendation_status=RecommendationStatus.BLOCKED.value,
                 freshness_status=FreshnessStatus.UNKNOWN.value,
                 operational_state=operational_state.value if operational_state else OperationalState.STALE_DATA.value,
-                observation_date=None,
+                observation_date=obs_str if is_malformed_date else None,
                 reference_date=ref_str,
                 lag_days=None,
                 message=BLOCKED_RECOMMENDATION_MESSAGE,
                 blocked_reason="Observation date is missing or invalid; cannot confirm freshness.",
-                warning="Missing observation date cannot be treated as current.",
+                warning="Missing or malformed observation date cannot be treated as current.",
                 is_demo=False,
                 is_historical=False
             )
 
         freshness, lag = self.engine.evaluate_freshness(obs_str)
 
-        # 6. Future-Dated Observation
+        # 7. Future-Dated Observation
         if lag is not None and lag < 0:
             return SafetyGateDecision(
                 is_permitted=False,
                 recommendation_status=RecommendationStatus.BLOCKED.value,
                 freshness_status=FreshnessStatus.UNKNOWN.value,
-                operational_state=OperationalState.QUARANTINED.value,
+                operational_state=operational_state.value if operational_state else OperationalState.QUARANTINED.value,
                 observation_date=obs_str,
                 reference_date=ref_str,
                 lag_days=lag,
@@ -532,7 +622,7 @@ class RecommendationSafetyGate:
                 is_historical=False
             )
 
-        # 7. Stale Data (lag > 5 days)
+        # 8. Stale Data (lag > 5 days)
         if freshness == FreshnessStatus.STALE:
             op_st = operational_state.value if operational_state else OperationalState.STALE_DATA.value
             return SafetyGateDecision(
@@ -550,7 +640,7 @@ class RecommendationSafetyGate:
                 is_historical=False
             )
 
-        # 8. Delayed Data (3 to 5 days lag)
+        # 9. Delayed Data (3 to 5 days lag)
         if freshness == FreshnessStatus.DELAYED:
             op_st = operational_state.value if operational_state else OperationalState.SUCCESS.value
             return SafetyGateDecision(
@@ -568,7 +658,7 @@ class RecommendationSafetyGate:
                 is_historical=False
             )
 
-        # 9. Current Data (0 to 2 days lag)
+        # 10. Current Data (0 to 2 days lag)
         op_st = operational_state.value if operational_state else OperationalState.SUCCESS.value
         return SafetyGateDecision(
             is_permitted=True,
@@ -578,7 +668,7 @@ class RecommendationSafetyGate:
             observation_date=obs_str,
             reference_date=ref_str,
             lag_days=lag,
-            message=f"Market data is current as of observation date {obs_str}.",
+            message=f"Market observation date {obs_str} is fresh (lag: {lag}d).",
             blocked_reason=None,
             warning=None,
             is_demo=False,
