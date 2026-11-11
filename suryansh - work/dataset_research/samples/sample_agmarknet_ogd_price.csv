@@ -1,0 +1,6 @@
+state,district,market,commodity,variety,grade,arrival_date,min_price,max_price,modal_price
+Uttar Pradesh,Kanpur,Kanpur(Grain),Potato,Desi,FAQ,01/09/2024,1450,1580,1520
+Uttar Pradesh,Kanpur,Kanpur(Grain),Onion,Red,FAQ,01/09/2024,2400,2650,2550
+Uttar Pradesh,Kanpur,Kanpur(Grain),Tomato,Hybrid,FAQ,01/09/2024,1800,2200,2000
+Uttar Pradesh,Kanpur,Kanpur(Grain),Wheat,Dara,FAQ,01/09/2024,2275,2350,2300
+Uttar Pradesh,Lucknow,Lucknow,Potato,Desi,FAQ,01/09/2024,1500,1620,1560

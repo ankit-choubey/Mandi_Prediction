@@ -1,0 +1,17 @@
+dataset_name,provider,relevance_score,authority_score,temporal_coverage_score,spatial_coverage_score,granularity_score,completeness_score,joinability_score,leakage_safety_score,reproducibility_score,licensing_score,update_frequency_score,economic_usefulness_score,composite_score,tier_classification,strategic_recommendation
+Daily Mandi Wholesale Prices (AGMARKNET/OGD),DMI MoA&FW,10,10,9,9,9,9,10,9,10,10,10,10,9.58,REQUIRED,Core price backbone. Retain and maintain as primary predictive series.
+CEDA Agmarknet Harmonized Archive,Ashoka University,10,9,10,10,9,9,9,8,9,10,9,10,9.33,REQUIRED,Acquire immediately to backfill missing arrival volume quantities (Tonnes) for all 5 UP districts.
+IMD High-Resolution Gridded Rainfall (0.25 deg),IMD MoES,8,10,10,10,8,10,9,9,9,9,7,8,8.83,HIGH VALUE,High priority for feature engineering extreme rainfall shocks and transit disruption indicators.
+IMD Daily Surface Station Weather (Temp/RH),IMD MoES,8,10,10,7,8,8,8,9,8,9,9,8,8.42,HIGH VALUE,Essential for perishable crop heat stress and quality deterioration modeling (Tomato/Vegetables).
+PPAC Daily Retail Diesel Fuel Prices,PPAC / MoPNG,8,10,9,8,8,10,9,10,10,10,10,8,8.92,HIGH VALUE,Acquire as clean daily proxy for road freight transportation cost fluctuations between mandis.
+Central Warehousing Corporation (CWC) Tariffs,CWC MoCA,9,10,8,8,7,10,9,10,10,10,7,10,9.0,HIGH VALUE,Primary benchmark for economic hurdle rate calculation. Retain statutory tariff slabs.
+ICAR-CIPHET National Post-Harvest Loss Survey,ICAR / MoFPI,9,10,7,8,6,9,8,10,10,10,5,10,8.42,HIGH VALUE,Authoritative basis for crop-specific physiological shrinkage (L) and quality markdown parameters.
+UP Mandi Parishad Statutory Fees & Bye-Laws,UP Mandi Parishad,9,10,8,8,8,9,9,10,9,10,6,9,8.75,HIGH VALUE,Statutory basis for transaction cess (2.0%) and palledari loading/unloading friction.
+CACP Minimum Support Price (MSP) Reports,CACP MoA&FW,8,10,10,9,7,10,9,10,10,10,7,8,8.92,HIGH VALUE,"Integrate as hard price floors for MSP-supported staples (Wheat, Paddy, Mustard, Gram)."
+KCC Priority Sector Lending Interest Rates,RBI / NABARD,8,10,9,9,7,10,9,10,10,10,7,8,8.83,HIGH VALUE,Statutory foundation for holding opportunity cost and working capital financing rates (7% p.a.).
+WDRA Public Warehouse Registry (e-NWR),WDRA MoCA,7,9,8,8,6,8,7,9,8,9,7,7,7.75,OPTIONAL,Acquire to verify spatial existence of accredited warehouses within 15 km of each APMC mandi.
+National Agriculture Market (e-NAM) Live Feed,SFAC MoA&FW,7,8,7,6,7,5,6,7,6,8,9,6,6.83,OPTIONAL,Secondary check for electronic assaying quality parameters; missingness too high for primary modeling.
+District APY Database (Area Production Yield),DES MoA&FW,6,9,8,9,5,7,6,4,7,9,4,5,6.17,NOT SUITABLE,Unsuitable for daily forecasting. Severe 12-18 month lag; static annual totals add zero daily marginal R2.
+DES Quarterly Advance Production Estimates,DES MoA&FW,5,8,7,6,4,6,5,3,6,8,5,4,5.42,NOT SUITABLE,State-level only; substantial retrospective revision errors create acute lookahead leakage risks.
+Truck Fleet Telematics / Fastag Freight Indices,Private Logistics,6,6,6,6,5,5,5,7,4,4,7,5,5.33,NOT SUITABLE,Proprietary subscription; opaque methodology; unverified coverage of rural mandi tractor/tempo traffic.
+Informal Village Moneylender Credit Surveys,NGO / Academic,5,5,4,4,4,4,4,6,4,6,3,6,4.58,NOT SUITABLE,Hyper-localized; lack of systematic panel coverage; unverified for generalizable mathematical modeling.

@@ -1,0 +1,6 @@
+held_out_district,train_districts_count,train_observations,test_observations,test_majority_class,test_majority_baseline_acc_pct,lodo_test_accuracy_pct,lodo_test_balanced_acc_pct,lodo_test_macro_f1,accuracy_gain_over_baseline_pct,mcnemar_chi2,mcnemar_p_value,statistically_significant_transfer,generalization_verdict
+Ghaziabad,4,86407,29426,1,56.09,57.99,42.65,0.4253,1.91,67.37,0.0,YES,TRANSFERABLE (+)
+Jhansi,4,101653,14180,1,54.67,53.86,40.49,0.3985,-0.81,4.86,0.02746,NO,WEAK / NON-GENERALIZABLE
+Kanpur,4,84515,31318,1,56.71,60.8,44.22,0.4416,4.09,382.71,0.0,YES,TRANSFERABLE (+)
+Lucknow,4,100132,15701,1,62.68,65.09,43.76,0.4422,2.41,69.73,0.0,YES,TRANSFERABLE (+)
+Unnao,4,90625,25208,1,67.59,67.59,46.89,0.4843,-0.0,0.0,1.0,NO,WEAK / NON-GENERALIZABLE

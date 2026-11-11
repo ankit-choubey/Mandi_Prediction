@@ -17,16 +17,34 @@ NEIGHBORING_DISTRICTS = {
     'Jhansi': ['Jhansi']         # Regional Bundelkhand hub (Mauranipur, Chirgaon, Baruwasagar)
 }
 
-def load_and_clean_mandi_data(data_dir=".", min_series_records=20, exclude_ambiguous_same_grade=True):
+def load_and_clean_mandi_data(data_dir=".", min_series_records=20, exclude_ambiguous_same_grade=True, data_source=None, processed_file=None):
     """
     Loads all APMC mandi CSVs, verifies schema, preserves Grade in series identity,
     filters invalid/non-positive prices, resolves duplicates via Strategy 2 (excluding
     ambiguous same-grade conflicting quotes), sorts chronologically, and filters out
     low-observation series (< min_series_records).
+    
+    Supports:
+    - Default raw 2-year dataset (data/raw/*.csv)
+    - 5-year historical dataset (5 year dataset/*.csv via data_source='5_year' or data_dir)
+    - Pre-processed dataset (via processed_file='data/processed/mandi_5year_processed.csv')
     """
-    csv_files = sorted(glob.glob(os.path.join(data_dir, "data", "raw", "*.csv")))
-    if not csv_files:
-        csv_files = sorted(glob.glob(os.path.join(data_dir, "*.csv")))
+    if processed_file and os.path.exists(processed_file):
+        print(f"[DataLoader] Loading pre-processed mandi dataset from {processed_file}...")
+        df_processed = pd.read_csv(processed_file)
+        df_processed['Arrival_Date'] = pd.to_datetime(df_processed['Arrival_Date'], errors='coerce')
+        return df_processed
+
+    if data_source in ['5_year', '5year', '5_years'] or '5 year' in str(data_dir).lower():
+        target_dir = os.path.join(data_dir, "5 year dataset") if not str(data_dir).endswith("5 year dataset") else data_dir
+        if not os.path.isdir(target_dir):
+            target_dir = os.path.join(".", "5 year dataset")
+        csv_files = sorted(glob.glob(os.path.join(target_dir, "*.csv")))
+    else:
+        csv_files = sorted(glob.glob(os.path.join(data_dir, "data", "raw", "*.csv")))
+        if not csv_files:
+            csv_files = sorted(glob.glob(os.path.join(data_dir, "*.csv")))
+            
     if not csv_files:
         raise FileNotFoundError(f"No CSV files found in {data_dir} or {os.path.join(data_dir, 'data', 'raw')}")
     

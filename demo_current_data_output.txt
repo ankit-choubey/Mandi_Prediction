@@ -1,0 +1,40 @@
+======================================================================================
+           APMC MANDI MARKET INTELLIGENCE — CURRENT DATA & HEALTH REPORT           
+======================================================================================
+Source Name               : Government of India Daily Mandi Prices (data.gov.in / AGMARKNET)
+Resource ID               : 9ef84268-d588-465a-a308-a864a43d0070
+Operational Pipeline State: [QUARANTINED]             (Source Live: OFFLINE SNAPSHOT)
+Observation Freshness     : [STALE] (25 calendar days lag from reference)
+--------------------------------------------------------------------------------------
+TIMESTAMPS & AUDIT PROVENANCE:
+  • Latest Market Observation : 2026-09-30 (Date of Mandi Clearing)
+  • Last Retrieval (UTC)      : 2026-10-23T09:52:05.823480+00:00
+  • Last Retrieval (Local)    : 2026-10-23 15:22:05 IST
+  • Current Report Generated  : 2026-10-25 22:17:24 IST
+--------------------------------------------------------------------------------------
+RECONCILIATION LEDGER (SECTION 8 CONTRACT):
+  • Source Total Records    :    472,385
+  • Records Fetched         :    472,385
+  • Records Accepted (Clean):    462,350
+  • Records Quarantined     :      2,963 (Invalid / Conflicting)
+  • Exact Unchanged Dups    :          0
+  • Active Unique Series    :      1,297
+  • Snapshot SHA-256 Checksum: 20a198682c3f5382a25276a916e258f8...
+--------------------------------------------------------------------------------------
+GEOGRAPHIC & COMMODITY COVERAGE:
+  • Active Districts (5) : Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao
+  • Distinct APMC Markets   : 41
+  • Distinct Commodities    : 108
+--------------------------------------------------------------------------------------
+LATEST MARKET OBSERVATION LOOKUP:
+  Crop / Variety : Potato (Other | FAQ)
+  Mandi Yard     : Choubepur APMC (Kanpur)
+  Date of Trade  : 2026-09-30
+  Wholesale Price: Modal ₹502.54/qtl  |  Min ₹490.00  |  Max ₹550.00
+--------------------------------------------------------------------------------------
+SYSTEM ALERTS & DATA QUALITY WARNINGS:
+  [WARN] 2963 records quarantined (27 invalid price/bounds, 2936 conflicting same-day quotes).
+  [WARN] STALE DATA WARNING: Latest observation (2026-09-30) is 25 days behind reference date (2026-10-25).
+======================================================================================
+OPERATIONAL NOTE: Always verify Observation Date prior to executing commercial advice.
+======================================================================================

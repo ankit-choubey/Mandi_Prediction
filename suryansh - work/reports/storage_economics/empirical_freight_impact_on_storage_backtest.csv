@@ -1,0 +1,3 @@
+crop,sample_size,mean_spot_price,flat_8inr_win_rate_pct,flat_8inr_mean_net_gain_inr_qtl,empirical_freight_win_rate_pct,empirical_freight_mean_net_gain_inr_qtl,win_rate_shift_pct,mean_gain_shift_inr_qtl,empirical_freight_impact
+Potato,7463,1264.59,28.06,-30.08,28.14,-30.03,0.08,0.05,Physical shrinkage on higher transport cost slightly dampens storage proceeds
+Onion,7180,2057.28,13.18,-159.4,13.33,-158.12,0.15,1.28,Physical shrinkage on higher transport cost slightly dampens storage proceeds

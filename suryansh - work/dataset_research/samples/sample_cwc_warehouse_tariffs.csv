@@ -1,0 +1,5 @@
+commodity,storage_type,tariff_unit,standard_rate_inr,weekly_rate_per_qtl_inr,insurance_handling_inr,source_document
+Wheat,Covered Dry Warehouse,Per Bag (50kg) / Month,8.65,2.00,0.50,CWC Schedule of Charges FY2025-26
+Onion,Ventilated Store / Shed,Per Bag (50kg) / Month,12.50,2.88,0.75,CWC Schedule of Charges FY2025-26
+Potato,Cold Storage (Seasonal),Per Bag (50kg) / Season (6-8 Mo),140.00,4.50,1.00,UP Cold Storage Order (Govt Notification)
+Tomato,Ambient Holding Yard (Max 3d),Per Crate (25kg) / Day,5.00,14.00,2.00,APMC Market User Charges

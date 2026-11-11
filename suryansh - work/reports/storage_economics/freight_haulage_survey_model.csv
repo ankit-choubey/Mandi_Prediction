@@ -1,0 +1,28 @@
+District,Tehsil_Block,Distance_km,Share_Pct,Tractor_Freight_INR_per_Qtl,SCV_Freight_INR_per_Qtl,Weighted_Freight_INR_per_Qtl
+Kanpur,Kalyanpur / Mandi Periphery,12.0,25.0,19.696,25.672,21.4888
+Kanpur,Vidhnu / South Rural,18.0,20.0,26.044,35.008,28.7332
+Kanpur,Sarsaul / East Belt,24.0,15.0,32.392,44.344,35.9776
+Kanpur,Chaubepur / GT Road,28.0,20.0,36.624,50.568,40.8072
+Kanpur,Ghatampur / Yamuna Belt,44.0,10.0,53.552,75.464,60.1256
+Kanpur,Bilhaur / Northern Potato Belt,54.0,10.0,64.132,91.024,72.1996
+Lucknow,Chinhat / Urban Periphery,14.0,20.0,21.812,28.784,23.9036
+Lucknow,Kakori / Mango-Veg Belt,16.0,20.0,23.928,31.896,26.3184
+Lucknow,Bakshi Ka Talab (BKT),18.0,25.0,26.044,35.008,28.7332
+Lucknow,Mohanlalganj,22.0,20.0,30.276,41.232,33.562799999999996
+Lucknow,Malihabad,26.0,10.0,34.508,47.456,38.3924
+Lucknow,Gosainganj,24.0,5.0,32.392,44.344,35.9776
+Unnao,Nawabganj / Bird Sanctuary Belt,18.0,20.0,26.044,35.008,28.7332
+Unnao,Safipur,28.0,25.0,36.624,50.568,40.8072
+Unnao,Purwa,32.0,20.0,40.856,56.792,45.6368
+Unnao,Hasanganj,34.0,15.0,42.972,59.904,48.0516
+Unnao,Bighapur,38.0,10.0,47.204,66.128,52.8812
+Unnao,Bangarmau Potato Hub,50.0,10.0,59.900000000000006,84.8,67.37
+Jhansi,Babina / Cantonment Rural,28.0,25.0,36.624,50.568,40.8072
+Jhansi,Baragasagaon,35.0,20.0,44.03,61.46,49.259
+Jhansi,Moth Grain Hub,52.0,25.0,62.016000000000005,87.912,69.7848
+Jhansi,Mauranipur Pulses Hub,65.0,20.0,75.77000000000001,108.14,85.48100000000001
+Jhansi,Garautha,72.0,10.0,83.176,119.03200000000001,93.9328
+Ghaziabad,Muradnagar,14.0,30.0,21.812,28.784,23.9036
+Ghaziabad,Loni Peri-Urban,16.0,30.0,23.928,31.896,26.3184
+Ghaziabad,Modinagar,25.0,25.0,33.45,45.9,37.185
+Ghaziabad,Bhojpur Rural,28.0,15.0,36.624,50.568,40.8072

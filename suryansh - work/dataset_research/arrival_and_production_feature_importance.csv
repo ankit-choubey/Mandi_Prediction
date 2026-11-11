@@ -1,0 +1,11 @@
+feature,importance
+Area_Hectares,0.2736
+Yield_Kg_Per_Ha,0.1611
+Modal_Price,0.1502
+Min_Price,0.1141
+Arrival_Volume_RollMean7,0.1118
+Max_Price,0.0902
+Production_Tonnes,0.0446
+Lagged_Arrival_Quantity_Qtl,0.0235
+Arrival_Volume_Shock_Ratio,0.0215
+Empirical_Freight_INR_per_Qtl,0.0094
