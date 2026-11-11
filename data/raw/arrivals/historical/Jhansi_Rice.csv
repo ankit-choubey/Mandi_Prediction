@@ -1,0 +1,28 @@
+State,District,Market,Commodity_Group,Commodity,Variety,Grade,Min_Price,Max_Price,Modal_Price,Price_Unit,Arrivals_Tonnes,Arrival_Unit,Arrival_Date
+Uttar Pradesh,Jhansi,Chirgaon APMC,Cereals,Rice,Other,FAQ,5100,5100,5100,Rs./Quintal,8.8,Metric Tonnes,05-04-2026
+Uttar Pradesh,Jhansi,Gurusarai APMC,Cereals,Rice,III,FAQ,3250,3480,3390,Rs./Quintal,0.2,Metric Tonnes,07-11-2025
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,8463,8463,8463,Rs./Quintal,11.58,Metric Tonnes,18-10-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,10210.6,10210.6,10210.6,Rs./Quintal,4.82,Metric Tonnes,13-10-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,6592.16,6592.16,6592.16,Rs./Quintal,9.91,Metric Tonnes,03-10-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,5343,7288,6299.97,Rs./Quintal,20.28,Metric Tonnes,29-09-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,7020,7020,7020,Rs./Quintal,9.33,Metric Tonnes,13-09-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,6069.02,6069.02,6069.02,Rs./Quintal,3.98,Metric Tonnes,01-09-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,6110.1,6110.1,6110.1,Rs./Quintal,10.05,Metric Tonnes,12-08-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,7985,7985,7985,Rs./Quintal,12.12,Metric Tonnes,02-08-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,9179.17,9179.17,9179.17,Rs./Quintal,2.88,Metric Tonnes,26-07-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Basmati Dawat,FAQ,7481,7481,7481,Rs./Quintal,10.82,Metric Tonnes,22-07-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,8930.1,8930.1,8930.1,Rs./Quintal,9.9,Metric Tonnes,10-07-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,8000,8000,8000,Rs./Quintal,12.18,Metric Tonnes,21-06-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,5700,5700,5700,Rs./Quintal,10.62,Metric Tonnes,19-06-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Basmati Dawat,FAQ,10267,10267,10267,Rs./Quintal,12,Metric Tonnes,18-06-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,3900,6600,5250,Rs./Quintal,6,Metric Tonnes,18-06-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,6540,6540,6540,Rs./Quintal,13.74,Metric Tonnes,03-06-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Basmati Dawat,FAQ,10453,11005,10637.37,Rs./Quintal,30.09,Metric Tonnes,18-05-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,3600,3600,3600,Rs./Quintal,5,Metric Tonnes,18-05-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,5448,5448,5448,Rs./Quintal,5.15,Metric Tonnes,02-05-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,9866.02,9866.02,9866.02,Rs./Quintal,11.8,Metric Tonnes,29-04-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Common,FAQ,9806.93,9806.93,9806.93,Rs./Quintal,10.02,Metric Tonnes,18-04-2026
+Uttar Pradesh,Jhansi,Jhansi APMC,Cereals,Rice,Other,FAQ,6706,6706,6706,Rs./Quintal,13.69,Metric Tonnes,01-04-2026
+Uttar Pradesh,Jhansi,Mauranipur APMC,Cereals,Rice,III,FAQ,3300,3500,3400,Rs./Quintal,4.2,Metric Tonnes,09-11-2025
+Uttar Pradesh,Jhansi,Mauranipur APMC,Cereals,Rice,III,FAQ,3200,3500,3400,Rs./Quintal,5,Metric Tonnes,07-11-2025
+Uttar Pradesh,Jhansi,Moth APMC,Cereals,Rice,III,FAQ,2970,3050,3000,Rs./Quintal,0.5,Metric Tonnes,07-11-2025

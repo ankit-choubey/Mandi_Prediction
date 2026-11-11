@@ -1,0 +1,453 @@
+State,District,Market,Commodity_Group,Commodity,Variety,Grade,Min_Price,Max_Price,Modal_Price,Price_Unit,Arrivals_Tonnes,Arrival_Unit,Arrival_Date
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5345.2,11420,5568.92,Rs./Quintal,24.6,Metric Tonnes,26-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5990,7608,6307.77,Rs./Quintal,132.02,Metric Tonnes,23-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5860,8356.92,6122.93,Rs./Quintal,13.44,Metric Tonnes,22-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6744.28,6744.28,6744.28,Rs./Quintal,4.62,Metric Tonnes,21-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6521.2,6541.6,6528,Rs./Quintal,1.5,Metric Tonnes,18-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3978.69,7851.32,5624.89,Rs./Quintal,369.35,Metric Tonnes,15-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6728.18,7060.53,6731.35,Rs./Quintal,41.68,Metric Tonnes,12-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5925.66,8023,6204.17,Rs./Quintal,107.2,Metric Tonnes,03-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4763,4763,4763,Rs./Quintal,15.56,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4624.97,7438.58,5683,Rs./Quintal,255.45,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5335.82,11315,5709.32,Rs./Quintal,55.46,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5504.61,11420,5977.54,Rs./Quintal,20.18,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6443.75,8383.2,7771.32,Rs./Quintal,2.72,Metric Tonnes,23-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5881.87,8020,6126.49,Rs./Quintal,132.04,Metric Tonnes,19-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5860,7643.7,6562.93,Rs./Quintal,12.14,Metric Tonnes,18-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,10541.87,10541.87,10541.87,Rs./Quintal,15,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6732.46,6732.46,6732.46,Rs./Quintal,4.48,Metric Tonnes,16-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3553.56,7897.75,5333.11,Rs./Quintal,407.91,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5976.15,8341.4,6373,Rs./Quintal,119.95,Metric Tonnes,03-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4866.96,8097.1,5631.18,Rs./Quintal,309.08,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3567.86,3567.86,3567.86,Rs./Quintal,2.1,Metric Tonnes,26-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5228.14,11315,6137.93,Rs./Quintal,58.23,Metric Tonnes,23-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5230.3,5583.15,5374.94,Rs./Quintal,12.1,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5882.27,8613,6387.52,Rs./Quintal,124.14,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,9728.62,9729.76,9729.03,Rs./Quintal,3.48,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6720,6720,6720,Rs./Quintal,4.76,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4163.07,8977.68,5774.1,Rs./Quintal,39.48,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,7307.89,7307.89,7307.89,Rs./Quintal,5.07,Metric Tonnes,15-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3924.48,9643.95,6037.78,Rs./Quintal,231.99,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,3300,6145.66,4052.24,Rs./Quintal,5.75,Metric Tonnes,08-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5911,8649.32,6270.07,Rs./Quintal,128.86,Metric Tonnes,08-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,10631.63,10631.63,10631.63,Rs./Quintal,8.84,Metric Tonnes,04-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4134.13,7385.17,5586.49,Rs./Quintal,308.8,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4171.63,9169.3,6001.25,Rs./Quintal,24,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Mogra (Raw/Old),FAQ,5413.97,5413.97,5413.97,Rs./Quintal,2,Metric Tonnes,28-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4343,6327,5591.45,Rs./Quintal,26.94,Metric Tonnes,26-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4389,11315,4830.84,Rs./Quintal,105.38,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6338.71,6338.71,6338.71,Rs./Quintal,4.94,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4122.47,9127.9,6765.22,Rs./Quintal,42.58,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5738,8667,6223.66,Rs./Quintal,137.32,Metric Tonnes,17-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,7008.66,7008.66,7008.66,Rs./Quintal,4.55,Metric Tonnes,16-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4030,10389,5400.26,Rs./Quintal,266.92,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,6000,6000,6000,Rs./Quintal,20.04,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5100.95,8400,5840.52,Rs./Quintal,11.79,Metric Tonnes,09-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4107.89,8466.35,6038.43,Rs./Quintal,22.95,Metric Tonnes,06-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,9539.31,9539.31,9539.31,Rs./Quintal,5.07,Metric Tonnes,05-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5793,8449,6089.73,Rs./Quintal,87.63,Metric Tonnes,04-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4715.76,8915.25,5807.18,Rs./Quintal,321.35,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,6249.56,6249.56,6249.56,Rs./Quintal,1.42,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,7174,7174,7174,Rs./Quintal,45,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4343,6149.92,5761.52,Rs./Quintal,27.07,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5289.38,10675,5663.69,Rs./Quintal,10.04,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3350,6498,5421.79,Rs./Quintal,27.31,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3700,3900,3775,Rs./Quintal,24,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5713,10500,6101.42,Rs./Quintal,126.73,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4397.14,8160,6865.89,Rs./Quintal,17.62,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Sona St.,FAQ,4288.67,4288.67,4288.67,Rs./Quintal,15,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4868.11,6188.93,5468,Rs./Quintal,75.92,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4131.33,7943.28,5547.65,Rs./Quintal,229.42,Metric Tonnes,13-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,5101.2,5101.2,5101.2,Rs./Quintal,15.15,Metric Tonnes,12-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5719.29,6989,6454.64,Rs./Quintal,94.95,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,6175.32,6520.55,6333.26,Rs./Quintal,41.64,Metric Tonnes,08-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5751.43,8159.45,6105.84,Rs./Quintal,78.49,Metric Tonnes,05-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4100,4100,4100,Rs./Quintal,94.77,Metric Tonnes,01-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,5552.38,6185.62,5822.07,Rs./Quintal,52.16,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,7417.6,7417.6,7417.6,Rs./Quintal,3.1,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3537.37,7321.43,5561.84,Rs./Quintal,286.97,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4075,6498,4569.9,Rs./Quintal,157.31,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Kesari (Coorg),FAQ,5700.17,5700.17,5700.17,Rs./Quintal,40,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5700.17,12924.53,6133.39,Rs./Quintal,120.23,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,7395.09,7395.09,7395.09,Rs./Quintal,14.02,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,8492.93,8492.93,8492.93,Rs./Quintal,1.52,Metric Tonnes,20-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,7290.11,7290.11,7290.11,Rs./Quintal,1.62,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Sona St.,FAQ,4288.67,4288.67,4288.67,Rs./Quintal,29.79,Metric Tonnes,17-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3939.3,7803.8,5698.51,Rs./Quintal,256.77,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,7520.03,8290.74,7654.03,Rs./Quintal,48.42,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Sona St.,FAQ,9808.4,9808.4,9808.4,Rs./Quintal,1.55,Metric Tonnes,05-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,8456.02,8456.02,8456.02,Rs./Quintal,5.06,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Boiled Rice,FAQ,3615.45,3615.45,3615.45,Rs./Quintal,1.5,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4901.9,6224.08,5526.73,Rs./Quintal,198.35,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5081.7,5586.05,5359.3,Rs./Quintal,25.12,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,4175,7590.33,6427.66,Rs./Quintal,7.05,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3877,5833.28,5607.59,Rs./Quintal,26.38,Metric Tonnes,18-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,5370,5545.38,5510.53,Rs./Quintal,6.24,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,7595.11,19998.01,14807.94,Rs./Quintal,72.22,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Sona St.,FAQ,4609.36,4609.36,4609.36,Rs./Quintal,15.01,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4517.1,6414.69,5497.43,Rs./Quintal,40.49,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4573.05,6782.81,5279.97,Rs./Quintal,130.33,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Dosa Rice,FAQ,5067,5067,5067,Rs./Quintal,2.4,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,5676.65,6185,5879.41,Rs./Quintal,45.18,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,33.45,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5517.27,7595.11,5861.43,Rs./Quintal,182.45,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Sona Raw New,FAQ,8614.96,8614.96,8614.96,Rs./Quintal,0.09,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3748,12675.4,5439.08,Rs./Quintal,36.18,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,9072.84,9072.84,9072.84,Rs./Quintal,5.21,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3877,5379.68,5186.35,Rs./Quintal,10.42,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,6255.56,6255.56,6255.56,Rs./Quintal,6.06,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3877,5912.76,5773.44,Rs./Quintal,16.08,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4529.34,6007.18,5098.88,Rs./Quintal,160.1,Metric Tonnes,26-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,7085.47,7085.47,7085.47,Rs./Quintal,2.85,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,12750,12750,12750,Rs./Quintal,0.01,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4549.63,4549.63,4549.63,Rs./Quintal,0.28,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,7562.25,13912.41,11904.67,Rs./Quintal,54.31,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,10649.26,10649.26,10649.26,Rs./Quintal,0.1,Metric Tonnes,17-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,3791.69,7025.27,5095.38,Rs./Quintal,105.98,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5759.37,7633.02,6065.35,Rs./Quintal,34.41,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4881.17,7497.68,6237.91,Rs./Quintal,98.1,Metric Tonnes,11-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,3526.02,3526.02,3526.02,Rs./Quintal,9,Metric Tonnes,02-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4200,4200,4200,Rs./Quintal,57,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4983.92,6030.07,5605.41,Rs./Quintal,43.07,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,5379.22,18705.7,5726.69,Rs./Quintal,58.93,Metric Tonnes,26-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Basmati Dawat,FAQ,4811.02,6841.28,5552.26,Rs./Quintal,214.09,Metric Tonnes,24-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Common,FAQ,4974.24,5414.7,5198.98,Rs./Quintal,44.86,Metric Tonnes,22-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,III,FAQ,3400,3460,3420,Rs./Quintal,120,Metric Tonnes,12-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,Other,FAQ,3420,3520,3480,Rs./Quintal,100,Metric Tonnes,11-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,III,FAQ,3400,3510,3470,Rs./Quintal,110,Metric Tonnes,10-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Rice,III,FAQ,3400,3500,3480,Rs./Quintal,150,Metric Tonnes,09-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4250,4250,4250,Rs./Quintal,30,Metric Tonnes,23-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4264.7,4264.7,4264.7,Rs./Quintal,25.5,Metric Tonnes,21-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5051,5051,5051,Rs./Quintal,30,Metric Tonnes,20-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,10681.4,10681.4,10681.4,Rs./Quintal,5.9,Metric Tonnes,19-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,BT Sona,FAQ,10822.46,10822.46,10822.46,Rs./Quintal,17.94,Metric Tonnes,18-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3650,3800,3716.23,Rs./Quintal,13.59,Metric Tonnes,17-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,7012.47,7012.47,7012.47,Rs./Quintal,37.55,Metric Tonnes,12-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3645.15,3645.15,3645.15,Rs./Quintal,14.22,Metric Tonnes,10-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5431,5744.82,5733.99,Rs./Quintal,15.07,Metric Tonnes,07-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,31.21,Metric Tonnes,04-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3850,3850,3850,Rs./Quintal,40,Metric Tonnes,03-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4500,8898.99,5966.33,Rs./Quintal,45,Metric Tonnes,03-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4050,4050,4050,Rs./Quintal,30,Metric Tonnes,01-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4200,6100,5151.59,Rs./Quintal,5.99,Metric Tonnes,01-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6776.93,6776.93,6776.93,Rs./Quintal,29.79,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3794.12,3651.52,Rs./Quintal,49.5,Metric Tonnes,26-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,8,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,6900,5561.6,Rs./Quintal,10.39,Metric Tonnes,22-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,5250,5250,5250,Rs./Quintal,7.47,Metric Tonnes,22-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,7950,10500,9779.35,Rs./Quintal,9.2,Metric Tonnes,21-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,29.5,Metric Tonnes,21-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,25.95,Metric Tonnes,20-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,65.3,Metric Tonnes,19-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,10581.28,10581.28,10581.28,Rs./Quintal,18,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,47.35,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,47.46,Metric Tonnes,16-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,5525,4361.11,Rs./Quintal,8.1,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4200,5700,5018.18,Rs./Quintal,6.6,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3875,3875,3875,Rs./Quintal,24,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,4200,3913.71,Rs./Quintal,42.3,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,37,Metric Tonnes,13-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,2.66,Metric Tonnes,12-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,7700,7700,7700,Rs./Quintal,6,Metric Tonnes,11-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,7347.8,7347.8,7347.8,Rs./Quintal,21.13,Metric Tonnes,11-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3500,3500,3500,Rs./Quintal,3.5,Metric Tonnes,07-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4000,4000,4000,Rs./Quintal,24.75,Metric Tonnes,06-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,2.65,Metric Tonnes,02-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3550,3560,3555.12,Rs./Quintal,41.22,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,5900,4191.59,Rs./Quintal,26.99,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5000,5151.16,5019.61,Rs./Quintal,29.99,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,5.18,Metric Tonnes,30-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,4300,3636.38,Rs./Quintal,38.5,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4300,4300,4300,Rs./Quintal,7.5,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6818.7,6818.7,6818.7,Rs./Quintal,34.87,Metric Tonnes,26-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4100,4100,4100,Rs./Quintal,9,Metric Tonnes,26-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,6047.63,6047.63,6047.63,Rs./Quintal,18,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,23.3,Metric Tonnes,23-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,8350,8350,8350,Rs./Quintal,11.4,Metric Tonnes,23-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3500,10800,5569.2,Rs./Quintal,46.24,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,23.3,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,18.9,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3500,6000,4839.46,Rs./Quintal,18.98,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3750,3750,3750,Rs./Quintal,30,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,28.3,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3870,4000,3948,Rs./Quintal,15,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,54,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3500,3500,3500,Rs./Quintal,4.5,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,22.2,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3500,3500,3500,Rs./Quintal,4,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,17.4,Metric Tonnes,16-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,10100.3,10100.3,10100.3,Rs./Quintal,12,Metric Tonnes,16-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,22.3,Metric Tonnes,15-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,37.2,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4200,4200,4200,Rs./Quintal,6,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,6932.56,4943.82,Rs./Quintal,81.99,Metric Tonnes,13-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,42.44,Metric Tonnes,12-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,1.94,Metric Tonnes,09-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,23.1,Metric Tonnes,05-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,25.8,Metric Tonnes,03-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,29.1,Metric Tonnes,02-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,9100,9100,9100,Rs./Quintal,9.36,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,4500,4049.45,Rs./Quintal,54.6,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4400,4430,4423.33,Rs./Quintal,13.5,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4000,4000,4000,Rs./Quintal,29.88,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,25.2,Metric Tonnes,28-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6591.26,7180.78,6936.2,Rs./Quintal,53.72,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,9000,9000,9000,Rs./Quintal,11.4,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,29.14,Metric Tonnes,26-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,24.2,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4000,5500,4459.88,Rs./Quintal,18.11,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,28,Metric Tonnes,23-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,6000,9450,7695.62,Rs./Quintal,17.82,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,5850,3786.12,Rs./Quintal,72.4,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3600,3600,3600,Rs./Quintal,25.05,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3550,3509.82,Rs./Quintal,28,Metric Tonnes,21-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,9100,9100,9100,Rs./Quintal,9.9,Metric Tonnes,21-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,28,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3550,3526.54,Rs./Quintal,56.7,Metric Tonnes,19-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3500,3500,3500,Rs./Quintal,5.5,Metric Tonnes,19-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3640,3640,3640,Rs./Quintal,27.75,Metric Tonnes,18-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati (Rose),FAQ,10541.87,10541.87,10541.87,Rs./Quintal,18,Metric Tonnes,17-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3500,3500,3500,Rs./Quintal,15,Metric Tonnes,15-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3850,3850,3850,Rs./Quintal,9,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6674.9,6674.9,6674.9,Rs./Quintal,30.19,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3516,3516,3516,Rs./Quintal,17.79,Metric Tonnes,11-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3500,3510,3504.86,Rs./Quintal,10.7,Metric Tonnes,11-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3550,3550,3550,Rs./Quintal,31.5,Metric Tonnes,09-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3920.48,3920.48,3920.48,Rs./Quintal,24.9,Metric Tonnes,06-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5150.83,5150.83,5150.83,Rs./Quintal,14.52,Metric Tonnes,04-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,29.85,Metric Tonnes,03-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,5750,3967.35,Rs./Quintal,17,Metric Tonnes,02-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5495.17,5495.17,5495.17,Rs./Quintal,14.52,Metric Tonnes,02-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,5.4,Metric Tonnes,01-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,7900,7900,7900,Rs./Quintal,12.18,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,8430,10460,8646.82,Rs./Quintal,7.49,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,3750,3750,3750,Rs./Quintal,3,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6246.57,6888.52,6538.81,Rs./Quintal,52.9,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4100,8752.36,7281.47,Rs./Quintal,27.15,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4250,4250,4250,Rs./Quintal,7.2,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3550,3550,3550,Rs./Quintal,35.1,Metric Tonnes,28-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4100.24,4100.24,4100.24,Rs./Quintal,24.99,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,12.1,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3660,9411.8,4634.56,Rs./Quintal,18.06,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,8554,9223.2,8988.98,Rs./Quintal,6,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,4200,4200,4200,Rs./Quintal,5.99,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3997.98,3997.98,3997.98,Rs./Quintal,29.7,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,6666.78,4985.81,Rs./Quintal,99.4,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4200,4200,4200,Rs./Quintal,24.88,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,4000,4000,4000,Rs./Quintal,24.88,Metric Tonnes,09-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4100,4100,4100,Rs./Quintal,21,Metric Tonnes,08-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3980,3980,3980,Rs./Quintal,30,Metric Tonnes,04-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6093.66,6707.64,6422.73,Rs./Quintal,48.61,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,6396.94,6396.94,6396.94,Rs./Quintal,23.52,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3750,3750,3750,Rs./Quintal,3.9,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6313.37,7072.63,6760.42,Rs./Quintal,65.45,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,5740,4294.12,Rs./Quintal,22.98,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3000,3000,3000,Rs./Quintal,29.5,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,White Parboiled,FAQ,7497,10430.98,9347.66,Rs./Quintal,6.5,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati (Rose),FAQ,9642.04,9642.04,9642.04,Rs./Quintal,18,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Sona St.,FAQ,3990.15,3990.15,3990.15,Rs./Quintal,30,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,6,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6039.42,7122.69,6583.53,Rs./Quintal,43.28,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,5650,5650,5650,Rs./Quintal,6,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,5750,5750,5750,Rs./Quintal,3,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4187.5,4187.5,4187.5,Rs./Quintal,24,Metric Tonnes,14-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,20,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,7307.8,7307.8,7307.8,Rs./Quintal,18.07,Metric Tonnes,12-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3550,3550,3550,Rs./Quintal,16.5,Metric Tonnes,10-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,3550,3550,3550,Rs./Quintal,35.1,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3776.47,3776.47,3776.47,Rs./Quintal,25.5,Metric Tonnes,08-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,5000,5000,5000,Rs./Quintal,35,Metric Tonnes,06-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4100,4100,4100,Rs./Quintal,24,Metric Tonnes,03-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6851.12,6851.12,6851.12,Rs./Quintal,24.27,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,White Parboiled,FAQ,6676.67,6676.67,6676.67,Rs./Quintal,20.61,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Mataa Parboiled,FAQ,9702,9702,9702,Rs./Quintal,0.9,Metric Tonnes,23-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,White Parboiled,FAQ,9004.4,9004.4,9004.4,Rs./Quintal,6.1,Metric Tonnes,23-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,3,Metric Tonnes,21-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3850,4000,3890.58,Rs./Quintal,33.27,Metric Tonnes,20-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3559.08,3559.08,3559.08,Rs./Quintal,19.61,Metric Tonnes,20-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3650,3650,3650,Rs./Quintal,21,Metric Tonnes,16-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,3,Metric Tonnes,15-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,3550,3550,3550,Rs./Quintal,3,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6479.54,6479.54,6479.54,Rs./Quintal,13.35,Metric Tonnes,12-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Other,FAQ,4100,4100,4100,Rs./Quintal,18,Metric Tonnes,11-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,3900,3900,3900,Rs./Quintal,25.44,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,6294.83,6294.83,6294.83,Rs./Quintal,8.85,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,White Parboiled,FAQ,8882.26,8882.26,8882.26,Rs./Quintal,6,Metric Tonnes,26-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Common,FAQ,7800,7800,7800,Rs./Quintal,12,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,White Parboiled,FAQ,4775,4775,4775,Rs./Quintal,6.99,Metric Tonnes,23-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,Basmati Dawat,FAQ,4600,4600,4600,Rs./Quintal,12,Metric Tonnes,22-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Rice,III,FAQ,3400,3500,3480,Rs./Quintal,300,Metric Tonnes,12-11-2025
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Common,FAQ,3000,3000,3000,Rs./Quintal,5.8,Metric Tonnes,14-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Common,FAQ,2950,3000,2976.62,Rs./Quintal,15.4,Metric Tonnes,13-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Dawat,FAQ,4581.25,4581.25,4581.25,Rs./Quintal,1.6,Metric Tonnes,01-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2460,2460,2460,Rs./Quintal,4.11,Metric Tonnes,28-08-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2460,2460,2460,Rs./Quintal,3.72,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2460,2460,2460,Rs./Quintal,2.61,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2460,2460,2460,Rs./Quintal,2.58,Metric Tonnes,10-08-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2460,2480,2469.85,Rs./Quintal,4.94,Metric Tonnes,09-08-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Dawat,FAQ,6638,6638,6638,Rs./Quintal,9.99,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati (Rose),FAQ,6637.6,6637.6,6637.6,Rs./Quintal,9.99,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2440,2440,2440,Rs./Quintal,3.52,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2420,2420,Rs./Quintal,2.65,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2440,2440,2440,Rs./Quintal,2.53,Metric Tonnes,21-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2440,2440,2440,Rs./Quintal,3.38,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2430,2423.19,Rs./Quintal,3.89,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2440,2429.8,Rs./Quintal,2.48,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2440,2440,2440,Rs./Quintal,2.54,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2420,2420,Rs./Quintal,2.35,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2440,2434.91,Rs./Quintal,5.44,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati (Rose),FAQ,4000,4000,4000,Rs./Quintal,5,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Common,FAQ,2500,2500,2500,Rs./Quintal,20,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2420,2440,2429.64,Rs./Quintal,5.84,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Dawat,FAQ,6436,6500,6445.47,Rs./Quintal,14.19,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,9236,9236,9236,Rs./Quintal,10.24,Metric Tonnes,21-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2340,2540,2385.33,Rs./Quintal,5.35,Metric Tonnes,19-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2360,2360,2360,Rs./Quintal,2.53,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2360,2400,2367.51,Rs./Quintal,7.28,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2360,2400,2383.22,Rs./Quintal,6.63,Metric Tonnes,10-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2520,2530,2521.74,Rs./Quintal,7.57,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2520,2520,2520,Rs./Quintal,1.32,Metric Tonnes,08-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,4983,4983,4983,Rs./Quintal,12,Metric Tonnes,07-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2520,2520,2520,Rs./Quintal,2.61,Metric Tonnes,05-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2520,2520,2520,Rs./Quintal,1.27,Metric Tonnes,02-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,6798,7389.37,7171.58,Rs./Quintal,34.8,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2520,2520.01,2520,Rs./Quintal,5.07,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,1.19,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Basmati (Rose),FAQ,5003,5003,5003,Rs./Quintal,12,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,2.41,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,2.32,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,2.29,Metric Tonnes,21-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,2.57,Metric Tonnes,15-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,2.37,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2560,2560,2560,Rs./Quintal,3.66,Metric Tonnes,11-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2540,2540,2540,Rs./Quintal,3.56,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Rice,Other,FAQ,2540,2540,2540,Rs./Quintal,1.26,Metric Tonnes,22-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5042.84,11420,5519.58,Rs./Quintal,56.44,Metric Tonnes,26-10-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5860,9240.47,6208.93,Rs./Quintal,7.82,Metric Tonnes,23-10-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4815.1,35000,5918.35,Rs./Quintal,37.94,Metric Tonnes,15-10-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6793.64,8524.26,7053.61,Rs./Quintal,48.44,Metric Tonnes,13-10-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6230,8638,6614.68,Rs./Quintal,71.89,Metric Tonnes,03-10-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,5100,5100,5100,Rs./Quintal,9,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,10482.43,11718,10538.09,Rs./Quintal,4.44,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4543.36,10556.1,5566.27,Rs./Quintal,7.23,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,8211.08,8211.08,8211.08,Rs./Quintal,0.31,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5388.05,11420,5729.12,Rs./Quintal,57.95,Metric Tonnes,27-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5800,8809.09,8451.03,Rs./Quintal,2.19,Metric Tonnes,26-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4539.36,10600,7197.96,Rs./Quintal,11.34,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5792.52,10600,7036.68,Rs./Quintal,24.65,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,11515.59,11515.59,11515.59,Rs./Quintal,0.11,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6476,9238.85,8341.82,Rs./Quintal,1.54,Metric Tonnes,23-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6124,8588.47,6450.77,Rs./Quintal,77.26,Metric Tonnes,19-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6129.26,7430.33,6771.44,Rs./Quintal,5.88,Metric Tonnes,18-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4542.29,35000,6897.82,Rs./Quintal,22.7,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5800,8425,7485.78,Rs./Quintal,2.18,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6405.54,6405.54,6405.54,Rs./Quintal,2.49,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5323.39,10174.94,6142.35,Rs./Quintal,34.66,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6135,8904,6546.55,Rs./Quintal,69.82,Metric Tonnes,03-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,7731.95,7731.95,7731.95,Rs./Quintal,0.04,Metric Tonnes,02-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4080,4080,4080,Rs./Quintal,5,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,11718,11718,11718,Rs./Quintal,0.1,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5800,8450,7219.64,Rs./Quintal,1.12,Metric Tonnes,30-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6630.74,6630.74,6630.74,Rs./Quintal,2.43,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4039,11315,5752.95,Rs./Quintal,20.54,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5391.21,10700,7318.66,Rs./Quintal,14.03,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Dawat,FAQ,8476.02,8476.02,8476.02,Rs./Quintal,1.2,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Haryana Sela(New),FAQ,9757.87,9757.87,9757.87,Rs./Quintal,3.9,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5325.14,11315,5568.59,Rs./Quintal,22.22,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8914.49,9243,9078.75,Rs./Quintal,10.2,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,9729.39,9729.39,9729.39,Rs./Quintal,1.8,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5984.02,8710.22,6507.94,Rs./Quintal,84.84,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4903.85,35000,6469.25,Rs./Quintal,45.24,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,9411.03,9411.03,9411.03,Rs./Quintal,1.9,Metric Tonnes,13-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8333.33,8333.33,8333.33,Rs./Quintal,2.1,Metric Tonnes,13-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6094.5,9212,6621.64,Rs./Quintal,80.7,Metric Tonnes,08-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,2500,11718,2758.88,Rs./Quintal,19.03,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4861.41,4861.41,4861.41,Rs./Quintal,3.42,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8420,9800,9524,Rs./Quintal,8.75,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Sona Raw New,FAQ,6300,6300,6300,Rs./Quintal,1,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6937.59,6937.59,6937.59,Rs./Quintal,2.51,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4436.01,24615.38,6080.25,Rs./Quintal,22.89,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,4490,11315,5656.12,Rs./Quintal,66.09,Metric Tonnes,26-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,7429.03,7614.33,7500.07,Rs./Quintal,13.14,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6002,9046,6581.89,Rs./Quintal,80.89,Metric Tonnes,18-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3371.23,9976.01,5632.83,Rs./Quintal,23.26,Metric Tonnes,15-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6209.09,7199,7163.17,Rs./Quintal,43.58,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5211.44,11029.3,6639.02,Rs./Quintal,32.09,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Boiled Rice,FAQ,8770,8770,8770,Rs./Quintal,5.11,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6008,9420,6346.97,Rs./Quintal,56.12,Metric Tonnes,04-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice,FAQ,6700,6700,6700,Rs./Quintal,0.9,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,9221.07,14400,10595.21,Rs./Quintal,7.68,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Sona Raw New,FAQ,8600,8600,8600,Rs./Quintal,5,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6078.24,6078.24,6078.24,Rs./Quintal,2.71,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5260,12242.65,7955.64,Rs./Quintal,1.95,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3000,4500,3875,Rs./Quintal,68,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5154,15887,5895.87,Rs./Quintal,25.65,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5786.49,9903.04,6921.7,Rs./Quintal,5.26,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8342.19,10190.6,8911.25,Rs./Quintal,2.42,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4325,4325,4325,Rs./Quintal,3.36,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5881,8796,6416.66,Rs./Quintal,76.07,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6334.24,6334.24,6334.24,Rs./Quintal,0.62,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4930.6,10190.6,6510.67,Rs./Quintal,37.97,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5600,8133.33,7458.1,Rs./Quintal,3,Metric Tonnes,13-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5718.47,6995,6528.83,Rs./Quintal,96.81,Metric Tonnes,12-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8935.31,8935.31,8935.31,Rs./Quintal,5.36,Metric Tonnes,09-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5979.08,8898.26,6452.31,Rs./Quintal,52.09,Metric Tonnes,06-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5000,5000,5000,Rs./Quintal,8,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Dawat,FAQ,10287.13,10287.13,10287.13,Rs./Quintal,6.8,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Haryana Raw (Old),FAQ,8600,8600,8600,Rs./Quintal,3.15,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Haryana Sela(New),FAQ,4175,4175,4175,Rs./Quintal,4.2,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,5800,6052.75,5994.87,Rs./Quintal,3.93,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,11718,11718,11718,Rs./Quintal,0.05,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8300,8500,8466.97,Rs./Quintal,2.73,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5188.27,6880.66,5752.51,Rs./Quintal,27.2,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3403.4,14762,6262.11,Rs./Quintal,37.71,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5869.26,14315,6216.07,Rs./Quintal,104.11,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6239.85,6239.85,6239.85,Rs./Quintal,2.63,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,7960,8250,8077.97,Rs./Quintal,2.95,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3567.5,9061.57,5754.46,Rs./Quintal,34.74,Metric Tonnes,13-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5806.46,8420.8,6235.32,Rs./Quintal,43.92,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,9467,9467,9467,Rs./Quintal,-,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Dawat,FAQ,8813.37,8813.37,8813.37,Rs./Quintal,8.22,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,6181.5,6181.5,6181.5,Rs./Quintal,3,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice,FAQ,4032.35,4032.35,4032.35,Rs./Quintal,5.1,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,2100,14800,3862.3,Rs./Quintal,107.16,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Sona Raw New,FAQ,6300,6300,6300,Rs./Quintal,1,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5575,8350,6987.17,Rs./Quintal,2.69,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,3877,5763.31,5390.36,Rs./Quintal,10.48,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4731.35,10952.36,5814.3,Rs./Quintal,23.69,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6152.08,6152.08,6152.08,Rs./Quintal,3.88,Metric Tonnes,26-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,2970,2970,2970,Rs./Quintal,5,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5180,5843.81,5533.77,Rs./Quintal,10.76,Metric Tonnes,19-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5715.91,7903.96,6137.14,Rs./Quintal,125.6,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4567.83,10100,5952.11,Rs./Quintal,43.86,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,6931.5,6931.5,6931.5,Rs./Quintal,2.49,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5200,7961.54,7347.86,Rs./Quintal,2.93,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Dawat,FAQ,8176.1,8176.1,8176.1,Rs./Quintal,2.4,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,5752.5,6944.5,6402.68,Rs./Quintal,6.6,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice,FAQ,3900,3900,3900,Rs./Quintal,3.9,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5300,11718,6135.9,Rs./Quintal,126.17,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,2940,11718,3083.9,Rs./Quintal,6.1,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Sona Raw New,FAQ,6000,6000,6000,Rs./Quintal,5,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,3877,5991.25,5522.36,Rs./Quintal,20.18,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,8438.62,8438.62,8438.62,Rs./Quintal,1.01,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3200,3500,3364.81,Rs./Quintal,41.61,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5764.64,5764.64,5764.64,Rs./Quintal,4.98,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4982.52,9417.23,6879.49,Rs./Quintal,20.37,Metric Tonnes,26-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,8767.76,8767.76,8767.76,Rs./Quintal,2.69,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,6661.01,7563.94,6971.76,Rs./Quintal,3.08,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5687.7,5687.7,5687.7,Rs./Quintal,67.45,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5388.89,7783.87,6541.24,Rs./Quintal,2.26,Metric Tonnes,15-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5556.38,7846.09,6075.66,Rs./Quintal,19.71,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5300,7744.44,7558.06,Rs./Quintal,1.71,Metric Tonnes,13-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,12090.13,12090.13,12090.13,Rs./Quintal,1.69,Metric Tonnes,12-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3318.47,14762,6060.15,Rs./Quintal,39.89,Metric Tonnes,12-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Basmati Dawat,FAQ,8208.35,8208.35,8208.35,Rs./Quintal,8.48,Metric Tonnes,10-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,3722.78,3722.78,3722.78,Rs./Quintal,16.2,Metric Tonnes,10-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice,FAQ,3600,3600,3600,Rs./Quintal,4.5,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,3200,3810,3505,Rs./Quintal,6,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,8412.11,8412.11,8412.11,Rs./Quintal,1.11,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,2100,8518.57,3630.42,Rs./Quintal,128.26,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5700,7560,7133.92,Rs./Quintal,2.27,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,5504.12,10382.3,5899.3,Rs./Quintal,40.23,Metric Tonnes,26-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Other,FAQ,4001.24,21990,5465.6,Rs./Quintal,37.49,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Rice,Common,FAQ,5103.03,5623.35,5280.97,Rs./Quintal,19.86,Metric Tonnes,22-02-2026

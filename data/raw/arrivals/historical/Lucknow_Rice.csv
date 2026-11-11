@@ -1,0 +1,798 @@
+State,District,Market,Commodity_Group,Commodity,Variety,Grade,Min_Price,Max_Price,Modal_Price,Price_Unit,Arrivals_Tonnes,Arrival_Unit,Arrival_Date
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2780,11620,4123.4,Rs./Quintal,52.83,Metric Tonnes,26-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,8483.33,8483.33,8483.33,Rs./Quintal,29.7,Metric Tonnes,26-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5773,8001,5840.57,Rs./Quintal,13.19,Metric Tonnes,23-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2800,2740.98,Rs./Quintal,73.2,Metric Tonnes,22-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4980.94,6879.04,5972.86,Rs./Quintal,109.8,Metric Tonnes,22-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,2700,2700,2700,Rs./Quintal,1.8,Metric Tonnes,22-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,2850,2767.32,Rs./Quintal,92.68,Metric Tonnes,20-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2900,2900,2900,Rs./Quintal,33.8,Metric Tonnes,19-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,28.12,Metric Tonnes,18-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2800,2704.17,Rs./Quintal,43.2,Metric Tonnes,17-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5860.27,10216.45,9634.33,Rs./Quintal,4.49,Metric Tonnes,16-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2200,2200,Rs./Quintal,0.1,Metric Tonnes,15-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,8521.08,8521.08,8521.08,Rs./Quintal,40,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2200,2200,Rs./Quintal,4.8,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2850,2950,2917.68,Rs./Quintal,29.91,Metric Tonnes,12-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5846.27,5846.27,5846.27,Rs./Quintal,16.42,Metric Tonnes,12-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2800,2800,2800,Rs./Quintal,34.3,Metric Tonnes,09-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4995,5878.77,5292.19,Rs./Quintal,6.23,Metric Tonnes,08-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2700,2700,Rs./Quintal,36,Metric Tonnes,07-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,8321.33,8321.33,8321.33,Rs./Quintal,30,Metric Tonnes,07-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Golden Sela New,FAQ,2779.1,10200,5810.94,Rs./Quintal,54.95,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2779.1,2779.1,2779.1,Rs./Quintal,25.13,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2850,2751.36,Rs./Quintal,57.81,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6700,6700,6700,Rs./Quintal,11.66,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw New,FAQ,3277.17,4342.4,3936.3,Rs./Quintal,78.4,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,5173.2,6683.3,5479.72,Rs./Quintal,170.68,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2805,2696.8,Rs./Quintal,72.67,Metric Tonnes,05-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2810,2659.06,Rs./Quintal,74.32,Metric Tonnes,04-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2700,2628.82,Rs./Quintal,79.45,Metric Tonnes,03-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5298,11432,5688.55,Rs./Quintal,5.03,Metric Tonnes,03-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,56.63,Metric Tonnes,02-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2410,2780,2652.16,Rs./Quintal,37.27,Metric Tonnes,01-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,12236,12236,12236,Rs./Quintal,0.02,Metric Tonnes,01-10-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,7791.15,4320.71,Rs./Quintal,227.4,Metric Tonnes,30-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,18725.67,3999.16,Rs./Quintal,204.02,Metric Tonnes,29-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6350,6350,6350,Rs./Quintal,1.63,Metric Tonnes,29-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2810,2537.5,Rs./Quintal,140.36,Metric Tonnes,28-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,5948.01,2545.05,Rs./Quintal,195.28,Metric Tonnes,27-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2950,11620,5167.35,Rs./Quintal,55.98,Metric Tonnes,26-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,8455.92,8455.92,8455.92,Rs./Quintal,2.8,Metric Tonnes,25-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,2525.42,2525.42,2525.42,Rs./Quintal,7.12,Metric Tonnes,25-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2850,2303.37,Rs./Quintal,192.28,Metric Tonnes,25-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,26280,3071.67,Rs./Quintal,86.58,Metric Tonnes,24-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2825,2736.2,Rs./Quintal,144,Metric Tonnes,23-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,7183.7,11896.68,8076.85,Rs./Quintal,21.64,Metric Tonnes,23-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2770,2622.92,Rs./Quintal,69.8,Metric Tonnes,22-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6826.23,6826.23,6826.23,Rs./Quintal,29.4,Metric Tonnes,22-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,3050,2479.2,Rs./Quintal,217.34,Metric Tonnes,21-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4685,7953.02,6462.5,Rs./Quintal,17.24,Metric Tonnes,21-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,11718,2585.81,Rs./Quintal,149.2,Metric Tonnes,19-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2530,2990,2749.35,Rs./Quintal,97.11,Metric Tonnes,18-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6110,8134,7299.47,Rs./Quintal,40.32,Metric Tonnes,18-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2920,2726.75,Rs./Quintal,135.94,Metric Tonnes,17-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,3534.5,11110,6699.53,Rs./Quintal,4.5,Metric Tonnes,16-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2700,2700,Rs./Quintal,36,Metric Tonnes,14-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2600,2273.24,Rs./Quintal,103.65,Metric Tonnes,13-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2630,2401.27,Rs./Quintal,170.59,Metric Tonnes,12-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,7060.51,3049.93,Rs./Quintal,138.95,Metric Tonnes,11-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2540,2630,2588.86,Rs./Quintal,25.61,Metric Tonnes,10-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6159.5,6159.5,6159.5,Rs./Quintal,40,Metric Tonnes,09-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2890,2583.87,Rs./Quintal,161.14,Metric Tonnes,08-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,11100,11100,11100,Rs./Quintal,0.06,Metric Tonnes,07-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5574.85,9653,6075.6,Rs./Quintal,44.96,Metric Tonnes,07-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2200,2200,Rs./Quintal,25.34,Metric Tonnes,06-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2600,2285.9,Rs./Quintal,62.4,Metric Tonnes,05-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2650,2490.89,Rs./Quintal,56,Metric Tonnes,04-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6700,6700,6700,Rs./Quintal,10,Metric Tonnes,04-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,AP Raw Rice SilkyRaw,FAQ,4062.02,4062.02,4062.02,Rs./Quintal,20.09,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,7292.76,9545.48,8280.19,Rs./Quintal,23.42,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice,FAQ,2602.14,2602.14,2602.14,Rs./Quintal,15.38,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2600,2394.21,Rs./Quintal,48.4,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Jeera Samba,FAQ,5317.73,5317.73,5317.73,Rs./Quintal,5.2,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6385,12160,6433.94,Rs./Quintal,2.36,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw Old,FAQ,3262.38,4108.07,3883.27,Rs./Quintal,70.2,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,5238.86,6177.74,5343.76,Rs./Quintal,93.18,Metric Tonnes,03-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,24.5,Metric Tonnes,02-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,9652.6,9652.6,9652.6,Rs./Quintal,0.07,Metric Tonnes,02-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2800,2680.54,Rs./Quintal,44.7,Metric Tonnes,01-09-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2690,9944.39,5666.24,Rs./Quintal,161.55,Metric Tonnes,31-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2700,2700,Rs./Quintal,34.2,Metric Tonnes,30-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2200,2200,2200,Rs./Quintal,9.7,Metric Tonnes,29-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,2550,2326.11,Rs./Quintal,124.91,Metric Tonnes,29-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2700,2592.88,Rs./Quintal,115.89,Metric Tonnes,27-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2200,26280,3760.66,Rs./Quintal,93.62,Metric Tonnes,26-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,16600,16600,16600,Rs./Quintal,0.99,Metric Tonnes,26-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2300,6817.61,2881.86,Rs./Quintal,175.33,Metric Tonnes,25-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2300,11515,3489.31,Rs./Quintal,118.9,Metric Tonnes,24-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2800,11056.47,3980.8,Rs./Quintal,43.13,Metric Tonnes,24-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2300,2710,2412.58,Rs./Quintal,126.07,Metric Tonnes,23-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2300,9729.23,2611.9,Rs./Quintal,140.65,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5690.54,12645.96,5912.46,Rs./Quintal,8.68,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,5871.12,5871.12,5871.12,Rs./Quintal,29.6,Metric Tonnes,21-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2725,6005.93,3805.76,Rs./Quintal,62.55,Metric Tonnes,21-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,2830,2727.21,Rs./Quintal,76.75,Metric Tonnes,20-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2700,2750,2721.14,Rs./Quintal,49.77,Metric Tonnes,20-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2700,2700,Rs./Quintal,37.8,Metric Tonnes,19-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2550,2710,2625.7,Rs./Quintal,14.88,Metric Tonnes,19-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2750,2609.1,Rs./Quintal,178.23,Metric Tonnes,18-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,2650,2568.99,Rs./Quintal,58.94,Metric Tonnes,17-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2740,10879.28,5328.76,Rs./Quintal,34.53,Metric Tonnes,17-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2708,2700.32,Rs./Quintal,45,Metric Tonnes,15-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,2750,2603.56,Rs./Quintal,158.56,Metric Tonnes,14-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2700,2780,2750.59,Rs./Quintal,47.26,Metric Tonnes,14-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,2700,2700,Rs./Quintal,18.1,Metric Tonnes,13-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2650,2592,Rs./Quintal,81.33,Metric Tonnes,12-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6548.56,6548.56,6548.56,Rs./Quintal,39.3,Metric Tonnes,12-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,6733.04,3355.69,Rs./Quintal,102.87,Metric Tonnes,11-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2725,7729.8,3068.08,Rs./Quintal,54.02,Metric Tonnes,10-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Golden Sela New,FAQ,6107.69,16052.63,8843.9,Rs./Quintal,35.73,Metric Tonnes,09-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2455.75,2455.75,2455.75,Rs./Quintal,19.7,Metric Tonnes,09-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,30,Metric Tonnes,09-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw Old,FAQ,3790.27,3953.52,3926.18,Rs./Quintal,76.76,Metric Tonnes,09-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6109,12424,6733.33,Rs./Quintal,3.59,Metric Tonnes,08-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2500,2500,Rs./Quintal,58.58,Metric Tonnes,07-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,5067.65,6040.14,5364.03,Rs./Quintal,220.61,Metric Tonnes,07-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2725,2618.52,Rs./Quintal,68.63,Metric Tonnes,06-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6700,6700,6700,Rs./Quintal,10.36,Metric Tonnes,06-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,2890,2726.41,Rs./Quintal,58.12,Metric Tonnes,05-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6190,6190,6190,Rs./Quintal,8,Metric Tonnes,05-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,2680,2673.6,Rs./Quintal,45.61,Metric Tonnes,04-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2600,7948,4432.22,Rs./Quintal,54.04,Metric Tonnes,03-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Doon Mini,FAQ,4200,4200,4200,Rs./Quintal,30,Metric Tonnes,03-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2525,2511.79,Rs./Quintal,35.77,Metric Tonnes,03-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2725,2750,2737.33,Rs./Quintal,14.32,Metric Tonnes,02-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,6705.27,6705.27,6705.27,Rs./Quintal,12.09,Metric Tonnes,01-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2725,2750,2737.5,Rs./Quintal,13.96,Metric Tonnes,01-08-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,8488.56,6309.42,Rs./Quintal,176.47,Metric Tonnes,31-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6350,6350,6350,Rs./Quintal,0.86,Metric Tonnes,31-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2560,2560,2560,Rs./Quintal,21.47,Metric Tonnes,30-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2610,2760,2715.35,Rs./Quintal,29.48,Metric Tonnes,29-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,9757.63,3497.92,Rs./Quintal,87.9,Metric Tonnes,28-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,6498,2743.29,Rs./Quintal,121.97,Metric Tonnes,27-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2690,2725,2704.25,Rs./Quintal,35.07,Metric Tonnes,27-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,22537.5,3836.29,Rs./Quintal,44.99,Metric Tonnes,26-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2700,2725,2712.33,Rs./Quintal,28.24,Metric Tonnes,26-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2560,2900,2703.63,Rs./Quintal,109.13,Metric Tonnes,24-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6994.79,6994.79,6994.79,Rs./Quintal,20.58,Metric Tonnes,24-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2720,2672.01,Rs./Quintal,57.3,Metric Tonnes,23-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,2750,2637.58,Rs./Quintal,41.8,Metric Tonnes,22-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2755,2775,2762.6,Rs./Quintal,27.57,Metric Tonnes,22-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2700,8511,3803.36,Rs./Quintal,57.05,Metric Tonnes,21-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6255.56,6456.32,6435.92,Rs./Quintal,11.12,Metric Tonnes,21-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,6587.92,2952.32,Rs./Quintal,94.98,Metric Tonnes,20-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2750,8401.47,4815.21,Rs./Quintal,54.71,Metric Tonnes,20-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2600,2571.91,Rs./Quintal,88,Metric Tonnes,19-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2750,2760,2753.75,Rs./Quintal,27.67,Metric Tonnes,19-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2680,2720,2701.7,Rs./Quintal,42.29,Metric Tonnes,18-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5915,5915,5915,Rs./Quintal,4.65,Metric Tonnes,18-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,5085,5085,5085,Rs./Quintal,4.5,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2250,2750,2566.19,Rs./Quintal,166,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2720,2575.67,Rs./Quintal,122.08,Metric Tonnes,16-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2620,2860,2728.87,Rs./Quintal,147.71,Metric Tonnes,15-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6414.94,6414.94,6414.94,Rs./Quintal,26.84,Metric Tonnes,15-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2540,2750,2671.67,Rs./Quintal,80.26,Metric Tonnes,13-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2760,2584.2,Rs./Quintal,97.9,Metric Tonnes,12-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,6428.48,6428.48,6428.48,Rs./Quintal,14.83,Metric Tonnes,11-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2250,2750,2576.56,Rs./Quintal,102.22,Metric Tonnes,10-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,6900,6900,6900,Rs./Quintal,0.72,Metric Tonnes,08-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6534.79,6900,6547.48,Rs./Quintal,41.44,Metric Tonnes,08-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2575,2551.4,Rs./Quintal,42.11,Metric Tonnes,07-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6500,6500,6500,Rs./Quintal,9.56,Metric Tonnes,07-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2570,2590,2580.08,Rs./Quintal,39.2,Metric Tonnes,06-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5823,8450,5837.42,Rs./Quintal,9.11,Metric Tonnes,06-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,9507,9596,9565.42,Rs./Quintal,10.22,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Boiled Rice,FAQ,3240,3275,3259.55,Rs./Quintal,2.89,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2300,2387,2364.16,Rs./Quintal,14.27,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2680,2810,2715.41,Rs./Quintal,38.89,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Jeera Samba,FAQ,4850,4900,4866.67,Rs./Quintal,2.7,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,7235,7235,7235,Rs./Quintal,12.72,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Boiled,FAQ,3853,3853,3853,Rs./Quintal,1.8,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw New,FAQ,3464,3464,3464,Rs./Quintal,11.46,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw Old,FAQ,3436,3573,3478.36,Rs./Quintal,60.3,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,4600,5949,4974.78,Rs./Quintal,143.07,Metric Tonnes,05-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,2525.83,2525.83,2525.83,Rs./Quintal,7.12,Metric Tonnes,03-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,6075.22,6075.22,6075.22,Rs./Quintal,12.78,Metric Tonnes,03-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2500,2500,Rs./Quintal,97.79,Metric Tonnes,02-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6729.44,9161.89,6822.47,Rs./Quintal,6.2,Metric Tonnes,02-07-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,5239.87,6357.96,6173.55,Rs./Quintal,206.36,Metric Tonnes,30-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5610.22,7088.38,6246.17,Rs./Quintal,68.98,Metric Tonnes,30-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2250,23065.17,2383.23,Rs./Quintal,56.14,Metric Tonnes,29-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5720,5720,5720,Rs./Quintal,11.02,Metric Tonnes,29-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2340,2390,2368.26,Rs./Quintal,43.71,Metric Tonnes,28-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2250,2250,2250,Rs./Quintal,2.2,Metric Tonnes,28-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,2370,2353.58,Rs./Quintal,78.46,Metric Tonnes,27-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4953,4953,4953,Rs./Quintal,0.04,Metric Tonnes,27-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,21356.92,3489.13,Rs./Quintal,128.87,Metric Tonnes,26-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4968.96,11312.81,6055.13,Rs./Quintal,100.95,Metric Tonnes,26-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2400,2400,Rs./Quintal,10.27,Metric Tonnes,25-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4188,4603,4345.75,Rs./Quintal,3.46,Metric Tonnes,25-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2575,2590,2582.5,Rs./Quintal,15.8,Metric Tonnes,24-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2650,2591.77,Rs./Quintal,50.87,Metric Tonnes,23-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2640,2650,2647.56,Rs./Quintal,35.7,Metric Tonnes,22-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5968.95,23050.42,7355.45,Rs./Quintal,3.3,Metric Tonnes,22-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2400,2400,Rs./Quintal,30.72,Metric Tonnes,21-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,17033.33,4434.16,Rs./Quintal,53.81,Metric Tonnes,20-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2530,5937.68,2742.19,Rs./Quintal,104.2,Metric Tonnes,19-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,2450,2450,Rs./Quintal,40,Metric Tonnes,18-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,9277.61,9277.61,9277.61,Rs./Quintal,16.3,Metric Tonnes,17-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,4959,2895.75,Rs./Quintal,143.59,Metric Tonnes,17-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,21356.92,21356.92,21356.92,Rs./Quintal,0.02,Metric Tonnes,15-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5885.72,5885.72,5885.72,Rs./Quintal,17.5,Metric Tonnes,15-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2560,2551.67,Rs./Quintal,46.2,Metric Tonnes,14-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2100,2100,2100,Rs./Quintal,2.3,Metric Tonnes,14-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,21356.92,2591.26,Rs./Quintal,105.19,Metric Tonnes,13-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4702.58,10806.44,7058.57,Rs./Quintal,52.1,Metric Tonnes,13-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2100,2790,2527.63,Rs./Quintal,110.12,Metric Tonnes,12-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2050,2100,2076.09,Rs./Quintal,4.6,Metric Tonnes,12-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,7026.54,3262.8,Rs./Quintal,93.63,Metric Tonnes,11-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2620,2518.25,Rs./Quintal,120.41,Metric Tonnes,10-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2260,4725,2734.44,Rs./Quintal,324.9,Metric Tonnes,09-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,4609.38,4609.38,4609.38,Rs./Quintal,30,Metric Tonnes,08-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2550,2550,Rs./Quintal,19,Metric Tonnes,08-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2575,2511.95,Rs./Quintal,107.35,Metric Tonnes,07-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2210,2550,2451.39,Rs./Quintal,101.5,Metric Tonnes,06-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2460,2660,2547.6,Rs./Quintal,132.27,Metric Tonnes,05-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5433.19,13673.28,5588.66,Rs./Quintal,2.12,Metric Tonnes,05-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,6516.67,6516.67,6516.67,Rs./Quintal,27.81,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Trophy,FAQ,5900,9777.07,8606.25,Rs./Quintal,17.52,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Boiled Rice,FAQ,3302.48,3375,3311.89,Rs./Quintal,8.1,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2503.93,5389.42,3887.94,Rs./Quintal,218.15,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5040,9230,5374.34,Rs./Quintal,56.01,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Rajbhog,FAQ,4587.5,4587.5,4587.5,Rs./Quintal,2.4,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2500,2459.39,Rs./Quintal,143.4,Metric Tonnes,03-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6500,6500,6500,Rs./Quintal,11.08,Metric Tonnes,03-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,6855.89,3003.4,Rs./Quintal,144.62,Metric Tonnes,02-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Hamsa St.,FAQ,6691.7,6691.7,6691.7,Rs./Quintal,18.13,Metric Tonnes,01-06-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2430,4465,2987.42,Rs./Quintal,144.45,Metric Tonnes,31-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5263.4,6581.19,5657.86,Rs./Quintal,129.06,Metric Tonnes,30-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2650,2616.31,Rs./Quintal,45.01,Metric Tonnes,29-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,7075,4550.69,Rs./Quintal,298.28,Metric Tonnes,28-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,6498,3656.43,Rs./Quintal,62.83,Metric Tonnes,27-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2475,2680,2622.93,Rs./Quintal,93.01,Metric Tonnes,26-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,4823.06,4823.06,4823.06,Rs./Quintal,29.8,Metric Tonnes,26-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2480,5540.64,2697.64,Rs./Quintal,53.28,Metric Tonnes,25-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5040,5040,5040,Rs./Quintal,24.76,Metric Tonnes,25-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2480,2500,2489.32,Rs./Quintal,14.8,Metric Tonnes,24-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,9379.48,9831.46,9694.33,Rs./Quintal,15.43,Metric Tonnes,23-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5734.52,12407.46,6193.49,Rs./Quintal,57.47,Metric Tonnes,23-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2550,2550,Rs./Quintal,45.6,Metric Tonnes,22-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,2660,2652.66,Rs./Quintal,51.5,Metric Tonnes,21-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,6823,3317.1,Rs./Quintal,156.25,Metric Tonnes,20-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2460,6496.33,3239.33,Rs./Quintal,93.92,Metric Tonnes,19-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6568.9,6568.9,6568.9,Rs./Quintal,29.62,Metric Tonnes,19-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6722.08,6722.08,6722.08,Rs./Quintal,1.34,Metric Tonnes,18-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2650,2514.48,Rs./Quintal,97.88,Metric Tonnes,17-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,6000.43,3169.09,Rs./Quintal,48.28,Metric Tonnes,16-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6820,7064.88,6911.13,Rs./Quintal,47.78,Metric Tonnes,16-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2510,2550,2538.45,Rs./Quintal,87.22,Metric Tonnes,15-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,4823.08,4823.08,4823.08,Rs./Quintal,29.95,Metric Tonnes,15-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona St.,FAQ,4823.72,4823.72,4823.72,Rs./Quintal,30,Metric Tonnes,14-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2630,2551.51,Rs./Quintal,124.13,Metric Tonnes,13-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2480,4306,2969.89,Rs./Quintal,118.07,Metric Tonnes,11-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5343.51,5343.51,5343.51,Rs./Quintal,29.2,Metric Tonnes,11-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2630,2522.69,Rs./Quintal,180.1,Metric Tonnes,10-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2490,6460.05,2867.27,Rs./Quintal,126.5,Metric Tonnes,09-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,2690,2603.07,Rs./Quintal,78.52,Metric Tonnes,08-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2450,2650,2573.33,Rs./Quintal,115.5,Metric Tonnes,07-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,6508,9059,7966.96,Rs./Quintal,17.52,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Boiled Rice,FAQ,4044,4044,4044,Rs./Quintal,40,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2256,6448,3996.01,Rs./Quintal,36.21,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,9074,3874.72,Rs./Quintal,238.56,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Mataa Parboiled,FAQ,2420,3645,3575.66,Rs./Quintal,42.4,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6500,11815.4,6678.94,Rs./Quintal,8.79,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Rice Bran(Kukuf),FAQ,3211,4375,4174.37,Rs./Quintal,38.96,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Boiled,FAQ,4044,4044,4044,Rs./Quintal,40,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sona Raw Old,FAQ,3038,3920,3182.49,Rs./Quintal,8.79,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Sujatha (B.T),FAQ,3980,5043,4590.31,Rs./Quintal,29,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,White Parboiled,FAQ,3350,4421,4368.45,Rs./Quintal,60.33,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati (Rose),FAQ,4463.57,4463.57,4463.57,Rs./Quintal,4.2,Metric Tonnes,05-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2710,2553.36,Rs./Quintal,211.21,Metric Tonnes,05-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4821.82,4821.82,4821.82,Rs./Quintal,20.57,Metric Tonnes,05-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,6044.6,2987.53,Rs./Quintal,70.56,Metric Tonnes,04-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2525,2540,2529.52,Rs./Quintal,31.2,Metric Tonnes,03-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,26800,2921.35,Rs./Quintal,127.06,Metric Tonnes,02-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2000,9197.29,7843.25,Rs./Quintal,7.34,Metric Tonnes,02-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2550,2550,Rs./Quintal,36.1,Metric Tonnes,01-05-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2350,22211.04,2630.86,Rs./Quintal,32.41,Metric Tonnes,30-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2340,2770,2476.87,Rs./Quintal,344.29,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Hamsa St.,FAQ,4808.33,4808.33,4808.33,Rs./Quintal,30,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6793.75,6793.75,6793.75,Rs./Quintal,24.12,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2320,5936.37,3445.47,Rs./Quintal,259.47,Metric Tonnes,28-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,6553.88,4894.93,Rs./Quintal,50.36,Metric Tonnes,27-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5380,7671.29,6406.55,Rs./Quintal,91.86,Metric Tonnes,27-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2210,2500,2367.61,Rs./Quintal,168.18,Metric Tonnes,26-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2700,2473.08,Rs./Quintal,274.47,Metric Tonnes,25-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,6628.92,2825.42,Rs./Quintal,164.85,Metric Tonnes,24-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5821.22,8004.37,6415.55,Rs./Quintal,17.34,Metric Tonnes,24-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,2545,2520.88,Rs./Quintal,81.83,Metric Tonnes,22-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2500,8410.14,3268.45,Rs./Quintal,96.31,Metric Tonnes,20-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4308.17,18844.43,4619.85,Rs./Quintal,18.89,Metric Tonnes,20-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2495,5875.24,2805.36,Rs./Quintal,112.26,Metric Tonnes,19-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,4193,3142.83,Rs./Quintal,85.06,Metric Tonnes,18-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2750,6035.52,3530.56,Rs./Quintal,39.86,Metric Tonnes,17-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,4046,9149,6414.99,Rs./Quintal,53.76,Metric Tonnes,16-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5840.71,5840.71,5840.71,Rs./Quintal,28.9,Metric Tonnes,16-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2280,2700,2423.17,Rs./Quintal,88.05,Metric Tonnes,14-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2650,2710,2666.88,Rs./Quintal,46.88,Metric Tonnes,12-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2720,2637.44,Rs./Quintal,94.8,Metric Tonnes,11-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2475,2500,2494.9,Rs./Quintal,36.8,Metric Tonnes,10-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2550,2463.73,Rs./Quintal,53.66,Metric Tonnes,08-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,5788.96,5788.96,5788.96,Rs./Quintal,2.63,Metric Tonnes,07-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2410,2495,2461.5,Rs./Quintal,20,Metric Tonnes,06-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2700,2628.34,Rs./Quintal,87.5,Metric Tonnes,04-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6500,6500,6500,Rs./Quintal,8.77,Metric Tonnes,04-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,3550.05,6137.65,5617.47,Rs./Quintal,34.57,Metric Tonnes,03-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,5172.39,5172.39,5172.39,Rs./Quintal,3.06,Metric Tonnes,03-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6852.64,9161.89,6870.14,Rs./Quintal,30.46,Metric Tonnes,03-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2525,2512.59,Rs./Quintal,13.18,Metric Tonnes,02-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2550,2550,Rs./Quintal,22.8,Metric Tonnes,01-04-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2080,4350,2725.81,Rs./Quintal,340.85,Metric Tonnes,31-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6044,6044,6044,Rs./Quintal,4.22,Metric Tonnes,31-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,4350,2725.56,Rs./Quintal,337.13,Metric Tonnes,30-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,6349.7,2539.68,Rs./Quintal,172.35,Metric Tonnes,29-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Raw (Old),FAQ,7728.2,7728.2,7728.2,Rs./Quintal,32.41,Metric Tonnes,28-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,6485.89,2205.41,Rs./Quintal,236.42,Metric Tonnes,28-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,9053.47,2768.39,Rs./Quintal,135.62,Metric Tonnes,27-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2720,2296.86,Rs./Quintal,103.2,Metric Tonnes,26-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2750,2325.68,Rs./Quintal,288.35,Metric Tonnes,25-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Raw (Old),FAQ,4374.61,4374.61,4374.61,Rs./Quintal,4.54,Metric Tonnes,24-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Sela(New),FAQ,8574.2,8574.2,8574.2,Rs./Quintal,29.79,Metric Tonnes,24-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,6488.37,4864.68,Rs./Quintal,213.84,Metric Tonnes,24-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6883.67,6883.67,6883.67,Rs./Quintal,25.58,Metric Tonnes,24-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2700,2292.77,Rs./Quintal,119.14,Metric Tonnes,23-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2400,2400,Rs./Quintal,61.9,Metric Tonnes,22-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati (Rose),FAQ,8031,8031,8031,Rs./Quintal,4.19,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,6235,8465,7247.88,Rs./Quintal,32.27,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Boiled Rice,FAQ,3225,3811.87,3658.36,Rs./Quintal,22.08,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Broken Rice(Kanki),FAQ,2371,2371,2371,Rs./Quintal,21.24,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2130,5205,3267.97,Rs./Quintal,343.29,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,GMR Steam,FAQ,3964,3964,3964,Rs./Quintal,3.96,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,4043.45,11147.95,6998.11,Rs./Quintal,40.24,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Rajbhog,FAQ,3985,3985,3985,Rs./Quintal,2.79,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2400,2400,Rs./Quintal,41.26,Metric Tonnes,20-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Dawat,FAQ,8750,8750,8750,Rs./Quintal,36,Metric Tonnes,19-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2420,4807.69,4377.05,Rs./Quintal,79.2,Metric Tonnes,19-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2630,9651,6390.68,Rs./Quintal,103.1,Metric Tonnes,18-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2485,3981,3327.1,Rs./Quintal,145.7,Metric Tonnes,17-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,3742,5931.8,5818.67,Rs./Quintal,8.29,Metric Tonnes,16-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,2320,2314.64,Rs./Quintal,9.19,Metric Tonnes,15-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Sela(New),FAQ,6214.64,6214.64,6214.64,Rs./Quintal,20.9,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,6137.74,6137.74,6137.74,Rs./Quintal,18.32,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,2680,2518.35,Rs./Quintal,54.64,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2000,2405,2220.5,Rs./Quintal,71.6,Metric Tonnes,13-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6412.95,6412.95,6412.95,Rs./Quintal,38.7,Metric Tonnes,13-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Raw (Old),FAQ,5409.61,6639.01,6056.96,Rs./Quintal,95.06,Metric Tonnes,12-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,2550,2550,Rs./Quintal,20.9,Metric Tonnes,12-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2570,2630,2603.61,Rs./Quintal,30.38,Metric Tonnes,11-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5209,5209,5209,Rs./Quintal,0.07,Metric Tonnes,11-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2680,2700,2687.37,Rs./Quintal,34.2,Metric Tonnes,09-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,5624.56,2479.28,Rs./Quintal,126.91,Metric Tonnes,07-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2410,2402.69,Rs./Quintal,45.5,Metric Tonnes,06-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,6500,6500,6500,Rs./Quintal,13.4,Metric Tonnes,06-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2630,2534.1,Rs./Quintal,70.47,Metric Tonnes,03-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2400,8970.01,3993.36,Rs./Quintal,14.5,Metric Tonnes,03-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,5962.1,5962.1,5962.1,Rs./Quintal,4.29,Metric Tonnes,02-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5626.68,5626.68,5626.68,Rs./Quintal,10.84,Metric Tonnes,02-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,2400,2400,Rs./Quintal,40.94,Metric Tonnes,01-03-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2050,2650,2424.18,Rs./Quintal,150.46,Metric Tonnes,28-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,5887,9053.6,5931.98,Rs./Quintal,3.52,Metric Tonnes,28-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2110,2630,2327.48,Rs./Quintal,74.35,Metric Tonnes,27-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2110,11645.12,3729.57,Rs./Quintal,236.63,Metric Tonnes,26-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2400,7500.24,3250.18,Rs./Quintal,61.61,Metric Tonnes,25-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Haryana Raw (Old),FAQ,6345.92,6345.92,6345.92,Rs./Quintal,29.67,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Basmati Mogra (Raw/New),FAQ,6853.41,7198.98,7027.46,Rs./Quintal,68.27,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2550,6300.73,3251.47,Rs./Quintal,132.7,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,5682.48,5682.48,5682.48,Rs./Quintal,5,Metric Tonnes,23-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Common,FAQ,2310,2550,2510.06,Rs./Quintal,55.75,Metric Tonnes,22-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2504,2524,2514,Rs./Quintal,70,Metric Tonnes,21-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2478,2498,2488,Rs./Quintal,91.8,Metric Tonnes,20-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2519,2539,2529,Rs./Quintal,95.2,Metric Tonnes,19-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2473,2493,2483,Rs./Quintal,92.3,Metric Tonnes,18-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2358,2378,2368,Rs./Quintal,42.8,Metric Tonnes,17-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2675,2695,2685,Rs./Quintal,20.4,Metric Tonnes,16-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2875,2895,2885,Rs./Quintal,161.7,Metric Tonnes,14-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2400,2420,2410,Rs./Quintal,19,Metric Tonnes,13-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2577,2597,2587,Rs./Quintal,8.1,Metric Tonnes,12-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2400,2420,2410,Rs./Quintal,20.5,Metric Tonnes,11-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2463,2483,2473,Rs./Quintal,41.8,Metric Tonnes,10-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2550,2570,2560,Rs./Quintal,47.5,Metric Tonnes,09-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2436,2456,2446,Rs./Quintal,36.5,Metric Tonnes,08-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2570,2590,2580,Rs./Quintal,16.5,Metric Tonnes,07-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2667,2687,2677,Rs./Quintal,30.2,Metric Tonnes,06-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2475,2495,2485,Rs./Quintal,83.4,Metric Tonnes,05-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2636,2656,2646,Rs./Quintal,88,Metric Tonnes,04-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2472,2492,2482,Rs./Quintal,111.3,Metric Tonnes,03-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2714,2734,2724,Rs./Quintal,295.6,Metric Tonnes,02-02-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2363,2383,2373,Rs./Quintal,44.6,Metric Tonnes,31-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2542,2562,2552,Rs./Quintal,125.5,Metric Tonnes,30-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2805,2825,2815,Rs./Quintal,401.5,Metric Tonnes,29-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2573,2593,2583,Rs./Quintal,133.7,Metric Tonnes,28-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2834,2854,2844,Rs./Quintal,449.8,Metric Tonnes,27-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2350,2370,2360,Rs./Quintal,46,Metric Tonnes,26-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2397,2417,2407,Rs./Quintal,209.8,Metric Tonnes,25-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2508,2528,2518,Rs./Quintal,179.5,Metric Tonnes,24-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2517,2537,2527,Rs./Quintal,100.6,Metric Tonnes,23-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2547,2567,2557,Rs./Quintal,222.9,Metric Tonnes,22-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2354,2374,2364,Rs./Quintal,155,Metric Tonnes,21-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,3010,3030,3020,Rs./Quintal,101.1,Metric Tonnes,20-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2215,2235,2225,Rs./Quintal,99.3,Metric Tonnes,19-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2573,2593,2583,Rs./Quintal,263.9,Metric Tonnes,18-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2578,2598,2588,Rs./Quintal,183.8,Metric Tonnes,17-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2391,2411,2401,Rs./Quintal,112.8,Metric Tonnes,16-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2466,2486,2476,Rs./Quintal,80.4,Metric Tonnes,15-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2566,2586,2576,Rs./Quintal,91.9,Metric Tonnes,14-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2390,2410,2400,Rs./Quintal,6.2,Metric Tonnes,13-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2373,2393,2383,Rs./Quintal,73.9,Metric Tonnes,12-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2078,2098,2088,Rs./Quintal,25.5,Metric Tonnes,11-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2287,2307,2297,Rs./Quintal,79,Metric Tonnes,10-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2672,2692,2682,Rs./Quintal,170.8,Metric Tonnes,09-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2548,2568,2558,Rs./Quintal,111.9,Metric Tonnes,08-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2773,2793,2783,Rs./Quintal,105.5,Metric Tonnes,07-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2502,2522,2512,Rs./Quintal,6.4,Metric Tonnes,06-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2520,2540,2530,Rs./Quintal,6.6,Metric Tonnes,05-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2555,2575,2565,Rs./Quintal,36.6,Metric Tonnes,04-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2522,2542,2532,Rs./Quintal,48.9,Metric Tonnes,03-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2560,2580,2570,Rs./Quintal,125.8,Metric Tonnes,02-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2507,2527,2517,Rs./Quintal,44,Metric Tonnes,01-01-2026
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2779,2799,2789,Rs./Quintal,234.2,Metric Tonnes,31-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2712,2732,2722,Rs./Quintal,88.2,Metric Tonnes,30-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2578,2598,2588,Rs./Quintal,56.9,Metric Tonnes,29-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2713,2733,2723,Rs./Quintal,160.8,Metric Tonnes,28-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2648,2668,2658,Rs./Quintal,93.5,Metric Tonnes,27-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2598,2618,2608,Rs./Quintal,153.3,Metric Tonnes,26-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2568,2588,2578,Rs./Quintal,79,Metric Tonnes,25-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2623,2643,2633,Rs./Quintal,69.2,Metric Tonnes,24-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2670,2690,2680,Rs./Quintal,185.1,Metric Tonnes,23-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,104,Metric Tonnes,22-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2570,2590,2580,Rs./Quintal,114.2,Metric Tonnes,21-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,10.7,Metric Tonnes,20-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,17,Metric Tonnes,19-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,6.8,Metric Tonnes,18-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2953,2973,2963,Rs./Quintal,70.7,Metric Tonnes,17-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2673,2693,2683,Rs./Quintal,41.5,Metric Tonnes,16-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2551,2571,2561,Rs./Quintal,63.3,Metric Tonnes,15-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2556,2576,2566,Rs./Quintal,40.6,Metric Tonnes,14-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,16,Metric Tonnes,13-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,15.1,Metric Tonnes,12-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,17,Metric Tonnes,11-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,8.3,Metric Tonnes,10-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,32.1,Metric Tonnes,09-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2527,2547,2537,Rs./Quintal,131.3,Metric Tonnes,08-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2545,2565,2555,Rs./Quintal,145.1,Metric Tonnes,07-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2563,2583,2573,Rs./Quintal,55.7,Metric Tonnes,05-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2646,2676,2656,Rs./Quintal,44.3,Metric Tonnes,04-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2500,2520,2510,Rs./Quintal,88.9,Metric Tonnes,03-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2508,2528,2518,Rs./Quintal,192.3,Metric Tonnes,02-12-2025
+Uttar Pradesh,Lucknow,Banthara APMC,Cereals,Rice,Other,FAQ,2674,2694,2684,Rs./Quintal,43.3,Metric Tonnes,01-12-2025
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4254.85,8711,6761.52,Rs./Quintal,129.99,Metric Tonnes,06-11-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,9501,8479.4,Rs./Quintal,250.02,Metric Tonnes,26-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5701.39,9314.29,7561.95,Rs./Quintal,164.2,Metric Tonnes,26-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4158.71,8100,5929.65,Rs./Quintal,153.52,Metric Tonnes,23-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4231.58,9586.72,7639.34,Rs./Quintal,173.62,Metric Tonnes,21-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,7501,7501,Rs./Quintal,35.01,Metric Tonnes,20-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,5350,3689.05,Rs./Quintal,75.76,Metric Tonnes,20-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4436.36,9693,7435.78,Rs./Quintal,100.02,Metric Tonnes,19-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5600,5600,5600,Rs./Quintal,30,Metric Tonnes,18-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8501,8751,8584.33,Rs./Quintal,90,Metric Tonnes,18-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,7753,7753,7753,Rs./Quintal,34.5,Metric Tonnes,18-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,9668,8501,Rs./Quintal,195.03,Metric Tonnes,17-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,7501,7501,Rs./Quintal,35.01,Metric Tonnes,16-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4497.2,5966.81,5331.28,Rs./Quintal,143.03,Metric Tonnes,15-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7551.58,8583,7659.34,Rs./Quintal,40.2,Metric Tonnes,15-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,6800,8051,7483.51,Rs./Quintal,84.97,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2738,8501,5653.79,Rs./Quintal,391.14,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3091,11500,7682.85,Rs./Quintal,1098.26,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,5401,5401,5401,Rs./Quintal,1.04,Metric Tonnes,14-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8501,8501,8501,Rs./Quintal,30,Metric Tonnes,13-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8800,6281.98,Rs./Quintal,272.9,Metric Tonnes,13-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3000,8501,7613.96,Rs./Quintal,158.26,Metric Tonnes,12-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,5560,5560,5560,Rs./Quintal,25.01,Metric Tonnes,11-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8000,9834,8860.86,Rs./Quintal,163.14,Metric Tonnes,11-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,9503,8330.62,Rs./Quintal,205.05,Metric Tonnes,10-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3561.53,3561.53,3561.53,Rs./Quintal,35.01,Metric Tonnes,10-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Haryana Raw (New),FAQ,9179.46,9179.46,9179.46,Rs./Quintal,11.49,Metric Tonnes,09-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4082.56,9501,7927.63,Rs./Quintal,205.02,Metric Tonnes,09-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,8100,8100,8100,Rs./Quintal,35.01,Metric Tonnes,09-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,3987.95,3987.95,3987.95,Rs./Quintal,34.02,Metric Tonnes,08-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,6398.19,6398.19,6398.19,Rs./Quintal,15.33,Metric Tonnes,07-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2800,3410.41,3109.07,Rs./Quintal,71.1,Metric Tonnes,07-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,5011.31,5011.31,5011.31,Rs./Quintal,29.28,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7752,7752,7752,Rs./Quintal,39.52,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,8501,8501,8501,Rs./Quintal,30,Metric Tonnes,06-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4635.42,4635.42,4635.42,Rs./Quintal,29,Metric Tonnes,05-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4070.15,9701,8014.52,Rs./Quintal,201.12,Metric Tonnes,05-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3745.3,9668,8319.24,Rs./Quintal,335.13,Metric Tonnes,04-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3723.36,7501,6635.46,Rs./Quintal,140.1,Metric Tonnes,03-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5600.61,6147.59,5872.99,Rs./Quintal,59.34,Metric Tonnes,01-10-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4516.68,7842.28,6524.71,Rs./Quintal,208.96,Metric Tonnes,30-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4350,8800,7597.45,Rs./Quintal,342.97,Metric Tonnes,30-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw Old,FAQ,6009.85,6009.85,6009.85,Rs./Quintal,30,Metric Tonnes,30-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,5901.45,5901.45,5901.45,Rs./Quintal,33.26,Metric Tonnes,29-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4077,9501,6414.88,Rs./Quintal,239.94,Metric Tonnes,29-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4850,8232.1,6258.67,Rs./Quintal,177.45,Metric Tonnes,29-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4114.49,5855.39,5076.82,Rs./Quintal,159.86,Metric Tonnes,28-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7501,11718,8354.94,Rs./Quintal,140.07,Metric Tonnes,28-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3403.4,8800,6941.35,Rs./Quintal,316,Metric Tonnes,28-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,8417.41,8417.41,8417.41,Rs./Quintal,23.41,Metric Tonnes,27-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2798.23,3000,2887.29,Rs./Quintal,78.56,Metric Tonnes,27-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4171,7200,4863.44,Rs./Quintal,281.7,Metric Tonnes,27-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2835,8501,5230.86,Rs./Quintal,680.66,Metric Tonnes,26-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7032.82,7032.82,7032.82,Rs./Quintal,35.22,Metric Tonnes,25-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5805.62,8407,7509.92,Rs./Quintal,104.01,Metric Tonnes,25-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4937.63,5650,5256.37,Rs./Quintal,149.85,Metric Tonnes,24-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3761.8,3761.8,3761.8,Rs./Quintal,34.95,Metric Tonnes,23-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3000,8245,6297.58,Rs./Quintal,141.96,Metric Tonnes,23-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3859.83,8850,7329.41,Rs./Quintal,130.11,Metric Tonnes,22-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,8200,8800,8472.51,Rs./Quintal,76.95,Metric Tonnes,21-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3911.98,8501,6052.42,Rs./Quintal,75.06,Metric Tonnes,20-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,28.77,Metric Tonnes,20-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,3690,3690,3690,Rs./Quintal,30,Metric Tonnes,19-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8621,8621,8621,Rs./Quintal,30,Metric Tonnes,18-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw Old,FAQ,6009.85,6009.85,6009.85,Rs./Quintal,29.94,Metric Tonnes,17-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4826.12,4826.12,4826.12,Rs./Quintal,34.23,Metric Tonnes,15-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,3461,5372,5262.8,Rs./Quintal,35,Metric Tonnes,15-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3702.96,11226.92,7606.16,Rs./Quintal,273.89,Metric Tonnes,15-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4313.62,6578.69,5209.44,Rs./Quintal,271.14,Metric Tonnes,14-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2728,7409.76,4839.48,Rs./Quintal,108.7,Metric Tonnes,14-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4470,11500,7951.83,Rs./Quintal,139.07,Metric Tonnes,14-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4251.16,6950,4906.1,Rs./Quintal,26.94,Metric Tonnes,12-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5452.78,11500,9060.52,Rs./Quintal,173.94,Metric Tonnes,11-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,30.68,Metric Tonnes,09-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2802.17,9386.5,7391.31,Rs./Quintal,97.62,Metric Tonnes,08-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6801,8001,7794.38,Rs./Quintal,6.04,Metric Tonnes,07-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4021,4021,4021,Rs./Quintal,36.84,Metric Tonnes,06-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,11718,11718,11718,Rs./Quintal,0.03,Metric Tonnes,05-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5000.01,9602.98,7722.58,Rs./Quintal,93.9,Metric Tonnes,02-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6295.53,6295.53,6295.53,Rs./Quintal,17.2,Metric Tonnes,02-09-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4134.21,5452.81,5088.87,Rs./Quintal,51.63,Metric Tonnes,31-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,6870,6870,6870,Rs./Quintal,27.86,Metric Tonnes,31-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4357.5,9238.82,7679.76,Rs./Quintal,171.39,Metric Tonnes,31-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,9200.09,6561.2,Rs./Quintal,188.34,Metric Tonnes,31-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3165.88,8300,5159.32,Rs./Quintal,519.27,Metric Tonnes,30-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4175,12407.63,7063.33,Rs./Quintal,469.39,Metric Tonnes,30-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw New,FAQ,4893.27,4893.27,4893.27,Rs./Quintal,30,Metric Tonnes,30-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2711,9303.46,4540.86,Rs./Quintal,425.19,Metric Tonnes,29-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5092.18,6786.84,5839.53,Rs./Quintal,183.39,Metric Tonnes,26-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2800,3400,3115.87,Rs./Quintal,124.8,Metric Tonnes,25-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3829.4,3829.4,3829.4,Rs./Quintal,31.81,Metric Tonnes,24-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,38.43,Metric Tonnes,24-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4389.72,4683.23,4528.26,Rs./Quintal,35.38,Metric Tonnes,23-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4404.48,4785.24,4580.39,Rs./Quintal,63.81,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,3648,3648,3648,Rs./Quintal,36,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4000.99,8754.37,7111.57,Rs./Quintal,53.5,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,9.25,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,3050,3050,3050,Rs./Quintal,30,Metric Tonnes,22-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4080.77,15086,6043.72,Rs./Quintal,56.63,Metric Tonnes,21-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4712.93,9409,7852.72,Rs./Quintal,70.33,Metric Tonnes,21-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7312.02,7312.02,7312.02,Rs./Quintal,35.04,Metric Tonnes,19-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,2941.9,6874.84,5076.37,Rs./Quintal,298.72,Metric Tonnes,18-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,9501,5813.32,Rs./Quintal,81.63,Metric Tonnes,17-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona St.,FAQ,5036.42,5036.42,5036.42,Rs./Quintal,29.15,Metric Tonnes,17-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6740.2,6740.2,6740.2,Rs./Quintal,34.98,Metric Tonnes,14-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6799.27,14285.71,7922.83,Rs./Quintal,163.29,Metric Tonnes,14-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6799.51,14285.71,6804,Rs./Quintal,35.02,Metric Tonnes,12-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,8500,9608,9023.4,Rs./Quintal,60,Metric Tonnes,11-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3469.49,3469.49,3469.49,Rs./Quintal,28.06,Metric Tonnes,10-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3702.96,11400,6689.75,Rs./Quintal,300.68,Metric Tonnes,10-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7556.76,9608,7650,Rs./Quintal,33,Metric Tonnes,09-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8820.86,8820.86,8820.86,Rs./Quintal,35.01,Metric Tonnes,07-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6700,6700,6700,Rs./Quintal,30,Metric Tonnes,06-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5450.41,5450.41,5450.41,Rs./Quintal,21.8,Metric Tonnes,05-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3627.21,8686.17,6156.69,Rs./Quintal,69.96,Metric Tonnes,04-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,11718,11718,11718,Rs./Quintal,0.03,Metric Tonnes,03-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6150,6150,6150,Rs./Quintal,15,Metric Tonnes,02-08-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4167.78,6302.77,5176.37,Rs./Quintal,252.57,Metric Tonnes,31-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2625,8300,4376.66,Rs./Quintal,464.93,Metric Tonnes,31-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3702.96,11400,7514.57,Rs./Quintal,143.15,Metric Tonnes,31-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3435,3435,3435,Rs./Quintal,34.7,Metric Tonnes,30-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7011.74,7011.74,7011.74,Rs./Quintal,27.24,Metric Tonnes,30-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw New,FAQ,4893.27,4893.27,4893.27,Rs./Quintal,14.85,Metric Tonnes,30-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw Old,FAQ,5024.63,5024.63,5024.63,Rs./Quintal,30,Metric Tonnes,30-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4288,4605,4366.91,Rs./Quintal,40.01,Metric Tonnes,29-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5716.25,9722.97,6732.15,Rs./Quintal,86.25,Metric Tonnes,29-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8439,7624.43,Rs./Quintal,38.35,Metric Tonnes,29-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,3050,3050,3050,Rs./Quintal,30,Metric Tonnes,28-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3357.37,9001,4342.53,Rs./Quintal,554.57,Metric Tonnes,28-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,14285.71,4966.31,Rs./Quintal,311.79,Metric Tonnes,28-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2754,2754,2754,Rs./Quintal,29.43,Metric Tonnes,27-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5550,5550,5550,Rs./Quintal,43,Metric Tonnes,27-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3652.91,14285.71,6537.44,Rs./Quintal,186.53,Metric Tonnes,26-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,9506,7197.15,Rs./Quintal,190.86,Metric Tonnes,24-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,7911,7911,7911,Rs./Quintal,35.19,Metric Tonnes,22-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3434.38,7021.81,4992.39,Rs./Quintal,214,Metric Tonnes,22-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,32.02,Metric Tonnes,21-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6824.1,6824.1,6824.1,Rs./Quintal,30,Metric Tonnes,20-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,10.5,Metric Tonnes,20-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4500,6772,6252.69,Rs./Quintal,9.1,Metric Tonnes,19-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6301.85,6301.85,6301.85,Rs./Quintal,15.4,Metric Tonnes,19-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4782.23,5050,4915.89,Rs./Quintal,60.1,Metric Tonnes,18-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,9359.61,9359.61,9359.61,Rs./Quintal,20.91,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8055.26,9401,8132.18,Rs./Quintal,34.99,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7216.97,7216.97,7216.97,Rs./Quintal,14.15,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw Old,FAQ,4844.01,4844.01,4844.01,Rs./Quintal,23.94,Metric Tonnes,17-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,2631.58,8974.27,6085.9,Rs./Quintal,196.32,Metric Tonnes,16-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4971,5968.97,5515.17,Rs./Quintal,154.8,Metric Tonnes,15-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3350,15131.95,6030.84,Rs./Quintal,123.99,Metric Tonnes,15-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5027,5223,5116.67,Rs./Quintal,70.01,Metric Tonnes,14-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2735,8772.04,5674.04,Rs./Quintal,91.55,Metric Tonnes,14-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3356.64,9894,5470.25,Rs./Quintal,144.77,Metric Tonnes,14-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3001,6686.34,5269.77,Rs./Quintal,32.52,Metric Tonnes,13-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4564.92,7550.62,6198.68,Rs./Quintal,119.15,Metric Tonnes,13-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3208,9463.25,6342.53,Rs./Quintal,166.21,Metric Tonnes,12-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,3724.28,6516.27,4815.79,Rs./Quintal,219.33,Metric Tonnes,11-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5949.9,5950,5949.95,Rs./Quintal,61.05,Metric Tonnes,11-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,9501,9501,9501,Rs./Quintal,30,Metric Tonnes,10-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6004.8,6004.8,6004.8,Rs./Quintal,68,Metric Tonnes,10-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2719,2719,2719,Rs./Quintal,31.14,Metric Tonnes,07-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5846.5,6964.29,6312.01,Rs./Quintal,83.77,Metric Tonnes,07-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,7201,7201,7201,Rs./Quintal,36.35,Metric Tonnes,06-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6476,9501,7988.5,Rs./Quintal,60,Metric Tonnes,06-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,9129.34,4037.11,Rs./Quintal,58.82,Metric Tonnes,06-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5008.77,5008.77,5008.77,Rs./Quintal,42,Metric Tonnes,04-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7544.76,8098.33,7845.28,Rs./Quintal,32.32,Metric Tonnes,02-07-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3500,8350,5236.64,Rs./Quintal,485.11,Metric Tonnes,30-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8700,6529.19,Rs./Quintal,129.76,Metric Tonnes,30-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,6000,7911,6955.34,Rs./Quintal,70.03,Metric Tonnes,30-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5450,5450,5450,Rs./Quintal,30,Metric Tonnes,29-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,11300,6837.05,Rs./Quintal,182.21,Metric Tonnes,29-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,13850,7647.44,Rs./Quintal,116.5,Metric Tonnes,28-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6001,7928.24,7799.71,Rs./Quintal,29.99,Metric Tonnes,27-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,9500,5952.96,Rs./Quintal,348.36,Metric Tonnes,27-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5595,5595,5595,Rs./Quintal,40.59,Metric Tonnes,26-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,25.01,Metric Tonnes,26-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3159,3159,3159,Rs./Quintal,36,Metric Tonnes,24-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4563.19,5128.78,4887.86,Rs./Quintal,60,Metric Tonnes,23-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,40.88,Metric Tonnes,22-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8801,6831.03,Rs./Quintal,130.86,Metric Tonnes,22-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4550,4694.79,4616.83,Rs./Quintal,65.02,Metric Tonnes,21-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,14.85,Metric Tonnes,21-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,7810.13,7810.13,7810.13,Rs./Quintal,35.01,Metric Tonnes,19-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6419.58,8584.42,7382.44,Rs./Quintal,13.49,Metric Tonnes,18-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,13.17,Metric Tonnes,17-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4012.97,8371.62,5271.22,Rs./Quintal,271.85,Metric Tonnes,16-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3355,4050,3739.44,Rs./Quintal,247.39,Metric Tonnes,16-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona St.,FAQ,4288.67,4288.67,4288.67,Rs./Quintal,34.8,Metric Tonnes,16-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,8598.4,8598.4,8598.4,Rs./Quintal,3.51,Metric Tonnes,15-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,33.93,Metric Tonnes,15-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4506.52,14150,8854.47,Rs./Quintal,108.19,Metric Tonnes,15-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,7711,7711,7711,Rs./Quintal,35.01,Metric Tonnes,14-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2664,2664,2664,Rs./Quintal,30.01,Metric Tonnes,14-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3350,9034.55,7051.21,Rs./Quintal,412.64,Metric Tonnes,14-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3164,3164,3164,Rs./Quintal,36.5,Metric Tonnes,13-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4750,4750,4750,Rs./Quintal,30,Metric Tonnes,12-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,15.92,Metric Tonnes,12-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4450,12336.4,5541.66,Rs./Quintal,52.55,Metric Tonnes,11-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,31.78,Metric Tonnes,11-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3817.5,7840,5541.43,Rs./Quintal,52.5,Metric Tonnes,10-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4200,8183.68,6440.95,Rs./Quintal,214.31,Metric Tonnes,10-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,93.93,Metric Tonnes,09-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8800,6515.58,Rs./Quintal,71.69,Metric Tonnes,09-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4550,4750,4703.89,Rs./Quintal,65.06,Metric Tonnes,08-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5971.8,8028.89,7532.83,Rs./Quintal,35.58,Metric Tonnes,08-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3520.4,3520.4,3520.4,Rs./Quintal,30,Metric Tonnes,07-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,11300,6640.71,Rs./Quintal,265.8,Metric Tonnes,07-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,6780.65,6780.65,6780.65,Rs./Quintal,24.54,Metric Tonnes,05-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,6.35,Metric Tonnes,04-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,5303.41,6396.61,5888.87,Rs./Quintal,63.3,Metric Tonnes,03-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6641.07,6641.07,6641.07,Rs./Quintal,42,Metric Tonnes,03-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8921.6,5992.92,Rs./Quintal,14.57,Metric Tonnes,03-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3980.63,3980.63,3980.63,Rs./Quintal,40.26,Metric Tonnes,02-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,4800.39,4097.43,Rs./Quintal,13.23,Metric Tonnes,02-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3470.83,3470.83,3470.83,Rs./Quintal,36,Metric Tonnes,01-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2650,2650,2650,Rs./Quintal,4.58,Metric Tonnes,01-06-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3270,5500,4698.48,Rs./Quintal,249.24,Metric Tonnes,31-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4097.03,8825,5710.83,Rs./Quintal,353.32,Metric Tonnes,30-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4161.84,8869,5547.33,Rs./Quintal,281.19,Metric Tonnes,30-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5199,6398.83,5502.27,Rs./Quintal,107.89,Metric Tonnes,29-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4530,11300,6617.75,Rs./Quintal,129.06,Metric Tonnes,29-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw New,FAQ,4334.98,4334.98,4334.98,Rs./Quintal,18,Metric Tonnes,28-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4304.73,4304.73,4304.73,Rs./Quintal,19.01,Metric Tonnes,27-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3545.34,4150.3,3830.39,Rs./Quintal,297.11,Metric Tonnes,27-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,6200,6200,6200,Rs./Quintal,35.01,Metric Tonnes,27-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,3888,5761.31,5124.02,Rs./Quintal,108.34,Metric Tonnes,26-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4499.99,10518.78,6050.63,Rs./Quintal,92.2,Metric Tonnes,26-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4705,12316.43,7626.43,Rs./Quintal,199.38,Metric Tonnes,26-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,4950,3678.06,Rs./Quintal,65.4,Metric Tonnes,25-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5001,7222.03,5954.84,Rs./Quintal,66.64,Metric Tonnes,25-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4888,4888,4888,Rs./Quintal,35.01,Metric Tonnes,24-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5133.21,5133.21,5133.21,Rs./Quintal,15.54,Metric Tonnes,24-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4745,9041.98,7520.19,Rs./Quintal,45.01,Metric Tonnes,23-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4200,9500,7074.86,Rs./Quintal,548.64,Metric Tonnes,22-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4081.02,4081.02,4081.02,Rs./Quintal,35.01,Metric Tonnes,20-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3607.5,3607.5,3607.5,Rs./Quintal,33,Metric Tonnes,19-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5651,14500,9339.19,Rs./Quintal,60.03,Metric Tonnes,19-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,4999.99,3506.95,Rs./Quintal,336.67,Metric Tonnes,18-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,BT Sona,FAQ,8867,8867,8867,Rs./Quintal,15,Metric Tonnes,17-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3500.6,4550,4026.73,Rs./Quintal,69.79,Metric Tonnes,17-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw New,FAQ,3990.15,3990.15,3990.15,Rs./Quintal,30,Metric Tonnes,17-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4822.69,5972.51,5484.98,Rs./Quintal,133.68,Metric Tonnes,16-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4550,4950,4750.01,Rs./Quintal,60,Metric Tonnes,15-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4705,7578.1,5812.28,Rs./Quintal,175.6,Metric Tonnes,15-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3357.2,5822.11,4553.74,Rs./Quintal,17.04,Metric Tonnes,14-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3163.81,8026.27,5987.36,Rs./Quintal,40.25,Metric Tonnes,13-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4233.87,8598.4,7158.7,Rs./Quintal,21.41,Metric Tonnes,13-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,32.67,Metric Tonnes,12-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4928.99,4928.99,4928.99,Rs./Quintal,34.5,Metric Tonnes,12-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,9050,9050,9050,Rs./Quintal,30,Metric Tonnes,10-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,25.69,Metric Tonnes,09-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,6019.32,4627.94,Rs./Quintal,65.86,Metric Tonnes,08-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,6815.63,4642.63,Rs./Quintal,107.87,Metric Tonnes,06-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,19.28,Metric Tonnes,05-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3928.26,3928.26,3928.26,Rs./Quintal,35.2,Metric Tonnes,04-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,39.08,Metric Tonnes,03-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,25.1,Metric Tonnes,02-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2913.3,7040,4878.6,Rs./Quintal,229.06,Metric Tonnes,01-05-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4442.32,5728.61,5050.79,Rs./Quintal,216.6,Metric Tonnes,30-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4520,8900,6827.15,Rs./Quintal,204.95,Metric Tonnes,30-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona Raw New,FAQ,3990.15,3990.15,3990.15,Rs./Quintal,30,Metric Tonnes,30-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5108,5400,5233.17,Rs./Quintal,69.99,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3421.87,7625,5089.56,Rs./Quintal,688.44,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3700,8924,6151.19,Rs./Quintal,822.33,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,8272,9070,8697.54,Rs./Quintal,75.01,Metric Tonnes,29-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4775,8350,5480.43,Rs./Quintal,220.09,Metric Tonnes,28-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,11300,5632.44,Rs./Quintal,285.97,Metric Tonnes,27-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3107.32,8299.88,5543.36,Rs./Quintal,178.57,Metric Tonnes,26-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3602.88,14100,6373.43,Rs./Quintal,526.06,Metric Tonnes,25-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8551,8551,8551,Rs./Quintal,35.01,Metric Tonnes,24-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,33,Metric Tonnes,24-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,30.88,Metric Tonnes,23-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4545,8551,7602.64,Rs./Quintal,114.03,Metric Tonnes,22-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4550,8551,5935.56,Rs./Quintal,71.22,Metric Tonnes,20-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3503.99,7000.24,5505.68,Rs./Quintal,175.02,Metric Tonnes,20-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,3.78,Metric Tonnes,19-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Broken Rice,FAQ,3650,3650,3650,Rs./Quintal,9,Metric Tonnes,18-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4050,6026.06,4836.32,Rs./Quintal,114.18,Metric Tonnes,18-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8730,5923.44,Rs./Quintal,109.89,Metric Tonnes,18-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,BT Sona,FAQ,8374.38,8374.38,8374.38,Rs./Quintal,11.85,Metric Tonnes,16-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,5461.44,5461.44,5461.44,Rs./Quintal,14.94,Metric Tonnes,16-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Sona St.,FAQ,3990.15,3990.15,3990.15,Rs./Quintal,15,Metric Tonnes,16-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4722.88,6166,5318.71,Rs./Quintal,211.08,Metric Tonnes,15-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,4950,2781.1,Rs./Quintal,130.02,Metric Tonnes,15-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,11300,6875.99,Rs./Quintal,659.27,Metric Tonnes,15-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6200,6200,6200,Rs./Quintal,30,Metric Tonnes,14-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4916,7711,5933.53,Rs./Quintal,164.79,Metric Tonnes,13-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3000,5811.4,4016.46,Rs./Quintal,525.88,Metric Tonnes,13-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Mataa Parboiled,FAQ,6614,6614,6614,Rs./Quintal,35.01,Metric Tonnes,13-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,30.11,Metric Tonnes,13-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,48.88,Metric Tonnes,12-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3600,3600,3600,Rs./Quintal,2.2,Metric Tonnes,11-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7785.07,8439,8191.11,Rs./Quintal,138.06,Metric Tonnes,10-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,09-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5840,6400,6047,Rs./Quintal,27.27,Metric Tonnes,08-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,5924.2,3792.35,Rs./Quintal,110.1,Metric Tonnes,08-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,White Parboiled,FAQ,5750,5750,5750,Rs./Quintal,9,Metric Tonnes,08-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4550,8521,6688.51,Rs./Quintal,65.01,Metric Tonnes,07-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3147.11,3147.11,3147.11,Rs./Quintal,38.1,Metric Tonnes,05-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,41.16,Metric Tonnes,04-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,11718,11718,11718,Rs./Quintal,0.08,Metric Tonnes,03-04-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4980.93,5358.59,5073.15,Rs./Quintal,97.54,Metric Tonnes,31-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4596.69,6094.86,5177.82,Rs./Quintal,125.51,Metric Tonnes,30-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,4000,7625,6096.72,Rs./Quintal,230.59,Metric Tonnes,30-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,12000,12000,12000,Rs./Quintal,15,Metric Tonnes,30-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4300,4425,4362.06,Rs./Quintal,59.58,Metric Tonnes,29-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,5840,7050,6548.76,Rs./Quintal,27.52,Metric Tonnes,28-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,6055.45,4605.05,Rs./Quintal,169.09,Metric Tonnes,28-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3262.71,8128.04,4711.31,Rs./Quintal,383.18,Metric Tonnes,27-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3920.78,11000,7912.07,Rs./Quintal,275.76,Metric Tonnes,27-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3402.72,11000,6136.3,Rs./Quintal,445.44,Metric Tonnes,25-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7829.29,8420.14,7884.25,Rs./Quintal,30.1,Metric Tonnes,23-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,6171,6171,6171,Rs./Quintal,30,Metric Tonnes,22-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3402.72,11000,6359.37,Rs./Quintal,235.79,Metric Tonnes,21-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3869.23,7905.5,4715.95,Rs./Quintal,93.19,Metric Tonnes,20-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3707.25,8521,6114.13,Rs./Quintal,70.02,Metric Tonnes,18-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7840,7840,7840,Rs./Quintal,2.5,Metric Tonnes,18-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3940.89,3940.89,3940.89,Rs./Quintal,25.02,Metric Tonnes,17-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,7251.39,7251.39,7251.39,Rs./Quintal,6,Metric Tonnes,17-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2600,2600,2600,Rs./Quintal,69.24,Metric Tonnes,16-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,8641.3,5532.67,Rs./Quintal,10.3,Metric Tonnes,16-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3310,3310,3310,Rs./Quintal,0.52,Metric Tonnes,15-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5031.13,5031.13,5031.13,Rs./Quintal,34.34,Metric Tonnes,15-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4292.55,5477.73,5097.26,Rs./Quintal,136.34,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4613,7651,6033.13,Rs./Quintal,75.11,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,5269.42,5269.42,5269.42,Rs./Quintal,30,Metric Tonnes,14-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3300,3300,3300,Rs./Quintal,1.3,Metric Tonnes,13-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3477.66,7001,6056.22,Rs./Quintal,105.21,Metric Tonnes,10-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4875,8001,5952.12,Rs./Quintal,140.36,Metric Tonnes,10-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4100,6443,4890.98,Rs./Quintal,53.23,Metric Tonnes,09-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,8251,8251,8251,Rs./Quintal,70.02,Metric Tonnes,08-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,2600,2600,Rs./Quintal,42.59,Metric Tonnes,07-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3451,8251,4613.37,Rs./Quintal,186.56,Metric Tonnes,06-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3574.25,14500,6623.38,Rs./Quintal,271.38,Metric Tonnes,02-03-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,4828,5054,4858.1,Rs./Quintal,34.99,Metric Tonnes,28-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2911,6569.2,3878.89,Rs./Quintal,35.16,Metric Tonnes,28-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,10908.7,5678.48,Rs./Quintal,499.62,Metric Tonnes,28-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3748.54,7959.16,4883.51,Rs./Quintal,633.16,Metric Tonnes,27-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,2600,11000,7098.77,Rs./Quintal,222.57,Metric Tonnes,27-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,5091.08,5323.89,5185.63,Rs./Quintal,48.9,Metric Tonnes,26-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Basmati Dawat,FAQ,4834.99,7164.67,5563.1,Rs./Quintal,157.28,Metric Tonnes,25-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3809.53,5829.85,4189.74,Rs./Quintal,23.19,Metric Tonnes,25-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4683.79,8572.91,6744.96,Rs./Quintal,72.46,Metric Tonnes,25-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,7651,7651,7651,Rs./Quintal,35.01,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,6185.2,6185.2,6185.2,Rs./Quintal,30.12,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,4408.38,8001,6054.16,Rs./Quintal,252.51,Metric Tonnes,24-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Boiled Rice,FAQ,3901,4570,4259.86,Rs./Quintal,71.14,Metric Tonnes,23-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,2606,6693.43,4715.7,Rs./Quintal,67.83,Metric Tonnes,23-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Other,FAQ,3308.58,6563.5,5836.77,Rs./Quintal,44.95,Metric Tonnes,23-02-2026
+Uttar Pradesh,Lucknow,Lucknow APMC,Cereals,Rice,Common,FAQ,3540.38,4421,3894,Rs./Quintal,529.26,Metric Tonnes,22-02-2026

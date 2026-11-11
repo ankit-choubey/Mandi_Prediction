@@ -1,0 +1,783 @@
+State,District,Market,Commodity_Group,Commodity,Variety,Grade,Min_Price,Max_Price,Modal_Price,Price_Unit,Arrivals_Tonnes,Arrival_Unit,Arrival_Date
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2660,2660,2660,Rs./Quintal,27.1,Metric Tonnes,09-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2650,2660,2657.48,Rs./Quintal,25.88,Metric Tonnes,08-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2650,2650,2650,Rs./Quintal,19.24,Metric Tonnes,05-10-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,MP Sharbati,FAQ,3314,3314,3314,Rs./Quintal,21.9,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2810,2815,2812.46,Rs./Quintal,13.9,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2735,2740,2737.48,Rs./Quintal,14.2,Metric Tonnes,26-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2710,2725,2717.42,Rs./Quintal,14.26,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2681,2654.46,Rs./Quintal,6.35,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,3.4,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2650,2630.17,Rs./Quintal,6.3,Metric Tonnes,23-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2710,2715,2712.5,Rs./Quintal,14.5,Metric Tonnes,18-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2820,2820,2820,Rs./Quintal,13.8,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2810,2820,2816.43,Rs./Quintal,15.48,Metric Tonnes,12-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2810,2810,2810,Rs./Quintal,6.95,Metric Tonnes,10-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,3,Metric Tonnes,09-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2750,2750,2750,Rs./Quintal,7.05,Metric Tonnes,07-09-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,7.7,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2620,2606.32,Rs./Quintal,19.85,Metric Tonnes,29-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2740,2740,2740,Rs./Quintal,14.31,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2740,2750,2744.93,Rs./Quintal,14.3,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,4086,4086,4086,Rs./Quintal,0.22,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2740,2750,2744.96,Rs./Quintal,14.21,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2750,2760,2753.36,Rs./Quintal,21.29,Metric Tonnes,20-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2620,2650,2635.41,Rs./Quintal,1.85,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2750,2750,2750,Rs./Quintal,14.41,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2750,2750,2750,Rs./Quintal,7.13,Metric Tonnes,12-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2590,2590,2590,Rs./Quintal,18.2,Metric Tonnes,06-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,3.9,Metric Tonnes,03-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2590,2690,2603.8,Rs./Quintal,13.7,Metric Tonnes,03-08-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2700,2705,2701.25,Rs./Quintal,28.97,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2700,2700,2700,Rs./Quintal,21.5,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2705,2622.76,Rs./Quintal,73.6,Metric Tonnes,28-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2710,2620.39,Rs./Quintal,81.16,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,20,Metric Tonnes,26-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Rajasthan Line,FAQ,3000,3040,3018.67,Rs./Quintal,45,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2700,2710,2706.62,Rs./Quintal,21.46,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2710,2710,2710,Rs./Quintal,24.41,Metric Tonnes,23-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2615,2710,2688.38,Rs./Quintal,34.85,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2710,2710,2710,Rs./Quintal,21.47,Metric Tonnes,21-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2685,2685,2685,Rs./Quintal,21.65,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,25.37,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium Fine,FAQ,2600,2600,2600,Rs./Quintal,1,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,24.94,Metric Tonnes,19-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2710,2715,2713.9,Rs./Quintal,32.96,Metric Tonnes,18-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,24.8,Metric Tonnes,18-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,25.24,Metric Tonnes,17-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,24.43,Metric Tonnes,16-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2592,2590.99,Rs./Quintal,12.37,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2610,2610,2610,Rs./Quintal,19.35,Metric Tonnes,04-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,4,Metric Tonnes,01-07-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,74.1,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2650,2599.97,Rs./Quintal,37.9,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2605,2610,2609.34,Rs./Quintal,54.9,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2591.47,Rs./Quintal,82.66,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,74.59,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2599.38,Rs./Quintal,48.5,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,11.8,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,58.74,Metric Tonnes,28-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2591,2750,2655.2,Rs./Quintal,22.12,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,56.55,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2591,2900,2718.91,Rs./Quintal,60.26,Metric Tonnes,26-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2600,2599.26,Rs./Quintal,53.71,Metric Tonnes,26-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2630,2605.65,Rs./Quintal,47.91,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2600,2598.58,Rs./Quintal,27.37,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2600,2592.33,Rs./Quintal,55.78,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.05,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,0.6,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,14.94,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.15,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2600,2593.61,Rs./Quintal,23.19,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.85,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,2.45,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,7.96,Metric Tonnes,21-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.59,Metric Tonnes,21-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,8.04,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.04,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2600,2610,2606.69,Rs./Quintal,22.87,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2590.58,Rs./Quintal,41.15,Metric Tonnes,19-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.55,Metric Tonnes,19-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2600,2610,2606,Rs./Quintal,18,Metric Tonnes,19-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2590.56,Rs./Quintal,43.68,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.8,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,12.5,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2590.65,Rs./Quintal,37.37,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.55,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,30,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2590.24,Rs./Quintal,65.38,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.12,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2592,2591.04,Rs./Quintal,11.27,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.4,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,7.7,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.06,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,19.83,Metric Tonnes,13-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.52,Metric Tonnes,13-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,14.53,Metric Tonnes,12-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2592,2591.02,Rs./Quintal,13.42,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,8.78,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,78.37,Metric Tonnes,09-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,16.81,Metric Tonnes,06-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,16.38,Metric Tonnes,05-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,13.14,Metric Tonnes,04-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,13.41,Metric Tonnes,03-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,18.04,Metric Tonnes,02-06-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Local,FAQ,2599,2611,2605.64,Rs./Quintal,76.84,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,56.6,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,35.54,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2598.17,Rs./Quintal,73.4,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,66.5,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,26.53,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,22.15,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,27.1,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,49.83,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,137.24,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,17.42,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2626,2626,2626,Rs./Quintal,2.11,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2602,2700,2632.98,Rs./Quintal,4.4,Metric Tonnes,24-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,13.25,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2631,2631,2631,Rs./Quintal,2.29,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2625,2625,2625,Rs./Quintal,2.94,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,9.88,Metric Tonnes,21-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,10.3,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.34,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,17.1,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.6,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.01,Metric Tonnes,17-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,3,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.51,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,13.23,Metric Tonnes,15-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.69,Metric Tonnes,15-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.77,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.33,Metric Tonnes,13-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,17.06,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.78,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2614,2614,2614,Rs./Quintal,3.26,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,27.24,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.09,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.55,Metric Tonnes,10-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.99,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2610,2605.2,Rs./Quintal,22.55,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,25.84,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.5,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.11,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.2,Metric Tonnes,05-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.83,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2605,2610,2607.53,Rs./Quintal,14.8,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,1,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2605,2605,2605,Rs./Quintal,2,Metric Tonnes,03-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.5,Metric Tonnes,03-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2615,2603.55,Rs./Quintal,5.5,Metric Tonnes,03-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.19,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,3.88,Metric Tonnes,01-05-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2620,2591.07,Rs./Quintal,57.99,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,4.54,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2597.93,Rs./Quintal,133.9,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Local,FAQ,2600,2600,2600,Rs./Quintal,16.8,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2593,2590.22,Rs./Quintal,58.51,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,7.38,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2599.35,Rs./Quintal,30.6,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2590,2600,2592.4,Rs./Quintal,150.11,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,7.57,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2598.88,Rs./Quintal,91.66,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,8.01,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2595.32,Rs./Quintal,26.7,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2615,2615,2615,Rs./Quintal,3.29,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,7.81,Metric Tonnes,26-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2605,2601.09,Rs./Quintal,36.7,Metric Tonnes,26-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.5,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,7.21,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,19.81,Metric Tonnes,23-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,3.69,Metric Tonnes,23-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,37.26,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2610,2596.76,Rs./Quintal,87.2,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,29.19,Metric Tonnes,21-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,3.42,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,3.27,Metric Tonnes,18-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,0.9,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,1.44,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2620,2606.4,Rs./Quintal,2.5,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,2.74,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2640,2650,2644.86,Rs./Quintal,1.85,Metric Tonnes,12-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,18.4,Metric Tonnes,12-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,11-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2592.63,Rs./Quintal,7.6,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,5.25,Metric Tonnes,08-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2595,2591.48,Rs./Quintal,38.59,Metric Tonnes,06-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2593.9,Rs./Quintal,15.9,Metric Tonnes,05-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,4.2,Metric Tonnes,04-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2600,2594.14,Rs./Quintal,11.6,Metric Tonnes,03-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,0.95,Metric Tonnes,03-04-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2605,2597.65,Rs./Quintal,1.7,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2650,2650,2650,Rs./Quintal,0.9,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,13.4,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2600,2599.05,Rs./Quintal,4.2,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,10.7,Metric Tonnes,29-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,31.7,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,11.7,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2600,2605,2602.98,Rs./Quintal,13.82,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,1.5,Metric Tonnes,26-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,34.37,Metric Tonnes,24-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2615,2615,2615,Rs./Quintal,7.34,Metric Tonnes,23-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2650,2650,2650,Rs./Quintal,7.38,Metric Tonnes,23-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,50.34,Metric Tonnes,21-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2640,2615.89,Rs./Quintal,11.59,Metric Tonnes,21-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,41.81,Metric Tonnes,20-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,5.5,Metric Tonnes,19-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,34.9,Metric Tonnes,18-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,12.8,Metric Tonnes,16-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,2600,2800,2740.3,Rs./Quintal,306.41,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,2.2,Metric Tonnes,14-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2.1,Metric Tonnes,09-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,1,Metric Tonnes,09-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,0.5,Metric Tonnes,07-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Medium,FAQ,2590,2590,2590,Rs./Quintal,3,Metric Tonnes,02-03-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,34.9,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Deshi,FAQ,3000,3000,3000,Rs./Quintal,4,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,5.5,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,41.79,Metric Tonnes,26-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,61.51,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2600,2580,Rs./Quintal,8,Metric Tonnes,09-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2600,2580,Rs./Quintal,6,Metric Tonnes,08-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2610,2580,Rs./Quintal,10,Metric Tonnes,07-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2610,2580,Rs./Quintal,15,Metric Tonnes,05-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2610,2580,Rs./Quintal,26,Metric Tonnes,03-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,31,Metric Tonnes,01-01-2026
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,29,Metric Tonnes,31-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,30,Metric Tonnes,29-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,28,Metric Tonnes,28-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,18.5,Metric Tonnes,26-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,18,Metric Tonnes,25-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,25,Metric Tonnes,24-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,20,Metric Tonnes,22-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,21,Metric Tonnes,21-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,17,Metric Tonnes,20-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2615,2590,Rs./Quintal,18,Metric Tonnes,19-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,19,Metric Tonnes,18-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2600,2580,Rs./Quintal,20,Metric Tonnes,17-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,16,Metric Tonnes,15-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,11,Metric Tonnes,14-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,21,Metric Tonnes,12-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,16,Metric Tonnes,11-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,15,Metric Tonnes,10-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2600,2580,Rs./Quintal,13,Metric Tonnes,08-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2620,2600,Rs./Quintal,12,Metric Tonnes,07-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2620,2600,Rs./Quintal,10,Metric Tonnes,06-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2620,2600,Rs./Quintal,14,Metric Tonnes,05-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2620,2600,Rs./Quintal,16,Metric Tonnes,04-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2600,2590,Rs./Quintal,15,Metric Tonnes,03-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2615,2590,Rs./Quintal,15,Metric Tonnes,01-12-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2560,2615,2590,Rs./Quintal,13,Metric Tonnes,30-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2610,2590,Rs./Quintal,20,Metric Tonnes,29-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2615,2590,Rs./Quintal,30,Metric Tonnes,28-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,30,Metric Tonnes,27-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2570,2610,2590,Rs./Quintal,20,Metric Tonnes,26-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2620,2580,Rs./Quintal,20,Metric Tonnes,24-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2620,2580,Rs./Quintal,10,Metric Tonnes,23-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2620,2580,Rs./Quintal,1,Metric Tonnes,22-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2550,2590,2570,Rs./Quintal,1.2,Metric Tonnes,21-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2530,2610,2570,Rs./Quintal,13,Metric Tonnes,20-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2510,2590,2550,Rs./Quintal,13,Metric Tonnes,19-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2520,2610,2550,Rs./Quintal,12,Metric Tonnes,17-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2510,2620,2590,Rs./Quintal,1106,Metric Tonnes,12-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2640,2600,Rs./Quintal,807,Metric Tonnes,11-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2580,2640,2600,Rs./Quintal,1007,Metric Tonnes,10-11-2025
+Uttar Pradesh,Ghaziabad,Ghaziabad APMC,Cereals,Wheat,Dara,FAQ,2600,2650,2620,Rs./Quintal,1204,Metric Tonnes,09-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,25,Metric Tonnes,26-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2620,2620,2620,Rs./Quintal,2.2,Metric Tonnes,26-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10.5,Metric Tonnes,22-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,21-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2620,2620,2620,Rs./Quintal,2.5,Metric Tonnes,21-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,11,Metric Tonnes,20-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2800,2800,2800,Rs./Quintal,1.1,Metric Tonnes,19-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,9.5,Metric Tonnes,18-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,11,Metric Tonnes,17-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,3,Metric Tonnes,17-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,16-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,15-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,14-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,11,Metric Tonnes,13-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,13-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,12-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2610,2603.1,Rs./Quintal,5.8,Metric Tonnes,12-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,20,Metric Tonnes,11-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,09-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,4.5,Metric Tonnes,08-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,07-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,3,Metric Tonnes,06-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,05-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,05-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,04-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,6,Metric Tonnes,03-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,0.8,Metric Tonnes,02-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2609,2609,2609,Rs./Quintal,0.69,Metric Tonnes,02-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2618,2625,2620.33,Rs./Quintal,1.11,Metric Tonnes,01-10-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,0.75,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2608,2656,2619.45,Rs./Quintal,1.51,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,2,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2650,2650,2650,Rs./Quintal,2,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,19,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,26.92,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2620,2620,2620,Rs./Quintal,2,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2605,2605,2605,Rs./Quintal,6,Metric Tonnes,29-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,8,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2600,2600,2600,Rs./Quintal,50,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,2.5,Metric Tonnes,28-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,8,Metric Tonnes,27-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2610,2603.33,Rs./Quintal,15,Metric Tonnes,26-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2650,2650,2650,Rs./Quintal,2,Metric Tonnes,26-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2750,2750,2750,Rs./Quintal,2.5,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,20,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2605,2603.93,Rs./Quintal,7,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2650,2603.52,Rs./Quintal,107.06,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,23-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,4700,2876.79,Rs./Quintal,33.23,Metric Tonnes,23-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2700,2700,2700,Rs./Quintal,1.4,Metric Tonnes,22-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,4490,4490,4490,Rs./Quintal,47.98,Metric Tonnes,22-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2930,2877.38,Rs./Quintal,42,Metric Tonnes,21-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,3,Metric Tonnes,21-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,1.5,Metric Tonnes,18-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,6,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,4.5,Metric Tonnes,17-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2700,2700,2700,Rs./Quintal,1,Metric Tonnes,16-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,1,Metric Tonnes,15-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2650,2650,2650,Rs./Quintal,2,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,6,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.5,Metric Tonnes,12-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,1.5,Metric Tonnes,12-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,7,Metric Tonnes,11-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,10-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,6,Metric Tonnes,03-09-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,19.68,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2750,2750,2750,Rs./Quintal,5,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2610,2610,2610,Rs./Quintal,5.05,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,81.69,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,19.93,Metric Tonnes,30-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2610,2620,2614.88,Rs./Quintal,12.87,Metric Tonnes,30-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,321.28,Metric Tonnes,29-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2750,2750,2750,Rs./Quintal,5,Metric Tonnes,29-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2610,2615,2611.79,Rs./Quintal,16.6,Metric Tonnes,29-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,53,Metric Tonnes,29-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2640,2600.86,Rs./Quintal,46.48,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2720,2720,2720,Rs./Quintal,5,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,116,Metric Tonnes,27-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2650,2606.75,Rs./Quintal,37.36,Metric Tonnes,26-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2650,2650,2650,Rs./Quintal,3,Metric Tonnes,26-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,22.32,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,185.55,Metric Tonnes,25-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,294.77,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,89.42,Metric Tonnes,24-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2625,2625,2625,Rs./Quintal,1.3,Metric Tonnes,23-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,22.86,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,76.9,Metric Tonnes,22-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,100.13,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2576.76,Rs./Quintal,63.17,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2600,2600,2600,Rs./Quintal,6.1,Metric Tonnes,21-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,425.4,Metric Tonnes,20-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2560,2560,2560,Rs./Quintal,40,Metric Tonnes,20-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2557.04,Rs./Quintal,140.35,Metric Tonnes,20-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,7.65,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2650,2613.88,Rs./Quintal,39.04,Metric Tonnes,19-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2610,2550.22,Rs./Quintal,354.73,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Kalyan,FAQ,2575,2575,2575,Rs./Quintal,6.85,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2560,2600,2568.76,Rs./Quintal,112.86,Metric Tonnes,18-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2650,2565.91,Rs./Quintal,40.85,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2565,2556.63,Rs./Quintal,25.4,Metric Tonnes,17-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2740,2740,2740,Rs./Quintal,16,Metric Tonnes,16-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,7,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2600,2593.09,Rs./Quintal,21.7,Metric Tonnes,14-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2600,2593.51,Rs./Quintal,35.3,Metric Tonnes,13-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2560,2560,2560,Rs./Quintal,3,Metric Tonnes,13-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2600,2595.46,Rs./Quintal,66.7,Metric Tonnes,12-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,101.1,Metric Tonnes,11-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2600,2598.56,Rs./Quintal,50,Metric Tonnes,10-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2650,2650,2650,Rs./Quintal,3.5,Metric Tonnes,09-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2600,2592.44,Rs./Quintal,60,Metric Tonnes,08-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2660,2611.1,Rs./Quintal,20.95,Metric Tonnes,07-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2610,2591.51,Rs./Quintal,74,Metric Tonnes,07-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2610,2589.9,Rs./Quintal,128.2,Metric Tonnes,06-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,324.69,Metric Tonnes,05-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2555,2575,2564.35,Rs./Quintal,52.9,Metric Tonnes,05-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,54.19,Metric Tonnes,04-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,0.22,Metric Tonnes,04-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2555,2555,2555,Rs./Quintal,5.5,Metric Tonnes,04-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,162.82,Metric Tonnes,03-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2560,2550.14,Rs./Quintal,277.57,Metric Tonnes,02-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,7.84,Metric Tonnes,01-08-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,28.5,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,50,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,103,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,1.6,Metric Tonnes,30-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,79.5,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,0.48,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2580,2550.28,Rs./Quintal,85,Metric Tonnes,28-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,7.84,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,6.4,Metric Tonnes,27-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,16.5,Metric Tonnes,26-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,21.34,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,0.98,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,5.2,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2590,2555.96,Rs./Quintal,9.4,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,8,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2553.85,Rs./Quintal,13,Metric Tonnes,23-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,12,Metric Tonnes,22-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,14.5,Metric Tonnes,21-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,9.5,Metric Tonnes,21-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2560,2550.91,Rs./Quintal,14.3,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,11,Metric Tonnes,20-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,7.7,Metric Tonnes,17-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,9,Metric Tonnes,16-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,3.8,Metric Tonnes,15-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,11.5,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,8.5,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,14.5,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2560,2560,2560,Rs./Quintal,3,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,31,Metric Tonnes,13-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,0.36,Metric Tonnes,09-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2555,2555,2555,Rs./Quintal,6.5,Metric Tonnes,09-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,23,Metric Tonnes,08-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3,Metric Tonnes,08-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,2.8,Metric Tonnes,03-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,8.26,Metric Tonnes,01-07-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,81.05,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,12.89,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2560.26,Rs./Quintal,34.23,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2555,2555,2555,Rs./Quintal,3,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,46,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,11.6,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,105.4,Metric Tonnes,29-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2560,2560,2560,Rs./Quintal,1,Metric Tonnes,28-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,5,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2560,2560,2560,Rs./Quintal,3,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,10,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2560.82,Rs./Quintal,46.6,Metric Tonnes,27-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,53.3,Metric Tonnes,26-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,15.5,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,106.58,Metric Tonnes,25-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2570,2570,2570,Rs./Quintal,5,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2561.21,Rs./Quintal,44.86,Metric Tonnes,24-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,27.99,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2565,2558.18,Rs./Quintal,168.43,Metric Tonnes,23-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,8.2,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,116.7,Metric Tonnes,22-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,9.5,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2575,2575,2575,Rs./Quintal,2,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,98.3,Metric Tonnes,20-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,7,Metric Tonnes,19-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2556.65,Rs./Quintal,20.05,Metric Tonnes,19-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,5.5,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,55.3,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,93.06,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2570,2570,2570,Rs./Quintal,2.57,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2557.05,Rs./Quintal,134.56,Metric Tonnes,17-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,18,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2570,2570,2570,Rs./Quintal,5.76,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,0.96,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,173.25,Metric Tonnes,16-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,89.25,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2560,2570,2563.78,Rs./Quintal,7.4,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2590,2590,2590,Rs./Quintal,1.18,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2558.37,Rs./Quintal,60.05,Metric Tonnes,15-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,176.47,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2570,2557.24,Rs./Quintal,140.19,Metric Tonnes,14-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2560,2560,2560,Rs./Quintal,5,Metric Tonnes,13-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,8,Metric Tonnes,12-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,7,Metric Tonnes,12-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,69.77,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,11,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,114.67,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2556,2570,2562.62,Rs./Quintal,17.05,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,19.66,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,45.3,Metric Tonnes,10-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2555,2572,2563.89,Rs./Quintal,40.38,Metric Tonnes,09-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,12,Metric Tonnes,09-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2575,2568.45,Rs./Quintal,26.73,Metric Tonnes,08-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2560,2580,2568.51,Rs./Quintal,45.6,Metric Tonnes,06-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2575,2575,2575,Rs./Quintal,2.58,Metric Tonnes,06-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,10.5,Metric Tonnes,06-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,5,Metric Tonnes,05-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2557,2555.25,Rs./Quintal,159.7,Metric Tonnes,05-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2575,2567,Rs./Quintal,7.81,Metric Tonnes,04-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2760,2595.58,Rs./Quintal,211.2,Metric Tonnes,04-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2552.89,Rs./Quintal,17.3,Metric Tonnes,03-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,14,Metric Tonnes,02-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,9,Metric Tonnes,01-06-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,39.99,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,50.3,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,48.7,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,80.55,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2590,2590,2590,Rs./Quintal,5.6,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2575,2575,2575,Rs./Quintal,2,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2554.93,Rs./Quintal,61.13,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2560,2552.42,Rs./Quintal,128.86,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Wheat-Organic,FAQ,2600,2600,2600,Rs./Quintal,11.2,Metric Tonnes,28-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,50.14,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2570,2570,2570,Rs./Quintal,2,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2551.12,Rs./Quintal,44.7,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,198.15,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,48,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2558,2550.18,Rs./Quintal,220.32,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,105.4,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,31.64,Metric Tonnes,24-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2565,2565,2565,Rs./Quintal,4,Metric Tonnes,24-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2560,2550.59,Rs./Quintal,89.02,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2570,2570,2570,Rs./Quintal,1.5,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2551.47,Rs./Quintal,34,Metric Tonnes,23-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2570,2551.79,Rs./Quintal,220.37,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,9,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,35.5,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2600,2551.03,Rs./Quintal,90.21,Metric Tonnes,21-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2550.73,Rs./Quintal,68.4,Metric Tonnes,21-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2600,2553.93,Rs./Quintal,31.81,Metric Tonnes,20-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2580,2565.07,Rs./Quintal,200.99,Metric Tonnes,20-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,139.78,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,1,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,97.3,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2570,2552.63,Rs./Quintal,143.08,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,22.03,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2550.45,Rs./Quintal,121.6,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Sharbati,FAQ,2650,2650,2650,Rs./Quintal,5,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,206.37,Metric Tonnes,17-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2555,2555,2555,Rs./Quintal,7.2,Metric Tonnes,17-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,130.89,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,20,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2622,2622,2622,Rs./Quintal,3.67,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,27.3,Metric Tonnes,16-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2590,2554.52,Rs./Quintal,97.71,Metric Tonnes,15-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,20.06,Metric Tonnes,15-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2560,2550.53,Rs./Quintal,94.83,Metric Tonnes,15-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2570,2553.43,Rs./Quintal,133.23,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,136.7,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,292.78,Metric Tonnes,13-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2550,2550,Rs./Quintal,49,Metric Tonnes,13-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,58.92,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2555.74,Rs./Quintal,88.06,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,138.96,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2550,2600,2553.13,Rs./Quintal,80.06,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-34,FAQ,2550,2550,2550,Rs./Quintal,15,Metric Tonnes,11-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2500,2500,Rs./Quintal,109.88,Metric Tonnes,10-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2587,2521.53,Rs./Quintal,58.79,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2600,2574.98,Rs./Quintal,202.6,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2510,2510,2510,Rs./Quintal,6.5,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2550,2504.31,Rs./Quintal,186.96,Metric Tonnes,09-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2510,2500.68,Rs./Quintal,117.24,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2580,2522.93,Rs./Quintal,135.28,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2600,2507.46,Rs./Quintal,156.1,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2500,2500,Rs./Quintal,63.9,Metric Tonnes,07-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2500,2500,Rs./Quintal,24,Metric Tonnes,07-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2500,2500,Rs./Quintal,20.18,Metric Tonnes,07-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2580,2511.36,Rs./Quintal,66.2,Metric Tonnes,07-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2540,2509.59,Rs./Quintal,109.39,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2510,2600,2555.81,Rs./Quintal,171.48,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2500,2500,Rs./Quintal,36,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2580,2502.73,Rs./Quintal,146.72,Metric Tonnes,05-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2540,2600,2581.24,Rs./Quintal,189.8,Metric Tonnes,05-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2582,2516.78,Rs./Quintal,96,Metric Tonnes,05-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2580,2505.62,Rs./Quintal,89.04,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2545,2610,2580.31,Rs./Quintal,184.2,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2500,2500,Rs./Quintal,1.8,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2510,2502.93,Rs./Quintal,52.3,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2540,2519.02,Rs./Quintal,68.26,Metric Tonnes,03-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2600,2569.53,Rs./Quintal,116.1,Metric Tonnes,03-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2510,2503.33,Rs./Quintal,15,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2600,2577.28,Rs./Quintal,159.3,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2500,2500,Rs./Quintal,35,Metric Tonnes,02-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2500,2500,Rs./Quintal,20.05,Metric Tonnes,01-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3,Metric Tonnes,01-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2583,2534.91,Rs./Quintal,77,Metric Tonnes,01-05-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2588,2505.14,Rs./Quintal,384.87,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2600,2557.68,Rs./Quintal,88.13,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2500,2500,2500,Rs./Quintal,13,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2585,2585,2585,Rs./Quintal,3,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2510,2500.39,Rs./Quintal,261.59,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2500,2500,Rs./Quintal,296.88,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2580,2605,2594.49,Rs./Quintal,25.7,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2500,2500,Rs./Quintal,56.35,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium Fine,FAQ,2500,2500,2500,Rs./Quintal,6.42,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2600,2514.52,Rs./Quintal,55.56,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2585,2500.79,Rs./Quintal,450.49,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2520,2600,2565.16,Rs./Quintal,103,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2650,2650,2650,Rs./Quintal,2.2,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2500,2500,Rs./Quintal,42.5,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2501,2500.01,Rs./Quintal,381.89,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2575,2564.09,Rs./Quintal,58.9,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2500,2500,Rs./Quintal,12.7,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2585,2520.35,Rs./Quintal,75.71,Metric Tonnes,27-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2588,2505.37,Rs./Quintal,259.28,Metric Tonnes,26-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2520,2520,2520,Rs./Quintal,15,Metric Tonnes,26-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2590,2505.05,Rs./Quintal,366.85,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,3.5,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2550,2503.16,Rs./Quintal,119.13,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2500,2500,Rs./Quintal,147.81,Metric Tonnes,24-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Kalyan,FAQ,2500,2500,2500,Rs./Quintal,5.82,Metric Tonnes,24-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2580,2514.12,Rs./Quintal,81.39,Metric Tonnes,24-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2578,2507.16,Rs./Quintal,187.83,Metric Tonnes,23-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2585,2585,2585,Rs./Quintal,3,Metric Tonnes,23-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2600,2511.35,Rs./Quintal,225.25,Metric Tonnes,23-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2900,2512.86,Rs./Quintal,245.43,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2550,2531.25,Rs./Quintal,8,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Deshi,FAQ,2550,2550,2550,Rs./Quintal,1.5,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2500,2500,Rs./Quintal,14.26,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2600,2511.21,Rs./Quintal,293.79,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,PBW-343,FAQ,2560,2560,2560,Rs./Quintal,1.2,Metric Tonnes,22-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2588,2494.42,Rs./Quintal,282.82,Metric Tonnes,21-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2500,2500,2500,Rs./Quintal,84.35,Metric Tonnes,21-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2550,2502.5,Rs./Quintal,72.1,Metric Tonnes,21-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2587,2469.62,Rs./Quintal,211.89,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2465,2465,2465,Rs./Quintal,12.27,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2570,2471.92,Rs./Quintal,230.36,Metric Tonnes,20-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2470,2465.03,Rs./Quintal,211.13,Metric Tonnes,19-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2465,2465,2465,Rs./Quintal,47.96,Metric Tonnes,19-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2585,2502.27,Rs./Quintal,159,Metric Tonnes,19-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2465,2465,Rs./Quintal,164.94,Metric Tonnes,18-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2520,2478.39,Rs./Quintal,217.28,Metric Tonnes,18-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Super Fine,FAQ,2465,2465,2465,Rs./Quintal,31.08,Metric Tonnes,18-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2585,2497.91,Rs./Quintal,148.89,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2465,2465,2465,Rs./Quintal,52.9,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2485,2467.26,Rs./Quintal,151,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Super Fine,FAQ,2465,2465,2465,Rs./Quintal,35.62,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2465,2587,2488.53,Rs./Quintal,402.08,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2475,2540,2518.31,Rs./Quintal,32.6,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2465,2470,2468.52,Rs./Quintal,10.17,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2500,2590,2515.01,Rs./Quintal,17.99,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2465,2585,2507.36,Rs./Quintal,307.1,Metric Tonnes,16-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2587,2569.07,Rs./Quintal,166.04,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,4.5,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Kanak,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Local,FAQ,2555,2555,2555,Rs./Quintal,2.5,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2500,2600,2550.56,Rs./Quintal,206.7,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2585,2590,2585.58,Rs./Quintal,43.18,Metric Tonnes,14-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2585,2585,2585,Rs./Quintal,20,Metric Tonnes,14-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Kanak,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,14-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2600,2586.48,Rs./Quintal,406.9,Metric Tonnes,14-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2585,2600,2586.86,Rs./Quintal,94.84,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2600,2590.11,Rs./Quintal,135.92,Metric Tonnes,13-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2585,2587,2586.18,Rs./Quintal,12.9,Metric Tonnes,12-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2590,2585.48,Rs./Quintal,73.6,Metric Tonnes,12-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2610,2590.43,Rs./Quintal,350.86,Metric Tonnes,11-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,13.5,Metric Tonnes,10-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,22.5,Metric Tonnes,10-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,17.5,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,15.1,Metric Tonnes,09-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,13,Metric Tonnes,08-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2610,2603.07,Rs./Quintal,24.4,Metric Tonnes,08-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2610,2610,Rs./Quintal,14.9,Metric Tonnes,07-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2610,2601.33,Rs./Quintal,33.1,Metric Tonnes,06-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,22.5,Metric Tonnes,04-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,29.5,Metric Tonnes,03-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2610,2603.41,Rs./Quintal,22,Metric Tonnes,02-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2585,2585,2585,Rs./Quintal,30.3,Metric Tonnes,01-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,2,Metric Tonnes,01-04-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2585,2585,Rs./Quintal,1.5,Metric Tonnes,30-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2585,2595,2589.52,Rs./Quintal,75.1,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2585,2585,2585,Rs./Quintal,20,Metric Tonnes,28-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2586,2595,2590.25,Rs./Quintal,45.2,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2585,2585,2585,Rs./Quintal,30,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2590,2590,2590,Rs./Quintal,3,Metric Tonnes,27-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2585,2585,2585,Rs./Quintal,1.4,Metric Tonnes,25-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2610,2620,2615.25,Rs./Quintal,20,Metric Tonnes,23-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2590,2590,2590,Rs./Quintal,1.2,Metric Tonnes,19-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,2.5,Metric Tonnes,19-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2585,2585,2585,Rs./Quintal,3.5,Metric Tonnes,12-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,0.6,Metric Tonnes,09-03-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,12.5,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,17.5,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,14,Metric Tonnes,27-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2560,2559.26,Rs./Quintal,13.5,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,42.5,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Medium,FAQ,2550,2550,2550,Rs./Quintal,17.55,Metric Tonnes,24-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara Mill Quality,FAQ,2550,2550,2550,Rs./Quintal,10,Metric Tonnes,23-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Other,FAQ,2555,2600,2591,Rs./Quintal,12.5,Metric Tonnes,23-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2550,2550,Rs./Quintal,1.2,Metric Tonnes,22-02-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2600,2690,2640,Rs./Quintal,900,Metric Tonnes,09-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2580,2700,2640,Rs./Quintal,950,Metric Tonnes,08-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2680,2610,Rs./Quintal,820,Metric Tonnes,06-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2610,Rs./Quintal,750,Metric Tonnes,05-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2610,Rs./Quintal,1000,Metric Tonnes,03-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2610,Rs./Quintal,800,Metric Tonnes,02-01-2026
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,3000,Metric Tonnes,31-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,2200,Metric Tonnes,30-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,2500,Metric Tonnes,29-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,2000,Metric Tonnes,27-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2660,2600,Rs./Quintal,1700,Metric Tonnes,26-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2640,2590,Rs./Quintal,850,Metric Tonnes,25-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,750,Metric Tonnes,24-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,800,Metric Tonnes,23-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,1000,Metric Tonnes,22-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2590,Rs./Quintal,1200,Metric Tonnes,20-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2610,2550,Rs./Quintal,1500,Metric Tonnes,19-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2650,2600,Rs./Quintal,1000,Metric Tonnes,18-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,800,Metric Tonnes,17-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2610,Rs./Quintal,700,Metric Tonnes,16-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2610,Rs./Quintal,650,Metric Tonnes,15-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2560,2670,2610,Rs./Quintal,750,Metric Tonnes,13-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,780,Metric Tonnes,10-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2540,2670,2600,Rs./Quintal,750,Metric Tonnes,08-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2680,2610,Rs./Quintal,800,Metric Tonnes,06-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2610,Rs./Quintal,1000,Metric Tonnes,05-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2660,2600,Rs./Quintal,850,Metric Tonnes,04-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,1200,Metric Tonnes,03-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2660,2600,Rs./Quintal,1000,Metric Tonnes,02-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2660,2560,Rs./Quintal,1500,Metric Tonnes,01-12-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2660,2600,Rs./Quintal,600,Metric Tonnes,25-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,850,Metric Tonnes,24-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2680,2600,Rs./Quintal,700,Metric Tonnes,22-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2670,2600,Rs./Quintal,750,Metric Tonnes,21-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2670,2580,Rs./Quintal,800,Metric Tonnes,20-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2500,2670,2580,Rs./Quintal,800,Metric Tonnes,12-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2700,2600,Rs./Quintal,750,Metric Tonnes,11-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2700,2600,Rs./Quintal,800,Metric Tonnes,10-11-2025
+Uttar Pradesh,Ghaziabad,Hapur APMC,Cereals,Wheat,Dara,FAQ,2550,2680,2600,Rs./Quintal,700,Metric Tonnes,07-11-2025
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,4.77,Metric Tonnes,23-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,3.89,Metric Tonnes,18-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2620,2640,2627.14,Rs./Quintal,4.23,Metric Tonnes,15-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,2.65,Metric Tonnes,12-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,2.81,Metric Tonnes,08-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,2.7,Metric Tonnes,06-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,2.71,Metric Tonnes,04-10-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,3.85,Metric Tonnes,27-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,4,Metric Tonnes,25-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,4.92,Metric Tonnes,24-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,1.24,Metric Tonnes,14-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2620,2640,2630.93,Rs./Quintal,2.31,Metric Tonnes,13-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2620,2620,2620,Rs./Quintal,2.19,Metric Tonnes,03-09-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2600,2620,2605.19,Rs./Quintal,12.25,Metric Tonnes,31-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2.7,Metric Tonnes,29-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2610,2620,2617.04,Rs./Quintal,9.93,Metric Tonnes,25-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,5.5,Metric Tonnes,14-07-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2605,2602.67,Rs./Quintal,7.5,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2610,2604,Rs./Quintal,7.5,Metric Tonnes,18-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,11-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,08-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,03-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,02-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,02-06-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,13,Metric Tonnes,31-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,1.9,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,29-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,40.2,Metric Tonnes,27-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,26-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,25-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,4.8,Metric Tonnes,22-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,1.3,Metric Tonnes,21-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.5,Metric Tonnes,20-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.1,Metric Tonnes,19-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,1.6,Metric Tonnes,18-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Medium,FAQ,2600,2600,2600,Rs./Quintal,5,Metric Tonnes,14-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,4,Metric Tonnes,12-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,3.5,Metric Tonnes,08-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,06-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,17.69,Metric Tonnes,04-05-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,17.6,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,3.6,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2600,2600,2600,Rs./Quintal,10.29,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,14,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,10,Metric Tonnes,29-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Medium,FAQ,2610,2615,2611.76,Rs./Quintal,17,Metric Tonnes,28-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,25-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Deshi,FAQ,2600,2600,2600,Rs./Quintal,2,Metric Tonnes,17-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1,Metric Tonnes,15-04-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.9,Metric Tonnes,31-03-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Dara,FAQ,2600,2600,2600,Rs./Quintal,1.8,Metric Tonnes,28-02-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2620,2620,2620,Rs./Quintal,1.24,Metric Tonnes,25-02-2026
+Uttar Pradesh,Ghaziabad,Muradnagar APMC,Cereals,Wheat,Other,FAQ,2640,2640,2640,Rs./Quintal,1.06,Metric Tonnes,22-02-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2700,2700,Rs./Quintal,4.8,Metric Tonnes,30-09-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2700,2700,Rs./Quintal,4.8,Metric Tonnes,31-08-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2700,2700,Rs./Quintal,3,Metric Tonnes,24-07-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Medium,FAQ,3300,3300,3300,Rs./Quintal,5.01,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,3700,3443.88,Rs./Quintal,13.47,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Wheat-Organic,FAQ,3650,3650,3650,Rs./Quintal,10.02,Metric Tonnes,30-06-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2700,2700,Rs./Quintal,3,Metric Tonnes,30-05-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Other,FAQ,2590,2590,2590,Rs./Quintal,8,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Wheat-Organic,FAQ,2900,3420,3122.86,Rs./Quintal,17.5,Metric Tonnes,30-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,HD-2329,FAQ,2585,2585,2585,Rs./Quintal,12.64,Metric Tonnes,11-04-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2700,2700,Rs./Quintal,3,Metric Tonnes,18-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Super Fine,FAQ,2750,2750,2750,Rs./Quintal,1.2,Metric Tonnes,18-03-2026
+Uttar Pradesh,Ghaziabad,Noida APMC,Cereals,Wheat,Sharbati,FAQ,2700,2750,2708.56,Rs./Quintal,4.38,Metric Tonnes,26-02-2026

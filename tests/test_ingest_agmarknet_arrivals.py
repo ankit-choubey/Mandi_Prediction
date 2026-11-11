@@ -47,3 +47,4 @@ def test_audit_populated_folder():
         assert "Wheat" in summary["commodities_covered"]
         assert summary["date_min"] == "2024-01-10"
         assert summary["date_max"] == "2024-01-11"
+
