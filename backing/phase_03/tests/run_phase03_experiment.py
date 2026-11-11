@@ -42,7 +42,12 @@ from sklearn.metrics import (
     precision_recall_fscore_support, confusion_matrix,
     mean_absolute_error, root_mean_squared_error
 )
-import lightgbm as lgb
+try:
+    import lightgbm as lgb
+    HAS_LIGHTGBM = True
+except (ImportError, OSError):
+    lgb = None
+    HAS_LIGHTGBM = False
 
 DEFAULT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 
@@ -622,12 +627,13 @@ def run_experiment(repo_root=None):
         'Random Forest': (
             RandomForestClassifier(n_estimators=100, max_depth=8, min_samples_leaf=20, random_state=42, n_jobs=-1),
             'Random Forest Ensemble (n_estimators=100, max_depth=8, min_samples_leaf=20)'
-        ),
-        'LightGBM': (
+        )
+    }
+    if HAS_LIGHTGBM:
+        models['LightGBM'] = (
             lgb.LGBMClassifier(n_estimators=100, max_depth=5, learning_rate=0.05, min_child_samples=50, random_state=42, verbose=-1),
             'Gradient Boosted Decision Trees via LightGBM (100 trees, max_depth=5, lr=0.05)'
         )
-    }
 
     test_maj_acc = round((y_test == majority_class).mean() * 100, 2)
     test_maj_macro_f1 = round(f1_score(y_test, [majority_class]*n_test, average='macro', zero_division=0), 4)
@@ -825,13 +831,14 @@ def run_experiment(repo_root=None):
         }
 
         # Train LightGBM Regressor
-        lgb_r = lgb.LGBMRegressor(n_estimators=100, max_depth=5, learning_rate=0.05, min_child_samples=50, random_state=42, verbose=-1)
-        lgb_r.fit(X_train, y_train_reg)
-        reg_models['LightGBM_Regressor'] = {
-            'val_pred': lgb_r.predict(X_val),
-            'test_pred': lgb_r.predict(X_test),
-            'desc': 'LightGBM Regressor (100 trees, max_depth=5, lr=0.05)'
-        }
+        if HAS_LIGHTGBM:
+            lgb_r = lgb.LGBMRegressor(n_estimators=100, max_depth=5, learning_rate=0.05, min_child_samples=50, random_state=42, verbose=-1)
+            lgb_r.fit(X_train, y_train_reg)
+            reg_models['LightGBM_Regressor'] = {
+                'val_pred': lgb_r.predict(X_val),
+                'test_pred': lgb_r.predict(X_test),
+                'desc': 'LightGBM Regressor (100 trees, max_depth=5, lr=0.05)'
+            }
 
     base_zero_val_mae = mean_absolute_error(y_val_reg, np.zeros_like(y_val_reg))
     base_zero_val_rmse = root_mean_squared_error(y_val_reg, np.zeros_like(y_val_reg))
