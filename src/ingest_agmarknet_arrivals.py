@@ -59,7 +59,17 @@ COLUMN_ALIASES = {
     "max price": "Max_Price",
     "modal price (rs./quintal)": "Modal_Price",
     "modal price": "Modal_Price",
-    "price unit": "Price_Unit"
+    "price unit": "Price_Unit",
+    # CEDA Agmarknet portal aliases
+    "t": "Arrival_Date",
+    "cmdty": "Commodity",
+    "district_name": "District",
+    "state_name": "State",
+    "market_name": "Market",
+    "qty": "Arrivals_Tonnes",
+    "p_min": "Min_Price",
+    "p_max": "Max_Price",
+    "p_modal": "Modal_Price"
 }
 
 
