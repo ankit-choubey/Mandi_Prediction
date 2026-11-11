@@ -29,6 +29,9 @@ Given actual observed price series $y_t$ and point forecast $\hat{y}_t$ over an 
    $$\text{MASE}_h = \frac{\frac{1}{N} \sum_{t=1}^N |y_t - \hat{y}_t|}{\frac{1}{T_{\text{train}} - h} \sum_{t=h+1}^{T_{\text{train}}} |y_t - y_{t-h}|}$$
    *The scale is defined as the in-sample mean absolute error of the $h$-step naive forecast $(y_t - y_{t-h})$ matching the evaluated forecast horizon $h$. Comparing a multi-step forecast ($h > 1$) to a one-step naive error artificially inflates MASE; matching the denominator horizon to $h$ preserves scale validity across multi-day horizons.*
 
+   *Calendar Days & Missing Trading Days Rule:*
+   The horizon $h$ is defined strictly in **calendar days** (e.g. $h = 7$ calendar days) with date-matched historical lags ($y_t$ vs $y_{t-h}$). Mandis close on Sundays, gazetted holidays, and strike hiatuses. When $t-h$ falls on a market closure or missing trading date, the lag benchmark pairs $t$ with the nearest prior active trading day within an allowable backward embargo window (up to 2 calendar days, $[t-h-2, t-h]$). If no active trading day exists within this window, the observation pair is excluded from the scaling denominator rather than interpolating synthetic prices.
+
    *Special Case ($h = 1$, one-step-ahead):*
    $$\text{MASE}_1 = \frac{\frac{1}{N} \sum_{t=1}^N |y_t - \hat{y}_t|}{\frac{1}{T_{\text{train}} - 1} \sum_{t=2}^{T_{\text{train}}} |y_t - y_{t-1}|}$$
    *A value of $\text{MASE}_h < 1$ indicates that the forecasting model outperforms the $h$-step naive persistence benchmark.*
@@ -39,7 +42,11 @@ Given actual observed price series $y_t$ and point forecast $\hat{y}_t$ over an 
 
 6. **Directional Accuracy (DA):**
    $$\text{DA} = \frac{1}{N} \sum_{t=1}^N \mathbb{I}\Big(\text{sign}(y_t - y_{t-h}) == \text{sign}(\hat{y}_t - y_{t-h})\Big)$$
-   *Percentage of test periods where the predicted price movement direction correctly matches realized trajectory.*
+   *Percentage of test periods where the predicted price movement direction correctly matches realized trajectory over horizon $h$ calendar days.*
+
+   *Missing Trading Days Rule:* When $t-h$ falls on a market closure, the baseline reference price $y_{t-h}$ uses the nearest prior trading day within the backward embargo window $[t-h-2, t-h]$, matching the MASE pairing rule.
+
+   *Zero-Change Convention:* When realized market change is zero ($y_t - y_{t-h} = 0$), $\text{sign}(0) = 0$. The prediction is scored as directionally correct ($\mathbb{I} = 1$) if and only if the model also predicts zero movement ($\hat{y}_t - y_{t-h} = 0$). If the model predicts an upward or downward movement while actual price remains unchanged, it is scored as an incorrect directional prediction ($\mathbb{I} = 0$).
 
 ---
 
@@ -120,7 +127,7 @@ The following step-by-step arithmetic illustrates how $P_{\text{break-even}}$ is
   $$P_{\text{break-even}} = \frac{2,416.8219}{0.995} \approx ₹2,428.97 \text{ / quintal}$$
 * **Step 6: Required Price Increase:**
   $$\Delta P_{\text{required}} = \frac{2,428.97 - 2,400.00}{2,400.00} \times 100\% = \frac{28.97}{2,400.00} \times 100\% = +1.207\% \approx +1.21\%$$
-* **Interpretation:** Even under low storage costs and minimal weight loss (0.5%), a farmer requires a price appreciation of at least $₹28.97$/quintal (+1.21%) in 7 days simply to cover storage fees, handling friction, and capital carrying interest.
+* **Interpretation:** Even under low storage costs and minimal weight loss (0.5%), a farmer requires a price appreciation of at least $₹28.97$/quintal (+1.21%) in 7 calendar days to break even. Crucially, this required +1.21% gain **includes the 0.5% physical weight loss ($L = 0.005$, which directly accounts for $₹12.00$/quintal of the total break-even gap)** alongside storage fees ($₹4.70$/qtl), handling friction ($₹9.00$/qtl), financing carrying interest ($₹3.22$/qtl), and differential transport ($-₹0.10$/qtl); it is not merely a reflection of fees and interest alone.
 
 ---
 
@@ -131,7 +138,7 @@ Every data source and panel evaluated in this project is characterized across si
 1. **`provenance`:** Upstream institutional source, verifiable download session receipt, publisher identity (e.g. Directorate of Marketing & Inspection, MoA&FW via data.gov.in), and authentic domain origin.
 2. **`quality`:** Schema integrity, absence of non-positive prices ($P \le 0$), compliance with physical bounds ($P_{\min} \le P_{\text{modal}} \le P_{\max}$), format consistency, and null rate.
 3. **`availability`:** Endpoint uptime, public accessibility, automated pagination reliability, and offline persistence.
-4. **`usage_rights`:** Formal legal license (e.g. National Data Sharing and Accessibility Policy — NDSAP Open Government Data License India), commercial redistribution terms, and mandatory attribution requirements.
+4. **`usage_rights`:** Formal legal license (e.g. National Data Sharing and Accessibility Policy — NDSAP, to be verified on the portal), commercial redistribution terms, and mandatory attribution requirements.
 5. **`data_nature`:** Categorization as empirical transaction record (`EMPIRICAL_OBSERVATION`), published statutory benchmark (`OFFICIAL_STATISTICS`), derived analytical feature (`DERIVED_FEATURE`), or hypothetical parameter (`SCENARIO_ASSUMPTION`).
 6. **`freshness`:** Calendar lag between the newest observation timestamp and the execution reference date (Current: $\le 2$ days lag; Delayed: $3 \text{ to } 5$ days lag; Stale: $> 5$ days lag).
 
@@ -221,6 +228,16 @@ Every candidate model introduced or tested must complete an MDR before deploymen
   * Soft-Voting Ensemble accuracy: 58.42% (Macro F1: 0.5245).
 * **Current Status:** **NOT INDEPENDENTLY REPRODUCED**. Model artifacts do not exist on disk; metrics represent previous in-memory execution logs. Formal reproduction on Kaggle required.
 
+### 5.1 Step 6 Classifier Baselines & Macro-F1 Mandate
+Before any candidate classifier is considered viable, it must be benchmarked against two non-trivial, zero-skill reference baselines on the chronological test partition:
+1. **Majority-Class Baseline:** Always predicts the historical mode class across the training window (typically Class 1: Normal, which represents ~49.8% of historical periods across the 5 target districts).
+2. **Always-Normal Baseline:** Always predicts Normal ($\Delta P \in (-2.5\%, +2.5\%)$), reflecting market inertia.
+
+*Macro-F1 Metric Mandate:*
+Because the 3-state target distribution is imbalanced (Normal ~50%, Favorable ~25%, Unfavorable ~25%), trivial majority prediction achieves an apparent ~50% raw accuracy while failing completely on trend shifts and risk extremes. Macro-F1:
+$$\text{Macro-F1} = \frac{1}{3} \sum_{c \in \{0, 1, 2\}} \text{F1}_c$$
+evaluates unweighted harmonic mean across all three classes. A trivial Always-Normal classifier achieves a Macro-F1 of only $\approx 0.22$. Candidate classifiers must surpass **both** the accuracy and the Macro-F1 of the majority-class baseline to demonstrate genuine predictive utility.
+
 ---
 
 ## 6. Scenario Cost Model Framework
@@ -236,8 +253,9 @@ Every candidate model introduced or tested must complete an MDR before deploymen
    * Must be overridden immediately upon receipt of verified empirical market quotes.
 
 ### 6.2 Safety & Advisory Cap
-* If any parameter in the net proceeds calculation is a `SCENARIO_ASSUMPTION`, downstream application outputs must display:
-  `"INFORMATIONAL / DEMO MODE ONLY — Costs reflect illustrative scenario assumptions, not verified facility quotes."`
+* If any parameter in the net proceeds calculation is a `SCENARIO_ASSUMPTION`, downstream application outputs must carry a distinct `SCENARIO_ESTIMATE` status and display:
+  `"SCENARIO_ESTIMATE — Costs reflect illustrative scenario assumptions (simulation/demo), not verified facility quotes."`
+* Note that "DEMO" denotes exploratory simulation rather than commercial operational advisory.
 * Actionable farmer advisories are strictly prohibited when operating under unverified scenario assumptions.
 
 ---
@@ -251,4 +269,54 @@ Every candidate model introduced or tested must complete an MDR before deploymen
 | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *Awaiting Run* |
 
 *(No fabricated results. Rows added strictly upon verification of Kaggle job outputs.)*
+
+---
+
+## 8. Data Reconciliation & Unit Ingestion Standards
+
+### 8.1 Partition Accounting Identity
+Every ingestion pipeline in this repository must enforce mathematical conservation of rows. For every individual input file and aggregated across the collection:
+$$\text{rows\_in} = \text{rows\_out} + \text{duplicates\_removed} + \text{rejected}$$
+Where:
+* **$\text{rows\_in}$:** Total raw records parsed from the physical source file on disk.
+* **$\text{rows\_out}$:** Valid, standardized, and deduplicated records accepted into output partitions.
+* **$\text{duplicates\_removed}$:** Redundant identical rows eliminated during within-file deduplication.
+* **$\text{rejected}$:** Records excluded due to missing core identifiers (`District`, `Commodity`), completely blank records, or unparseable dates.
+
+*Reconciliation Invariant:* Summary arithmetic alone is insufficient; pipeline runs must assert $\text{rows\_in} == \text{rows\_out} + \text{duplicates\_removed} + \text{rejected}$ at runtime and persist row-level reconciliation in `manifest.json`.
+
+### 8.2 Arrival Quantity & Unit Resolution Standard
+1. **Preservation of Raw Values:** The original raw numerical quantity is permanently stored in `Arrivals_Raw`.
+2. **Explicit Unit Categorization:** The detected source unit is stored in `Arrival_Unit_Source`:
+   * `'Tonnes'`: Derived from an explicit column header naming tonnes (e.g. `Arrivals (Tonnes)`) or an `Arrival_Unit` column explicitly indicating metric tonnes/MT.
+   * `'Quintals'`: Derived from an explicit column header naming quintals (e.g. `Arrivals (Qtl)`) or an `Arrival_Unit` column indicating quintals.
+   * `'UNVERIFIED'`: Assigned when source column is generic (`qty`, `arrivals`, `arrival quantity`) and no explicit unit column exists, or unit text is ambiguous.
+3. **Standardized Tonnes Export:**
+   * If `Arrival_Unit_Source == 'Tonnes'`: $\text{Arrivals\_Tonnes} = \text{Arrivals\_Raw}$.
+   * If `Arrival_Unit_Source == 'Quintals'`: $\text{Arrivals\_Tonnes} = \text{Arrivals\_Raw} / 10.0$ ($1 \text{ Tonne} = 10 \text{ Quintals}$).
+   * If `Arrival_Unit_Source == 'UNVERIFIED'`: $\text{Arrivals\_Tonnes} = \text{NaN}$ (never guessed or mapped to tonnes without proof).
+
+### 8.3 Ingestion Task Scorecard
+
+| Task ID | Component Audited / Refactored | Tests Added / Total Passing | Files Discovered / Excluded | Real-Data Dry-Run Rows (In / Out / Dups / Rej) | Units Verified (Tonnes / Qtl / Unverified) | Pipeline Status |
+|---|---|---|---|---|---|---|
+| **MP-DATA-002** | `src/ingest_agmarknet_arrivals.py` (Non-destructive arrivals) | 12 new / 133 passing (1 skipped) | 3 valid / 28 excluded | In: 481 / Out: 481 / Dups: 0 / Rej: 0 | Tonnes: 0 / Qtl: 0 / Unverified: 481 (CEDA files) | **VERIFIED & IMMUTABLE** |
+
+---
+
+## 9. Line-Anchored Master Specification Audit Checklist (MP-SETUP-003)
+
+The eleven architectural corrections introduced under Task `MP-SETUP-003` are permanently anchored to the corresponding line numbers in [`documentation/PROJECT_MASTER_SPECIFICATION.md`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/documentation/PROJECT_MASTER_SPECIFICATION.md):
+
+1. **Dated Audit Baseline Table:** Lines 898–906 (Section 18.1: records commit `82a0e8bb`, 2026-11-12, row counts: 472,385 raw, 462,350 accepted, 160,192 2-year raw, 122 tests passed).
+2. **Four-Tier Baseline Evidence Breakdown:** Lines 908–940 (Section 18.2: disaggregates claims into Remote Baseline, Local Baseline, Executed Evidence, and Independent Review Pending).
+3. **Roadmap Supersession & Task Mapping:** Lines 1042–1050 (Section 21.1: establishes 10-phase roadmap superseding 9-phase outline, mapping `MP-AUDIT-001/001R`, `MP-SETUP-002`, `MP-SETUP-003`, `MP-DATA-002`).
+4. **Capability-Specific Readiness Gates:** Lines 1064–1068, 1102–1110, 1698–1702 (Phasing & Section 23: decouples Release 1 price forecasting from cold storage survey, IMD weather, and production statistics).
+5. **Series Identity Natural Key Definition:** Lines 361–369 (Section 8.4: defines canonical natural key tuple `(Source Market, Commodity, Variety, Grade, Price Unit)`).
+6. **Ingestion & Publication Architecture Contract:** Lines 371–385 (Section 8.5: mandates immutable raw storage, separate input/output paths, no re-reading generated files, deterministic reruns, distinct observation vs retrieval timestamps).
+7. **Scenario Cost Framework Policy:** Lines 387–411 (Section 8.6: defines `SCENARIO_ASSUMPTION` parameters, low/base/high bounds, literature anchors, and informational advisory capping).
+8. **Decoupled Serving Architecture Options:** Lines 683–710 (Section 11.4: defines lightweight batch export / serverless deployment decoupled from training compute).
+9. **Prospective Logging & Explicit Abstention Reporting:** Lines 545–560 (Section 9.8: mandates real-time request logging and explicit abstention when staleness $> 5$ days or data is missing).
+10. **Scoped Academic Literature Review Criteria:** Lines 1024–1035, 1160–1170 (Section 19.7 & 23: replaces rigid 18-paper quota with scoped domain-relevant review criteria).
+11. **Cryptographic Integrity vs. Source Authenticity:** Lines 920–938 (Section 18.2: establishes that SHA-256 proves bit-level file integrity on disk, not institutional origin authenticity).
 
