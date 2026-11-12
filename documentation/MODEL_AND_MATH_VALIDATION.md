@@ -1359,3 +1359,105 @@ $$\begin{aligned}
 - **Targeted Tests:** `tests/test_live_price_ingestion.py` (34 tests passed in 4.23s).
 - **Full Test Suite:** 251 tests passed in 9.03s (0 failures across all 19 test files).
 - **Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`.
+
+
+## MP-SRC-004B independent review and data-readiness next — 2026-11-12 IST
+Commit d8f689a90f89762035aa41f651c26ee2e84dbed5 verified on GitHub. Independent68 ingestion/safety/output tests passed15.32s; full251 reported only. Accepted dataset-import/conflict/provenance foundations, not blanket100% operational completion or API validation. See documentation/SRC004B_REVIEW.md for scoped limits. No synthetic data generation authorized.
+Independent small snapshot inspection: data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv is1202750bytes/11720rows, target records Ghaziabad3/Jhansi7/Kanpur7/Lucknow4/Unnao9 (30) dated2026-11-11 before source/alias/grade trust validation. It is newer than data/raw/*.csv ending2026-09-01. Use explicit per-series source selection; no fake date update.
+Next documentation/prompts/MP-DATA-008.md bundles latest-real-source index and import-specific persistence with missing-data/causal feature contract (Step6, carried Step4/5 gates). Current reporter truncates large files at25000 then claims latest; must be explicit denial or complete small-index query. Import CSV-only despite Excel help, live-only fallback pointer and first-file provenance for multi-import are bounded carry-forward fixes. No network/key required, no training or Kaggle yet. Owner tonight priority retained without skipping evidence.
+
+
+## Section 25 — MP-DATA-008 Newest Real-Data Index, Missing-Data Policy & Forecasting Feature Contract (2026-11-12 IST)
+
+### 25.1 Task Overview & Execution Bounds
+Task MP-DATA-008 established the dataset-first latest-observation infrastructure, repaired operational boundaries, froze the missing-data and temporal evaluation contract for Step 7 continuous price forecasting, and implemented the shared causal feature builder.
+- **Git HEAD:** `d8f689a90f89762035aa41f651c26ee2e84dbed5`
+- **Execution Mode:** Local-only deterministic validation and configuration preparation. Zero network calls, zero synthetic data generation, zero model training, and zero Kaggle runs executed.
+- **Local Bounds Enforced:** Files $\le 10$ MB, row budgets $\le 50,000$, execution operations $\le 30$ seconds.
+
+### 25.2 Operational Bug Fixes & Architecture Hardening
+1. **Truncation Vulnerability Eliminated:**
+   - `CurrentDataReporter.query_latest_observation` previously scanned only the first 25,000 rows of large files.
+   - Replaced by strict local budget enforcement: direct queries on files $> 10$ MB or $> 50,000$ rows fail closed with explicit `ValueError`.
+   - Complete latest observations are queried directly from the validated latest index `data/imported_snapshots/latest_observation_index.json`.
+2. **Official Agmarknet Excel (.xlsx) Import:**
+   - Implemented title row skipping (row 0 contains report header; row 1 contains column headers).
+   - Mapped column headers: `State/UT`, `Min Price`, `Max Price`, `Modal Price`, `Arrival Date`, `Price Unit`.
+   - Date parser (`parse_observation_date`) extended to support `datetime.date` and `datetime.datetime` objects returned by `openpyxl`.
+   - Non-CSV/XLSX extensions rejected with explicit `ValueError`.
+3. **Dataset-First CLI & No-Argument Mode Help:**
+   - Added `--import-config` and `--publish-index` CLI arguments.
+   - Running without arguments or credentials displays clean, structured mode selection help rather than failing silently.
+4. **Independent Import Pointer & Multi-File Provenance:**
+   - `last_successful_import.json` persists file import state without updating `last_successful_campaign.json` (reserved strictly for real authenticated `LIVE_FETCH`).
+   - Added `load_prior_validated_import` fallback loader.
+   - Multi-file imports compute composite SHA-256 (`hashlib.sha256("".join(sorted(file_shas)).encode("utf-8")).hexdigest()`) and link each receipt and record to all contributing source files.
+
+### 25.3 November Real Snapshot Ingestion Evidence & Arithmetic Balancing
+Ingested single-day national snapshot `data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv` (1,202,750 bytes, SHA-256 `3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11`).
+All 30 target-district records are dated `2026-11-11`.
+
+$$\begin{aligned}
+\text{Total Records Fetched} &= 11,720 \\
+\text{Records Accepted} &= 26 \\
+\text{Records Quarantined} &= 11,694 \quad (11,690\text{ out-of-scope} + 4\text{ unknown market review}) \\
+\text{Records Duplicate} &= 0 \\
+\text{Reconciliation Discrepancy} &= 11,720 - (26 + 11,694 + 0) = 0 \quad (\text{Strictly Balanced})
+\end{aligned}$$
+
+- **Target District Harvest Breakdown:**
+  - **Ghaziabad (3 records):** 3 accepted (Gur, Basmati, Potato), 0 quarantined.
+  - **Jhansi (7 records):** 7 accepted (Wood $\times 4$, Firewood $\times 1$, Groundnut $\times 2$), 0 quarantined.
+  - **Kanpur (7 records):** 5 accepted (Arecanut, Onion, Common Paddy, Potato $\times 2$), 2 quarantined (`Baripaal APMC` unknown market review).
+  - **Lucknow (4 records):** 4 accepted (Fish, Green Ginger, Lemon, Potato), 0 quarantined.
+  - **Unnao (9 records):** 7 accepted (Mentha Oil, Wheat, Common Paddy $\times 2$, Basmati $\times 3$), 2 quarantined (`Purwa APMC` unknown market review).
+- **Focus Crop Spot Coverage (2026-11-11):**
+  - **Potato (4 accepted):** Ghaziabad (Rs. 950/Q), Kanpur(Grain) (Rs. 550/Q), Uttaripura (Rs. 500/Q), Lucknow (Rs. 850/Q).
+  - **Onion (1 accepted):** Kanpur(Grain) (Rs. 3000/Q).
+  - **Wheat (1 accepted):** Unnao APMC (Rs. 2500/Q).
+  - **Rice / Paddy (6 accepted, 4 quarantined):** 3 Common Paddy accepted, 3 Basmati accepted; Baripaal and Purwa APMC quarantined.
+  - **Tomato & Mustard:** 0 spot observations in target districts on 2026-11-11.
+
+### 25.4 Published Latest Observation Index
+Published `data/imported_snapshots/latest_observation_index.json`:
+- Exactly 30 series identities indexed (26 `ACCEPTED`, 4 `UNKNOWN_MARKET_REVIEW`).
+- One trustworthy latest record per unique `(district, market, commodity, variety, grade)`.
+- Divergent quotes on latest observation date are quarantined under `CONFLICT_QUARANTINED` with explicit disclosure; silent fallback to older prices is strictly forbidden.
+- Atomic file replacement (`.tmp` to `.json`) guarantees zero corruption.
+
+### 25.5 Shared Causal Feature Builder (`src/forecast_features.py`)
+- **Code Version:** `1.0.0`
+- **Code Hash:** `a4f365f7d5ca93740e53e4b78fa189689531109403a45c36582531da1f31f9b3`
+- **Feature Set:** Exactly 21 deterministic price-only and temporal features:
+  - `current_price` ($P_t$, preserved as NaN if unobserved at origin date $t$).
+  - Exact calendar lags: $t-1, t-3, t-7, t-14, t-28$ (unobserved calendar days stay NaN).
+  - `last_observation_age_days`: calendar days to most recent observation $\le t$.
+  - Preceding rolling windows: count, mean, sample std (ddof=1) over $[t-7, t-1]$ and $[t-30, t-1]$.
+  - Sample variance burn-in: `rolling_std` strictly returns NaN when observation count $< 2$.
+  - Calendar encodings: day of week (int, sin, cos), month (int, sin, cos), day of month, day of year.
+- **Batch / Single-Origin Inference Equivalence:** Mathematically verified that `compute_batch_features(df)` and `compute_origin_features(history, t, series)` produce identical feature values down to $10^{-9}$ numerical precision.
+- **Causal Future Isolation:** Inserting future rows or mutating target dates strictly leaves historical features unchanged.
+
+### 25.6 Missing-Data & Target Evaluation Contract
+Frozen in `documentation/FORECAST_DATA_FEATURE_CONTRACT.md`:
+- **Horizon 7 Target Window:** Evaluates $[\tau+6, \tau+8]$ with earlier tie-breaking ($t+6$ preferred over $t+8$ if $t+7$ unobserved).
+- **Exact $T+7$ Sensitivity:** Mandatory reporting of sensitivity restricted to exact $t+7$ targets.
+- **Fold Boundaries:** Actual target date must satisfy $\le \text{fold\_test\_end}$.
+- **Training Maturation:** Training origins restricted to $t \le T_{\text{train}} - 8$ to prevent target leakage across training cutoffs.
+- **Six Disjoint Missingness Classes:** `NO_ORIGIN`, `INELIGIBLE_HISTORY`, `MISSING_FEATURES`, `NO_TARGET`, `MODEL_ABSTENTION`, `SERVING_DENIAL`.
+- **Eligibility Thresholds:** Tier A ($\ge 60$ train obs, coverage $\ge 0.30$, recency $\ge 3$ in $[t-30, t]$); Tier B ($\ge 120$ train obs, coverage $\ge 0.30$). Coverage computed over inclusive first-to-last observed date span.
+
+### 25.7 Step 7 ML Benchmark Specification
+Configured in `experiments/configs/price_forecast_v1.json`:
+- Four chronological temporal folds (F1: Train $\le 2024-12-31$, F2: Train $\le 2025-06-30$, F3: Train $\le 2025-12-18$, F4: Train $\le 2026-03-31$).
+- Candidate models: Ridge regression (linear L2 regularized baseline) and HistGradientBoosting (nonlinear tabular tree baseline with native NaN routing).
+- Rescored baselines: Naive $H=7$, Moving Average 7d, Linear Drift, Seasonal Naive 364d on matched non-abstained cases.
+- Conventional MASE explicitly preserved as **NOT COMPUTED / NOT VALIDATED** until official train-only 1-step scaling implementation is verified.
+
+### 25.8 Acceptance Test Evidence
+- Targeted test suites:
+  - `tests/test_forecast_features.py`: 9 passed in 0.30s.
+  - `tests/test_operational_output.py`: 20 passed in 0.24s.
+  - `tests/test_live_price_ingestion.py`: 39 passed in 4.32s.
+- **Full Test Suite:** **268 passed in 9.13s** (0 failures, 0 errors across 20 test files).
+- **Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`.

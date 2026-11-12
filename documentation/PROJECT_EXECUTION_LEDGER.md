@@ -198,3 +198,52 @@ After SRC004B repairs/ingestion milestone, roadmap stages4–13 remain: 10 main 
 - **Persistent Fallback:** Collision-safe microsecond run IDs, mode `'x'` exclusive writes for page and run receipts, and `load_prior_validated_snapshot` fallback loader.
 - **Unit Test Receipts:** 34 tests passed in `tests/test_live_price_ingestion.py`; 251 tests passed repository-wide (0 failures).
 - **Next Step:** Proceed with Step 2 dataset consolidation / candidate identity policy before Step 6 remote training.
+
+
+## MP-SRC-004B independent review and data-readiness next — 2026-11-12 IST
+Commit d8f689a90f89762035aa41f651c26ee2e84dbed5 verified on GitHub. Independent68 ingestion/safety/output tests passed15.32s; full251 reported only. Accepted dataset-import/conflict/provenance foundations, not blanket100% operational completion or API validation. See documentation/SRC004B_REVIEW.md for scoped limits. No synthetic data generation authorized.
+Independent small snapshot inspection: data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv is1202750bytes/11720rows, target records Ghaziabad3/Jhansi7/Kanpur7/Lucknow4/Unnao9 (30) dated2026-11-11 before source/alias/grade trust validation. It is newer than data/raw/*.csv ending2026-09-01. Use explicit per-series source selection; no fake date update.
+Next documentation/prompts/MP-DATA-008.md bundles latest-real-source index and import-specific persistence with missing-data/causal feature contract (Step6, carried Step4/5 gates). Current reporter truncates large files at25000 then claims latest; must be explicit denial or complete small-index query. Import CSV-only despite Excel help, live-only fallback pointer and first-file provenance for multi-import are bounded carry-forward fixes. No network/key required, no training or Kaggle yet. Owner tonight priority retained without skipping evidence.
+
+---
+
+## MP-DATA-008 — Newest Real-Data Index, Missing-Data Policy & Forecasting Feature Contract (2026-11-12 IST)
+- **Task ID:** `MP-DATA-008` (Step 6 / Step 7 Machine Learning Preparation)
+- **Baseline Git Commit:** `d8f689a90f89762035aa41f651c26ee2e84dbed5`
+- **Execution Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`
+- **Standing Rules Enforced:**
+  - Zero synthetic datasets, simulated operational feeds, model-training rows, or storage scenarios without prior explanation and explicit owner approval. Zero synthetic rows generated.
+  - Zero model training executed locally; zero remote Kaggle runs dispatched.
+  - Local bounds ($\le 10$ MB, $\le 50,000$ rows, $\le 30$ seconds per operation) strictly respected.
+  - Untouched: `documentation/context.md` strictly untouched per instruction.
+- **Source Inventory & Configuration (`data/reference/operational_sources.json`):**
+  - Configured 11 operational sources (1 single-day snapshot `9ef84268...csv` as `LATEST_SNAPSHOT`, 5 raw CSVs as `HISTORY`, 5 official Agmarknet Excel reports as `HISTORY`).
+  - Documented explicit file byte sizes, SHA-256 checksums, scopes, observed date ranges, units, and declared provenance states.
+- **Operational Bug Fixes:**
+  - `CurrentDataReporter.query_latest_observation`: eliminated silent first-25k prefix scanning. Oversized files ($> 10$ MB or $> 50,000$ rows) denied with explicit `ValueError`; queries complete latest index directly.
+  - `execute_file_import`: official Agmarknet `.xlsx` reader implemented using `openpyxl` (skipping row 0 title, mapping headers, parsing dates). Unsupported extensions rejected with `ValueError`.
+  - Dataset-first CLI: added `--import-config`, `--publish-index`, and clear no-argument mode help.
+  - Independent import pointer: `last_successful_import.json` persists file import state without updating `last_successful_campaign.json`. Added `load_prior_validated_import` fallback loader.
+  - Multi-file provenance: composite SHA-256 computed and all contributing source files linked to receipts and records.
+- **November Snapshot Ingestion (`data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv`):**
+  - File size: 1,202,750 bytes, 11,720 rows, SHA-256 `3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11`.
+  - All 30 target records dated `2026-11-11`: 26 accepted, 4 quarantined (`Baripaal APMC` $\times 2$, `Purwa APMC` $\times 2$ for unknown market review).
+  - Out of scope: 11,690 records quarantined. Total: 11,720 fetched, 26 accepted, 11,694 quarantined, 0 duplicate, 0 discrepancy (100% balanced).
+  - Published `data/imported_snapshots/latest_observation_index.json` containing 30 series identities.
+- **Missing-Data & Target Evaluation Contract (`documentation/FORECAST_DATA_FEATURE_CONTRACT.md`):**
+  - Frozen Horizon 7 continuous target in $[t+6, t+8]$ with earlier tie-break ($t+6$ over $t+8$).
+  - Exact $T+7$ sensitivity reporting mandated.
+  - Retrospective availability at 06:00 IST issue time.
+  - Six disjoint missingness categories (`NO_ORIGIN`, `INELIGIBLE_HISTORY`, `MISSING_FEATURES`, `NO_TARGET`, `MODEL_ABSTENTION`, `SERVING_DENIAL`).
+  - Tier A ($N \ge 60$, coverage $\ge 0.30$, recency $\ge 3$) and Tier B ($N \ge 120$, coverage $\ge 0.30$).
+- **Shared Causal Feature Builder (`src/forecast_features.py`):**
+  - Code version `1.0.0`, hash `a4f365f7d5ca93740e53e4b78fa189689531109403a45c36582531da1f31f9b3`.
+  - 21 deterministic price-only and temporal features ($P_t$, exact lags $1, 3, 7, 14, 28$, last-obs age, preceding rolling windows $7\text{d}, 30\text{d}$ with sample variance burn-in, calendar encodings).
+  - Verified exact mathematical equivalence between batch training features and single-origin inference features.
+- **Step 7 Experiment Configuration (`experiments/configs/price_forecast_v1.json`):**
+  - F1–F4 temporal folds, Ridge baseline, HistGradientBoosting tabular tree regressor, and rescored baselines.
+  - Conventional MASE preserved as NOT COMPUTED until train-only 1-step scaling implementation is verified.
+- **Unit Test Receipts:**
+  - Targeted tests: `tests/test_forecast_features.py` (9 passed), `tests/test_operational_output.py` (20 passed), `tests/test_live_price_ingestion.py` (39 passed).
+  - Full test suite: **268 tests passed in 9.13s** (0 failures across all 20 test files).
+- **Next Step:** Ready for independent review to authorize bounded price-only benchmark execution (Step 7).

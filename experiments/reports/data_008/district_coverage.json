@@ -1,0 +1,64 @@
+{
+  "task_id": "MP-DATA-008",
+  "generated_date_ist": "2026-11-12",
+  "source_file": "data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv",
+  "source_file_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+  "observation_date": "2026-11-11",
+  "districts": {
+    "Ghaziabad": {
+      "records_fetched": 3,
+      "records_accepted": 3,
+      "records_quarantined": 0,
+      "quarantine_reasons": {},
+      "commodities_accepted": ["Gur(Jaggery)", "Paddy(Basmati)", "Potato"],
+      "markets_accepted": ["Ghaziabad"]
+    },
+    "Jhansi": {
+      "records_fetched": 7,
+      "records_accepted": 7,
+      "records_quarantined": 0,
+      "quarantine_reasons": {},
+      "commodities_accepted": ["Firewood", "Groundnut", "Wood"],
+      "markets_accepted": ["Mauranipur", "Chirgaon"]
+    },
+    "Kanpur": {
+      "records_fetched": 7,
+      "records_accepted": 5,
+      "records_quarantined": 2,
+      "quarantine_reasons": {
+        "UNKNOWN_MARKET_REVIEW": 2
+      },
+      "commodities_accepted": ["Arecanut(Betelnut/Supari)", "Onion", "Paddy(Common)", "Potato"],
+      "markets_accepted": ["Kanpur(Grain)", "Uttaripura"],
+      "quarantined_markets": ["Baripaal APMC"]
+    },
+    "Lucknow": {
+      "records_fetched": 4,
+      "records_accepted": 4,
+      "records_quarantined": 0,
+      "quarantine_reasons": {},
+      "commodities_accepted": ["Fish", "Ginger(Green)", "Lemon", "Potato"],
+      "markets_accepted": ["Lucknow"]
+    },
+    "Unnao": {
+      "records_fetched": 9,
+      "records_accepted": 7,
+      "records_quarantined": 2,
+      "quarantine_reasons": {
+        "UNKNOWN_MARKET_REVIEW": 2
+      },
+      "commodities_accepted": ["Mentha Oil", "Paddy(Basmati)", "Paddy(Common)", "Wheat"],
+      "markets_accepted": ["Unnao"],
+      "quarantined_markets": ["Purwa APMC"]
+    }
+  },
+  "summary": {
+    "total_target_district_records": 30,
+    "total_target_district_accepted": 26,
+    "total_target_district_quarantined": 4,
+    "total_out_of_scope_quarantined": 11690,
+    "total_records_fetched": 11720,
+    "total_accounted": 11720,
+    "is_balanced": true
+  }
+}

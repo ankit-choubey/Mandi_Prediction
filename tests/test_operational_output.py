@@ -9,8 +9,11 @@ timestamp separation, and reconciliation ledger arithmetic.
 
 import os
 import json
+import tempfile
 import unittest
 from datetime import date, datetime, timezone, timedelta
+
+import pandas as pd
 
 from src.health_status import (
     HealthStatusEngine,
@@ -239,6 +242,98 @@ class TestReporterAndDashboard(unittest.TestCase):
             self.assertEqual(sample["Commodity"], "Potato")
             self.assertEqual(sample["District"], "Kanpur")
             self.assertGreater(sample["Modal_Price"], 0)
+
+    def test_newest_observation_after_row_25000_never_wrong_latest(self):
+        """
+        Verify that observations after row 25,000 are never missed.
+        Direct CSV queries on oversized files are denied with ValueError;
+        queries with index return the true complete latest observation.
+        """
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            csv_path = os.path.join(tmp_dir, "test_large.csv")
+            # Write 26,000 rows where row 10 is 2026-01-01 and row 25,500 is 2026-11-10
+            dates = ["2026-01-01"] * 26000
+            dates[25500] = "2026-11-10"
+            df = pd.DataFrame({
+                "District": ["Kanpur"] * 26000,
+                "Market": ["Kanpur(Grain)"] * 26000,
+                "Commodity": ["Potato"] * 26000,
+                "Variety": ["Other"] * 26000,
+                "Grade": ["FAQ"] * 26000,
+                "Arrival_Date": dates,
+                "Modal_Price": [500.0] * 26000,
+                "Min_Price": [480.0] * 26000,
+                "Max_Price": [520.0] * 26000,
+            })
+            df.to_csv(csv_path, index=False)
+
+            reporter = CurrentDataReporter(validated_csv_path=csv_path, latest_index_path=None)
+            # Query directly: must find the 2026-11-10 observation (row 25,500), NOT 2026-01-01!
+            obs = reporter.query_latest_observation(commodity="Potato", district="Kanpur", use_index=False)
+            self.assertIsNotNone(obs)
+            self.assertEqual(obs["Arrival_Date"], "2026-11-10")
+
+    def test_missing_grade_distinct_from_faq(self):
+        """Verify missing grade is preserved as SOURCE_NOT_PROVIDED and distinct from FAQ."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            idx_path = os.path.join(tmp_dir, "index.json")
+            index_payload = {
+                "series": {
+                    "s1": {
+                        "district": "Kanpur",
+                        "market_canonical": "Kanpur(Grain)",
+                        "commodity": "Potato",
+                        "variety": "Other",
+                        "grade": "SOURCE_NOT_PROVIDED",
+                        "latest_observation_date": "2026-11-11",
+                        "modal_price": 550.0,
+                    }
+                }
+            }
+            with open(idx_path, "w", encoding="utf-8") as f:
+                json.dump(index_payload, f)
+
+            reporter = CurrentDataReporter(latest_index_path=idx_path)
+            res = reporter.query_latest_observation(commodity="Potato", district="Kanpur")
+            self.assertIsNotNone(res)
+            self.assertEqual(res["Grade"], "SOURCE_NOT_PROVIDED")
+            self.assertNotEqual(res["Grade"], "FAQ")
+
+    def test_recent_snapshot_one_current_and_unrelated_stale(self):
+        """Verify reporter handles current series without extrapolating freshness to stale series."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            idx_path = os.path.join(tmp_dir, "index.json")
+            index_payload = {
+                "series": {
+                    "s_fresh": {
+                        "district": "Kanpur",
+                        "market_canonical": "Kanpur(Grain)",
+                        "commodity": "Potato",
+                        "variety": "Other",
+                        "grade": "FAQ",
+                        "latest_observation_date": "2026-11-11",
+                        "modal_price": 550.0,
+                    },
+                    "s_stale": {
+                        "district": "Jhansi",
+                        "market_canonical": "Chirgaon",
+                        "commodity": "Wheat",
+                        "variety": "Dara",
+                        "grade": "FAQ",
+                        "latest_observation_date": "2026-08-01",
+                        "modal_price": 2200.0,
+                    }
+                }
+            }
+            with open(idx_path, "w", encoding="utf-8") as f:
+                json.dump(index_payload, f)
+
+            reporter = CurrentDataReporter(latest_index_path=idx_path, reference_date=date(2026, 11, 12))
+            fresh = reporter.query_latest_observation(commodity="Potato", district="Kanpur")
+            stale = reporter.query_latest_observation(commodity="Wheat", district="Jhansi")
+
+            self.assertEqual(fresh["Arrival_Date"], "2026-11-11")
+            self.assertEqual(stale["Arrival_Date"], "2026-08-01")
 
 
 if __name__ == "__main__":

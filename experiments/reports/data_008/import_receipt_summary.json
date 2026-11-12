@@ -1,0 +1,43 @@
+{
+  "task_id": "MP-DATA-008",
+  "generated_date_ist": "2026-11-12",
+  "run_id_utc": "20261112T134023_424906Z",
+  "execution_timestamp_ist": "2026-11-12 19:10:23 IST",
+  "data_mode": "FILE_IMPORT",
+  "is_synthetic": false,
+  "is_live_verified": false,
+  "is_import_verified": true,
+  "overall_operational_state": "QUARANTINED",
+  "source_file": {
+    "path": "data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv",
+    "size_bytes": 1202750,
+    "sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+    "declared_source_url": "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
+    "declared_retrieval_timestamp": "UNKNOWN"
+  },
+  "reconciliation": {
+    "total_records_fetched": 11720,
+    "total_records_parsed": 11720,
+    "total_records_accepted": 26,
+    "total_records_quarantined": 11694,
+    "total_records_duplicate": 0,
+    "accounted": 11720,
+    "discrepancy": 0,
+    "is_balanced": true
+  },
+  "quarantine_breakdown": {
+    "out_of_scope_districts": 11690,
+    "target_district_unknown_market_review": 4
+  },
+  "published_latest_index": {
+    "index_path": "data/imported_snapshots/latest_observation_index.json",
+    "total_series_indexed": 30,
+    "accepted_series": 26,
+    "quarantined_series": 4
+  },
+  "last_successful_import_pointer": {
+    "pointer_path": "data/imported_snapshots/last_successful_import.json",
+    "updated": true,
+    "last_successful_live_campaign_updated": false
+  }
+}

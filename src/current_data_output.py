@@ -45,11 +45,13 @@ class CurrentDataReporter:
         self,
         validated_csv_path: Optional[str] = None,
         summary_json_path: Optional[str] = None,
-        reference_date: Optional[date] = None
+        reference_date: Optional[date] = None,
+        latest_index_path: Optional[str] = None,
     ):
         repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.csv_path = validated_csv_path or os.path.join(repo_root, "data", "processed", "mandi_5year_validated.csv")
         self.summary_path = summary_json_path or os.path.join(repo_root, "data", "processed", "validation_summary.json")
+        self.latest_index_path = latest_index_path or os.path.join(repo_root, "data", "imported_snapshots", "latest_observation_index.json")
         self.ref_date = reference_date
         self.engine = HealthStatusEngine(current_ref_date=reference_date)
         self.safety_gate = RecommendationSafetyGate(current_ref_date=reference_date)
@@ -87,39 +89,83 @@ class CurrentDataReporter:
         self,
         commodity: Optional[str] = None,
         district: Optional[str] = None,
-        market: Optional[str] = None
+        market: Optional[str] = None,
+        use_index: bool = True,
     ) -> Optional[Dict[str, Any]]:
-        """Query the most recent observation matching specified filters."""
+        """
+        Query the most recent observation matching specified filters.
+        Enforces:
+        - If latest_observation_index.json exists and use_index=True, queries the complete
+          validated latest index rather than scanning raw panel files.
+        - If querying raw CSV directly, strictly enforces local bounds (<= 10MB, <= 50,000 rows).
+          Files exceeding limits are rejected with explicit denial; first-25k scanning is strictly forbidden.
+        """
+        # 1. Attempt query via complete bounded latest-observation index
+        if use_index and self.latest_index_path and os.path.exists(self.latest_index_path):
+            try:
+                with open(self.latest_index_path, "r", encoding="utf-8") as f:
+                    index_data = json.load(f)
+                series_map = index_data.get("series", {})
+                matching = []
+                for s_key, s_rec in series_map.items():
+                    if commodity and s_rec.get("commodity", "").strip().lower() != commodity.strip().lower():
+                        continue
+                    if district and s_rec.get("district", "").strip().lower() != district.strip().lower():
+                        continue
+                    if market:
+                        m_can = s_rec.get("market_canonical", "").strip().lower()
+                        m_raw = s_rec.get("market_raw", "").strip().lower()
+                        target_m = market.strip().lower()
+                        if target_m not in (m_can, m_raw):
+                            continue
+                    matching.append(s_rec)
+
+                if matching:
+                    matching.sort(key=lambda x: str(x.get("latest_observation_date", "")), reverse=True)
+                    top = matching[0]
+                    return {
+                        "Commodity": top.get("commodity"),
+                        "Variety": top.get("variety", "Other"),
+                        "Grade": top.get("grade", "SOURCE_NOT_PROVIDED"),
+                        "District": top.get("district"),
+                        "Market": top.get("market_canonical") or top.get("market_raw"),
+                        "Arrival_Date": top.get("latest_observation_date"),
+                        "Modal_Price": float(top.get("modal_price", 0.0)),
+                        "Min_Price": float(top.get("min_price", top.get("modal_price", 0.0))),
+                        "Max_Price": float(top.get("max_price", top.get("modal_price", 0.0))),
+                        "Market_Alias_Status": top.get("market_alias_status", "ACCEPTED"),
+                        "Data_Mode": top.get("data_mode", "FILE_IMPORT"),
+                        "Source_File_Hashes": top.get("source_file_hashes", []),
+                    }
+            except Exception:
+                pass
+
+        # 2. Query underlying CSV file directly within strict bounds
         if not os.path.exists(self.csv_path):
             return None
 
-        # Bounded read to strictly respect local resource limits (<= 10MB, <= 50,000 rows)
-        if os.path.getsize(self.csv_path) > 10 * 1024 * 1024:
-            chunks = []
-            total_read = 0
-            for chunk in pd.read_csv(self.csv_path, chunksize=5000, parse_dates=["Arrival_Date"], low_memory=False):
-                if commodity:
-                    chunk = chunk[chunk["Commodity"].str.lower() == commodity.strip().lower()]
-                if district:
-                    chunk = chunk[chunk["District"].str.lower() == district.strip().lower()]
-                if market:
-                    chunk = chunk[chunk["Market"].str.lower() == market.strip().lower()]
-                if not chunk.empty:
-                    chunks.append(chunk)
-                total_read += 5000
-                if total_read >= 25000:
-                    break
-            if not chunks:
-                return None
-            df = pd.concat(chunks, ignore_index=True)
-        else:
-            df = pd.read_csv(self.csv_path, parse_dates=["Arrival_Date"], low_memory=False)
-            if commodity:
-                df = df[df["Commodity"].str.lower() == commodity.strip().lower()]
-            if district:
-                df = df[df["District"].str.lower() == district.strip().lower()]
-            if market:
-                df = df[df["Market"].str.lower() == market.strip().lower()]
+        file_bytes = os.path.getsize(self.csv_path)
+        if file_bytes > 10 * 1024 * 1024:
+            raise ValueError(
+                f"File '{os.path.basename(self.csv_path)}' size ({file_bytes} bytes) exceeds "
+                f"maximum allowed local processing limit (10 MB). First-25k prefix scanning is "
+                f"strictly forbidden. Query the latest observation index or run remote workflow."
+            )
+
+        df = pd.read_csv(self.csv_path, parse_dates=["Arrival_Date"], low_memory=False)
+        if len(df) > 50000:
+            raise ValueError(
+                f"File '{os.path.basename(self.csv_path)}' row count ({len(df)}) exceeds "
+                f"maximum allowed local processing limit (50,000 rows). Query the latest observation "
+                f"index or run remote workflow."
+            )
+
+        if commodity:
+            df = df[df["Commodity"].str.lower() == commodity.strip().lower()]
+        if district:
+            df = df[df["District"].str.lower() == district.strip().lower()]
+        if market:
+            df = df[df["Market"].str.lower() == market.strip().lower()]
 
         if df.empty:
             return None

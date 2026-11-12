@@ -64,7 +64,9 @@ from src.live_price_ingestion import (
     build_health_report_from_ingestion,
     load_api_key,
     load_contract,
+    load_prior_validated_import,
     load_prior_validated_snapshot,
+    publish_latest_observation_index,
     redact_credential_echo,
     sanitize_params,
     sanitize_url,
@@ -1230,6 +1232,207 @@ class TestLivePriceIngestion(unittest.TestCase):
         self.assertEqual(output["data_mode"], "FILE_IMPORT")
         self.assertFalse(output["is_live_verified"])
         self.assertEqual(output["total_records_accepted"], 1)
+
+    # -------------------------------------------------------------------------
+    # 35. Official XLSX Import Handling Title Row
+    # -------------------------------------------------------------------------
+    def test_35_xlsx_file_import_with_title_row(self):
+        """Verify official Agmarknet .xlsx files with title row in row 0 are parsed correctly."""
+        import openpyxl
+
+        xlsx_path = os.path.join(self.temp_dir, "test_agmarknet.xlsx")
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        # Row 0: Title row
+        ws.append(["Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh", None, None])
+        # Row 1: Headers
+        ws.append([
+            "State/UT", "District", "Market", "Commodity Group", "Commodity",
+            "Variety", "Grade", "Min Price", "Max Price", "Modal Price",
+            "Price Unit", "Arrival Quantity", "Arrival Unit", "Arrival Date"
+        ])
+        # Row 2: Data
+        ws.append([
+            "Uttar Pradesh", "Kanpur", "Kanpur(Grain) APMC", "Vegetables", "Potato",
+            "Other", "FAQ", 500, 600, 550,
+            "Rs./Quintal", 100, "Metric Tonnes", "12-11-2026"
+        ])
+        wb.save(xlsx_path)
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=os.path.join(self.temp_dir, "xlsx_snapshots"),
+        )
+        campaign = client.execute_file_import(file_path=xlsx_path)
+        self.assertEqual(campaign.overall_operational_state, OperationalState.SUCCESS)
+        self.assertEqual(campaign.total_records_accepted, 1)
+        rec = campaign.district_results["Kanpur"].accepted_records[0]
+        self.assertEqual(rec.modal_price, 550.0)
+        self.assertEqual(rec.arrival_date_parsed, "2026-11-12")
+
+    # -------------------------------------------------------------------------
+    # 36. Unsupported File Formats Explicitly Rejected
+    # -------------------------------------------------------------------------
+    def test_36_unsupported_file_format_rejected(self):
+        """Verify non-CSV/XLSX file extensions are rejected with explicit ValueError."""
+        txt_path = os.path.join(self.temp_dir, "invalid_format.txt")
+        with open(txt_path, "w") as f:
+            f.write("dummy content")
+
+        client = LivePriceIngestionClient(data_mode=DataMode.FILE_IMPORT)
+        with self.assertRaises(ValueError) as ctx:
+            client.execute_file_import(file_path=txt_path)
+        self.assertIn("Unsupported file format '.txt'", str(ctx.exception))
+
+    # -------------------------------------------------------------------------
+    # 37. Independent Import Pointer Never Updates Live Pointer
+    # -------------------------------------------------------------------------
+    def test_37_independent_import_pointer_never_touches_live(self):
+        """Verify last_successful_import is updated while last_successful_campaign remains absent."""
+        csv_path = os.path.join(self.temp_dir, "fixture_import.csv")
+        with open(csv_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Jhansi,Mauranipur,Potato,Other,FAQ,11/11/2026,500,600,550\n")
+
+        snapshots_dir = os.path.join(self.temp_dir, "ptr_test_snapshots")
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=snapshots_dir,
+        )
+        campaign = client.execute_file_import(file_path=csv_path)
+        self.assertEqual(campaign.total_records_accepted, 1)
+
+        import_ptr_path = os.path.join(snapshots_dir, "last_successful_import.json")
+        live_ptr_path = os.path.join(snapshots_dir, "last_successful_campaign.json")
+
+        self.assertTrue(os.path.exists(import_ptr_path))
+        self.assertFalse(os.path.exists(live_ptr_path))
+
+        fallback = load_prior_validated_import(snapshots_root=snapshots_dir)
+        self.assertIsNotNone(fallback)
+        self.assertFalse(fallback["is_live_verified"])
+        self.assertTrue(fallback["is_import_verified"])
+
+        live_fallback = load_prior_validated_snapshot(snapshots_root=snapshots_dir)
+        self.assertIsNone(live_fallback)
+
+    # -------------------------------------------------------------------------
+    # 38. Multi-File Composite SHA-256 Linkage
+    # -------------------------------------------------------------------------
+    def test_38_multi_file_composite_sha256(self):
+        """Verify multi-file imports compute composite SHA-256 and link all files to receipts."""
+        f1_path = os.path.join(self.temp_dir, "multi_1.csv")
+        f2_path = os.path.join(self.temp_dir, "multi_2.csv")
+
+        with open(f1_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Ghaziabad,Ghaziabad,Potato,Other,FAQ,11/11/2026,900,1000,950\n")
+
+        with open(f2_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Lucknow,Lucknow,Potato,Other,FAQ,11/11/2026,800,900,850\n")
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=os.path.join(self.temp_dir, "multi_snapshots"),
+        )
+        campaign = client.execute_file_import(file_path=[f1_path, f2_path])
+        self.assertEqual(campaign.total_records_accepted, 2)
+        self.assertIsNotNone(campaign.composite_source_sha256)
+
+        # Composite SHA must not equal either individual file SHA
+        sha1 = campaign.source_files[0]["file_sha256"]
+        sha2 = campaign.source_files[1]["file_sha256"]
+        self.assertNotEqual(campaign.composite_source_sha256, sha1)
+        self.assertNotEqual(campaign.composite_source_sha256, sha2)
+
+        # Receipt links to both contributing source files
+        receipt = campaign.district_results["Ghaziabad"].page_receipts[0]
+        self.assertEqual(len(receipt.source_file_hashes), 2)
+        self.assertEqual(receipt.content_sha256, campaign.composite_source_sha256)
+
+    # -------------------------------------------------------------------------
+    # 39. Publish Latest Index Idempotence and Latest Unresolved Conflict
+    # -------------------------------------------------------------------------
+    def test_39_publish_latest_observation_index_idempotence_and_conflicts(self):
+        """Verify publishing index idempotence and quarantine disclosure on divergent quotes."""
+        # Create accepted record and conflicting records
+        rec_acc = RawPriceRecord(
+            state="Uttar Pradesh",
+            district="Kanpur",
+            market_raw="Kanpur(Grain) APMC",
+            commodity="Potato",
+            variety="Other",
+            grade_raw="FAQ",
+            grade_normalized="FAQ",
+            arrival_date_raw="11/11/2026",
+            arrival_date_parsed="2026-11-11",
+            min_price_raw=500,
+            max_price_raw=600,
+            modal_price_raw=550,
+            min_price=500.0,
+            max_price=600.0,
+            modal_price=550.0,
+            market_canonical="Kanpur(Grain)",
+            market_alias_status="CANONICAL",
+            disposition=RecordDisposition.ACCEPTED,
+            disposition_reason="Valid",
+            retrieval_timestamp_utc="2026-11-12T00:00:00Z",
+            display_timestamp_ist="2026-11-12 05:30:00 IST",
+            source_resource_id="res1",
+            source_endpoint="https://example.com",
+            data_mode=DataMode.FILE_IMPORT,
+        )
+
+        # Conflicting quote on latest date for Onion
+        rec_conf1 = RawPriceRecord(
+            state="Uttar Pradesh",
+            district="Kanpur",
+            market_raw="Kanpur(Grain) APMC",
+            commodity="Onion",
+            variety="Other",
+            grade_raw="FAQ",
+            grade_normalized="FAQ",
+            arrival_date_raw="11/11/2026",
+            arrival_date_parsed="2026-11-11",
+            min_price_raw=2800,
+            max_price_raw=3200,
+            modal_price_raw=3000,
+            min_price=2800.0,
+            max_price=3200.0,
+            modal_price=3000.0,
+            market_canonical="Kanpur(Grain)",
+            market_alias_status="CANONICAL",
+            disposition=RecordDisposition.CONFLICTING_QUOTE,
+            disposition_reason="Divergent quote",
+            retrieval_timestamp_utc="2026-11-12T00:00:00Z",
+            display_timestamp_ist="2026-11-12 05:30:00 IST",
+            source_resource_id="res1",
+            source_endpoint="https://example.com",
+            data_mode=DataMode.FILE_IMPORT,
+        )
+
+        idx_path = os.path.join(self.temp_dir, "latest_idx_test.json")
+        idx1 = publish_latest_observation_index([rec_acc, rec_conf1], output_path=idx_path)
+        self.assertEqual(idx1["accepted_series_count"], 1)
+        self.assertEqual(idx1["quarantined_series_count"], 1)
+
+        # Verify Potato series is ACCEPTED
+        potato_key = "Kanpur|Kanpur(Grain)|Potato|Other|FAQ"
+        self.assertIn(potato_key, idx1["series"])
+        self.assertEqual(idx1["series"][potato_key]["status"], "ACCEPTED")
+
+        # Verify Onion series is CONFLICT_QUARANTINED with explicit disclosure
+        onion_key = "Kanpur|Kanpur(Grain)|Onion|Other|FAQ"
+        self.assertIn(onion_key, idx1["series"])
+        self.assertEqual(idx1["series"][onion_key]["status"], "CONFLICT_QUARANTINED")
+        self.assertIn("Unresolved divergent price quotes", idx1["series"][onion_key]["status_reason"])
+        self.assertFalse(idx1["series"][onion_key]["capabilities"]["price_display_permitted"])
+
+        # Idempotence: re-publishing identical content produces identical index
+        idx2 = publish_latest_observation_index([rec_acc, rec_conf1], output_path=idx_path)
+        self.assertEqual(len(idx1["series"]), len(idx2["series"]))
+        self.assertEqual(idx1["accepted_series_count"], idx2["accepted_series_count"])
 
 
 if __name__ == "__main__":

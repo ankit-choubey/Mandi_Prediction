@@ -1,0 +1,270 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "OPERATIONAL_SOURCES_CONFIG",
+  "description": "Selected source configuration for dataset-first operational price ingestion and latest-observation indexing",
+  "generated_date_ist": "2026-11-12",
+  "sources": [
+    {
+      "source_id": "latest_single_day_snapshot_20261111",
+      "role": "LATEST_SNAPSHOT",
+      "file_path": "data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv",
+      "format": "CSV",
+      "file_size_bytes": 1202750,
+      "file_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+      "total_records": 11720,
+      "target_district_records": 30,
+      "observed_date_range": {
+        "min": "2026-11-11",
+        "max": "2026-11-11"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Header XML encoded Min_x0020_Price, Max_x0020_Price, Modal_x0020_Price in standard Agmarknet mandi portal conventions",
+      "provenance_state": "OFFICIAL_OBSERVED_SNAPSHOT",
+      "declared_source_url": "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
+      "declared_retrieval_timestamp": "UNKNOWN",
+      "notes": "Single-day national snapshot containing 30 target records for the 5 primary UP districts on 2026-11-11. Used to establish current latest-observation index."
+    },
+    {
+      "source_id": "historical_2year_apmc_raw_ghaziabad",
+      "role": "HISTORY",
+      "file_path": "data/raw/Gaziabaad.csv",
+      "format": "CSV",
+      "file_size_bytes": 3656537,
+      "file_sha256": "71601f993e07efa146f126747245a7fffb608a307abdea579475ba19bfeb0251",
+      "total_records": 41495,
+      "observed_date_range": {
+        "min": "2024-09-01",
+        "max": "2026-09-01"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Official Agmarknet DMI standard convention",
+      "provenance_state": "OFFICIAL_OBSERVED_APMC_RAW",
+      "declared_source_url": "UNKNOWN",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "historical_2year_apmc_raw_jhansi",
+      "role": "HISTORY",
+      "file_path": "data/raw/Jhansi.csv",
+      "format": "CSV",
+      "file_size_bytes": 1947875,
+      "file_sha256": "7d0808d8d32555212af546004195c0ccf58e368106daad67169a231e80988a5c",
+      "total_records": 23625,
+      "observed_date_range": {
+        "min": "2024-09-01",
+        "max": "2026-09-01"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Jhansi"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Official Agmarknet DMI standard convention",
+      "provenance_state": "OFFICIAL_OBSERVED_APMC_RAW",
+      "declared_source_url": "UNKNOWN",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "historical_2year_apmc_raw_kanpur",
+      "role": "HISTORY",
+      "file_path": "data/raw/Kanpur.csv",
+      "format": "CSV",
+      "file_size_bytes": 3705373,
+      "file_sha256": "0eb17704ebba1f66b8c9ef660f48dabc3665ea4691ed3b8aa20a49df8528d04a",
+      "total_records": 42644,
+      "observed_date_range": {
+        "min": "2024-09-01",
+        "max": "2026-09-01"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Kanpur"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Official Agmarknet DMI standard convention",
+      "provenance_state": "OFFICIAL_OBSERVED_APMC_RAW",
+      "declared_source_url": "UNKNOWN",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "historical_2year_apmc_raw_lucknow",
+      "role": "HISTORY",
+      "file_path": "data/raw/Lukhnow.csv",
+      "format": "CSV",
+      "file_size_bytes": 1840744,
+      "file_sha256": "6ca52743cc2f9059bf1e3b919b25317aa367f580bbafa6f62adb9db1d759bb13",
+      "total_records": 21063,
+      "observed_date_range": {
+        "min": "2024-09-01",
+        "max": "2026-09-01"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Lucknow"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Official Agmarknet DMI standard convention",
+      "provenance_state": "OFFICIAL_OBSERVED_APMC_RAW",
+      "declared_source_url": "UNKNOWN",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "historical_2year_apmc_raw_unnao",
+      "role": "HISTORY",
+      "file_path": "data/raw/Unnao.csv",
+      "format": "CSV",
+      "file_size_bytes": 2570462,
+      "file_sha256": "d4ee358b96cad3a888e4a92acd993327e56c4dc6af6eb60814193f98f591cebc",
+      "total_records": 31365,
+      "observed_date_range": {
+        "min": "2024-09-01",
+        "max": "2026-09-01"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Unnao"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Official Agmarknet DMI standard convention",
+      "provenance_state": "OFFICIAL_OBSERVED_APMC_RAW",
+      "declared_source_url": "UNKNOWN",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "official_agmarknet_excel_potato",
+      "role": "HISTORY",
+      "file_path": "data/raw/arrivals/historical/raw_downloads/Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh.xlsx",
+      "format": "XLSX",
+      "file_size_bytes": 130252,
+      "file_sha256": "cce343820ae199c4d92d1a3c6339d675681ce26f1fa29177a5da985a11c1d09e",
+      "total_records": 2298,
+      "observed_date_range": {
+        "min": "2025-11-14",
+        "max": "2026-10-23"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"],
+        "commodities": ["Potato"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Explicit column 'Price Unit' = 'Rs./Quintal'",
+      "provenance_state": "OFFICIAL_AGMARKNET_WEB_REPORT",
+      "declared_source_url": "https://agmarknet.gov.in",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "official_agmarknet_excel_onion",
+      "role": "HISTORY",
+      "file_path": "data/raw/arrivals/historical/raw_downloads/Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh (1).xlsx",
+      "format": "XLSX",
+      "file_size_bytes": 88072,
+      "file_sha256": "b801afbadbe5bb22b0ba523c6c04f9547d2ce892eb6c1fe6a12a83e02026cff6",
+      "total_records": 1479,
+      "observed_date_range": {
+        "min": "2025-11-14",
+        "max": "2026-10-22"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"],
+        "commodities": ["Onion"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Explicit column 'Price Unit' = 'Rs./Quintal'",
+      "provenance_state": "OFFICIAL_AGMARKNET_WEB_REPORT",
+      "declared_source_url": "https://agmarknet.gov.in",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "official_agmarknet_excel_tomato",
+      "role": "HISTORY",
+      "file_path": "data/raw/arrivals/historical/raw_downloads/Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh (2).xlsx",
+      "format": "XLSX",
+      "file_size_bytes": 94407,
+      "file_sha256": "ce7d7e432378bf3d891632766ecad7f058097d81232da1e765a0b731427c3ea4",
+      "total_records": 1612,
+      "observed_date_range": {
+        "min": "2025-11-14",
+        "max": "2026-10-21"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"],
+        "commodities": ["Tomato"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Explicit column 'Price Unit' = 'Rs./Quintal'",
+      "provenance_state": "OFFICIAL_AGMARKNET_WEB_REPORT",
+      "declared_source_url": "https://agmarknet.gov.in",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "official_agmarknet_excel_wheat",
+      "role": "HISTORY",
+      "file_path": "data/raw/arrivals/historical/raw_downloads/Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh (3).xlsx",
+      "format": "XLSX",
+      "file_size_bytes": 469574,
+      "file_sha256": "d7d98f6482ee65427181f9b3ec4a3b7dfd99042b45e90e7a2b25b29f79020473",
+      "total_records": 8370,
+      "observed_date_range": {
+        "min": "2025-11-10",
+        "max": "2026-10-09"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"],
+        "commodities": ["Wheat"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Explicit column 'Price Unit' = 'Rs./Quintal'",
+      "provenance_state": "OFFICIAL_AGMARKNET_WEB_REPORT",
+      "declared_source_url": "https://agmarknet.gov.in",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    },
+    {
+      "source_id": "official_agmarknet_excel_rice",
+      "role": "HISTORY",
+      "file_path": "data/raw/arrivals/historical/raw_downloads/Daily Price Arrival Report-07-11-2025 to 06-11-2026 for Uttar Pradesh (4).xlsx",
+      "format": "XLSX",
+      "file_size_bytes": 144106,
+      "file_sha256": "e0e1a1de0cb103080fa93f6ea0f8823122c679919f6356bc4b5b42fa605bbbe4",
+      "total_records": 2271,
+      "observed_date_range": {
+        "min": "2025-11-10",
+        "max": "2026-10-26"
+      },
+      "scope": {
+        "state": "Uttar Pradesh",
+        "districts": ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"],
+        "commodities": ["Rice"]
+      },
+      "price_units": "Rs./Quintal",
+      "unit_evidence": "Explicit column 'Price Unit' = 'Rs./Quintal'",
+      "provenance_state": "OFFICIAL_AGMARKNET_WEB_REPORT",
+      "declared_source_url": "https://agmarknet.gov.in",
+      "declared_retrieval_timestamp": "UNKNOWN"
+    }
+  ],
+  "operational_policies": {
+    "primary_operational_workflow": "DATASET_FIRST_IMPORT",
+    "grade_policy": "SOURCE_NOT_PROVIDED_STRICT_NO_FAQ_MERGE",
+    "alias_policy": "CANDIDATE_V21_POLICY",
+    "conflict_safety": "ORDER_INVARIANT_QUARANTINE_ALL_CONFLICTING_QUOTES",
+    "bounds_rule": "HONEST_BOUNDS_NO_MODAL_SUBSTITUTION",
+    "freshness_rule": "PER_SERIES_OBSERVED_DATE_FRESHNESS",
+    "local_processing_limits": {
+      "max_bytes_per_file": 10485760,
+      "max_rows_per_file": 50000,
+      "max_operation_seconds": 30
+    }
+  }
+}

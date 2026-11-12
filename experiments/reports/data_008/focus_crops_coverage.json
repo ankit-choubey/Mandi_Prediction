@@ -1,0 +1,122 @@
+{
+  "task_id": "MP-DATA-008",
+  "generated_date_ist": "2026-11-12",
+  "observation_date": "2026-11-11",
+  "focus_crops": {
+    "Potato": {
+      "series_count": 4,
+      "accepted_count": 4,
+      "quarantined_count": 0,
+      "observations": [
+        {
+          "district": "Ghaziabad",
+          "market": "Ghaziabad",
+          "variety": "Other",
+          "grade": "FAQ",
+          "modal_price": 950.0,
+          "min_price": 900.0,
+          "max_price": 1000.0,
+          "status": "ACCEPTED"
+        },
+        {
+          "district": "Kanpur",
+          "market": "Kanpur(Grain)",
+          "variety": "Other",
+          "grade": "FAQ",
+          "modal_price": 550.0,
+          "min_price": 500.0,
+          "max_price": 600.0,
+          "status": "ACCEPTED"
+        },
+        {
+          "district": "Kanpur",
+          "market": "Uttaripura",
+          "variety": "Other",
+          "grade": "FAQ",
+          "modal_price": 500.0,
+          "min_price": 460.0,
+          "max_price": 540.0,
+          "status": "ACCEPTED"
+        },
+        {
+          "district": "Lucknow",
+          "market": "Lucknow",
+          "variety": "Other",
+          "grade": "FAQ",
+          "modal_price": 850.0,
+          "min_price": 800.0,
+          "max_price": 900.0,
+          "status": "ACCEPTED"
+        }
+      ]
+    },
+    "Onion": {
+      "series_count": 1,
+      "accepted_count": 1,
+      "quarantined_count": 0,
+      "observations": [
+        {
+          "district": "Kanpur",
+          "market": "Kanpur(Grain)",
+          "variety": "Other",
+          "grade": "FAQ",
+          "modal_price": 3000.0,
+          "min_price": 2800.0,
+          "max_price": 3200.0,
+          "status": "ACCEPTED"
+        }
+      ]
+    },
+    "Tomato": {
+      "series_count": 0,
+      "accepted_count": 0,
+      "quarantined_count": 0,
+      "notes": "Tomato was not traded or reported in the 5 target UP districts in the 2026-11-11 snapshot."
+    },
+    "Wheat": {
+      "series_count": 1,
+      "accepted_count": 1,
+      "quarantined_count": 0,
+      "observations": [
+        {
+          "district": "Unnao",
+          "market": "Unnao",
+          "variety": "Dara",
+          "grade": "FAQ",
+          "modal_price": 2500.0,
+          "min_price": 2400.0,
+          "max_price": 2600.0,
+          "status": "ACCEPTED"
+        }
+      ]
+    },
+    "Rice": {
+      "series_count": 10,
+      "accepted_count": 6,
+      "quarantined_count": 4,
+      "breakdown": {
+        "Paddy(Common)": {
+          "series_count": 5,
+          "accepted_count": 3,
+          "quarantined_count": 2,
+          "accepted_markets": ["Kanpur(Grain)", "Unnao (1001)", "Unnao (Common)"],
+          "quarantined_markets": ["Baripaal APMC", "Purwa APMC"]
+        },
+        "Paddy(Basmati)": {
+          "series_count": 5,
+          "accepted_count": 3,
+          "quarantined_count": 2,
+          "accepted_markets": ["Ghaziabad", "Unnao (Basmati)", "Unnao (Other)"],
+          "quarantined_markets": ["Baripaal APMC", "Purwa APMC"]
+        }
+      }
+    },
+    "Mustard": {
+      "series_count": 0,
+      "accepted_count": 0,
+      "quarantined_count": 0,
+      "notes": "Mustard was not traded or reported in the 5 target UP districts in the 2026-11-11 snapshot."
+    }
+  },
+  "extrapolation_warning": "Snapshot coverage reflects single-day spot trading only (6 accepted focus-crop series). Do not extrapolate full-panel coverage from single-day snapshots."
+}

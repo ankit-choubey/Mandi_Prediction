@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "PRICE_FORECAST_V1_SPECIFICATION",
+  "task_id": "MP-DATA-008",
+  "generated_date_ist": "2026-11-12",
+  "status": "SPECIFIED_PENDING_REMOTE_EXECUTION",
+  "execution_notes": "Local model training and Kaggle execution are strictly forbidden in this task. This configuration specifies the reproducible protocol for Step 7 price-only ML benchmarking.",
+  "target_specification": {
+    "horizon_days": 7,
+    "target_window_offsets": [6, 8],
+    "selection_policy": "NEAREST_OBSERVED_WITH_EARLIER_TIE_BREAK",
+    "exact_t7_sensitivity_required": true,
+    "max_target_date_rule": "target_date <= fold_test_end",
+    "train_maturity_rule": "target_date <= train_cutoff (origin t <= train_cutoff - 8 days)"
+  },
+  "temporal_folds": [
+    {
+      "fold_id": "F1",
+      "train_cutoff": "2024-12-31",
+      "test_start": "2025-01-08",
+      "test_end": "2025-06-30",
+      "embargo_days": 7,
+      "max_train_origin": "2024-12-23"
+    },
+    {
+      "fold_id": "F2",
+      "train_cutoff": "2025-06-30",
+      "test_start": "2025-07-08",
+      "test_end": "2025-10-31",
+      "embargo_days": 7,
+      "max_train_origin": "2025-06-22"
+    },
+    {
+      "fold_id": "F3",
+      "train_cutoff": "2025-12-18",
+      "test_start": "2025-12-26",
+      "test_end": "2026-03-31",
+      "embargo_days": 7,
+      "max_train_origin": "2025-12-10"
+    },
+    {
+      "fold_id": "F4",
+      "train_cutoff": "2026-03-31",
+      "test_start": "2026-04-08",
+      "test_end": "2026-09-30",
+      "embargo_days": 7,
+      "max_train_origin": "2026-03-23"
+    }
+  ],
+  "series_eligibility": {
+    "tier_a": {
+      "min_train_observations": 60,
+      "min_coverage": 0.30,
+      "coverage_span_definition": "inclusive first-to-last observed trading date within training window",
+      "origin_recency_window_days": 30,
+      "min_origin_recency_observations": 3
+    },
+    "tier_b": {
+      "min_train_observations": 120,
+      "min_coverage": 0.30,
+      "coverage_span_definition": "inclusive first-to-last observed trading date within training window",
+      "origin_recency_window_days": 30,
+      "min_origin_recency_observations": 3
+    }
+  },
+  "features": {
+    "builder_module": "src.forecast_features",
+    "feature_code_version": "1.0.0",
+    "feature_columns": [
+      "current_price",
+      "price_lag_1",
+      "price_lag_3",
+      "price_lag_7",
+      "price_lag_14",
+      "price_lag_28",
+      "last_observation_age_days",
+      "rolling_count_7d",
+      "rolling_mean_7d",
+      "rolling_std_7d",
+      "rolling_count_30d",
+      "rolling_mean_30d",
+      "rolling_std_30d",
+      "day_of_week",
+      "day_of_week_sin",
+      "day_of_week_cos",
+      "month",
+      "month_sin",
+      "month_cos",
+      "day_of_month",
+      "day_of_year"
+    ],
+    "calendar_lags": [1, 3, 7, 14, 28],
+    "rolling_windows_days": [7, 30],
+    "rolling_window_convention": "Preceding calendar span [t-W, t-1] strictly exclusive of t",
+    "std_ddof": 1,
+    "min_obs_for_mean": 1,
+    "min_obs_for_std": 2,
+    "imputation_policy": "Training-only fitted median imputer for models requiring dense inputs. Native missing value handling for HistGradientBoosting. Zero future or test imputation leakage."
+  },
+  "missing_data_taxonomy": {
+    "NO_ORIGIN": "Series was not observed on candidate calendar origin date t",
+    "INELIGIBLE_HISTORY": "Series failed Tier A (N < 60 or coverage < 0.30) or Tier B (N < 120 or coverage < 0.30) training threshold",
+    "MISSING_FEATURES": "Origin lacks required feature history (e.g. last_observation_age_days is NaN)",
+    "NO_TARGET": "No valid trade observation exists in target evaluation window [t+6, t+8] (evaluation origin skipped)",
+    "MODEL_ABSTENTION": "Model abstains from predicting due to uncertainty, out-of-domain features, or non-finite outputs",
+    "SERVING_DENIAL": "Serving policy denial: market alias under review, unknown grade, or observation older than 3 calendar days"
+  },
+  "candidate_models": {
+    "ridge_regression": {
+      "model_class": "sklearn.linear_model.Ridge",
+      "role": "Linear regularized baseline on lagged price and calendar features",
+      "hyperparameters": {
+        "alpha": [0.01, 0.1, 1.0, 10.0, 100.0]
+      },
+      "preprocessor": "Pipeline([('imputer', SimpleImputer(strategy='median')), ('scaler', StandardScaler())]) fitted strictly on train fold",
+      "tuning_protocol": "Inner chronological rolling-origin validation on train fold; zero test fold inspection"
+    },
+    "hist_gradient_boosting": {
+      "model_class": "sklearn.ensemble.HistGradientBoostingRegressor",
+      "role": "Nonlinear tabular tree baseline with native NaN support",
+      "hyperparameters": {
+        "max_iter": 100,
+        "max_depth": [3, 5, null],
+        "learning_rate": [0.05, 0.1],
+        "min_samples_leaf": [10, 20],
+        "random_state": 42
+      },
+      "preprocessor": "None (native NaN support)",
+      "tuning_protocol": "Inner chronological rolling-origin validation on train fold; zero test fold inspection"
+    },
+    "benchmark_baselines_rescored": [
+      "naive_h7",
+      "moving_average_7d",
+      "drift",
+      "seasonal_naive_364d"
+    ]
+  },
+  "evaluation_metrics": {
+    "point_metrics": [
+      "MAE",
+      "RMSE",
+      "MeanBias",
+      "MedianAE",
+      "MAPE_with_valid_denominator"
+    ],
+    "paired_skill": {
+      "formula": "1 - (sum(|y - y_hat|) / sum(|y - y_naive|)) on exactly matched non-abstained finite pairs",
+      "confidence_intervals": "Cluster bootstrap at series level (95% CI)"
+    },
+    "slice_stratification": [
+      "Overall Tier A",
+      "Overall Tier B",
+      "By District (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao)",
+      "By Focus Crop (Potato, Onion, Tomato, Wheat, Rice, Mustard)",
+      "By Volatility Regime (Low, Medium, High)"
+    ],
+    "mase_policy": "NOT COMPUTED until official train-only nonseasonal 1-step scaling implementation is verified"
+  }
+}

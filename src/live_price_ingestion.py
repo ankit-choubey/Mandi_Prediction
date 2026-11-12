@@ -173,6 +173,9 @@ class RawPriceRecord:
     price_unit: str = PUBLISHED_PRICE_UNIT
     superseded_by: Optional[str] = None
     supersedes: Optional[str] = None
+    source_file_path: Optional[str] = None
+    source_file_sha256: Optional[str] = None
+    source_file_bytes: Optional[int] = None
 
     def natural_key(self) -> Tuple[str, str, str, str, str, str]:
         """Unique identifying tuple for observation deduplication."""
@@ -216,6 +219,8 @@ class PageReceipt:
     source_file_path: Optional[str] = None
     source_file_sha256: Optional[str] = None
     source_file_bytes: Optional[int] = None
+    source_file_hashes: List[Dict[str, Any]] = field(default_factory=list)
+    composite_source_sha256: Optional[str] = None
     source_url_declared: str = "UNKNOWN"
     retrieval_time_declared: str = "UNKNOWN"
 
@@ -302,6 +307,7 @@ class IngestionCampaignResult:
     blocked_reason: Optional[str] = None
     capabilities: Dict[str, Any] = field(default_factory=dict)
     source_files: List[Dict[str, Any]] = field(default_factory=list)
+    composite_source_sha256: Optional[str] = None
 
     def validate_arithmetic(self) -> Dict[str, Any]:
         accounted = (
@@ -335,6 +341,7 @@ class IngestionCampaignResult:
             "is_blocked": self.is_blocked,
             "blocked_reason": self.blocked_reason,
             "source_files": self.source_files,
+            "composite_source_sha256": self.composite_source_sha256,
             "arithmetic_reconciliation": self.validate_arithmetic(),
             "capabilities": self.capabilities,
             "district_results": {
@@ -646,10 +653,16 @@ def load_alias_mapping(alias_path: Optional[str] = None) -> Dict[Tuple[str, str]
     return mapping
 
 
-def parse_observation_date(date_str: Any) -> Optional[date]:
-    if not date_str or not isinstance(date_str, str):
+def parse_observation_date(date_val: Any) -> Optional[date]:
+    if date_val is None:
         return None
-    cleaned = date_str.strip()
+    if isinstance(date_val, datetime):
+        return date_val.date()
+    if isinstance(date_val, date):
+        return date_val
+    if not isinstance(date_val, str):
+        return None
+    cleaned = date_val.strip()
     for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d"):
         try:
             return datetime.strptime(cleaned[:10], fmt).date()
@@ -738,19 +751,22 @@ class LivePriceIngestionClient:
         requested_district: str,
         retrieval_utc: str,
         display_ist: str,
+        source_file_path: Optional[str] = None,
+        source_file_sha256: Optional[str] = None,
+        source_file_bytes: Optional[int] = None,
     ) -> RawPriceRecord:
         """Parse raw JSON dict into RawPriceRecord with deterministic disposition."""
-        state = str(extract_field(raw_row, ["state", "State"]) or "").strip()
+        state = str(extract_field(raw_row, ["state", "State", "State/UT"]) or "").strip()
         dist = str(extract_field(raw_row, ["district", "District"]) or "").strip()
         market = str(extract_field(raw_row, ["market", "Market"]) or "").strip()
         commodity = str(extract_field(raw_row, ["commodity", "Commodity"]) or "").strip()
         variety = str(extract_field(raw_row, ["variety", "Variety"]) or "").strip()
         grade_raw = extract_field(raw_row, ["grade", "Grade"])
-        arrival_date_raw = str(extract_field(raw_row, ["arrival_date", "Arrival_Date"]) or "").strip()
+        arrival_date_raw = str(extract_field(raw_row, ["arrival_date", "Arrival_Date", "Arrival Date"]) or "").strip()
 
-        min_p_raw = extract_field(raw_row, ["min_price", "Min_Price", "Min_x0020_Price"])
-        max_p_raw = extract_field(raw_row, ["max_price", "Max_Price", "Max_x0020_Price"])
-        modal_p_raw = extract_field(raw_row, ["modal_price", "Modal_Price", "Modal_x0020_Price"])
+        min_p_raw = extract_field(raw_row, ["min_price", "Min_Price", "Min_x0020_Price", "Min Price"])
+        max_p_raw = extract_field(raw_row, ["max_price", "Max_Price", "Max_x0020_Price", "Max Price"])
+        modal_p_raw = extract_field(raw_row, ["modal_price", "Modal_Price", "Modal_x0020_Price", "Modal Price"])
 
         # Grade normalization: missing grade is explicitly SOURCE_NOT_PROVIDED, never silently FAQ
         if grade_raw is None or str(grade_raw).strip() == "":
@@ -778,6 +794,9 @@ class LivePriceIngestionClient:
             "source_endpoint": self.endpoint_url,
             "data_mode": self.data_mode,
             "is_synthetic": (self.data_mode == DataMode.SYNTHETIC_SIMULATION),
+            "source_file_path": source_file_path,
+            "source_file_sha256": source_file_sha256,
+            "source_file_bytes": source_file_bytes,
         }
 
         # 1. Required fields presence check
@@ -1476,6 +1495,13 @@ class LivePriceIngestionClient:
             if not os.path.exists(f_path):
                 raise FileNotFoundError(f"Import file not found: {f_path}")
 
+            ext = os.path.splitext(f_path)[1].lower()
+            if ext not in (".csv", ".xlsx"):
+                raise ValueError(
+                    f"Unsupported file format '{ext}' for file '{f_path}'. "
+                    f"Supported formats are: .csv, .xlsx"
+                )
+
             file_bytes = os.path.getsize(f_path)
             if file_bytes > MAX_RESPONSE_BYTES:
                 raise ValueError(
@@ -1497,21 +1523,63 @@ class LivePriceIngestionClient:
             all_file_metadata.append(file_meta)
 
             row_count = 0
-            with open(f_path, "r", encoding="utf-8", errors="replace") as cf:
-                reader = csv.DictReader(cf)
-                for row in reader:
+            if ext == ".csv":
+                with open(f_path, "r", encoding="utf-8", errors="replace") as cf:
+                    reader = csv.DictReader(cf)
+                    for row in reader:
+                        row_count += 1
+                        if row_count > MAX_IMPORT_RECORDS_BUDGET:
+                            raise ValueError(
+                                f"File '{os.path.basename(f_path)}' row count exceeds maximum allowed "
+                                f"local processing limit ({MAX_IMPORT_RECORDS_BUDGET} rows = 50,000)."
+                            )
+                        d_val = str(extract_field(row, ["district", "District"]) or "").strip()
+                        if district and district.lower() != "all" and d_val.lower() != district.lower():
+                            continue
+                        raw_rows_by_district.setdefault(d_val, []).append((row, f_path, file_sha, file_bytes))
+            elif ext == ".xlsx":
+                import openpyxl
+                wb = openpyxl.load_workbook(f_path, data_only=True, read_only=True)
+                sheet = wb.active
+                rows_iter = sheet.iter_rows(values_only=True)
+                first_row = next(rows_iter, None)
+                if first_row is None:
+                    wb.close()
+                    continue
+                first_row_str = [str(c).strip().lower() for c in first_row if c is not None]
+                if any(h in first_row_str for h in ("district", "market", "commodity")):
+                    header_row = [str(c).strip() if c is not None else "" for c in first_row]
+                else:
+                    second_row = next(rows_iter, None)
+                    if second_row is None:
+                        wb.close()
+                        continue
+                    header_row = [str(c).strip() if c is not None else "" for c in second_row]
+
+                for row_cells in rows_iter:
                     row_count += 1
                     if row_count > MAX_IMPORT_RECORDS_BUDGET:
+                        wb.close()
                         raise ValueError(
                             f"File '{os.path.basename(f_path)}' row count exceeds maximum allowed "
                             f"local processing limit ({MAX_IMPORT_RECORDS_BUDGET} rows = 50,000)."
                         )
-                    d_val = str(extract_field(row, ["district", "District"]) or "").strip()
+                    row_dict = {k: v for k, v in zip(header_row, row_cells) if k}
+                    d_val = str(extract_field(row_dict, ["district", "District"]) or "").strip()
                     if district and district.lower() != "all" and d_val.lower() != district.lower():
                         continue
-                    raw_rows_by_district.setdefault(d_val, []).append((row, f_path, file_sha, file_bytes))
+                    raw_rows_by_district.setdefault(d_val, []).append((row_dict, f_path, file_sha, file_bytes))
+                wb.close()
 
         campaign.source_files = all_file_metadata
+        if len(all_file_metadata) > 1:
+            sorted_shas = "".join(sorted(m["file_sha256"] for m in all_file_metadata))
+            composite_sha = hashlib.sha256(sorted_shas.encode("utf-8")).hexdigest()
+        elif all_file_metadata:
+            composite_sha = all_file_metadata[0]["file_sha256"]
+        else:
+            composite_sha = ""
+        campaign.composite_source_sha256 = composite_sha
 
         if not raw_rows_by_district:
             campaign.overall_operational_state = OperationalState.EMPTY
@@ -1540,6 +1608,9 @@ class LivePriceIngestionClient:
                     requested_district=dist_name,
                     retrieval_utc=retrieval_timestamp_utc,
                     display_ist="UNKNOWN",
+                    source_file_path=src_file,
+                    source_file_sha256=src_sha,
+                    source_file_bytes=src_bytes,
                 )
                 rec.data_mode = DataMode.FILE_IMPORT
                 rec.is_synthetic = False
@@ -1637,9 +1708,9 @@ class LivePriceIngestionClient:
                 http_status=200,
                 source_total=dist_res.records_fetched,
                 fetched_count=dist_res.records_fetched,
-                content_sha256=primary_file_sha,
+                content_sha256=composite_sha,
                 completeness_state=dist_res.completeness_state,
-                sanitized_params={"import_source": primary_file_path, "district": dist_name},
+                sanitized_params={"import_source": [m["file_path"] for m in all_file_metadata], "district": dist_name},
                 endpoint_sanitized=f"file://{primary_file_path}",
                 data_mode=DataMode.FILE_IMPORT,
                 is_synthetic=False,
@@ -1647,6 +1718,11 @@ class LivePriceIngestionClient:
                 source_file_path=primary_file_path,
                 source_file_sha256=primary_file_sha,
                 source_file_bytes=primary_file_bytes,
+                source_file_hashes=[
+                    {"file_path": m["file_path"], "file_sha256": m["file_sha256"], "file_bytes": m["file_bytes"]}
+                    for m in all_file_metadata
+                ],
+                composite_source_sha256=composite_sha,
                 source_url_declared=source_url,
                 retrieval_time_declared=retrieval_timestamp_utc,
             )
@@ -1681,6 +1757,11 @@ class LivePriceIngestionClient:
         }
 
         self._write_run_receipt(campaign)
+
+        # Update persistent last_successful_import pointer on accepted records
+        if has_accepted:
+            self._update_last_import_pointer(campaign)
+
         return campaign
 
     def _write_run_receipt(self, campaign: IngestionCampaignResult) -> None:
@@ -1707,6 +1788,35 @@ class LivePriceIngestionClient:
             "total_records_accepted": campaign.total_records_accepted,
             "districts": list(campaign.district_results.keys()),
             "receipt_path": os.path.join(campaign.run_id_utc, "run_receipt.json"),
+        }
+        temp_path = f"{pointer_path}.tmp_{os.getpid()}"
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        os.replace(temp_path, pointer_path)
+
+    def _update_last_import_pointer(self, campaign: IngestionCampaignResult) -> None:
+        """
+        Atomically persist pointer to last successful dataset file import.
+        Strictly called for FILE_IMPORT runs with accepted records.
+        Never updates or overwrites last_successful_campaign.json.
+        """
+        pointer_path = os.path.join(self.snapshots_root, "last_successful_import.json")
+        payload = {
+            "run_id_utc": campaign.run_id_utc,
+            "execution_timestamp_utc": campaign.execution_timestamp_utc,
+            "execution_timestamp_ist": campaign.execution_timestamp_ist,
+            "total_records_accepted": campaign.total_records_accepted,
+            "districts": list(campaign.district_results.keys()),
+            "receipt_path": os.path.join(campaign.run_id_utc, "run_receipt.json"),
+            "composite_source_sha256": campaign.composite_source_sha256,
+            "source_files": [
+                {
+                    "file_path": f.get("file_path"),
+                    "file_sha256": f.get("file_sha256"),
+                    "file_bytes": f.get("file_bytes"),
+                }
+                for f in campaign.source_files
+            ],
         }
         temp_path = f"{pointer_path}.tmp_{os.getpid()}"
         with open(temp_path, "w", encoding="utf-8") as f:
@@ -1745,6 +1855,258 @@ def load_prior_validated_snapshot(
         return campaign_data
     except Exception:
         return None
+
+
+def load_prior_validated_import(
+    snapshots_root: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """
+    Load prior validated successful file import as labeled fallback.
+    Preserves original trade and retrieval timestamps.
+    Returns None if no validated file import exists.
+    """
+    root = snapshots_root or DEFAULT_FILE_IMPORT_SNAPSHOTS_ROOT
+    pointer_path = os.path.join(root, "last_successful_import.json")
+    if not os.path.exists(pointer_path):
+        return None
+
+    try:
+        with open(pointer_path, "r", encoding="utf-8") as f:
+            pointer = json.load(f)
+        rel_receipt = pointer.get("receipt_path")
+        if not rel_receipt:
+            return None
+        full_receipt_path = os.path.join(root, rel_receipt)
+        if not os.path.exists(full_receipt_path):
+            return None
+        with open(full_receipt_path, "r", encoding="utf-8") as f:
+            campaign_data = json.load(f)
+        return {
+            "pointer": pointer,
+            "receipt": campaign_data,
+            "is_live_verified": False,
+            "is_import_verified": True,
+            "fallback_type": "FILE_IMPORT",
+        }
+    except Exception:
+        return None
+
+
+def publish_latest_observation_index(
+    campaign_or_records: Union[IngestionCampaignResult, Sequence[RawPriceRecord]],
+    output_path: Optional[str] = None,
+    reference_date: Optional[date] = None,
+) -> Dict[str, Any]:
+    """
+    Publish an ignored bounded per-series latest-observation index and provenance manifest.
+    Guarantees:
+    - One trustworthy latest record per complete district/market/commodity/variety/grade identity.
+    - Captures original date, source file hash(s), actual import time, declared retrieval timestamp,
+      price unit evidence, alias status, and per-series freshness.
+    - Unresolved conflicts on latest observation date are quarantined with explicit disclosure;
+      never silently falling back to an older price.
+    - Atomic JSON persistence to output_path (default data/imported_snapshots/latest_observation_index.json).
+    """
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    target_path = output_path or os.path.join(repo_root, "data", "imported_snapshots", "latest_observation_index.json")
+
+    records: List[RawPriceRecord] = []
+    source_files: List[Dict[str, Any]] = []
+    composite_sha = ""
+    run_id = ""
+    import_time_utc = datetime.now(timezone.utc).isoformat()
+    declared_retrieval = "UNKNOWN"
+
+    if isinstance(campaign_or_records, IngestionCampaignResult):
+        for dist_res in campaign_or_records.district_results.values():
+            records.extend(dist_res.accepted_records)
+            records.extend(dist_res.quarantined_records)
+            records.extend(dist_res.duplicate_records)
+        source_files = campaign_or_records.source_files
+        composite_sha = campaign_or_records.composite_source_sha256 or (
+            source_files[0]["file_sha256"] if source_files else ""
+        )
+        run_id = campaign_or_records.run_id_utc
+        import_time_utc = campaign_or_records.execution_timestamp_utc
+        if source_files:
+            declared_retrieval = source_files[0].get("retrieval_timestamp_declared", "UNKNOWN")
+    else:
+        records = list(campaign_or_records)
+        run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+        if records:
+            import_time_utc = records[0].retrieval_timestamp_utc
+            declared_retrieval = records[0].retrieval_timestamp_utc
+
+    ref_d = reference_date or datetime.now(IST_TIMEZONE).date()
+
+    # Group records by series tuple: (district, market_key, commodity, variety, grade)
+    series_groups: Dict[Tuple[str, str, str, str, str], List[RawPriceRecord]] = {}
+    for r in records:
+        m_key = r.market_canonical or r.market_raw
+        s_key = (
+            r.district.strip(),
+            m_key.strip(),
+            r.commodity.strip(),
+            r.variety.strip(),
+            r.grade_normalized.strip(),
+        )
+        series_groups.setdefault(s_key, []).append(r)
+
+    series_index: Dict[str, Dict[str, Any]] = {}
+    accepted_series_count = 0
+    quarantined_series_count = 0
+
+    for s_tuple, recs in series_groups.items():
+        dist, mkt, comm, var, grd = s_tuple
+        series_id = f"{dist}|{mkt}|{comm}|{var}|{grd}"
+
+        valid_dates = [r.arrival_date_parsed for r in recs if r.arrival_date_parsed]
+        if not valid_dates:
+            continue
+        max_date = max(valid_dates)
+
+        latest_recs = [r for r in recs if r.arrival_date_parsed == max_date]
+        has_conflicts = any(r.disposition == RecordDisposition.CONFLICTING_QUOTE for r in latest_recs)
+        accepted_on_latest = [r for r in latest_recs if r.disposition == RecordDisposition.ACCEPTED]
+        duplicates_on_latest = [r for r in latest_recs if r.disposition == RecordDisposition.EXACT_DUPLICATE]
+
+        unique_price_tuples = {r.price_tuple() for r in latest_recs if r.modal_price is not None}
+
+        try:
+            obs_d = datetime.strptime(max_date, "%Y-%m-%d").date()
+            freshness_days = (ref_d - obs_d).days
+        except Exception:
+            freshness_days = None
+
+        if len(unique_price_tuples) > 1 or has_conflicts:
+            quarantined_series_count += 1
+            sample_r = latest_recs[0]
+            series_index[series_id] = {
+                "series_id": series_id,
+                "district": dist,
+                "market_canonical": sample_r.market_canonical,
+                "market_raw": sample_r.market_raw,
+                "commodity": comm,
+                "variety": var,
+                "grade": grd,
+                "grade_raw": sample_r.grade_raw,
+                "latest_observation_date": max_date,
+                "modal_price": sample_r.modal_price,
+                "min_price": sample_r.min_price,
+                "max_price": sample_r.max_price,
+                "price_unit": PUBLISHED_PRICE_UNIT,
+                "unit_evidence": "Declared in official Agmarknet source",
+                "market_alias_status": sample_r.market_alias_status,
+                "status": "CONFLICT_QUARANTINED",
+                "status_reason": (
+                    f"Unresolved divergent price quotes on latest observation date {max_date}. "
+                    f"Fallback to older price forbidden without explicit disclosure."
+                ),
+                "freshness_days": freshness_days,
+                "source_file_hashes": [m["file_sha256"] for m in source_files] if source_files else ([sample_r.source_file_sha256] if sample_r.source_file_sha256 else []),
+                "composite_source_sha256": composite_sha,
+                "import_timestamp_utc": import_time_utc,
+                "declared_retrieval_timestamp": declared_retrieval,
+                "is_live_verified": False,
+                "is_import_verified": True,
+                "capabilities": {
+                    "price_display_permitted": False,
+                    "forecast_eligible": False,
+                    "economics_eligible": False,
+                    "active_advice_permitted": False,
+                },
+            }
+        elif accepted_on_latest or duplicates_on_latest:
+            anchor_r = accepted_on_latest[0] if accepted_on_latest else duplicates_on_latest[0]
+            accepted_series_count += 1
+            series_index[series_id] = {
+                "series_id": series_id,
+                "district": dist,
+                "market_canonical": anchor_r.market_canonical,
+                "market_raw": anchor_r.market_raw,
+                "commodity": comm,
+                "variety": var,
+                "grade": grd,
+                "grade_raw": anchor_r.grade_raw,
+                "latest_observation_date": max_date,
+                "modal_price": anchor_r.modal_price,
+                "min_price": anchor_r.min_price,
+                "max_price": anchor_r.max_price,
+                "price_unit": PUBLISHED_PRICE_UNIT,
+                "unit_evidence": "Declared in official Agmarknet source",
+                "market_alias_status": anchor_r.market_alias_status,
+                "status": "ACCEPTED",
+                "status_reason": "Validated official observed latest trade record.",
+                "freshness_days": freshness_days,
+                "duplicate_count_on_latest": len(duplicates_on_latest),
+                "source_file_hashes": [m["file_sha256"] for m in source_files] if source_files else ([anchor_r.source_file_sha256] if anchor_r.source_file_sha256 else []),
+                "composite_source_sha256": composite_sha,
+                "import_timestamp_utc": import_time_utc,
+                "declared_retrieval_timestamp": declared_retrieval,
+                "is_live_verified": False,
+                "is_import_verified": True,
+                "capabilities": {
+                    "price_display_permitted": True,
+                    "forecast_eligible": False,
+                    "economics_eligible": False,
+                    "active_advice_permitted": False,
+                },
+            }
+        else:
+            sample_r = latest_recs[0]
+            quarantined_series_count += 1
+            series_index[series_id] = {
+                "series_id": series_id,
+                "district": dist,
+                "market_canonical": sample_r.market_canonical,
+                "market_raw": sample_r.market_raw,
+                "commodity": comm,
+                "variety": var,
+                "grade": grd,
+                "grade_raw": sample_r.grade_raw,
+                "latest_observation_date": max_date,
+                "modal_price": sample_r.modal_price,
+                "min_price": sample_r.min_price,
+                "max_price": sample_r.max_price,
+                "price_unit": PUBLISHED_PRICE_UNIT,
+                "unit_evidence": "Declared in official Agmarknet source",
+                "market_alias_status": sample_r.market_alias_status,
+                "status": sample_r.disposition.value,
+                "status_reason": sample_r.disposition_reason,
+                "freshness_days": freshness_days,
+                "source_file_hashes": [m["file_sha256"] for m in source_files] if source_files else ([sample_r.source_file_sha256] if sample_r.source_file_sha256 else []),
+                "composite_source_sha256": composite_sha,
+                "import_timestamp_utc": import_time_utc,
+                "declared_retrieval_timestamp": declared_retrieval,
+                "is_live_verified": False,
+                "is_import_verified": True,
+                "capabilities": {
+                    "price_display_permitted": False,
+                    "forecast_eligible": False,
+                    "economics_eligible": False,
+                    "active_advice_permitted": False,
+                },
+            }
+
+    index_payload = {
+        "index_version": "1.0.0",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "run_id_utc": run_id,
+        "total_series_indexed": len(series_index),
+        "accepted_series_count": accepted_series_count,
+        "quarantined_series_count": quarantined_series_count,
+        "composite_source_sha256": composite_sha,
+        "source_files": source_files,
+        "series": series_index,
+    }
+
+    os.makedirs(os.path.dirname(target_path), exist_ok=True)
+    temp_target = f"{target_path}.tmp_{os.getpid()}"
+    with open(temp_target, "w", encoding="utf-8") as f:
+        json.dump(index_payload, f, indent=2)
+    os.replace(temp_target, target_path)
+
+    return index_payload
 
 
 # =============================================================================
@@ -1901,7 +2263,18 @@ def main() -> int:
         "--import-file",
         type=str,
         default=None,
-        help="Path to local APMC CSV/Excel file to ingest under FILE_IMPORT provenance",
+        help="Path to local APMC CSV/Excel (.csv, .xlsx) file to ingest under FILE_IMPORT provenance",
+    )
+    parser.add_argument(
+        "--import-config",
+        type=str,
+        default=None,
+        help="Path to operational sources JSON config (e.g. data/reference/operational_sources.json)",
+    )
+    parser.add_argument(
+        "--publish-index",
+        action="store_true",
+        help="Publish latest-observation index to data/imported_snapshots/latest_observation_index.json",
     )
     parser.add_argument(
         "--source-url",
@@ -1926,7 +2299,37 @@ def main() -> int:
             print(f"Error: Invalid date format '{args.date}'. Expected YYYY-MM-DD.", file=sys.stderr)
             return 2
 
-    if args.import_file:
+    if args.import_config:
+        if not os.path.exists(args.import_config):
+            print(f"Error: Operational sources config not found: {args.import_config}", file=sys.stderr)
+            return 2
+        with open(args.import_config, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        sources = cfg.get("sources", [])
+        target_files = [
+            s["file_path"] for s in sources
+            if s.get("role") == "LATEST_SNAPSHOT" and os.path.exists(s.get("file_path", ""))
+        ]
+        if not target_files:
+            target_files = [s["file_path"] for s in sources if os.path.exists(s.get("file_path", ""))]
+        if not target_files:
+            print(f"Error: No valid source files found in {args.import_config}", file=sys.stderr)
+            return 2
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            reference_date=ref_d,
+            snapshots_root=args.snapshots_dir or DEFAULT_FILE_IMPORT_SNAPSHOTS_ROOT,
+        )
+        target_dist = None if args.district.lower() == "all" else args.district
+        campaign = client.execute_file_import(
+            file_path=target_files,
+            district=target_dist,
+            source_url=args.source_url,
+            retrieval_timestamp_utc=args.retrieval_time,
+        )
+        publish_latest_observation_index(campaign, reference_date=ref_d)
+    elif args.import_file:
         client = LivePriceIngestionClient(
             data_mode=DataMode.FILE_IMPORT,
             reference_date=ref_d,
@@ -1939,6 +2342,8 @@ def main() -> int:
             source_url=args.source_url,
             retrieval_timestamp_utc=args.retrieval_time,
         )
+        if args.publish_index:
+            publish_latest_observation_index(campaign, reference_date=ref_d)
     else:
         if args.dry_run:
             # Dry-run uses TEST_FIXTURE data mode and distinct test namespace
@@ -1983,14 +2388,33 @@ def main() -> int:
                 reference_date=ref_d,
                 snapshots_root=args.snapshots_dir or DEFAULT_FIXTURE_SNAPSHOTS_ROOT,
             )
+            target_districts = APPROVED_DISTRICTS if args.district.lower() == "all" else [args.district]
+            campaign = client.execute_campaign(districts=target_districts)
         else:
+            api_key = load_api_key()
+            if not api_key:
+                print("=" * 78)
+                print("APMC Mandi Price Ingestion — Execution Mode Selection")
+                print("=" * 78)
+                print("No execution mode selected and OGD_API_KEY is not configured in environment.")
+                print("\nPlease select one of the supported operational modes:")
+                print("  1. Dataset File Import (Offline / Dataset-First):")
+                print("     python -m src.live_price_ingestion --import-file <path_to_file.csv|.xlsx> [--publish-index]")
+                print("     python -m src.live_price_ingestion --import-config data/reference/operational_sources.json")
+                print("\n  2. Test Fixture Replay (Offline Verification):")
+                print("     python -m src.live_price_ingestion --dry-run")
+                print("\n  3. Live Authenticated Fetch (Official API):")
+                print("     export OGD_API_KEY='<your_key>'")
+                print("     python -m src.live_price_ingestion --district all")
+                print("=" * 78)
+                return 2
+
             client = LivePriceIngestionClient(
                 reference_date=ref_d,
                 snapshots_root=args.snapshots_dir or DEFAULT_LIVE_SNAPSHOTS_ROOT,
             )
-
-        target_districts = APPROVED_DISTRICTS if args.district.lower() == "all" else [args.district]
-        campaign = client.execute_campaign(districts=target_districts)
+            target_districts = APPROVED_DISTRICTS if args.district.lower() == "all" else [args.district]
+            campaign = client.execute_campaign(districts=target_districts)
 
     # Check for prior validated fallback if live run failed/blocked
     prior_snapshot = None

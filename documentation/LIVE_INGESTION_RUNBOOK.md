@@ -3,10 +3,10 @@
 **Repository:** `ankit-choubey/Mandi_Prediction`
 **Document ID:** `LIVE_INGESTION_RUNBOOK`
 **Established Under Task:** `MP-SRC-004` (Foundations)
-**Updated Under Task:** `MP-SRC-004B` (Provenance, Conflict Safety & Dataset-First Default)
+**Updated Under Task:** `MP-SRC-004B` (Provenance, Conflict Safety & Dataset-First Default) & `MP-DATA-008` (Latest Index, XLSX Support & Multi-File Provenance)
 **Date:** 2026-11-12 IST
-**Engine:** `src/live_price_ingestion.py`
-**Contract Specification:** `data/reference/live_source_contract.json` (Version 1.2.0)
+**Engine:** `src/live_price_ingestion.py`, `src/current_data_output.py`, `src/forecast_features.py`
+**Contract Specification:** `data/reference/live_source_contract.json` (Version 1.2.0), `data/reference/operational_sources.json` (Version 1.0.0)
 
 ---
 
@@ -78,11 +78,14 @@ print('OGD_API_KEY detected:', bool(key and key.strip()))
 ## 3. Manual Execution Workflows
 
 ### 3.1 Primary Operational Source: Dataset-First File Import (`FILE_IMPORT`)
-Per the repository's dataset-first operational default, official observed APMC raw archives in `data/raw/*.csv` serve as the primary operational source:
+Per the repository's dataset-first operational default, official observed APMC raw archives in `data/raw/*.csv`, `.xlsx`, and snapshot files serve as the primary operational source:
 
 ```bash
-# Ingest single district raw file
-python3 -m src.live_price_ingestion --import-file data/raw/Kanpur.csv --district Kanpur
+# Ingest using configured operational sources manifest and publish latest index
+python3 -m src.live_price_ingestion --import-config data/reference/operational_sources.json
+
+# Ingest single district raw file (.csv or official .xlsx) and publish latest index
+python3 -m src.live_price_ingestion --import-file data/raw/Kanpur.csv --district Kanpur --publish-index
 
 # Ingest single district with declared metadata
 python3 -m src.live_price_ingestion \
@@ -96,11 +99,15 @@ python3 -m src.live_price_ingestion --import-file data/raw/Jhansi.csv --json
 ```
 
 **Dataset Refresh Steps for Operators:**
-1. Download official daily/monthly APMC mandi arrivals CSV from Agmarknet or data.gov.in for the target district.
+1. Download official daily/monthly APMC mandi arrivals CSV or Excel (.xlsx) from Agmarknet or data.gov.in for the target district.
 2. Verify file size $\le 10$ MB and row count $\le 50,000$ (if file exceeds limits, request remote workflow).
-3. Compute SHA-256 and confirm schema headers match `data/reference/live_source_contract.json`.
-4. Run `--import-file` pointing to the downloaded file.
-5. Review the generated `run_receipt.json` under `data/imported_snapshots/<RUN_ID>/` to confirm row reconciliation and zero unhandled errors.
+3. Compute SHA-256 and confirm schema headers match `data/reference/live_source_contract.json` or `data/reference/operational_sources.json`.
+4. Run `--import-config data/reference/operational_sources.json` or `--import-file` with `--publish-index`.
+5. Review the generated `run_receipt.json` under `data/imported_snapshots/<RUN_ID>/` and `data/imported_snapshots/latest_observation_index.json` to confirm row reconciliation and zero unhandled errors.
+
+### 3.1.1 Independent Import Pointer & Latest Observation Index
+- **`data/imported_snapshots/last_successful_import.json`**: Updated automatically upon successful file imports with accepted records. Strictly segregated from `last_successful_campaign.json` (which is reserved for authenticated live runs).
+- **`data/imported_snapshots/latest_observation_index.json`**: Bounded per-series latest observation registry queried directly by `CurrentDataReporter` to prevent scanning large panel files. Divergent quotes on latest dates are quarantined with explicit disclosure.
 
 ### 3.2 Offline Dry-Run (Mock Transport)
 Runs the full ingestion pipeline, validation engine, reconciliation arithmetic, and health report formatting without initiating external network calls:
