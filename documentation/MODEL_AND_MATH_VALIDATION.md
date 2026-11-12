@@ -1,6 +1,6 @@
 # Model & Mathematical Validation Protocol
 
-> **Purpose:** Authoritative record of mathematical definitions, evaluation protocols, model decision records, and validation scorecards for the Mandi Market Intelligence System.  
+> **Purpose:** Authoritative record of mathematical definitions, evaluation protocols, model decision records, and validation scorecards for the Mandi Market Intelligence System.
 > **Update Rule:** Append-only for decision records and scorecard history. Any change to a formula, evaluation protocol, or decision threshold requires an explicit audit justification and date-stamped record. Never fabricate results.
 
 ---
@@ -415,7 +415,7 @@ A comparison of the Kaggle remote environment vs the local development environme
 | scipy | 1.16.3 | 1.16.3 | Exact match |
 | openpyxl | 3.1.5 | 3.1.5 | Exact match |
 
-**Trained Artifact Version Storage Policy:**  
+**Trained Artifact Version Storage Policy:**
 To prevent silent deserialization failures, numerical drift, or pickle incompatibilities across platforms:
 1. Every trained model artifact (e.g. weights, serialized joblib/pickle models, preprocessor pipelines) MUST persist a companion metadata record (JSON manifest or embedded dictionary) containing:
    - `python_version` (full `sys.version`)
@@ -739,4 +739,153 @@ Data-derived monthly breakdown across 61 months (causes hypothesized from extern
 
 
 
+
+
+
+---
+
+## 15. Independent FC-006 audit and continuing mathematical contract — 2026-11-12 IST
+
+**Status: CHANGES REQUIRED.** This dated adjudication supersedes conflicting acceptance language, MASE values and causal claims in earlier sections; prior text is retained as history. See `FC006_INDEPENDENT_AUDIT.md` for claim evidence, `PROJECT_EXECUTION_LEDGER.md` for the roadmap and `prompts/MP-AUDIT-007.md` for the next task. Every subsequent executor prompt must update this document and the ignored local `brain/context.md`.
+
+### 15.1 Verification and test receipt
+
+GitHub connector independently verified FC-006 commit `7931caaf01ee9e53ea2f18b823d710b8c61851ff`. Thirteen small execution-manifest artifacts matched recorded hashes locally. The full panel and end-to-end scoring were not independently regenerated. Targeted verification command:
+
+```text
+python3 -m pytest tests/test_baselines.py tests/test_market_identity.py tests/test_recommendation_safety_gate.py -q -o cache_dir=/tmp/mandi_audit_pytest_cache --basetemp=/tmp/mandi_audit_pytest_tmp
+```
+
+Result: **33 passed in 11.62 seconds**, exit 0. This validates selected fixture tests, not full-panel forecasting, optimized notebook equivalence or live readiness. The previous full-suite claim of 160 passes remains REPORTED, not rerun here. Whitespace check identified a pre-existing extra blank line at the end of the FC006 summary; it was preserved.
+
+### 15.2 Mandatory corrections to interpretations
+
+- All 77 disputed source keys have APMC market names; accepted mappings change all 77. The notebook compares these unmapped names against canonical market keys. The identical-metrics sensitivity therefore does not establish zero impact. Missing discrepancy evidence currently falls back to an empty set, which must fail closed instead.
+- Artifact-backed set reconciliation is 6 leaving / 2 entering / 490 common, not 9 / 5. Thresholds are >=60 Tier A and >=120 Tier B with coverage >=0.30, not >=200. Row reconciliation: 571 - 1408 + 3192 = 2355.
+- Pasted report metrics and selected documentation CIs disagree with the CSVs. Artifact values are recorded in the audit, still provisional pending corrections. Drift overall paired skill is -0.0068 with CI [-0.0303, 0.0191]. Its >2% realized-move subset skill is +0.0695 with CSV CI [0.0432, 0.0950]. That subset is known only after the outcome and cannot select live decisions.
+- F1/F2 contribute 94.7079% of pooled Tier A origins. A pooled score is not sufficient evidence of modern-regime performance. The 5000-row prediction sample is F1-only.
+- The scored-series count and LOW-N flag must use each model's non-abstained cases; separately report candidate eligibility and target availability. Current notebook counts slice-level series before model abstention.
+- Source units cannot be proved by median price ratios. The register's exact November 7 platform go-live claim remains unverified. Declining variety counts are associated with reduced reporting volume; causal attribution remains unresolved.
+
+### 15.3 Point metrics and correct scaling
+
+For each model m, let S_m contain cases with valid observed targets, valid m forecasts, and valid naive forecasts. Paired skill is:
+
+$$Skill_m=1-\frac{\sum_{j\in S_m}|y_j-\hat y_{m,j}|}{\sum_{j\in S_m}|y_j-\hat y_{naive,j}|}.$$
+
+Declare undefined skill when the denominator is zero; do not silently turn it into zero or perfect performance. MAE is the sum of absolute errors divided by the number scored. RMSE is the square root of mean squared error. MAPE excludes nonpositive targets using an explicitly reported denominator; within-5% and all other percentage scores must state their valid denominator. Finite-value and zero-denominator handling must be tested.
+
+**MASE correction:** conventional nonseasonal MASE uses a training-only one-step naive scale; seasonal MASE uses a training-only seasonal naive scale. The earlier assertion that matching the forecast horizon is required for valid MASE is withdrawn. A horizon-matched scale can be a separately named project metric, with its lag-matching rules declared. For series s with complete equally spaced training data and scaling lag a:
+
+$$d_s=\frac{1}{T_s-a}\sum_{i=a+1}^{T_s}|y_{s,i}-y_{s,i-a}|,\qquad MASE_s=\frac{MAE_{s,test}}{d_s}.$$
+
+For irregular dates, define the actual allowed historical pairs and divide by their count, not T_s-a. Exact calendar matching and observation-step matching are different estimands. Series with insufficient pairs or zero scale have undefined MASE and must be counted. State any cross-series aggregation weighting. Pooled test MAE / pooled test naive MAE is a relative MAE ratio, not conventional MASE. Earlier FC006 MASE table entries are **NOT VALIDATED / NOT COMPUTED** until this implementation exists. Source: [Hyndman and Athanasopoulos, evaluating forecast accuracy](https://otexts.com/fpp3/toolbox.html#evaluating-point-forecast-accuracy).
+
+Bootstrap confidence intervals quantify uncertainty in aggregate historical scores, not prediction intervals for individual future prices. Series-cluster resampling permits within-series dependence but does not automatically account for correlated shocks across markets; assess time-block/common-shock sensitivity before strong significance claims. State observation versus series weighting and multiplicity. Deterministic iteration order is needed in addition to a seed.
+
+### 15.4 Forecasting and model-development contract
+
+Issue time must be defined. Observation date <= origin date is necessary but does not prove publication by the issue time. Without historical retrieval timestamps, evaluation is retrospective under declared availability assumptions. Future data mutation tests must cover the actual notebook/scoring path as well as preprocessing, eligibility and identity decisions. Full-history alias evidence and low-observation filtering require a lookahead assessment.
+
+Keep the current nearest-observed target in [t+6,t+8], tie earlier, with actual target date and an exact-t+7 sensitivity. For future ML training, every training label must have matured by its training cutoff; a seven-day embargo alone may be insufficient at an eight-day target boundary. Check actual target dates explicitly.
+
+Baseline rationale and proposed candidate rationale are in the execution ledger. The old classification pipeline is a separate task from continuous seven-day price forecasting. Begin ML only after baseline corrections; tune within chronological training/validation windows and compare on matched origins. Already inspected test folds are development evidence, not a fresh untouched test. A prospective forward evaluation must remain independent. Reference for lagged tabular forecasting and temporal evaluation: [scikit-learn lagged-features example](https://scikit-learn.org/stable/auto_examples/applications/plot_time_series_lagged_features.html). This is methodological guidance, not a request to upgrade pinned packages.
+
+### 15.5 Synthetic economics: approved scenario direction, not observed tariffs
+
+Owner permits realistic synthetic storage/cost scenarios where empirical quotations are unavailable. This permits completing a simulation feature and stress-testing the engine. It does not establish that costs are observed, current, locally available, or that simulated profits are realized farmer gains.
+
+Every scenario must contain `is_synthetic`, `scenario_id`, `scenario_version`, seed, crop, storage technology/conditions, location scope, holding duration, currency/unit, parameter ranges/distributions, source citations or ASSUMPTION, creation timestamp and assumed effective period. Creation time is not a quotation/retrieval time. Use explicit low/base/high and adverse scenarios; use correlated bounded simulation only where dependence is justified, otherwise label dependence assumptions. Do not invent named providers or market survey evidence. Crop suitability and storage availability remain separate constraints. There are no numeric commercial tariff ranges approved by this audit.
+
+Under the current code's convention, Q is initial quintals; P0/P1 are rupees per quintal; L is physical loss; q is quality markdown; cs/ch are period storage/handling rupees per initial quintal; c0 is current transaction rupees per initial quintal; c1 is future transaction rupees per remaining quintal; r is the annual financing OR opportunity rate; h is calendar days. Let k = r*h/365 when a carrying charge applies, else zero:
+
+$$R_{now}=Q(P_0-c_0),$$
+$$R_{store}=Q(1-L)(1-q)P_1-Q(c_s+c_h)-QP_0k-Q(1-L)c_1,$$
+$$\Delta R=R_{store}-R_{now},$$
+$$P_{BE}=\frac{P_0(1+k)+c_s+c_h+(1-L)c_1-c_0}{(1-L)(1-q)}.$$
+
+These equations align with the inspected calculation and break-even paths; they are not proof of realistic input values. Test that delta R is zero at P_BE, units agree, quantity scaling is consistent, costs/losses move the result in the expected direction, and invalid/NaN/infinite inputs fail safely. Define whether transport is a transaction-cost component or separately added; avoid double counting. Hourly/monthly/bag tariffs need documented conversion to the chosen holding period and initial quantity. Evaluate both h=6/7/8 when actual target dates vary, or restrict economic backtests to exact h=7.
+
+For uncertainty-aware simulation, propagate forecast uncertainty and assumption uncertainty separately, retaining their dependence assumptions. Report break-even probability under the named scenario, adverse-case net benefit, decision coverage and regret versus sell-now after outcomes. Such probabilities are model/scenario outputs, not calibrated real-world profitability claims. Simulated costs must keep economics labelled SCENARIO / SIMULATION_ONLY, even with live observed prices. Empirical price-forecast scoring remains separate. Later commercial quotations or user-entered costs can replace assumptions with their own provenance and validation.
+
+---
+
+## 16. Task MP-AUDIT-007 Execution & Adjudication Record — 2026-11-12 IST
+
+**Status:** **LOCAL REPAIRS COMPLETE; BASELINE SCORECARD RERUN REQUIRED**
+**Audit Baseline Commit:** `7931caaf01ee9e53ea2f18b823d710b8c61851ff`
+**Execution Context:** Local Light Audit, Fixture Regression Tests, Source & Notebook Corrections. Zero remote heavy compute, zero data uploads.
+
+### 16.1 Adjudication of Audit Findings (A007-01 to A007-10)
+
+1. **A007-01 (Disputed-Key Market Identity Mismatch):**
+   - *Adjudication:* **REPAIRED / PENDING REMOTE RERUN**. In the original FC-006 run, raw market names with `" APMC"` from `diff_77_deep_analysis.csv` were checked against canonical market names in the panel, matching exactly 0 keys. The reported identical metrics was an artifact of identity mismatch. Implemented `load_canonical_disputed_keys()` in `src/baselines.py` with fail-closed schema/row validation and canonicalization via `market_aliases.csv`. Verified that 100% of raw market names ($77/77$) transform to canonical names and yield 77 unique canonical keys. Defined dual sensitivity scopes (Scope a: row filter; Scope b: historical intervention). Notebook updated; full panel rescoring designated **RERUN REQUIRED**.
+2. **A007-02 (Claim-to-Artifact Numerical Reconciliation):**
+   - *Adjudication:* **RECONCILED & CORRECTED**. Corrected all metrics in documentation and reports to match `scorecard_fold_x_tier.csv`. Tier A MA RMSE is 333.37 (not 321.46), MAPE is 5.08% (not 5.25%), Median AE is 50.71 (not 61.29), Share $\le 5\%$ is 70.98% (not 67.86%). Tier A Seasonal Naive RMSE is 1433.76 (not 1297.86), MAPE is 29.45% (not 32.74%), Median AE is 375.0 (not 468.0), Share $\le 5\%$ is 22.70% (not 18.06%). Tier A Drift RMSE is 303.67 (not 300.56), Median AE is 42.0 (not 40.0), Paired Skill is -0.0068 (95% CI: [-0.0303, 0.0191]). Drift $>2\%$ target move skill 95% CI is **[0.0432, 0.0950]** (not [0.0401, 0.0982]). Flagged `baseline_predictions_sample.csv` (5,000 rows) as F1-only and prepared full predictions archive export.
+3. **A007-03 (Series Reconciliation Narrative):**
+   - *Adjudication:* **CORRECTED**. Reconciled narrative with `tier_a_reconciliation_v1_vs_v2.json`: exactly **6 leaving series** (-1,408 obs), **2 entering series** (+571 obs), **490 common series** (+3,192 obs), net observation delta = **+2,355 rows** ($384,887 \rightarrow 387,242$). Documented eligibility threshold as $N \ge 60$ and coverage $\ge 0.30$ for Tier A; $N \ge 120$ and coverage $\ge 0.30$ for Tier B.
+4. **A007-04 (MASE Label Withdrawn):**
+   - *Adjudication:* **WITHDRAWN / NOT COMPUTED**. The baseline engine does not compute in-sample training-only naive scaling denominators. Test-relative metrics are officially named **Skill vs Naive** ($1 - \text{MAE} / \text{MAE}_{\text{naive}}$). MASE is marked **NOT COMPUTED**.
+5. **A007-05 (Scoring Path & Loop Equivalence):**
+   - *Adjudication:* **VERIFIED & TESTED**. Authored `tests/test_fc006_audit.py` (10 tests, 100% pass) verifying exact float equivalence between modular functions in `src/baselines.py` and the optimized array operations across dense daily, irregular, missing anchor, and seasonal tie-breaking fixtures. Verified future price change, row insertion, and row deletion invariance.
+6. **A007-06 (Scored-Series & LOW-N Accounting):**
+   - *Adjudication:* **REPAIRED**. Updated `evaluate_model_slice()` to report both eligible and scored origins/series. Evaluated `low_n_flag` strictly on scored cases ($N_{\text{scored\_origins}} < 200$ or $N_{\text{scored\_series}} < 10$).
+7. **A007-07 (Lookahead in Panel Harmonization):**
+   - *Adjudication:* **DOCUMENTED**. Documented that market alias acceptance and $<20$ observation filtering used full 5-year data (retrospective data harmonization). In prospective live evaluation, alias mappings and series eligibility must be fixed strictly as of the forecast issue timestamp.
+8. **A007-08 (Causal Wording Qualified):**
+   - *Adjudication:* **QUALIFIED**. Stable commodity median ratios ($1.0000$) are consistent with no unit change, but do not statutory prove units. Variety consolidation is empirically associated with volume reduction, but causal attribution remains an external hypothesis.
+9. **A007-09 (Retrospective Diagnostic Subgroup):**
+   - *Adjudication:* **QUALIFIED**. The $>2\%$ target move subset ($N = 27,858$ origins) where Drift outperforms Naive (+0.0695 skill) is defined retrospectively by realization. It serves as a diagnostic benchmark, but cannot select live models at prediction time.
+10. **A007-10 (Trust Policy Alignment):**
+    - *Adjudication:* **PRESERVED**. Capability gating strictly separates Release 1 (price forecasting benchmarks on price data alone) from Release 2 (storage economics). Simulated costs remain simulation-only.
+
+---
+
+### 16.2 Formal Equations and Estimator Specifications
+
+#### 1. Point Forecasting Metrics (on Scored Set $S_m$)
+Let $S_m = \{j : y_j \text{ observed}, \hat{y}_{m, j} \text{ valid}, \hat{y}_{\text{naive}, j} \text{ valid}\}$ be the set of scored origin instances for model $m$.
+
+$$\text{MAE}_m = \frac{1}{|S_m|} \sum_{j \in S_m} |y_j - \hat{y}_{m, j}|$$
+
+$$\text{RMSE}_m = \sqrt{\frac{1}{|S_m|} \sum_{j \in S_m} (y_j - \hat{y}_{m, j})^2}$$
+
+$$\text{MAPE}_m = \frac{1}{|S_m^+|} \sum_{j \in S_m^+} \frac{|y_j - \hat{y}_{m, j}|}{y_j} \times 100\%, \quad S_m^+ = \{j \in S_m : y_j > 0\}$$
+
+$$\text{Median AE}_m = \text{median}\left(\{|y_j - \hat{y}_{m, j}| : j \in S_m\}\right)$$
+
+$$\text{Bias}_m = \frac{1}{|S_m|} \sum_{j \in S_m} (\hat{y}_{m, j} - y_j)$$
+
+$$\text{Share}_{\le 5\%} = \frac{|\{j \in S_m^+ : |y_j - \hat{y}_{m, j}| / y_j \le 0.05\}|}{|S_m^+|} \times 100\%$$
+
+#### 2. Paired Skill vs Naive
+$$\text{Skill}_m = 1 - \frac{\sum_{j \in S_m} |y_j - \hat{y}_{m, j}|}{\sum_{j \in S_m} |y_j - \hat{y}_{\text{naive}, j}|} = 1 - \frac{\text{MAE}_m}{\text{MAE}_{\text{naive}, S_m}}$$
+
+*Zero-Denominator Policy:* If $\sum_{j \in S_m} |y_j - \hat{y}_{\text{naive}, j}| = 0$ or $|S_m| = 0$, $\text{Skill}_m = \text{NaN}$. It is never silently imputed as 0 or 1.
+
+#### 3. Ratio-of-Means Cluster Bootstrap Estimator
+Let $C = \{c_1, c_2, \dots, c_K\}$ be the set of $K$ unique series clusters, sorted deterministically. In each resample $b \in \{1, \dots, B\}$ ($B = 1,000$, seed 42):
+Draw clusters $C^*_b = \{c_{k_1}, \dots, c_{k_K}\}$ with replacement.
+
+$$\text{MAE}_b = \frac{\sum_{c \in C^*_b} E_{m, c}}{\sum_{c \in C^*_b} N_c}, \quad \text{MAE}_{\text{naive}, b} = \frac{\sum_{c \in C^*_b} E_{\text{naive}, c}}{\sum_{c \in C^*_b} N_c}$$
+
+$$\text{Skill}_b = 1 - \frac{\text{MAE}_b}{\text{MAE}_{\text{naive}, b}} = 1 - \frac{\sum_{c \in C^*_b} E_{m, c}}{\sum_{c \in C^*_b} E_{\text{naive}, c}}$$
+
+The 95% bootstrap confidence interval is obtained from the empirical 2.5th and 97.5th percentiles of $\{\text{MAE}_b\}$ and $\{\text{Skill}_b\}$.
+*Dependence Assumptions:* Errors for observations within the same series are assumed dependent (autocorrelated time series). Series across distinct market-commodity identities are assumed independent.
+
+---
+
+### 16.3 Reconciled Artifact-Backed Baseline Scorecard (Overall Tier A)
+
+The table below presents the verified, artifact-backed scorecard results from `scorecard_fold_x_tier.csv` ($N = 64,776$ eligible Tier A origins across 401 series):
+
+| Model | N Scored | Scored Series | Abstain (%) | MAE (₹/qtl) | 95% CI (MAE) | RMSE | MAPE (%) | Median AE | Bias | $\le 5\%$ (%) | Skill vs Naive | 95% CI (Skill) | Low-N Flag |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Naive ($y(t)$)** | 64,776 | 401 | 0.00% | 106.96 | [96.35, 119.03] | 298.83 | 4.16% | 40.00 | +17.17 | 76.76% | 0.0000 | [0.0000, 0.0000] | False |
+| **Moving Avg (MA-7)** | 64,776 | 401 | 0.00% | 134.19 | [120.73, 149.35] | 333.37 | 5.08% | 50.71 | +26.30 | 70.98% | -0.2547 | [-0.2909, -0.2105] | False |
+| **Seasonal Naive ($t-357$)** | 59,200 | 401 | 8.61% | 774.38 | [661.02, 895.07] | 1433.76 | 29.45% | 375.00 | +351.69 | 22.70% | -6.3738 | [-7.2432, -5.5137] | False |
+| **Drift (14d Anchor)** | 64,036 | 401 | 1.14% | 107.32 | [95.82, 119.13] | 303.67 | 4.29% | 42.00 | +7.81 | 76.55% | -0.0068 | [-0.0303, 0.0191] | False |
+
+*(All numbers above match the saved scorecard CSV artifacts. Prior prose summaries containing rounded or discrepant metrics are superseded).*
 

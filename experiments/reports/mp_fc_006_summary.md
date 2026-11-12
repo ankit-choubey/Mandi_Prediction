@@ -1,17 +1,25 @@
 # Task Summary: Provisional-v2 Gates and Baseline Scorecard (No ML Models)
 
-**Task ID:** `MP-FC-006`  
-**Date:** `2026-11-12`  
-**Execution Environment:** Remote Kaggle CPU Kernel (`theankitchoubey/mp-fc-006-baselines`, version 3, Internet Disabled)  
-**Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged)  
-**Baseline Git Commit:** `b231e27cefc8d29bdf448233253eaed7fe44fca0`  
-**Panel v2 Status:** **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`)  
+**Task ID:** `MP-FC-006`
+**Date:** `2026-11-12`
+**Execution Environment:** Remote Kaggle CPU Kernel (`theankitchoubey/mp-fc-006-baselines`, version 3, Internet Disabled)
+**Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged)
+**Baseline Git Commit:** `b231e27cefc8d29bdf448233253eaed7fe44fca0`
+**Panel v2 Status:** **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`)
+**Audit Status:** Audited under Task `MP-AUDIT-007` (**CHANGES REQUIRED**). Scorecards are artifact-backed provisional benchmarks. The 77-disputed keys sensitivity is superseded due to uncanonicalized APMC matching; full rerun is designated **RERUN REQUIRED**. MASE is **NOT COMPUTED** (skill metric is paired test-relative MAE ratio vs Naive).
 
 ---
 
 ## 1. Executive Summary & Assertion Gate
 
 Task `MP-FC-006` executes the empirical diagnostic gates on the provisional Panel v2 and establishes the baseline 7-day modal price forecasting scorecard across 4 chronological expanding folds using purely statistical and heuristic baselines (Naive, Moving Average, Seasonal Naive, and Drift). No machine learning models, external weather, or arrivals data were used.
+
+> [!IMPORTANT]
+> **Audit Reconciliation Notice (MP-AUDIT-007):**
+> 1. **77 Disputed Keys Sensitivity Superseded:** The original sensitivity evaluation checked raw APMC market strings against canonicalized panel market strings (0 matches found). Re-evaluating with canonical market identities alters all 77 keys and requires a remote Kaggle rerun (**RERUN REQUIRED**).
+> 2. **Metric Corrections:** Artifact-backed scorecard values from `scorecard_fold_x_tier.csv` supersede rounded/discrepant text in earlier draft summaries.
+> 3. **Prediction Sample Limitation:** `baseline_predictions_sample.csv` (5,000 rows) contains F1 origins only; full-fold reproduction requires the complete predictions archive prepared in MP-AUDIT-007.
+> 4. **Causal Claims Qualified:** Stable commodity median ratios are consistent with no unit change, but do not statutory prove units. Variety consolidation is empirically associated with volume reduction, but root cause remains an external hypothesis.
 
 ### Panel v2 Integrity Assertion Gate:
 * **Cell 2 Execution:** Regenerated `mandi_5year_validated_v2.csv` directly from raw source files in `5 year dataset/*.csv` using `MandiDataPipeline(pipeline_version="v2")` and `data/reference/market_aliases.csv`.
@@ -115,7 +123,7 @@ Across the 14,741 in-window Excel records (2021-09-01 to 2026-09-30), 12,846 mat
 * **Commodity Median Price Ratio (Post 2026-03 vs Pre 2026-03):**
   - Median ratio across commodities: **1.0000**
   - Mean ratio: **1.0788** (Min: 0.6140, Max: 2.9545)
-  - The unit-level commodity median is identical before and after March 2026, confirming that fractional prices do not reflect an unannounced shift in price units (e.g. Rs/kg vs Rs/quintal).
+  - The unit-level commodity median is identical before and after March 2026. This is consistent with no unit change, but does not independently establish statutory reporting units without explicit source documentation.
 
 #### Top Decimals Post 2026-03:
 | Decimal Part | Frequency | Share (%) |
@@ -152,9 +160,9 @@ Across the 61 calendar months, tracking active markets, commodities, and varieti
 | 2026-08 | 4,213 | 4 | 6 | 4 | 2 | 3 | 19 | 63 | 40 | 377 |
 | 2026-09 | 4,432 | 4 | 6 | 4 | 2 | 3 | 19 | 62 | 39 | 372 |
 
-#### Diagnostic Cause of Volume Shift:
+#### Diagnostic Observation on Volume Shift:
 * **Active reporting markets remained completely stable:** 18 to 20 markets reported throughout the entire 5 years.
-* **Variety consolidation explains the post-2026 row drop:** While reporting markets and commodities remained steady, the number of distinct varieties reported collapsed from ~85 down to ~35-40 in mid-2026. This variety consolidation halved the number of multi-variety quotes reported per market day.
+* **Variety consolidation is associated with the post-2026 row drop:** While reporting markets and commodities remained steady, the number of distinct varieties reported declined from ~85 down to ~35-40 in mid-2026. This variety consolidation is empirically correlated with the reduction in multi-variety quotes per market day; direct causal attribution remains an external hypothesis.
 
 ---
 
@@ -237,20 +245,22 @@ Across the 61 calendar months, tracking active markets, commodities, and varieti
 
 ### Table 3: Sensitivities Scorecard (Overall Tier A)
 
-| Sensitivity Slice | Model | N Origins | N Series | MAE (Rs/qtl) | 95% CI (MAE) | Skill vs Naive |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Exact T+7 Subset** | Naive | 56,386 | 399 | 104.97 | [93.97, 117.08] | 0.0000 |
-| Exact T+7 Subset | Moving Average | 56,386 | 399 | 132.75 | [118.41, 148.79] | -0.2647 |
-| Exact T+7 Subset | Seasonal Naive | 51,777 | 399 | 779.35 | [668.71, 909.28] | -6.5157 |
-| Exact T+7 Subset | Drift | 55,824 | 399 | 104.54 | [94.48, 115.58] | +0.0008 |
-| **Excluding 77 Disputed Keys** | Naive | 64,776 | 401 | 106.96 | [96.35, 119.03] | 0.0000 |
-| Excluding 77 Disputed Keys | Moving Average | 64,776 | 401 | 134.19 | [120.73, 149.35] | -0.2547 |
-| Excluding 77 Disputed Keys | Seasonal Naive | 59,200 | 401 | 774.38 | [661.02, 895.07] | -6.3738 |
-| Excluding 77 Disputed Keys | Drift | 64,036 | 401 | 107.32 | [95.82, 119.13] | -0.0068 |
-| **Target Move > 2% Only** | Naive | 27,858 | 386 | 217.38 | [194.56, 243.31] | 0.0000 |
-| Target Move > 2% Only | Moving Average | 27,858 | 386 | 246.39 | [219.06, 278.08] | -0.1334 |
-| Target Move > 2% Only | Seasonal Naive | 25,660 | 386 | 770.65 | [664.41, 899.21] | -2.6543 |
-| Target Move > 2% Only | Drift | 27,451 | 386 | **202.10** | [180.30, 226.68] | **+0.0695** |
+| Sensitivity Slice | Model | N Origins | N Series | MAE (Rs/qtl) | 95% CI (MAE) | Skill vs Naive | 95% CI (Skill) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Exact T+7 Subset** | Naive | 56,386 | 399 | 104.97 | [93.97, 117.08] | 0.0000 | [0.0000, 0.0000] |
+| Exact T+7 Subset | Moving Average | 56,386 | 399 | 132.75 | [118.41, 148.79] | -0.2647 | [-0.2957, -0.2276] |
+| Exact T+7 Subset | Seasonal Naive | 51,777 | 399 | 779.35 | [668.71, 909.28] | -6.5157 | [-7.3945, -5.6650] |
+| Exact T+7 Subset | Drift | 55,824 | 399 | 104.54 | [94.48, 115.58] | +0.0008 | [-0.0247, 0.0259] |
+| **Excluding 77 Disputed Keys [SUPERSEDED]*** | Naive | 64,776 | 401 | 106.96 | [96.35, 119.03] | 0.0000 | [0.0000, 0.0000] |
+| Excluding 77 Disputed Keys [SUPERSEDED]* | Moving Average | 64,776 | 401 | 134.19 | [120.73, 149.35] | -0.2547 | [-0.2909, -0.2105] |
+| Excluding 77 Disputed Keys [SUPERSEDED]* | Seasonal Naive | 59,200 | 401 | 774.38 | [661.02, 895.07] | -6.3738 | [-7.2432, -5.5137] |
+| Excluding 77 Disputed Keys [SUPERSEDED]* | Drift | 64,036 | 401 | 107.32 | [95.82, 119.13] | -0.0068 | [-0.0303, 0.0191] |
+| **Target Move > 2% Only (Diagnostic Only)** | Naive | 27,858 | 386 | 217.38 | [194.56, 243.31] | 0.0000 | [0.0000, 0.0000] |
+| Target Move > 2% Only (Diagnostic Only) | Moving Average | 27,858 | 386 | 246.39 | [219.06, 278.08] | -0.1334 | [-0.1757, -0.0865] |
+| Target Move > 2% Only (Diagnostic Only) | Seasonal Naive | 25,660 | 386 | 770.65 | [664.41, 899.21] | -2.6543 | [-3.0778, -2.2208] |
+| Target Move > 2% Only (Diagnostic Only) | Drift | 27,451 | 386 | **202.10** | [180.30, 226.68] | **+0.0695** | [0.0432, 0.0950] |
+
+*\*Note: The "Excluding 77 Disputed Keys" sensitivity rows above are historical artifacts from the original run where raw APMC strings were tested against canonicalized strings (matching 0 rows). In MP-AUDIT-007, fail-closed canonicalization was implemented and verified to change all 77 market keys; evaluation of the true sensitivity requires a remote Kaggle execution (RERUN REQUIRED).*
 
 ---
 
@@ -259,13 +269,16 @@ Across the 61 calendar months, tracking active markets, commodities, and varieti
 1. **Naive is a Strong Baseline:** Over the full panel of 64,776 origins, the simple Naive persistence model $y(t)$ achieves an overall MAE of 106.96 Rs/qtl, a median absolute error of 40.00 Rs/qtl, and 76.76% of predictions fall within 5% of the eventual 7-day modal price.
 2. **Moving Average Lags Persistence in Stationary Periods:** The 7-observation moving average has negative skill (-0.2547 overall) because agricultural mandi daily prices have high autocorrelation and averaging introduces lag. However, in Fold F4 (post-March 2026 volatility) and for Rice, Moving Average demonstrates positive skill (+0.1577 and +0.1518, respectively).
 3. **Seasonal Naive Fails at 7-Day Horizon:** Annual seasonal naive ($t+7-364$) exhibits severe error (overall MAE: 774.38 Rs/qtl; MAPE: 29.45%) due to shifting seasonal crop arrival peaks and annual inflation/deflation cycles.
-4. **Drift Model Outperforms on Volatility:** When prices actually move ($> 2\%$ target price movement), the Drift model demonstrates strong positive skill (+0.0695, reducing MAE from 217.38 to 202.10 Rs/qtl). It also outperforms Naive on Onion (+0.0818 skill).
+4. **Drift Model Outperforms on Volatility (Retrospective Diagnostic Only):** When prices move ($> 2\%$ target price movement, $N = 27,858$ origins), the Drift model demonstrates positive skill (+0.0695, 95% CI: [0.0432, 0.0950], reducing MAE from 217.38 to 202.10 Rs/qtl). It also outperforms Naive on Onion (+0.0818 skill). Note that this $>2\%$ subset is defined retrospectively by realization and cannot select a live model at prediction time.
 5. **Exact T+7 Alignment:** 87.0% of evaluated origin instances have exact $T+7$ price quotes available, where Naive MAE is 104.97 Rs/qtl.
-6. **77 Disputed Keys Impact:** Excluding the 77 disputed keys yields identical metrics to the full Tier A scorecard, confirming that the disputed quotes do not distort baseline scorecard benchmarks.
+6. **77 Disputed Keys Impact [SUPERSEDED by MP-AUDIT-007]:** The reported identical metrics in the original run were an artifact of uncanonicalized APMC market strings checked against canonical market keys (0 matches). All 77 discrepancy keys are confirmed to have APMC market strings transformed by accepted aliases. Corrected sensitivity evaluation has been prepared in the notebook; re-scoring the full panel is designated **RERUN REQUIRED**.
 
 ---
 
 ## 5. Artifact Verification & Manifest (Kaggle Remote Execution)
+
+> [!NOTE]
+> `baseline_predictions_sample.csv` (5,001 lines / 5,000 rows) contains origin evaluations from Fold F1 only ($2025-01-08$ to $2025-06-30$) and is insufficient for independent full-fold reproduction across F2, F3, and F4. The corrected notebook prepares the complete predictions archive (`baseline_predictions_all_folds.csv`).
 
 | File Name | File Size (Bytes) | Lines | SHA-256 Digest |
 | :--- | :---: | :---: | :--- |
