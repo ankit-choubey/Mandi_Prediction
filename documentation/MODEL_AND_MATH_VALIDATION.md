@@ -2347,3 +2347,66 @@ Execution of task **MP-RELEASE-001R** to repair and independently verify the rel
 - **Step 12 (Integration & Packaging):** **LOCALLY COMPLETED & CODE-VERIFIED**. Container build and execution marked `NOT_RUN` pending Docker daemon activation approval.
 - **Main Milestones Remaining:** Exactly **2 main milestones** remain (Step 12 deployment acceptance & Step 13 prospective forward validation/usability).
 - **Optional Ablations Remaining:** Exactly **2 optional ablations** remain (arrivals & localized weather).
+# UI002 mathematical presentation guardrails — 2026-11-13 IST
+
+The next interface refinement must visualize, not redefine, accepted mathematics. Point and interval evaluation populations remain distinct. HGB's 5.91% RMSE improvement relative to persistence is not a variance/MSE reduction claim and does not establish an outlier mechanism; its primary MAE remains worse. F2/F3/F4 are neutral fold identifiers, overall interval coverage is F2-dominated, and causes of F3/F4 undercoverage remain unresolved. Empirical intervals are retrospective calibration outputs, not guaranteed future coverage.
+
+Price movement requires at least two real dated observations for the same exact series. A modal/min/max spread is not temporal change. A prediction is not observed change. A fixture is not market evidence. With one verified observation the only valid presentation is unavailable. Imported-snapshot mode must not be labelled live or real-time.
+
+Economic presentation must preserve `R_sell = Q(p0-tn)`, `R_hold = Q[(1-L)((1-d)pH-tl)-c-p0f]`, `Delta R = R_hold-R_sell`, accepted break-even math, blank-versus-zero semantics, gross/net separation, carrying-mode separation, and server-returned nulls for incomplete parameters. User-entered values are not observed. The +470, financing436.438356..., and range-20/470/960 cases are controls, not empirical profit claims. Active advice remains blocked.
+
+
+---
+
+## Section 39 — MP-UI-002 Agricultural Price Research Instrument Redesign & Verification (2026-11-13 IST)
+
+### 39.1 Scope & Design Philosophy
+Task MP-UI-002 elevated the web research interface into a professor-ready **Agricultural Price Research Instrument**, rejecting generic admin templates and fictional trading terminals in favor of an **editorial field notebook, statistical report, and precision measurement instrument**.
+- **Visual Design System**: Warm paper canvas (`#fcfbf8`), deep ink typography (`#1a1c1e`), restrained crop green (`#235834`), turmeric gold (`#b36605`), and soil rust (`#883a21`). System serif headers (`Charter`, `Georgia`, `Palatino`) paired with system sans-serif data hierarchies and strict tabular numerals (`font-variant-numeric: tabular-nums`).
+- **Zero External Dependencies**: 0 npm packages, 0 CDNs, 0 external web fonts or trackers. 100% vanilla HTML5/CSS3/ES6+. Uncompressed payload: 120.98 KB total (`index.html` 46.29 KB, `styles.css` 26.33 KB, `app.js` 47.91 KB, `favicon.svg` 0.46 KB).
+
+### 39.2 Six-Layer Order of Legibility & Mathematical Truth-Preserving Invariants
+1. **Actually Observed Data**: Displays exact Agmarknet modal price (₹ 2,721.00 / q), min/max spread (₹ 2,670.00 – ₹ 2,750.00), observation date (`2026-11-11`), and India Standard Time calendar age (`2 days old (India Calendar) (2026-11-11)`).
+2. **Trust & Provenance Integrity**:
+   - Dynamic catalog counts: 30 total tracked series (26 accepted, 4 review-withheld).
+   - Review series (e.g. Kanpur Baripaal APMC) display an amber preview withholding all price figures and noting unapproved market status.
+   - Dataset mode badge (`Dataset mode (Imported snapshot)`) and expandable Reproducibility Drawer disclosing Git commit SHA, dataset SHA-256 (`45c9dd75...`), composite source SHA-256 (`3d3bc047...`), and standard-library runtime guarantees.
+3. **Frozen Retrospective Benchmarks**:
+   - Scorecard renders audited out-of-sample metrics across 64,776 point origins: Naive Persistence primary winner (MAE 106.96, RMSE 298.83), HistGradientBoosting (MAE 109.75, RMSE 281.16), Ridge (MAE 110.32, RMSE 288.56).
+   - Accessible zero-origin comparison bar charts declare explicit scale from 0 to 300 INR/q with tabular numerals.
+4. **Uncertainty Across Folds**:
+   - 90% nominal target reference graphic contrasted with 50.81% realized out-of-sample coverage across 26,918 evaluation origins.
+   - Neutral chronological fold breakdown cards (Fold 2: 56.41%, Fold 3: 45.47%, Fold 4: 50.81%) with candid disclosure of severe empirical undercoverage caused by volatile agricultural price shocks.
+5. **Hold-versus-Sell Mathematics**:
+   - Prominent research banner displaying accepted canonical equations ($R_{\text{sell}}$, $R_{\text{hold}}$, $\Delta R$, $P^*$).
+   - Explicit origin provenance badges distinguishing `OBSERVED_PRICE_TRANSFER` from `USER_ENTERED` manual assumptions.
+   - Reference fixture preset verifying canonical +470 INR fixture ($Q=10$, $P_0=2500$, $P_{\text{future}}=2650$, $C_s=1000 \implies R_{\text{sell}}=25,000$, $R_{\text{hold}}=25,470$, $\Delta R=+470.00$, Break-even $P^*=2602.04$).
+   - 10-step arithmetic waterfall decomposition table rendering the full derivation from Gross Spot Value to Net Incremental Benefit.
+   - Carrying cost financing controls (7% annual rate yielding +436.44 INR) and conditional price range bounds (-20.00 / +470.00 / +960.00 INR).
+   - Cryptographic JSON receipt export matching visible DOM numbers.
+6. **Scientific Limitations & Fail-Closed Boundaries**:
+   - Fail-closed operational advisory blocked badge (`OPERATIONAL_ADVISORY_BLOCKED`).
+   - System capability status panel disclosing `FORECAST_UNAVAILABLE` and `HISTORY_UNAVAILABLE_RESTRICTED`.
+   - Single-observation price movement honest unavailable state: `Price change unavailable — a second verified observation is required.`
+   - Commercial tariff disclosure explaining $0/22$ warehouse quotations received.
+   - Comprehensive appendix detailing prospective Step 13 shadow validation prerequisites.
+
+### 39.3 Verification Evidence & Acceptance Summary
+- **UI002 End-to-End Browser Acceptance** (`experiments/reviews/test_ui002_browser_acceptance.js`): **24/24 checks passed**.
+- **Interactive Browser Flows** (`experiments/reviews/test_interactive_browser_flows.js`): **21/21 checks passed**.
+- **UI Static Asset Serving** (`tests/test_ui_serving.py`): **6/6 passed**.
+- **Contract Review Gates** (`experiments/reviews/check_app001a_review_gates.py`): **29/29 passed**.
+- **Release Integration Suite** (`tests/test_integration_release.py`): **10/10 passed**.
+- **Unit and Integration Test Suite**:
+  - `tests/`: **379 passed**, 18 warnings in 11.40s.
+  - `backing/`: **45 passed** in 5.14s.
+  - **Total: 424 passed, 0 failures, 18 numerical warnings preserved**.
+- **Responsive Viewports**: Desktop 1440x900, Desktop 1280x800, Tablet 768x1024, Mobile 390x844, and Mobile 375x667 all confirmed with zero horizontal overflow.
+- **Accessibility & Print**: Keyboard navigation trace verified; `@media (prefers-reduced-motion: reduce)` respected; `@media print` verified via headless Chromium print emulation screenshot.
+- **Evidence Directory**: `experiments/reports/UI002/` populated with 5 receipts, 6 screenshots, and self-excluding `output_manifest.json` (11 files).
+
+### 39.4 Canonical Milestone Accounting
+- **Task Status**: MP-UI-002 complete.
+- **Classification**: Presentation refinement under accepted Step 11; does not alter underlying frozen models, benchmark scores, or canonical equations.
+- **Main Milestones Remaining**: Exactly **1 main research milestone** remains: **Step 13 (Prospective Shadow Validation & Usability)**. Container packaging deployment acceptance remains an open infra decision (Docker daemon `NOT_RUN`).
+- **Optional Ablations Remaining**: Exactly **2 optional ablations** remain (arrivals & localized weather).

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="APMC Mandi Intelligence System - Verified Market Observations, Audited Model Benchmarks, and Research Economics.">
+  <meta name="description" content="APMC Mandi Intelligence System - Agricultural Price Research Instrument, Econometric Benchmarks, and Holding Economics.">
   <title>APMC Mandi Intelligence System</title>
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link rel="stylesheet" href="/static/styles.css">
@@ -11,42 +11,85 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Header -->
+  <!-- 1. RESEARCH MASTHEAD (EDITORIAL FIELD NOTEBOOK STYLE) -->
   <header class="app-header">
     <div class="container">
       <div class="header-inner">
         <div class="header-brand">
           <svg class="brand-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect width="32" height="32" rx="6" fill="#1b5e20"/>
-            <path d="M16 4 C16 12 8 16 8 26 L24 26 C24 16 16 12 16 4 Z" fill="#81c784"/>
+            <rect width="32" height="32" rx="4" fill="#235834"/>
+            <path d="M16 4 C16 12 8 16 8 26 L24 26 C24 16 16 12 16 4 Z" fill="#b2d6bb"/>
             <path d="M16 8 L16 26" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="16" cy="12" r="2" fill="#ffd54f"/>
-            <circle cx="12" cy="18" r="2" fill="#ffd54f"/>
-            <circle cx="20" cy="18" r="2" fill="#ffd54f"/>
+            <circle cx="16" cy="12" r="2" fill="#f3d49b"/>
+            <circle cx="12" cy="18" r="2" fill="#f3d49b"/>
+            <circle cx="20" cy="18" r="2" fill="#f3d49b"/>
           </svg>
           <div class="header-title-block">
             <h1>APMC Mandi Intelligence System</h1>
-            <p>Agri-Market Observation &amp; Research Economics (Release Candidate)</p>
+            <p>Agricultural Price Research Instrument &bull; Retrospective Econometric Benchmarks &amp; Holding Economics</p>
           </div>
         </div>
         <div class="header-meta">
-          <span class="badge badge-info" title="Operational calendar standard">Calendar: Asia/Kolkata</span>
+          <span class="badge badge-info" title="Data ingestion modality">Dataset mode (Imported snapshot)</span>
+          <span class="badge badge-info" title="Standard India operational calendar">Calendar: Asia/Kolkata</span>
           <span class="badge badge-success" id="badge-health">Service: Healthy</span>
-          <span class="badge badge-blocked" title="Operational farmer advice is strictly prohibited">Advisory Action Blocked</span>
+          <span class="badge badge-blocked" title="Commercial farmer recommendations are strictly prohibited">Advisory Action Blocked</span>
         </div>
       </div>
+
+      <!-- Refresh Bar & As-Of Date -->
       <div class="refresh-bar">
         <div class="as-of-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
           <span id="service-as-of">Server Snapshot: Initializing...</span>
         </div>
         <button id="btn-refresh" class="btn btn-secondary btn-sm" aria-label="Reload catalog and price snapshot">
           Refresh Snapshot
         </button>
       </div>
+
+      <!-- Reproducibility Drawer -->
+      <details id="reproducibility-drawer" class="reproducibility-drawer">
+        <summary>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Inspect Dataset Provenance &amp; Cryptographic Hashes
+        </summary>
+        <div class="drawer-grid">
+          <div class="drawer-item">
+            <span class="drawer-label">System Mode</span>
+            <span class="drawer-val">DATASET_IMPORT (Local Verified File Ingestion)</span>
+          </div>
+          <div class="drawer-item">
+            <span class="drawer-label">Index File SHA-256</span>
+            <span class="drawer-val" id="drawer-index-sha">45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4</span>
+          </div>
+          <div class="drawer-item">
+            <span class="drawer-label">Composite Source SHA-256</span>
+            <span class="drawer-val" id="drawer-source-sha">3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11</span>
+          </div>
+          <div class="drawer-item">
+            <span class="drawer-label">Serving Dependency Runtime</span>
+            <span class="drawer-val">Pure Python Standard Library (Zero External Pip Packages)</span>
+          </div>
+          <div class="drawer-item">
+            <span class="drawer-label">Evaluation Populations</span>
+            <span class="drawer-val">Point Forecast: 64,776 origins (F1–F4) &bull; Intervals: 26,918 origins (F2–F4)</span>
+          </div>
+          <div class="drawer-item">
+            <span class="drawer-label">Commercial Tariff Evidence</span>
+            <span class="drawer-val">0/22 published quotations in local directory (user-entered parameters required)</span>
+          </div>
+        </div>
+      </details>
     </div>
   </header>
 
-  <!-- Sticky Navigation Tabs -->
+  <!-- 2. STICKY NAVIGATION TABS -->
   <nav class="nav-section" aria-label="Application Sections">
     <div class="container">
       <ul class="tab-list" role="tablist">
@@ -74,42 +117,44 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
+  <!-- MAIN CONTENT -->
   <main id="main-content" class="main-content container">
 
-    <!-- PANEL 1: Market Overview & Exact Series Selection -->
+    <!-- ======================================================================
+         PANEL 1: MARKET OVERVIEW & EXACT SERIES SELECTION
+         ====================================================================== -->
     <section id="panel-market" class="tab-panel active" role="tabpanel" aria-labelledby="tab-market">
 
-      <!-- Catalog Stats Grid -->
+      <!-- Catalog Overview Statistics -->
       <div class="stat-grid" aria-label="Catalog Overview Statistics">
         <div class="stat-box">
           <div class="stat-label">Total Series Indexed</div>
           <div class="stat-value" id="stat-total-series">--</div>
-          <div class="stat-desc">Imported agricultural price series</div>
+          <div class="stat-desc">Official agricultural market series</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Verified Eligible</div>
-          <div class="stat-value" id="stat-accepted-series" style="color: var(--color-brand-primary);">--</div>
-          <div class="stat-desc">Approved market identity with permitted price view</div>
+          <div class="stat-value" id="stat-accepted-series" style="color: var(--color-crop-green);">--</div>
+          <div class="stat-desc">Approved identity with permitted modal price view</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Identity Review Preview</div>
-          <div class="stat-value" id="stat-review-series" style="color: var(--color-accent-amber);">--</div>
-          <div class="stat-desc">Unapproved market identities (price withheld)</div>
+          <div class="stat-value" id="stat-review-series" style="color: var(--color-turmeric);">--</div>
+          <div class="stat-desc">Unapproved market identities (price strictly withheld)</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">Unavailable Series</div>
           <div class="stat-value" id="stat-unavailable-series">0</div>
-          <div class="stat-desc">No missing series records detected</div>
+          <div class="stat-desc">Zero omitted or dropped series records</div>
         </div>
       </div>
 
-      <!-- Selector Card -->
+      <!-- Exact Series Selector Card -->
       <div class="card">
         <div class="card-header">
           <div>
             <h2 class="card-title">Exact Series Selector</h2>
-            <p class="card-subtitle">Select exact district, market, commodity, variety, and grade. Silent first-match fallback is strictly disabled.</p>
+            <p class="card-subtitle">Select exact district, market, commodity, variety, and grade. Silent first-match fallback is strictly prohibited.</p>
           </div>
           <span class="badge badge-info" id="selector-mode-badge">Mode: Verified Series</span>
         </div>
@@ -148,71 +193,100 @@
         </form>
       </div>
 
-      <!-- Observation Display Area -->
+      <!-- Observation Workspace Grid -->
       <div id="observation-container">
         <!-- Initial empty state -->
-        <div id="obs-empty-state" class="card" style="text-align: center; padding: 2.5rem 1rem;">
-          <p style="color: var(--color-text-secondary); margin: 0; font-size: 1rem;">
-            Please select an exact series above to display verified observation details.
+        <div id="obs-empty-state" class="card" style="text-align: center; padding: 3rem 1.5rem;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--color-ink-muted); margin-bottom: 0.75rem;" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <p style="color: var(--color-ink-secondary); margin: 0; font-size: 1rem; font-family: var(--font-serif);">
+            Select a verified market series from the cascade above to display official price observations.
           </p>
         </div>
 
-        <!-- Verified Accepted Card -->
-        <div id="obs-verified-card" class="card observation-card" style="display: none;">
-          <div class="card-header">
-            <div>
-              <span class="badge badge-success" id="obs-status-badge">ACCEPTED &bull; VERIFIED OBSERVATION</span>
-              <h3 class="card-title" id="obs-series-title" style="margin-top: 0.5rem;">Commodity Title</h3>
-              <p class="card-subtitle" id="obs-market-subtitle">Market, District</p>
-            </div>
-            <button id="btn-use-in-calc" class="btn btn-primary btn-sm" type="button">
-              Use Price in Calculator &rarr;
-            </button>
-          </div>
+        <!-- Verified Accepted Card & Price Movement Grid -->
+        <div id="obs-verified-card" style="display: none;">
+          <div class="observation-workspace-grid">
+            <!-- Left: Verified Observation Hero -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <span class="badge badge-success" id="obs-status-badge">ACCEPTED &bull; VERIFIED OBSERVATION</span>
+                  <h3 class="card-title" id="obs-series-title" style="margin-top: 0.5rem;">Commodity Title</h3>
+                  <p class="card-subtitle" id="obs-market-subtitle">Market, District</p>
+                </div>
+                <button id="btn-use-in-calc" class="btn btn-primary btn-sm" type="button">
+                  Use Price in Calculator &rarr;
+                </button>
+              </div>
 
-          <div class="price-display-hero">
-            <div>
-              <div class="detail-label">Verified Modal Price</div>
-              <div style="display: flex; align-items: baseline;">
-                <span class="price-figure" id="obs-modal-price">₹ 0</span>
-                <span class="price-unit">/ quintal</span>
+              <div class="price-display-hero">
+                <div>
+                  <div class="detail-label">Verified Modal Price</div>
+                  <div style="display: flex; align-items: baseline;">
+                    <span class="price-figure" id="obs-modal-price">₹ 0</span>
+                    <span class="price-unit">/ quintal</span>
+                  </div>
+                </div>
+                <div class="price-range-aux" id="obs-range-aux">
+                  Reported Range: <span id="obs-min-price">--</span> &ndash; <span id="obs-max-price">--</span> INR/q
+                </div>
+              </div>
+
+              <div class="series-details-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Observation Date</span>
+                  <span class="detail-value tabular" id="obs-date">--</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Freshness Standard</span>
+                  <span class="detail-value" id="obs-age">--</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Ingestion Mode</span>
+                  <span class="detail-value">FILE_IMPORT (Snapshot)</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Source System</span>
+                  <span class="detail-value">AGMARKNET_PORTAL</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Source Disposition</span>
+                  <span class="detail-value">ACCEPTED</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Display Permitted</span>
+                  <span class="detail-value">true (Server Derived)</span>
+                </div>
               </div>
             </div>
-            <div class="price-range-aux" id="obs-range-aux">
-              Reported Range: <span id="obs-min-price">--</span> &ndash; <span id="obs-max-price">--</span> INR/q
-            </div>
-          </div>
 
-          <div class="series-details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Observation Date</span>
-              <span class="detail-value" id="obs-date">--</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Observation Freshness</span>
-              <span class="detail-value" id="obs-age">--</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Data Ingestion Mode</span>
-              <span class="detail-value">FILE_IMPORT (Snapshot)</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Source System</span>
-              <span class="detail-value">AGMARKNET_PORTAL</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Source Disposition</span>
-              <span class="detail-value">ACCEPTED</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Display Permitted</span>
-              <span class="detail-value">true (Server Derived)</span>
+            <!-- Right: Truth-Preserving Price Movement Panel -->
+            <div class="price-movement-panel" id="price-movement-panel">
+              <div>
+                <span class="badge badge-info" id="movement-capability-badge">CAPABILITY_UNAVAILABLE</span>
+                <h3 class="card-title" style="font-size: 1.0625rem; margin-top: 0.5rem;">Temporal Price Movement</h3>
+                <p class="card-subtitle" style="margin-bottom: 1rem;">Comparison against prior dated market clearing prices.</p>
+              </div>
+
+              <div id="price-movement-content" class="price-movement-unavailable">
+                <h4>Price change unavailable &mdash; a second verified observation is required.</h4>
+                <p>
+                  <strong>Dataset-first snapshot mode:</strong> currently containing 1 observation per series.
+                  In accordance with scientific truth-preserving rules, price change cannot be inferred from min/max spread, model predictions, or hypothetical fixtures. A second verified observation on a distinct date is required to establish temporal direction.
+                </p>
+              </div>
+
+              <div style="font-size: 0.75rem; color: var(--color-ink-muted); margin-top: 1rem; border-top: 1px dashed var(--color-border-subtle); padding-top: 0.5rem;">
+                Historical longitudinal series integration is deferred to future multi-snapshot imports.
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Review Preview Card (for UNKNOWN_MARKET_REVIEW) -->
-        <div id="obs-review-card" class="card" style="display: none; border: 2px solid var(--color-accent-amber);">
+        <!-- Review Preview Card (for UNKNOWN_MARKET_REVIEW series) -->
+        <div id="obs-review-card" class="card" style="display: none; border-left: 5px solid var(--color-turmeric);">
           <div class="alert-box alert-amber">
             <h3 class="alert-title">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -222,8 +296,7 @@
             </h3>
             <p class="alert-text">
               <strong>Price display is withheld (<code>price_display_permitted: false</code>).</strong>
-              This APMC market identity has not yet received official administrative approval. In accordance with data integrity rules,
-              unapproved records are isolated in this preview. No verified price, forecast, or economic advisory claim is permitted.
+              This APMC market identity has not yet received official administrative approval in the canonical registry. In accordance with data integrity rules, unapproved records are isolated in this preview. No verified price, forecast, or economic advisory claim is permitted.
             </p>
           </div>
 
@@ -246,28 +319,30 @@
             </div>
             <div class="detail-item">
               <span class="detail-label">Observation Date</span>
-              <span class="detail-value" id="rev-date">--</span>
+              <span class="detail-value tabular" id="rev-date">--</span>
             </div>
             <div class="detail-item">
               <span class="detail-label">Source Status</span>
-              <span class="detail-value" style="color: var(--color-accent-amber);">UNKNOWN_MARKET_REVIEW</span>
+              <span class="detail-value" style="color: var(--color-turmeric);">UNKNOWN_MARKET_REVIEW</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 2: Forecast & History Capability States -->
+    <!-- ======================================================================
+         PANEL 2: FORECAST & HISTORY CAPABILITY STATES
+         ====================================================================== -->
     <section id="panel-forecast" class="tab-panel" role="tabpanel" aria-labelledby="tab-forecast">
       <div class="card">
         <div class="card-header">
           <div>
-            <h2 class="card-title">System Capability Status</h2>
-            <p class="card-subtitle">Transparent disclosure of operational availability and scientific boundaries.</p>
+            <h2 class="card-title">System Capability Status &amp; Scientific Boundaries</h2>
+            <p class="card-subtitle">Transparent disclosure of operational availability, fail-closed safeties, and unproven capabilities.</p>
           </div>
         </div>
 
-        <!-- Forecast Status -->
+        <!-- Forecast Status Alert -->
         <div class="alert-box alert-danger">
           <h3 class="alert-title">
             <span>Forecast Endpoint: <code>FORECAST_UNAVAILABLE</code></span>
@@ -275,15 +350,15 @@
           <p class="alert-text">
             <strong>Reason: <code>NO_APPROVED_SERVING_MODEL_ARTIFACT</code></strong><br>
             Retrospective temporal fold models (F1&ndash;F4) are research evaluation artifacts. They cannot be served as current
-            operational forecasts without forward prospective validation (Step 13) and verified real-time arrival telemetry.
+            operational forecasts without forward prospective shadow validation (Step 13) and verified real-time arrival telemetry.
           </p>
-          <p class="alert-text">
+          <p class="alert-text" style="margin-top: 0.5rem;">
             <strong>Advisory Permission: <code>BLOCKED</code> (<code>advisory_permitted: false</code>)</strong><br>
             All commercial recommendations (e.g. STORE or SELL commands) are strictly disabled across the entire system.
           </p>
         </div>
 
-        <!-- History Status -->
+        <!-- History Status Alert -->
         <div class="alert-box alert-amber">
           <h3 class="alert-title">
             <span>Price History Endpoint: <code>HISTORY_UNAVAILABLE_RESTRICTED</code></span>
@@ -296,20 +371,22 @@
         </div>
 
         <!-- Scientific Methodology Card -->
-        <div style="margin-top: 1.5rem;">
-          <h3 style="font-size: 1.0625rem; font-weight: 700; color: var(--color-brand-primary); margin-bottom: 0.5rem;">
-            Academic Boundaries &amp; Governance
+        <div style="margin-top: 1.5rem; border-top: 1px solid var(--color-border-subtle); padding-top: 1.25rem;">
+          <h3 style="font-family: var(--font-serif); font-size: 1.0625rem; font-weight: 700; color: var(--color-ink); margin-bottom: 0.5rem;">
+            Academic Governance &amp; Research Discipline
           </h3>
-          <ul style="color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.6; padding-left: 1.25rem;">
+          <ul style="color: var(--color-ink-secondary); font-size: 0.875rem; line-height: 1.6; padding-left: 1.25rem; margin: 0;">
             <li>Retrospective interval bounds are strictly research artifacts; they must not be disguised as current forecasts.</li>
-            <li>No artificial fallback trends or synthetic data are generated to fill empty forecast charts.</li>
+            <li>No artificial fallback trends, dummy charts, or synthetic data are generated to fill empty forecast views.</li>
             <li>Operational deployment requires completing Step 12 (Integration/Deployment) and Step 13 (Prospective Usability).</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 3: Model Benchmark & Uncertainty Evidence -->
+    <!-- ======================================================================
+         PANEL 3: MODEL BENCHMARK & UNCERTAINTY STUDIO
+         ====================================================================== -->
     <section id="panel-models" class="tab-panel" role="tabpanel" aria-labelledby="tab-models">
       <div class="card">
         <div class="card-header">
@@ -318,6 +395,47 @@
             <p class="card-subtitle">Verified point evaluation (64,776 predictions) vs interval calibration (26,918 predictions).</p>
           </div>
           <span class="badge badge-info">Horizon: t+7 Calendar Days</span>
+        </div>
+
+        <!-- Visual Model Comparison Graphic (Declared Zero Origin) -->
+        <div class="comparison-chart-box" aria-label="Visual Model Comparison Chart">
+          <div class="chart-header">
+            <h3 class="chart-title">Point Forecast Error Comparison (Declared Zero Origin)</h3>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-swatch" style="background: var(--color-crop-green);"></span> Primary MAE (INR/q)</span>
+              <span class="legend-item"><span class="legend-swatch" style="background: var(--color-slate);"></span> RMSE (INR/q)</span>
+            </div>
+          </div>
+
+          <!-- Persistence -->
+          <div class="bar-row">
+            <div class="bar-label">Naive Persistence</div>
+            <div class="bar-track">
+              <div class="bar-segment" style="width: 35.8%; background: var(--color-crop-green);" title="MAE 106.96 INR/q">106.96</div>
+              <div class="bar-segment" style="width: 99.6%; background: var(--color-slate);" title="RMSE 298.83 INR/q">298.83</div>
+            </div>
+          </div>
+
+          <!-- HGB -->
+          <div class="bar-row">
+            <div class="bar-label">Hist Gradient Boosting</div>
+            <div class="bar-track">
+              <div class="bar-segment" style="width: 36.7%; background: var(--color-crop-green);" title="MAE 109.75 INR/q (+2.61%)">109.75</div>
+              <div class="bar-segment" style="width: 93.7%; background: var(--color-slate);" title="RMSE 281.16 INR/q (-5.91%)">281.16</div>
+            </div>
+          </div>
+
+          <!-- Ridge -->
+          <div class="bar-row">
+            <div class="bar-label">Ridge Regression</div>
+            <div class="bar-track">
+              <div class="bar-segment" style="width: 36.9%; background: var(--color-crop-green);" title="MAE 110.32 INR/q (+3.15%)">110.32</div>
+              <div class="bar-segment" style="width: 96.2%; background: var(--color-slate);" title="RMSE 288.56 INR/q (-3.44%)">288.56</div>
+            </div>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--color-ink-muted); margin-top: 0.5rem; text-align: right;">
+            Scale: 0 to 300 INR/quintal. Evaluated strictly across N = 64,776 point forecast origins.
+          </div>
         </div>
 
         <!-- Scorecard Table -->
@@ -337,7 +455,7 @@
             </thead>
             <tbody id="benchmark-tbody">
               <tr>
-                <td colspan="7" style="text-align: center; color: var(--color-text-muted);">Loading benchmark scorecard...</td>
+                <td colspan="7" style="text-align: center; color: var(--color-ink-muted);">Loading benchmark scorecard...</td>
               </tr>
             </tbody>
           </table>
@@ -345,40 +463,42 @@
 
         <!-- Empirical Findings Cards (Dynamically Populated from API) -->
         <div class="stat-grid" style="margin-top: 1.5rem;">
-          <div class="stat-box" style="border-left: 4px solid var(--color-brand-primary);">
+          <div class="stat-box" style="border-left: 4px solid var(--color-crop-green);">
             <div class="stat-label">Primary Metric Winner</div>
-            <div id="bm-winner-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-brand-primary);">Loading...</div>
+            <div id="bm-winner-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-crop-green);">Loading...</div>
             <div class="stat-desc" id="bm-winner-desc">Evaluating baseline absolute error...</div>
           </div>
-          <div class="stat-box" style="border-left: 4px solid var(--color-alert-info);">
+          <div class="stat-box" style="border-left: 4px solid var(--color-slate);">
             <div class="stat-label">RMSE Comparison</div>
-            <div id="bm-rmse-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-info);">Loading...</div>
+            <div id="bm-rmse-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-slate);">Loading...</div>
             <div class="stat-desc" id="bm-rmse-desc">Comparing root-mean-squared error against persistence...</div>
           </div>
-          <div class="stat-box" style="border-left: 4px solid var(--color-alert-danger);">
+          <div class="stat-box" style="border-left: 4px solid var(--color-soil-rust);">
             <div class="stat-label">Temporal Regime Disparity</div>
-            <div id="bm-regime-title" style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-danger);">Loading...</div>
+            <div id="bm-regime-title" style="font-size: 1.125rem; font-weight: 700; color: var(--color-soil-rust);">Loading...</div>
             <div class="stat-desc" id="bm-regime-desc">Evaluating fold-specific empirical coverage...</div>
           </div>
         </div>
 
-        <!-- Regime Collapse Callout (Dynamically Populated from API) -->
+        <!-- Fold Uncertainty Breakdown & Regime Disclosures -->
         <div class="alert-box alert-amber" style="margin-top: 1.5rem;">
-          <h4 class="alert-title">Audited Interval Coverage Breakdown (Naive 90% Nominal)</h4>
+          <h4 class="alert-title">Audited Interval Coverage Breakdown (Naive 90% Nominal Target)</h4>
           <div id="bm-fold-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
             <div>Loading fold records...</div>
           </div>
-          <p class="alert-text" id="bm-fold-note" style="margin-top: 0.5rem;">
+          <p class="alert-text" id="bm-fold-note" style="margin-top: 0.75rem;">
             <em>Scientific Observation:</em> Total interval evaluation population: 26,918 issued origins across Folds F2&ndash;F4 (Fold F1 abstained due to zero prior calibration residuals). Empirical coverage shortfall in F3 and F4 highlights regime vulnerability.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- PANEL 4: Research Economics Calculator -->
+    <!-- ======================================================================
+         PANEL 4: RESEARCH ECONOMICS CALCULATOR & WORKBENCH
+         ====================================================================== -->
     <section id="panel-economics" class="tab-panel" role="tabpanel" aria-labelledby="tab-economics">
 
-      <!-- Calculator Header -->
+      <!-- Calculator Card -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -388,6 +508,29 @@
             </p>
           </div>
           <span class="badge badge-blocked">USER_ENTERED Conditional Arithmetic &bull; Advisory Blocked</span>
+        </div>
+
+        <!-- Canonical Equation Banner -->
+        <div class="equation-banner">
+          <h3>Canonical Economic Formulation &amp; Identities</h3>
+          <div class="equation-grid">
+            <div class="equation-item">
+              <span class="equation-math">R_sell = Q &times; (P_0 - t_n)</span>
+              <span class="equation-desc">Immediate Net Sale Proceeds</span>
+            </div>
+            <div class="equation-item">
+              <span class="equation-math">R_hold = Q &times; [(1 - L)((1 - d)P_H - t_l) - c - P_0 f]</span>
+              <span class="equation-desc">Expected Net Holding Proceeds</span>
+            </div>
+            <div class="equation-item">
+              <span class="equation-math">&Delta;R = R_hold - R_sell</span>
+              <span class="equation-desc">Net Incremental Storage Benefit</span>
+            </div>
+            <div class="equation-item">
+              <span class="equation-math">P* = [P_0(1+f) + c + t_n - (1-L)t_l] / [(1-L)(1-d)]</span>
+              <span class="equation-desc">Break-Even Future Price (&Delta;R = 0)</span>
+            </div>
+          </div>
         </div>
 
         <!-- Presets Toolbar -->
@@ -410,17 +553,17 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="econ-quantity" class="form-label">
-                  Quantity (quintals) <span style="color: var(--color-alert-danger);">*</span>
+                  Quantity (quintals) <span style="color: var(--color-soil-rust);">*</span>
                 </label>
-                <input type="number" id="econ-quantity" class="form-input" min="0.001" step="any" required placeholder="e.g. 10">
+                <input type="number" id="econ-quantity" class="form-input tabular" min="0.001" step="any" required placeholder="e.g. 10">
                 <span class="form-hint">Initial harvest quantity ($Q_0$)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-current-price" class="form-label">
-                  Current Price (INR/quintal) <span style="color: var(--color-alert-danger);">*</span>
+                  Current Price (INR/quintal) <span style="color: var(--color-soil-rust);">*</span>
                 </label>
-                <input type="number" id="econ-current-price" class="form-input" min="1" step="any" required placeholder="e.g. 2500">
+                <input type="number" id="econ-current-price" class="form-input tabular" min="1" step="any" required placeholder="e.g. 2500">
                 <span class="form-hint">Immediate spot price ($P_0$)</span>
               </div>
 
@@ -428,7 +571,7 @@
                 <label for="econ-future-point" class="form-label">
                   Assumed Future Price Point (INR/q)
                 </label>
-                <input type="number" id="econ-future-point" class="form-input" min="0" step="any" placeholder="e.g. 2650">
+                <input type="number" id="econ-future-point" class="form-input tabular" min="0" step="any" placeholder="e.g. 2650">
                 <span class="form-hint">User-entered hypothetical price ($P_1$)</span>
               </div>
 
@@ -436,7 +579,7 @@
                 <label for="econ-horizon" class="form-label">
                   Holding Horizon (days)
                 </label>
-                <input type="number" id="econ-horizon" class="form-input" min="1" max="365" step="1" placeholder="e.g. 7">
+                <input type="number" id="econ-horizon" class="form-input tabular" min="1" max="365" step="1" placeholder="e.g. 7">
                 <span class="form-hint">Storage period ($T$)</span>
               </div>
 
@@ -464,11 +607,11 @@
               <div class="form-grid">
                 <div class="form-group">
                   <label for="econ-future-lower" class="form-label">Future Price Lower Bound (INR/q)</label>
-                  <input type="number" id="econ-future-lower" class="form-input" min="0" step="any" placeholder="e.g. 2600">
+                  <input type="number" id="econ-future-lower" class="form-input tabular" min="0" step="any" placeholder="e.g. 2600">
                 </div>
                 <div class="form-group">
                   <label for="econ-future-upper" class="form-label">Future Price Upper Bound (INR/q)</label>
-                  <input type="number" id="econ-future-upper" class="form-input" min="0" step="any" placeholder="e.g. 2700">
+                  <input type="number" id="econ-future-upper" class="form-input tabular" min="0" step="any" placeholder="e.g. 2700">
                 </div>
               </div>
             </div>
@@ -477,37 +620,37 @@
           <!-- Fieldset 2: Direct Storage & Operational Costs -->
           <fieldset>
             <legend>2. Storage, Handling &amp; Transaction Costs</legend>
-            <p style="font-size: 0.8125rem; color: var(--color-text-secondary); margin: 0 0 0.75rem 0;">
+            <p style="font-size: 0.8125rem; color: var(--color-ink-muted); margin: 0 0 0.75rem 0;">
               Leave fields blank if costs are unknown. Missing cost parameters result in transparent null outputs rather than assuming zero cost.
             </p>
             <div class="form-grid">
               <div class="form-group">
                 <label for="econ-storage-cost" class="form-label">Storage Cost (INR / initial quintal for period T)</label>
-                <input type="number" id="econ-storage-cost" class="form-input" min="0" step="any" placeholder="e.g. 50">
+                <input type="number" id="econ-storage-cost" class="form-input tabular" min="0" step="any" placeholder="e.g. 50">
                 <span class="form-hint">Assessed on initial quantity basis ($Q_0$)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-handling-cost" class="form-label">Handling Cost (INR / initial quintal)</label>
-                <input type="number" id="econ-handling-cost" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <input type="number" id="econ-handling-cost" class="form-input tabular" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Loading / unloading cost</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-transport-cost" class="form-label">Incremental Transport (INR / initial quintal)</label>
-                <input type="number" id="econ-transport-cost" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <input type="number" id="econ-transport-cost" class="form-input tabular" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Extra transport to storage warehouse</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-trans-now" class="form-label">Immediate Transaction Cost (INR / initial quintal)</label>
-                <input type="number" id="econ-trans-now" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <input type="number" id="econ-trans-now" class="form-input tabular" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Commission / mandi fees at spot sale ($t_n$)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-trans-later" class="form-label">Later Transaction Cost (INR / remaining quintal)</label>
-                <input type="number" id="econ-trans-later" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <input type="number" id="econ-trans-later" class="form-input tabular" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Fees at post-storage sale ($t_l$)</span>
               </div>
             </div>
@@ -519,13 +662,13 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="econ-loss-pct" class="form-label">Physical Storage Loss (%)</label>
-                <input type="number" id="econ-loss-pct" class="form-input" min="0" max="100" step="any" placeholder="e.g. 2.0">
+                <input type="number" id="econ-loss-pct" class="form-input tabular" min="0" max="100" step="any" placeholder="e.g. 2.0">
                 <span class="form-hint">Shrinkage / spoilage rate (e.g. 2.0% &rarr; 0.02)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-markdown-pct" class="form-label">Quality Markdown (%)</label>
-                <input type="number" id="econ-markdown-pct" class="form-input" min="0" max="100" step="any" placeholder="e.g. 0.0">
+                <input type="number" id="econ-markdown-pct" class="form-input tabular" min="0" max="100" step="any" placeholder="e.g. 0.0">
                 <span class="form-hint">Price discount due to storage age (e.g. 0.0%)</span>
               </div>
             </div>
@@ -537,7 +680,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="econ-annual-rate" class="form-label">Annual Carrying Rate (%)</label>
-                <input type="number" id="econ-annual-rate" class="form-input" min="0" max="100" step="any" placeholder="e.g. 7.0">
+                <input type="number" id="econ-annual-rate" class="form-input tabular" min="0" max="100" step="any" placeholder="e.g. 7.0">
                 <span class="form-hint">Annual rate (e.g. 7.0% &rarr; 0.07 per annum)</span>
               </div>
 
@@ -557,13 +700,13 @@
             <button type="submit" id="btn-calc-submit" class="btn btn-primary">
               Calculate Research Economics
             </button>
-            <span id="econ-calc-status" style="font-size: 0.875rem; color: var(--color-text-secondary);"></span>
+            <span id="econ-calc-status" style="font-size: 0.875rem; color: var(--color-ink-muted);"></span>
           </div>
         </form>
       </div>
 
       <!-- Live Calculation Results Area -->
-      <div id="econ-results-card" class="card results-card" aria-live="polite">
+      <div id="econ-results-card" class="card" aria-live="polite">
         <div class="card-header">
           <div>
             <h3 class="card-title">Conditional Economic Outcome</h3>
@@ -584,7 +727,7 @@
         </div>
 
         <!-- Initial Uncalculated Message -->
-        <div id="econ-initial-prompt" style="padding: 1.5rem; color: var(--color-text-secondary); text-align: center;">
+        <div id="econ-initial-prompt" style="padding: 2rem; color: var(--color-ink-muted); text-align: center; font-family: var(--font-serif); font-size: 1rem;">
           No active calculation. Enter parameters above and click &ldquo;Calculate Research Economics&rdquo;, or select a verified market price, or click &ldquo;Load Reference Mathematical Fixture (+470 INR)&rdquo;.
         </div>
 
@@ -592,43 +735,60 @@
         <div class="results-grid" id="econ-metrics-grid" style="display: none;">
           <div class="result-metric">
             <div class="result-metric-label">Immediate Gross Proceeds ($R_{\text{sell,gross}}$)</div>
-            <div class="result-metric-val" id="res-gross-proceeds">--</div>
-            <div class="result-metric-sub">Current sale: $Q_0 \times P_0$</div>
+            <div class="result-metric-val tabular" id="res-gross-proceeds">--</div>
+            <div class="result-metric-sub">Current spot sale: $Q_0 \times P_0$</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Immediate Net Proceeds ($R_{\text{sell,net}}$)</div>
-            <div class="result-metric-val" id="res-net-proceeds">--</div>
+            <div class="result-metric-val tabular" id="res-net-proceeds">--</div>
             <div class="result-metric-sub">Gross minus immediate transaction fee ($t_n$)</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Expected Holding Proceeds ($R_{\text{hold}}$)</div>
-            <div class="result-metric-val" id="res-holding-proceeds">--</div>
+            <div class="result-metric-val tabular" id="res-holding-proceeds">--</div>
             <div class="result-metric-sub">Net revenue after storage, loss, fees &amp; carrying</div>
           </div>
 
           <div class="result-metric result-metric-hero">
             <div class="result-metric-label">Net Incremental Benefit ($\Delta R$)</div>
-            <div class="result-metric-val" id="res-delta-r">--</div>
+            <div class="result-metric-val tabular" id="res-delta-r">--</div>
             <div class="result-metric-sub">$R_{\text{hold}} - R_{\text{sell,net}}$</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Break-even Future Price ($P^*$)</div>
-            <div class="result-metric-val" id="res-breakeven">--</div>
+            <div class="result-metric-val tabular" id="res-breakeven">--</div>
             <div class="result-metric-sub">Future price needed for zero incremental gain</div>
           </div>
         </div>
 
-        <!-- Optional Price Range Outcomes -->
-        <div id="range-results-box" style="display: none; background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #bae6fd; margin-bottom: 1rem;">
-          <h4 style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.5rem 0;">Conditional Benefit Range</h4>
-          <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin: 0;">
-            Under the specified price range (<span id="range-future-bounds">--</span>), conditional incremental gain spans
-            <strong><span id="range-gain-min">--</span></strong> to <strong><span id="range-gain-max">--</span></strong>
-            (point estimate: <strong><span id="range-gain-point">--</span></strong>).
+        <!-- Optional Price Range Sensitivity Outcomes -->
+        <div id="range-results-box" style="display: none; background: var(--color-paper-subtle); padding: 1.125rem; border-radius: var(--radius-sm); border: 1px solid var(--color-crop-green-border); margin-bottom: 1.25rem;">
+          <h4 style="font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.5rem 0;">Conditional Benefit Sensitivity Bounds</h4>
+          <p style="font-size: 0.84375rem; color: var(--color-ink-secondary); margin: 0;">
+            Under the specified price range (<span id="range-future-bounds" class="tabular">--</span>), conditional incremental gain spans
+            <strong><span id="range-gain-min" class="tabular">--</span></strong> to <strong><span id="range-gain-max" class="tabular">--</span></strong>
+            (point estimate: <strong><span id="range-gain-point" class="tabular">--</span></strong>).
           </p>
+        </div>
+
+        <!-- Arithmetic Waterfall / Decomposition Card -->
+        <div id="waterfall-card" class="waterfall-card" style="display: none;">
+          <h4 class="waterfall-title">Economic Step-by-Step Waterfall Decomposition</h4>
+          <table class="waterfall-table" aria-label="Economic Waterfall Breakdown">
+            <thead>
+              <tr>
+                <th scope="col">Step / Component</th>
+                <th scope="col">Basis / Formula</th>
+                <th scope="col" class="num-cell">Amount (INR)</th>
+              </tr>
+            </thead>
+            <tbody id="waterfall-tbody">
+              <!-- Dynamically populated from API results -->
+            </tbody>
+          </table>
         </div>
 
         <!-- Disclosures & Missing Parameters -->
@@ -640,18 +800,57 @@
       </div>
     </section>
 
+    <!-- ======================================================================
+         7. EVIDENCE & LIMITATIONS APPENDIX (EXPANDABLE DISCLOSURE)
+         ====================================================================== -->
+    <details class="limitations-appendix" id="appendix-section">
+      <summary>
+        Scientific Methodology, Evidence Legend &amp; Unresolved Limitations
+      </summary>
+      <div class="appendix-content">
+        <div class="appendix-grid">
+          <div class="appendix-item">
+            <h4>Data Provenance Legend</h4>
+            <p>
+              <strong>OBSERVED:</strong> Official price records ingested directly from Agmarknet portal daily snapshots. Retains actual India-calendar observation dates.<br>
+              <strong>USER_ENTERED:</strong> Hypothetical quantities, holding periods, and cost parameters entered by research operators. Never authenticated as observed market data.
+            </p>
+          </div>
+          <div class="appendix-item">
+            <h4>Commercial Tariff Status</h4>
+            <p>
+              Audit of the local directory of 22 Uttar Pradesh cold storage facilities revealed <strong>0 received rate quotations out of 22 entries</strong>.
+              All commercial storage costs in the calculator must be entered by users. Missing costs yield transparent null outputs rather than assuming zero cost.
+            </p>
+          </div>
+          <div class="appendix-item">
+            <h4>Model Horizons &amp; Unresolved Undercoverage</h4>
+            <p>
+              Models forecast at fixed horizon $t+7$ calendar days. Retrospective prediction intervals achieve pooled coverage of $89.95\%$ at nominal $90\%$, but show severe undercoverage in later folds (F3: $75.94\%$, F4: $72.26\%$). The causes of this regime vulnerability remain an open research topic.
+            </p>
+          </div>
+          <div class="appendix-item">
+            <h4>Prospective Forward-Validation (Step 13)</h4>
+            <p>
+              Advisory action remains permanently <code>BLOCKED</code>. Retrospective machine learning models cannot produce live advice without prospective shadow-logging and real-world usability studies.
+            </p>
+          </div>
+        </div>
+      </div>
+    </details>
+
   </main>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-disclaimer">
-        <strong>APMC Mandi Intelligence System &bull; Research &amp; Academic Benchmark Architecture</strong><br>
-        This software is designed solely for scientific evaluation and educational demonstration. It does not constitute financial, investment,
+        <strong>APMC Mandi Intelligence System &bull; Agricultural Price Research Instrument</strong><br>
+        Designed solely for scientific evaluation and educational demonstration. It does not constitute financial, investment,
         or commercial trading advice. Operational deployment requires prospective validation under Steps 12 and 13.
       </div>
       <div>
-        <span>Version: Release Candidate (MP-RELEASE-001)</span><br>
+        <span>Release Candidate &bull; Dataset Mode</span><br>
         <span>Environment: Loopback Development</span>
       </div>
     </div>

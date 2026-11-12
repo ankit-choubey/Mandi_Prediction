@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0.0",
+  "task_id": "MP-UI-002",
+  "generated_at_utc": "2026-11-12T23:48:55.330Z",
+  "output_directory": "experiments/reports/UI002",
+  "file_count": 11,
+  "files": {
+    "api_to_dom_numeric_parity.json": {
+      "relative_path": "experiments/reports/UI002/api_to_dom_numeric_parity.json",
+      "size_bytes": 816,
+      "sha256": "561a727eb0cc7db1a645af74facf840d40e996735cf8899ea7e5b75e9c108c38"
+    },
+    "asset_and_network_receipt.json": {
+      "relative_path": "experiments/reports/UI002/asset_and_network_receipt.json",
+      "size_bytes": 583,
+      "sha256": "f6763c092e187e5b97519622124c9659298709ef0924f9c006a55cdab51fc288"
+    },
+    "browser_acceptance_receipt.json": {
+      "relative_path": "experiments/reports/UI002/browser_acceptance_receipt.json",
+      "size_bytes": 8497,
+      "sha256": "932407f8cb354c66dfd6aeace9a267327495315e561b8c191a7e2b79097695dc"
+    },
+    "responsive_viewports_receipt.json": {
+      "relative_path": "experiments/reports/UI002/responsive_viewports_receipt.json",
+      "size_bytes": 1914,
+      "sha256": "652da68c456ff9559e142b8c18150a8c9a0b660aa610e08dca999a83a7bef9d5"
+    },
+    "screenshot_desktop_1280x800.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_desktop_1280x800.png",
+      "size_bytes": 104218,
+      "sha256": "1a7bd75b9c8eb6a74ab8fa1547d9130b2f168db643823b895b43a52bea2cb259"
+    },
+    "screenshot_desktop_1440x900.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_desktop_1440x900.png",
+      "size_bytes": 131151,
+      "sha256": "264bcff00b03f44ec637d786857265e8ccc44449b2310a627815f3328c03bdd6"
+    },
+    "screenshot_mobile_375x667.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_mobile_375x667.png",
+      "size_bytes": 117485,
+      "sha256": "ab9facf8b9d2a5e334ecd7438c4b539b9220a26bc502604bf3876e362bf42b8c"
+    },
+    "screenshot_mobile_390x844.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_mobile_390x844.png",
+      "size_bytes": 140168,
+      "sha256": "8230c72fb434089f814f57ce99b0a63ffe8c20d5eb556754d1434c2999782909"
+    },
+    "screenshot_print_preview.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_print_preview.png",
+      "size_bytes": 134317,
+      "sha256": "25973bbfac56df8879e99d5a90fac2f2a000608375dac78eab5eef8f6bcbc98b"
+    },
+    "screenshot_tablet_768x1024.png": {
+      "relative_path": "experiments/reports/UI002/screenshot_tablet_768x1024.png",
+      "size_bytes": 107447,
+      "sha256": "28510fd9f87c584c8cb65b16cb41d4e5b305be588e3bc67f4ef3db59c6503e14"
+    },
+    "summary.md": {
+      "relative_path": "experiments/reports/UI002/summary.md",
+      "size_bytes": 8616,
+      "sha256": "71bfc7eba7213e73d1a0c57d2893bc68a4bdea9071e5e6d374d30aa87c7aeebc"
+    }
+  }
+}

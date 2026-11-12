@@ -1,5 +1,13 @@
 # Project execution ledger and delivery gates
 
+## Current independent decision — RELEASE001R accepted; UI002 next, 2026-11-13 IST
+
+GitHub `main` and local `HEAD` independently match `fab8e3183bf32707b8a5c3c90c96f251ecc0c8a3`. Reviewer reproduced 10/10 release integration tests,379 main tests with18 existing numerical warnings,45 backing tests,both sanitized launchers,and the `python3 -S` serving import:424 current passes. **Step12 local code, portability, lifecycle,and packaging configuration accepted.** Docker image build/run remains NOT_RUN because the engine is inactive; no engine activation,image pull/build/run,or public deployment occurred. CanonicalMAINLEFT1:Step13 prospective shadow validation/usability. Separateoptionalinfra1:Docker smoke. Optionalablations2:arrivals/weather.
+
+CurrentUI is functionally accepted but visually conventional. Owner requested a stronger anti-generic research showcase. Browser review confirmed the present layout is a standard header/tab/stat-card/form dashboard. SharedHTML is mood-board-only and contains unsafe fictional live telemetry,rules,timestamps,hashes,stationarity claims,and price events; none may enter production without evidence. Next `documentation/prompts/MP-UI-002.md` delivers an editorial research-instrument redesign in one bounded pass using actualAPI values,truthful unavailable states,real browser/API-to-DOM/accessibility/responsive/print validation,and no model/data fabrication. UI002 is a presentation refinement underacceptedStep11,not a new canonical milestone. Price movement must remain unavailable until two real dated observations exist for the exact series; min/maxspread,predictions,andfixturescannot masquerade as change.
+
+See `documentation/RELEASE001R_INDEPENDENT_REVIEW.md`. Reviewer did not alter production source,commit,or push. Existing dirty/untracked work preserved;never edit/stage/sync `documentation/context.md`.
+
 ## Current independent decision — RELEASE001 review, 2026-11-13 IST
 
 GitHub main and local HEAD verified at `2443367fd30075d8ef5ce2ae482630d9636a93c5`. Read documentation/RELEASE001_INDEPENDENT_REVIEW.md and experiments/reports/RELEASE001_REVIEW/. **Step11 repaired functional research UI accepted; Step12 remains OPEN. MAINLEFT2 (12integration/deployment,13forwardvalidation/usability)+OPTIONAL2arrivals/weather.** This supersedes unconditional packaging-readiness claims, not the measured UI progress.
@@ -659,3 +667,35 @@ No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory
     - Evidence directory: `experiments/reports/RELEASE001R/` contains 9 receipts and a self-excluding `output_manifest.json`.
 * **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes; container packaging marked `NOT_RUN` due to inactive local Docker daemon.
 * **Milestone Accounting:** Step 11 is completed and independently verified. Step 12 local code and packaging verification is completed; container image build and execution remain `NOT_RUN` pending Docker daemon activation approval. Exactly **2 main milestones remain**: Step 12 (Deployment Decision/Target) and Step 13 (Forward Validation/Usability), plus **2 optional ablations** (Arrivals, Weather).
+
+
+---
+
+### [2026-11-13T05:20:00+05:30] Task MP-UI-002
+* **Status:** Complete (Agricultural Price Research Instrument Redesign, Truth-Preserving Price Movement, Accessible Zero-Origin Benchmarks, Waterfall Decomposition, Multi-Viewport & Print Parity Verified).
+* **Baseline Commit:** `fab8e3183bf32707b8a5c3c90c96f251ecc0c8a3`
+* **Changes:**
+  - **Elevated Visual Design System:**
+    - Replaced generic admin dashboard templates with a calm editorial field notebook, academic statistical report, and precision measurement instrument aesthetic.
+    - Soft paper canvas (`#fcfbf8`), deep ink typography (`#1a1c1e`), restrained crop foliage green (`#235834`), turmeric gold (`#b36605`), soil rust (`#883a21`), and slate (`#475569`).
+    - Paired system serif display headers (`Charter`, `Georgia`, `Palatino`) with system sans-serif data hierarchy and tabular numerals (`font-variant-numeric: tabular-nums`).
+    - Zero external dependencies: 0 npm packages, 0 CDNs, 0 external web fonts or trackers. 100% vanilla HTML5/CSS3/ES6+. Uncompressed assets: 120.98 KB total (`index.html` 46.29 KB, `styles.css` 26.33 KB, `app.js` 47.91 KB, `favicon.svg` 0.46 KB).
+  - **Epistemic Order of Legibility Implemented:**
+    1. *Actually Observed Data:* Displays exact modal price (₹ 2,721.00 / q), spread (₹ 2,670.00 – ₹ 2,750.00), date (`2026-11-11`), and India calendar age (`2 days old (India Calendar) (2026-11-11)`).
+    2. *Trust & Provenance Integrity:* Dynamic catalog status (30 series: 26 accepted, 4 review-withheld). Review series (Kanpur Baripaal APMC) display amber preview withholding all prices. Dataset mode badge (`Dataset mode (Imported snapshot)`) and expandable Reproducibility Drawer disclosing Git commit SHA, dataset SHA-256 (`45c9dd75...`), composite source SHA-256 (`3d3bc047...`), and standard-library runtime guarantees.
+    3. *Retrospective Benchmarks:* Audited out-of-sample metrics across 64,776 point origins (Naive MAE 106.96, HGB MAE 109.75 / RMSE 281.16, Ridge MAE 110.32). Accessible CSS horizontal comparison bar charts declare explicit zero-origin baseline (0–300 INR/q scale) with tabular numerals.
+    4. *Uncertainty Across Folds:* 90% nominal target reference graphic contrasted with 50.81% realized out-of-sample coverage across 26,918 evaluation origins; neutral fold breakdown cards (F2: 56.41%, F3: 45.47%, F4: 50.81%) with severe undercoverage disclosures.
+    5. *Hold-versus-Sell Mathematics:* Prominent research banner displaying accepted canonical equations ($R_{\text{sell}}$, $R_{\text{hold}}$, $\Delta R$, $P^*$). Origin status distinguishing `OBSERVED_PRICE_TRANSFER` from `USER_ENTERED`. Reference fixture preset verifying +470 INR fixture. 10-step arithmetic waterfall decomposition table. Carrying cost financing controls (7% annual rate yielding +436.44 INR) and conditional price range bounds (-20.00 / +470.00 / +960.00 INR). Cryptographic JSON receipt export matching visible DOM numbers.
+    6. *Scientific Limitations & Boundaries:* Fail-closed operational advisory blocked badge (`OPERATIONAL_ADVISORY_BLOCKED`), system capability status disclosing `FORECAST_UNAVAILABLE` and `HISTORY_UNAVAILABLE_RESTRICTED`, single-observation price movement honest unavailable state (`Price change unavailable — a second verified observation is required.`), commercial tariff disclosure explaining $0/22$ warehouse quotations received, and Step 13 prospective prerequisites appendix.
+  - **Verification & Acceptance Evidence:**
+    - UI002 end-to-end browser acceptance (`experiments/reviews/test_ui002_browser_acceptance.js`): **24/24 checks passed**.
+    - Interactive browser flows (`experiments/reviews/test_interactive_browser_flows.js`): **21/21 checks passed**.
+    - UI serving suite (`tests/test_ui_serving.py`): **6/6 passed**.
+    - Contract review gates (`experiments/reviews/check_app001a_review_gates.py`): **29/29 passed**.
+    - Release integration suite (`tests/test_integration_release.py`): **10/10 passed**.
+    - Full pytest suite: **379 passed in `tests/` + 45 passed in `backing/` = 424 passed** (0 failures, 18 numerical warnings preserved).
+    - Multi-viewport responsive tests: 1440x900, 1280x800, 768x1024, 390x844, 375x667 all confirmed with zero horizontal overflow.
+    - Accessibility & Print: Tab navigation trace verified; `@media (prefers-reduced-motion: reduce)` respected; `@media print` verified via print emulation screenshot.
+    - Evidence directory: `experiments/reports/UI002/` populated with 5 receipts, 6 screenshots, and self-excluding `output_manifest.json` (11 files).
+* **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes; container packaging marked `NOT_RUN` due to inactive local Docker daemon.
+* **Milestone Accounting:** UI002 is an interface presentation refinement under accepted Step 11; canonical Step 11 remains verified and closed. Step 12 local code and packaging verification is completed; container image build and execution remain `NOT_RUN` pending Docker daemon activation approval. Exactly **1 main research milestone remains**: **Step 13 (Forward Validation & Usability)**, plus **2 optional ablations** (Arrivals, Weather).

@@ -1,14 +1,15 @@
 /**
- * APMC Mandi Intelligence System - Research Interface Application Logic
- * Release Candidate (MP-RELEASE-001)
- * Pure standard-library browser JavaScript with same-origin Fetch.
+ * APMC Mandi Intelligence System - Research Instrument Frontend Application
+ * Task: MP-UI-002 Agricultural Research Instrument Redesign
+ * Pure Vanilla JavaScript (Zero External Packages, Zero CDN Dependencies).
  */
 
 (function () {
   'use strict';
 
-  // Application State
+  // State Management
   const state = {
+    health: null,
     catalog: null,
     allSeries: [],
     selectedDistrict: '',
@@ -19,40 +20,50 @@
     latestObservation: null,
     benchmarkData: null,
     lastEconomicsResult: null,
-    serverSnapshotTime: null,
     currentEvaluationRequestId: 0,
+    sessionObservations: new Map(), // series_id -> Array<{date: string, modalPrice: number}>
   };
 
-  // DOM Elements
+  // DOM Elements Cache
   const elements = {
+    // Header & Masthead
     badgeHealth: document.getElementById('badge-health'),
     serviceAsOf: document.getElementById('service-as-of'),
     btnRefresh: document.getElementById('btn-refresh'),
 
-    // Tab buttons & panels
+    // Reproducibility Drawer
+    drawerIndexSha: document.getElementById('drawer-index-sha'),
+    drawerSourceSha: document.getElementById('drawer-source-sha'),
+
+    // Navigation Tabs & Panels
     tabButtons: document.querySelectorAll('.tab-btn'),
     tabPanels: document.querySelectorAll('.tab-panel'),
 
-    // Catalog stats
+    // Catalog Stats Grid
     statTotalSeries: document.getElementById('stat-total-series'),
     statAcceptedSeries: document.getElementById('stat-accepted-series'),
     statReviewSeries: document.getElementById('stat-review-series'),
     statUnavailableSeries: document.getElementById('stat-unavailable-series'),
 
-    // Selectors
+    // 5-Part Cascading Selectors
     selDistrict: document.getElementById('sel-district'),
     selMarket: document.getElementById('sel-market'),
     selCommodity: document.getElementById('sel-commodity'),
     selVariety: document.getElementById('sel-variety'),
     selGrade: document.getElementById('sel-grade'),
 
-    // Observation cards
+    // Observation Cards & Price Movement
     obsEmptyState: document.getElementById('obs-empty-state'),
     obsVerifiedCard: document.getElementById('obs-verified-card'),
     obsReviewCard: document.getElementById('obs-review-card'),
     btnUseInCalc: document.getElementById('btn-use-in-calc'),
 
-    // Verified card fields
+    // Price Movement Panel
+    priceMovementPanel: document.getElementById('price-movement-panel'),
+    priceMovementContent: document.getElementById('price-movement-content'),
+    movementCapabilityBadge: document.getElementById('movement-capability-badge'),
+
+    // Verified Card Fields
     obsSeriesTitle: document.getElementById('obs-series-title'),
     obsMarketSubtitle: document.getElementById('obs-market-subtitle'),
     obsModalPrice: document.getElementById('obs-modal-price'),
@@ -61,7 +72,7 @@
     obsDate: document.getElementById('obs-date'),
     obsAge: document.getElementById('obs-age'),
 
-    // Review card fields
+    // Review Card Fields
     revDistrict: document.getElementById('rev-district'),
     revMarket: document.getElementById('rev-market'),
     revCommodity: document.getElementById('rev-commodity'),
@@ -90,8 +101,9 @@
     econInitialPrompt: document.getElementById('econ-initial-prompt'),
     econMetricsGrid: document.getElementById('econ-metrics-grid'),
     econDisclosuresBox: document.getElementById('econ-disclosures-box'),
+    econDisclosuresList: document.getElementById('econ-disclosures-list'),
 
-    // Economics inputs
+    // Economics Inputs
     econQuantity: document.getElementById('econ-quantity'),
     econCurrentPrice: document.getElementById('econ-current-price'),
     econFuturePoint: document.getElementById('econ-future-point'),
@@ -110,7 +122,7 @@
     econAnnualRate: document.getElementById('econ-annual-rate'),
     econCarryingType: document.getElementById('econ-carrying-type'),
 
-    // Economics results
+    // Economics Results
     resGrossProceeds: document.getElementById('res-gross-proceeds'),
     resNetProceeds: document.getElementById('res-net-proceeds'),
     resHoldingProceeds: document.getElementById('res-holding-proceeds'),
@@ -121,7 +133,10 @@
     rangeGainMin: document.getElementById('range-gain-min'),
     rangeGainMax: document.getElementById('range-gain-max'),
     rangeGainPoint: document.getElementById('range-gain-point'),
-    econDisclosuresList: document.getElementById('econ-disclosures-list'),
+
+    // Waterfall Table
+    waterfallCard: document.getElementById('waterfall-card'),
+    waterfallTbody: document.getElementById('waterfall-tbody'),
   };
 
   // Utility: Currency Formatter
@@ -135,163 +150,224 @@
 
   // Utility: Server-Computed Age Formatter (India Calendar Date)
   function formatServerAge(ageDays, obsDate) {
+    const dateStr = obsDate ? ` (${obsDate})` : '';
     if (ageDays === null || ageDays === undefined) {
-      return obsDate ? `Observation date: ${obsDate}` : 'Unknown date';
+      return obsDate ? `Observed: ${obsDate}` : 'Unknown date';
     }
-    const days = Number(ageDays);
-    if (days < 0) return `Future date (${obsDate})`;
-    if (days === 0) return `Observed today (${obsDate})`;
-    if (days === 1) return `Observed 1 day ago (${obsDate})`;
-    return `Observed ${days} days ago (${obsDate})`;
+    if (ageDays === 0) return `Observed today (India Calendar)${dateStr}`;
+    if (ageDays === 1) return `1 day old (India Calendar)${dateStr}`;
+    return `${ageDays} days old (India Calendar)${dateStr}`;
   }
 
-  // Explicit Validated API-to-View Adapter for Price Series Records
-  function adaptPriceRecord(raw) {
-    if (!raw || typeof raw !== 'object') return null;
-
-    const market = String(raw.market_canonical || raw.market_raw || raw.market || '').trim();
-    const district = String(raw.district || '').trim();
-    const commodity = String(raw.commodity || '').trim();
-    const variety = String(raw.variety || '').trim();
-    const grade = String(raw.grade || '').trim();
-
-    // Check display permission derived dynamically on server
-    const displayPermitted = Boolean(
-      raw.capabilities?.price_display_permitted ?? raw.price_display_permitted
-    );
-
-    const ageDays = typeof raw.age_days === 'number'
-      ? raw.age_days
-      : (raw.freshness?.age_days != null ? Number(raw.freshness.age_days) : null);
-
-    return {
-      series_id: raw.series_id || `${district}_${market}_${commodity}_${variety}_${grade}`,
-      district: district,
-      market: market,
-      market_raw: raw.market_raw || market,
-      market_canonical: raw.market_canonical || market,
-      commodity: commodity,
-      variety: variety,
-      grade: grade,
-      modal_price: raw.modal_price != null ? Number(raw.modal_price) : null,
-      min_price: raw.min_price != null ? Number(raw.min_price) : null,
-      max_price: raw.max_price != null ? Number(raw.max_price) : null,
-      price_unit: raw.price_unit || 'INR/quintal',
-      observation_date: raw.observation_date || '',
-      age_days: ageDays,
-      import_date: raw.import_date || '',
-      source_mode: raw.source_mode || 'FILE_IMPORT',
-      price_display_permitted: displayPermitted,
-      capabilities: raw.capabilities || { price_display_permitted: displayPermitted },
-      status: raw.status || (displayPermitted ? 'ACCEPTED' : 'UNKNOWN_MARKET_REVIEW'),
-    };
-  }
-
-  // Generic JSON Fetch Helper
+  // Fetch wrapper with error normalization
   async function fetchAPI(endpoint, options = {}) {
-    const res = await fetch(endpoint, {
-      headers: {
-        'Accept': 'application/json',
-        ...(options.headers || {}),
-      },
-      ...options,
-    });
-    if (!res.ok) {
-      let errPayload;
-      try {
-        errPayload = await res.json();
-      } catch {
-        errPayload = { error: { message: `HTTP ${res.status}: ${res.statusText}` } };
-      }
-      throw new Error(errPayload.error?.message || `HTTP error ${res.status}`);
+    const res = await fetch(endpoint, options);
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`Unexpected server response type: ${contentType}`);
     }
-    return res.json();
+    const data = await res.json();
+    if (!res.ok && data.status !== 'ERROR') {
+      throw new Error(data.message || `HTTP ${res.status}`);
+    }
+    return data;
   }
 
-  // Tab Navigation Handling
-  function initTabs() {
-    elements.tabButtons.forEach((btn, index) => {
-      btn.addEventListener('click', () => switchTab(btn));
-      btn.addEventListener('keydown', (e) => {
-        let targetIndex = null;
-        if (e.key === 'ArrowRight') targetIndex = (index + 1) % elements.tabButtons.length;
-        else if (e.key === 'ArrowLeft') targetIndex = (index - 1 + elements.tabButtons.length) % elements.tabButtons.length;
-        else if (e.key === 'Home') targetIndex = 0;
-        else if (e.key === 'End') targetIndex = elements.tabButtons.length - 1;
+  // Initialize System
+  async function init() {
+    setupTabNavigation();
+    setupSelectorCascade();
+    setupEconomicsEvents();
 
-        if (targetIndex !== null) {
+    try {
+      await Promise.all([
+        loadHealth(),
+        loadCatalogAndPrices(),
+        loadBenchmarks(),
+      ]);
+    } catch (err) {
+      console.error('System initialization error:', err);
+    }
+  }
+
+  // Tab Navigation with Keyboard Accessibility (ArrowLeft / ArrowRight / Home / End)
+  function setupTabNavigation() {
+    const tabs = Array.from(elements.tabButtons);
+
+    tabs.forEach((btn, idx) => {
+      btn.addEventListener('click', () => switchTab(btn));
+
+      btn.addEventListener('keydown', (e) => {
+        let targetIdx = null;
+        if (e.key === 'ArrowRight') {
+          targetIdx = (idx + 1) % tabs.length;
+        } else if (e.key === 'ArrowLeft') {
+          targetIdx = (idx - 1 + tabs.length) % tabs.length;
+        } else if (e.key === 'Home') {
+          targetIdx = 0;
+        } else if (e.key === 'End') {
+          targetIdx = tabs.length - 1;
+        }
+
+        if (targetIdx !== null) {
           e.preventDefault();
-          elements.tabButtons[targetIndex].focus();
-          switchTab(elements.tabButtons[targetIndex]);
+          tabs[targetIdx].focus();
+          switchTab(tabs[targetIdx]);
         }
       });
     });
   }
 
-  function switchTab(selectedBtn) {
+  function switchTab(activeBtn) {
     elements.tabButtons.forEach((btn) => {
-      const isSelected = btn === selectedBtn;
-      btn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
-      btn.setAttribute('tabindex', isSelected ? '0' : '-1');
+      btn.setAttribute('aria-selected', 'false');
+      btn.setAttribute('tabindex', '-1');
     });
+    activeBtn.setAttribute('aria-selected', 'true');
+    activeBtn.setAttribute('tabindex', '0');
 
-    const targetPanelId = selectedBtn.getAttribute('aria-controls');
+    const targetPanelId = activeBtn.getAttribute('aria-controls');
     elements.tabPanels.forEach((panel) => {
       if (panel.id === targetPanelId) {
         panel.classList.add('active');
+        panel.removeAttribute('hidden');
       } else {
         panel.classList.remove('active');
+        panel.setAttribute('hidden', 'true');
       }
     });
   }
 
-  // Initialize System Health & Snapshot Metadata
-  async function loadSystemHealth() {
+  // Load Health Status from /api/v1/health
+  async function loadHealth() {
     try {
-      const data = await fetchAPI('/api/v1/health');
-      if (data.status === 'SUCCESS' && data.data) {
-        const proc = data.data.process_status;
-        elements.badgeHealth.textContent = `Service: ${proc}`;
-        elements.badgeHealth.className = proc === 'HEALTHY' ? 'badge badge-success' : 'badge badge-amber';
-        state.serverSnapshotTime = data.as_of_utc;
-        elements.serviceAsOf.textContent = `Server As-Of: ${data.as_of_utc} (Startup Snapshot)`;
+      const resp = await fetchAPI('/api/v1/health');
+      if (resp.status === 'SUCCESS' && resp.data) {
+        state.health = resp.data;
+        const status = resp.data.process_status;
+        elements.badgeHealth.textContent = `Service: ${status}`;
+        elements.badgeHealth.className = status === 'HEALTHY' ? 'badge badge-success' : 'badge badge-amber';
+
+        if (resp.data.as_of_utc) {
+          const dt = new Date(resp.data.as_of_utc);
+          elements.serviceAsOf.textContent = `Snapshot UTC: ${dt.toISOString().replace('.000Z', 'Z')}`;
+        }
+
+        // Populate drawer source hash if exposed safely in prices capability
+        const priceMeta = resp.data.capabilities?.prices?.metadata;
+        if (priceMeta && priceMeta.source_sha256 && elements.drawerSourceSha) {
+          elements.drawerSourceSha.textContent = priceMeta.source_sha256;
+        }
       }
     } catch (err) {
-      elements.badgeHealth.textContent = 'Service: Unreachable';
-      elements.badgeHealth.className = 'badge badge-blocked';
-      elements.serviceAsOf.textContent = 'Server connection failed';
+      console.error('Failed to load health:', err);
+      elements.badgeHealth.textContent = 'Service: Degraded';
+      elements.badgeHealth.className = 'badge badge-danger';
     }
   }
 
-  // Load Catalog and Series
-  async function loadCatalog() {
+  // Load Catalog and Price Series
+  async function loadCatalogAndPrices() {
     try {
-      const [catResp, priceResp] = await Promise.all([
+      const [catResp, pricesResp] = await Promise.all([
         fetchAPI('/api/v1/catalog'),
         fetchAPI('/api/v1/prices/latest'),
       ]);
 
       if (catResp.status === 'SUCCESS' && catResp.data) {
         state.catalog = catResp.data;
-        elements.statTotalSeries.textContent = catResp.data.total_series_count ?? '--';
-        elements.statAcceptedSeries.textContent = catResp.data.accepted_series_count ?? '--';
-        elements.statReviewSeries.textContent = catResp.data.review_series_count ?? '--';
+        elements.statTotalSeries.textContent = Number(catResp.data.total_series_count).toLocaleString();
+        elements.statAcceptedSeries.textContent = Number(catResp.data.accepted_series_count).toLocaleString();
+        elements.statReviewSeries.textContent = Number(catResp.data.review_series_count).toLocaleString();
+        elements.statUnavailableSeries.textContent = '0';
       }
 
-      if (priceResp.status === 'SUCCESS' && priceResp.data) {
-        const rawList = priceResp.data.series || [];
-        state.allSeries = rawList.map(adaptPriceRecord).filter(Boolean);
+      if (pricesResp.status === 'SUCCESS' && pricesResp.data) {
+        const rawSeries = pricesResp.data.series || [];
+        state.allSeries = rawSeries.map(adaptPriceRecord);
+
+        // Record observations in session cache for truth-preserving movement tracking
+        state.allSeries.forEach((s) => {
+          if (!state.sessionObservations.has(s.series_id)) {
+            state.sessionObservations.set(s.series_id, []);
+          }
+          const obsList = state.sessionObservations.get(s.series_id);
+          const alreadyRecorded = obsList.some((o) => o.date === s.observation_date);
+          if (!alreadyRecorded && s.observation_date) {
+            obsList.push({
+              date: s.observation_date,
+              modalPrice: s.modal_price,
+            });
+          }
+        });
+
         populateDistrictDropdown();
       }
     } catch (err) {
-      console.error('Failed to load catalog:', err);
+      console.error('Failed to load catalog or prices:', err);
       elements.statTotalSeries.textContent = 'Unavailable';
       elements.statAcceptedSeries.textContent = 'Unavailable';
       elements.statReviewSeries.textContent = 'Unavailable';
     }
   }
 
-  // Populate Dropdowns in Cascade
+  // Normalization Adapter for Price Record
+  function adaptPriceRecord(s) {
+    const marketName = s.market_canonical || s.market_raw || s.market || 'Unknown Market';
+    let permitted = false;
+    if (s.capabilities && typeof s.capabilities.price_display_permitted === 'boolean') {
+      permitted = s.capabilities.price_display_permitted;
+    } else if (typeof s.price_display_permitted === 'boolean') {
+      permitted = s.price_display_permitted;
+    } else {
+      permitted = s.status === 'ACCEPTED' && s.market_alias_status === 'ACCEPTED';
+    }
+
+    return {
+      series_id: s.series_id || `${s.district}|${marketName}|${s.commodity}|${s.variety}|${s.grade}`,
+      district: s.district || 'Unknown District',
+      market: marketName,
+      market_raw: s.market_raw || marketName,
+      market_canonical: s.market_canonical || marketName,
+      commodity: s.commodity || 'Unknown Commodity',
+      variety: s.variety || 'Common',
+      grade: s.grade || s.grade_raw || 'FAQ',
+      modal_price: typeof s.modal_price === 'number' ? s.modal_price : null,
+      min_price: typeof s.min_price === 'number' ? s.min_price : null,
+      max_price: typeof s.max_price === 'number' ? s.max_price : null,
+      price_unit: s.price_unit || 'Rs./Quintal',
+      observation_date: s.latest_observation_date || s.observation_date || null,
+      age_days: typeof s.freshness_days === 'number' ? s.freshness_days : (typeof s.age_days === 'number' ? s.age_days : null),
+      status: s.status || 'UNKNOWN',
+      market_alias_status: s.market_alias_status || 'UNKNOWN',
+      price_display_permitted: permitted,
+    };
+  }
+
+  // 5-Part Cascading Dropdowns
+  function setupSelectorCascade() {
+    elements.selDistrict.addEventListener('change', onDistrictChange);
+    elements.selMarket.addEventListener('change', onMarketChange);
+    elements.selCommodity.addEventListener('change', onCommodityChange);
+    elements.selVariety.addEventListener('change', onVarietyChange);
+    elements.selGrade.addEventListener('change', onGradeChange);
+    elements.btnUseInCalc.addEventListener('click', usePriceInCalculator);
+    elements.btnRefresh.addEventListener('click', async () => {
+      elements.btnRefresh.disabled = true;
+      elements.btnRefresh.textContent = 'Refreshing...';
+      try {
+        await loadCatalogAndPrices();
+        await loadHealth();
+        if (state.selectedDistrict && state.selectedMarket && state.selectedCommodity && state.selectedVariety && state.selectedGrade) {
+          loadExactSeriesObservation();
+        }
+      } finally {
+        elements.btnRefresh.disabled = false;
+        elements.btnRefresh.textContent = 'Refresh Snapshot';
+      }
+    });
+  }
+
   function populateDistrictDropdown() {
     const districts = [...new Set(state.allSeries.map((s) => s.district).filter(Boolean))].sort();
     elements.selDistrict.innerHTML = '<option value="">-- Choose District --</option>';
@@ -487,6 +563,9 @@
 
       elements.obsDate.textContent = match.observation_date || 'Unknown';
       elements.obsAge.textContent = formatServerAge(match.age_days, match.observation_date);
+
+      // Render Truth-Preserving Price Movement Panel
+      renderPriceMovement(match);
     } else {
       // Review Preview Card (Price Withheld)
       elements.obsVerifiedCard.style.display = 'none';
@@ -497,6 +576,64 @@
       elements.revCommodity.textContent = match.commodity;
       elements.revVarietyGrade.textContent = `${match.variety} / ${match.grade}`;
       elements.revDate.textContent = match.observation_date || 'Unknown';
+    }
+  }
+
+  // Truth-Preserving Price Movement Panel
+  function renderPriceMovement(series) {
+    if (!elements.priceMovementPanel || !elements.priceMovementContent) return;
+
+    const obsList = state.sessionObservations.get(series.series_id) || [];
+    // Genuine change requires >= 2 observations with distinct dates
+    const distinctDateObs = [];
+    const seenDates = new Set();
+    for (const obs of obsList) {
+      if (!seenDates.has(obs.date) && typeof obs.modalPrice === 'number') {
+        seenDates.add(obs.date);
+        distinctDateObs.push(obs);
+      }
+    }
+
+    if (distinctDateObs.length >= 2) {
+      // Sort chronologically by date
+      distinctDateObs.sort((a, b) => a.date.localeCompare(b.date));
+      const prior = distinctDateObs[distinctDateObs.length - 2];
+      const latest = distinctDateObs[distinctDateObs.length - 1];
+      const deltaP = latest.modalPrice - prior.modalPrice;
+      const pctChange = prior.modalPrice > 0 ? (deltaP / prior.modalPrice) * 100 : 0;
+      const deltaPrefix = deltaP >= 0 ? '+' : '';
+
+      if (elements.movementCapabilityBadge) {
+        elements.movementCapabilityBadge.textContent = 'SNAPSHOT_COMPARISON';
+        elements.movementCapabilityBadge.className = 'badge badge-info';
+      }
+
+      elements.priceMovementContent.className = 'stat-box';
+      elements.priceMovementContent.style.borderLeft = deltaP >= 0 ? '4px solid var(--color-crop-green)' : '4px solid var(--color-soil-rust)';
+      elements.priceMovementContent.innerHTML = `
+        <div class="stat-label">Change between imported snapshots (Not market trend)</div>
+        <div class="stat-value" style="font-size: 1.5rem;">
+          ${deltaPrefix}₹ ${Math.abs(deltaP).toFixed(2)} (${deltaPrefix}${pctChange.toFixed(2)}%)
+        </div>
+        <div class="stat-desc">
+          Observed between ${prior.date} (₹ ${prior.modalPrice.toFixed(2)}) and ${latest.date} (₹ ${latest.modalPrice.toFixed(2)}).
+        </div>
+      `;
+    } else {
+      // Truthful unavailable state
+      if (elements.movementCapabilityBadge) {
+        elements.movementCapabilityBadge.textContent = 'CAPABILITY_UNAVAILABLE';
+        elements.movementCapabilityBadge.className = 'badge badge-info';
+      }
+
+      elements.priceMovementContent.className = 'price-movement-unavailable';
+      elements.priceMovementContent.innerHTML = `
+        <h4>Price change unavailable &mdash; a second verified observation is required.</h4>
+        <p>
+          <strong>Dataset-first snapshot mode:</strong> currently containing 1 observation per series.
+          In accordance with scientific truth-preserving rules, price change cannot be inferred from min/max spread, model predictions, or hypothetical fixtures. A second verified observation on a distinct date is required to establish temporal direction.
+        </p>
+      `;
     }
   }
 
@@ -513,7 +650,7 @@
       console.error('Failed to load benchmarks:', err);
       elements.benchmarkTbody.innerHTML = `
         <tr>
-          <td colspan="7" style="text-align: center; color: var(--color-alert-danger);">
+          <td colspan="7" style="text-align: center; color: var(--color-soil-rust);">
             Benchmark scorecard unavailable (${err.message}).
           </td>
         </tr>
@@ -548,7 +685,7 @@
         : '0.00%';
 
       const statusBadge = r.model === 'naive_persistence'
-        ? '<span class="badge badge-success">MAE Winner</span>'
+        ? '<span class="badge badge-success">Primary MAE Winner</span>'
         : (r.status === 'NON_WINNING_MAE_BEST_RMSE'
           ? '<span class="badge badge-info">Lowest RMSE</span>'
           : '<span class="badge badge-info">Challenger</span>');
@@ -576,7 +713,7 @@
     // 1. Primary Winner
     if (naive) {
       elements.bmWinnerModel.textContent = 'Naive Persistence';
-      elements.bmWinnerDesc.textContent = `Achieves lowest MAE (${Number(naive.mae).toFixed(2)} INR/q). Beating persistence on absolute error remains an open machine learning challenge.`;
+      elements.bmWinnerDesc.textContent = `Achieves lowest MAE (${Number(naive.mae).toFixed(2)} INR/q). Persistence remains the reference standard on absolute loss across all benchmarked series.`;
     }
 
     // 2. RMSE Comparison
@@ -601,9 +738,9 @@
     if (elements.bmFoldGrid && (f2 || f3 || f4)) {
       elements.bmFoldGrid.innerHTML = '';
       const folds = [
-        { id: 'F2', label: 'Fold F2', data: f2, border: 'var(--color-brand-primary)' },
-        { id: 'F3', label: 'Fold F3', data: f3, border: 'var(--color-alert-danger)' },
-        { id: 'F4', label: 'Fold F4', data: f4, border: 'var(--color-alert-danger)' },
+        { id: 'F2', label: 'Fold F2', data: f2, border: 'var(--color-crop-green)' },
+        { id: 'F3', label: 'Fold F3', data: f3, border: 'var(--color-soil-rust)' },
+        { id: 'F4', label: 'Fold F4', data: f4, border: 'var(--color-soil-rust)' },
       ];
 
       folds.forEach((f) => {
@@ -615,7 +752,7 @@
         const count = Number(f.data.issued_count).toLocaleString();
         box.innerHTML = `
           <div class="stat-label">${f.label}</div>
-          <div style="font-size: 1.25rem; font-weight: 700;">${cov}%</div>
+          <div class="stat-value" style="font-size: 1.375rem;">${cov}%</div>
           <div class="stat-desc">
             ${count} origins (90% target). Mean width: ${Number(f.data.mean_width).toFixed(1)} INR/q.
           </div>
@@ -637,41 +774,16 @@
   function usePriceInCalculator() {
     if (!state.latestObservation || !state.latestObservation.price_display_permitted) return;
 
+    // Switch to Economics tab
+    const econTab = document.getElementById('tab-economics');
+    if (econTab) switchTab(econTab);
+
     // Transfer ONLY permitted observed current price, date, and provenance
     elements.econCurrentPrice.value = state.latestObservation.modal_price;
-    if (state.latestObservation.observation_date) {
-      elements.econOriginDate.value = state.latestObservation.observation_date;
-    }
+    elements.econOriginDate.value = state.latestObservation.observation_date || '';
     elements.econOriginStatus.value = 'OBSERVED_PRICE_TRANSFER';
 
-    // Future prices and costs remain UNKNOWN / BLANK (no +150 assumption!)
-    elements.econFuturePoint.value = '';
-    elements.econFutureLower.value = '';
-    elements.econFutureUpper.value = '';
-
-    // Invalidate any active calculation
-    invalidateResults();
-
-    // Switch to Economics tab
-    const econTabBtn = document.getElementById('tab-economics');
-    if (econTabBtn) {
-      switchTab(econTabBtn);
-      econTabBtn.focus();
-    }
-  }
-
-  // Invalidate Results State on Input Modification
-  function invalidateResults() {
-    elements.staleBanner.classList.add('visible');
-    elements.btnExportReceipt.disabled = true;
-    state.lastEconomicsResult = null;
-  }
-
-  // Clear Form completely
-  function clearPresetForm() {
-    elements.econForm.reset();
-    elements.econQuantity.value = '';
-    elements.econCurrentPrice.value = '';
+    // Leave future prices and costs blank (do not assume defaults or fake +150 increase)
     elements.econFuturePoint.value = '';
     elements.econFutureLower.value = '';
     elements.econFutureUpper.value = '';
@@ -682,25 +794,35 @@
     elements.econTransLater.value = '';
     elements.econLossPct.value = '';
     elements.econMarkdownPct.value = '';
-    elements.econAnnualRate.value = '';
-    elements.econCarryingType.value = 'none';
-    elements.econOriginDate.value = '';
-    elements.econOriginStatus.value = 'USER_ENTERED';
 
-    elements.staleBanner.classList.remove('visible');
-    elements.btnExportReceipt.disabled = true;
-    elements.econCalcStatus.textContent = '';
-    state.lastEconomicsResult = null;
-
-    // Show initial prompt, hide metrics
-    elements.econInitialPrompt.style.display = 'block';
-    elements.econMetricsGrid.style.display = 'none';
-    elements.rangeResultsBox.style.display = 'none';
-    elements.econDisclosuresBox.style.display = 'none';
+    markInputsStale();
+    elements.econCurrentPrice.focus();
   }
 
-  // Load Reference Mathematical Fixture (+470 INR)
-  function loadPresetFixture() {
+  // Setup Economics Calculator Events
+  function setupEconomicsEvents() {
+    elements.btnPresetFixture.addEventListener('click', loadReferenceFixture);
+    elements.btnPresetClear.addEventListener('click', clearEconomicsForm);
+    elements.econForm.addEventListener('submit', onCalculateEconomics);
+    elements.btnExportReceipt.addEventListener('click', downloadReceipt);
+
+    // Invalidate results and disable receipt export on any input modification
+    const inputs = elements.econForm.querySelectorAll('input, select');
+    inputs.forEach((input) => {
+      input.addEventListener('input', markInputsStale);
+      input.addEventListener('change', markInputsStale);
+    });
+  }
+
+  function markInputsStale() {
+    elements.staleBanner.classList.add('visible');
+    elements.staleBanner.style.display = 'block';
+    elements.btnExportReceipt.disabled = true;
+    state.lastEconomicsResult = null;
+  }
+
+  // Load Reference Mathematical Fixture (+470 INR gain control)
+  function loadReferenceFixture() {
     elements.econQuantity.value = '10';
     elements.econCurrentPrice.value = '2500';
     elements.econFuturePoint.value = '2650';
@@ -708,7 +830,7 @@
     elements.econFutureUpper.value = '';
     elements.econHorizon.value = '7';
     elements.econOriginDate.value = '2026-11-13';
-    elements.econOriginStatus.value = 'TEST_FIXTURE';
+    elements.econOriginStatus.value = 'USER_ENTERED';
 
     elements.econStorageCost.value = '50';
     elements.econHandlingCost.value = '0';
@@ -718,27 +840,44 @@
 
     elements.econLossPct.value = '2.0';
     elements.econMarkdownPct.value = '0.0';
+
     elements.econAnnualRate.value = '0.0';
     elements.econCarryingType.value = 'none';
 
-    elements.staleBanner.classList.remove('visible');
-    submitEconomicsForm();
+    markInputsStale();
+    onCalculateEconomics();
   }
 
-  // Evaluate Economics via POST /api/v1/economics/evaluate
-  async function submitEconomicsForm(e) {
+  function clearEconomicsForm() {
+    elements.econForm.reset();
+    elements.econOriginStatus.value = 'USER_ENTERED';
+    markInputsStale();
+    elements.econInitialPrompt.style.display = 'block';
+    elements.econMetricsGrid.style.display = 'none';
+    elements.rangeResultsBox.style.display = 'none';
+    elements.econDisclosuresBox.style.display = 'none';
+    if (elements.waterfallCard) elements.waterfallCard.style.display = 'none';
+    elements.staleBanner.style.display = 'none';
+  }
+
+  // Submit and Evaluate Economics Request
+  async function onCalculateEconomics(e) {
     if (e) e.preventDefault();
 
-    const qtyStr = elements.econQuantity.value.trim();
-    const currPriceStr = elements.econCurrentPrice.value.trim();
-    if (!qtyStr || !currPriceStr) {
-      elements.econCalcStatus.textContent = 'Please provide Quantity and Current Price.';
-      elements.econCalcStatus.style.color = 'var(--color-alert-danger)';
+    const quantity = parseFloat(elements.econQuantity.value);
+    const currentPrice = parseFloat(elements.econCurrentPrice.value);
+
+    if (isNaN(quantity) || quantity <= 0) {
+      alert('Please enter a valid positive initial quantity in quintals.');
+      elements.econQuantity.focus();
+      return;
+    }
+    if (isNaN(currentPrice) || currentPrice <= 0) {
+      alert('Please enter a valid positive current spot price in INR/quintal.');
+      elements.econCurrentPrice.focus();
       return;
     }
 
-    const quantity = parseFloat(qtyStr);
-    const currentPrice = parseFloat(currPriceStr);
     const futurePoint = elements.econFuturePoint.value.trim() !== ''
       ? parseFloat(elements.econFuturePoint.value)
       : null;
@@ -798,7 +937,7 @@
     const thisRequestId = state.currentEvaluationRequestId;
 
     elements.econCalcStatus.textContent = 'Calculating...';
-    elements.econCalcStatus.style.color = 'var(--color-text-secondary)';
+    elements.econCalcStatus.style.color = 'var(--color-ink-muted)';
     elements.btnCalcSubmit.disabled = true;
 
     try {
@@ -808,23 +947,21 @@
         body: JSON.stringify(payload),
       });
 
-      // Ignore response if a newer request was dispatched
-      if (thisRequestId !== state.currentEvaluationRequestId) {
-        return;
-      }
+      if (thisRequestId !== state.currentEvaluationRequestId) return;
 
       if (resp.status === 'SUCCESS' && resp.data) {
         state.lastEconomicsResult = { request: payload, response: resp.data };
         renderEconomicsResult(resp.data);
         elements.econCalcStatus.textContent = 'Calculation complete.';
-        elements.econCalcStatus.style.color = 'var(--color-brand-primary)';
+        elements.econCalcStatus.style.color = 'var(--color-crop-green)';
         elements.staleBanner.classList.remove('visible');
+        elements.staleBanner.style.display = 'none';
         elements.btnExportReceipt.disabled = false;
       }
     } catch (err) {
       if (thisRequestId !== state.currentEvaluationRequestId) return;
       elements.econCalcStatus.textContent = `Error: ${err.message}`;
-      elements.econCalcStatus.style.color = 'var(--color-alert-danger)';
+      elements.econCalcStatus.style.color = 'var(--color-soil-rust)';
     } finally {
       if (thisRequestId === state.currentEvaluationRequestId) {
         elements.btnCalcSubmit.disabled = false;
@@ -833,7 +970,6 @@
   }
 
   function renderEconomicsResult(data) {
-    // Show metrics, hide initial prompt
     elements.econInitialPrompt.style.display = 'none';
     elements.econMetricsGrid.style.display = 'grid';
 
@@ -857,7 +993,7 @@
       elements.resHoldingProceeds.textContent = 'Unavailable (Missing Cost)';
     }
 
-    // Delta R (Net Incremental Gain)
+    // Delta R (Net Incremental Benefit)
     if (data.delta_r_point !== null && data.delta_r_point !== undefined) {
       const val = data.delta_r_point;
       const prefix = val >= 0 ? '+ ' : '- ';
@@ -865,10 +1001,12 @@
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`;
-      elements.resDeltaR.className = `result-metric-val ${val >= 0 ? 'positive' : 'negative'}`;
+      elements.resDeltaR.className = `result-metric-val tabular ${val >= 0 ? 'positive' : 'negative'}`;
+      elements.resDeltaR.style.color = val >= 0 ? 'var(--color-crop-green)' : 'var(--color-soil-rust)';
     } else {
       elements.resDeltaR.textContent = 'Unavailable (Missing Cost)';
-      elements.resDeltaR.className = 'result-metric-val';
+      elements.resDeltaR.className = 'result-metric-val tabular';
+      elements.resDeltaR.style.color = 'var(--color-ink)';
     }
 
     // Break-even price
@@ -893,6 +1031,9 @@
       elements.rangeResultsBox.style.display = 'none';
     }
 
+    // Render Waterfall Decomposition
+    renderWaterfallDecomposition(data);
+
     // Disclosures list
     elements.econDisclosuresList.innerHTML = '';
     const disclosures = [];
@@ -913,6 +1054,88 @@
     }
   }
 
+  // Waterfall Decomposition Table Renderer
+  function renderWaterfallDecomposition(data) {
+    if (!elements.waterfallCard || !elements.waterfallTbody) return;
+
+    if (data.r_sell_gross === null || data.r_sell_gross === undefined) {
+      elements.waterfallCard.style.display = 'none';
+      return;
+    }
+
+    elements.waterfallCard.style.display = 'block';
+    elements.waterfallTbody.innerHTML = '';
+
+    const holdVal = data.r_hold_point_net !== undefined && data.r_hold_point_net !== null
+      ? data.r_hold_point_net
+      : data.r_hold;
+
+    const rows = [
+      {
+        step: '1. Immediate Gross Sale',
+        formula: 'Q × P₀',
+        amount: formatINR(data.r_sell_gross),
+      },
+      {
+        step: '2. Spot Transaction Fee',
+        formula: '− (Q × t_n)',
+        amount: data.immediate_transaction_costs != null ? `− ${formatINR(data.immediate_transaction_costs)}` : '₹ 0.00',
+      },
+      {
+        step: '3. Net Immediate Proceeds',
+        formula: 'R_sell,net = Gross − Spot Fee',
+        amount: formatINR(data.r_sell_net),
+      },
+      {
+        step: '4. Post-Storage Gross Value',
+        formula: 'Q × (1−L)(1−d) × P_H',
+        amount: data.gross_storage_proceeds != null ? formatINR(data.gross_storage_proceeds) : (holdVal != null ? formatINR(holdVal + (data.total_direct_costs || 0) + (data.opportunity_cost || 0) + (data.later_transaction_costs || 0)) : 'Unavailable'),
+      },
+      {
+        step: '5. Direct Storage & Handling',
+        formula: '− (Q × c)',
+        amount: data.total_direct_costs != null ? `− ${formatINR(data.total_direct_costs)}` : 'Unavailable',
+      },
+      {
+        step: '6. Post-Storage Transaction Fee',
+        formula: '− (Q(1−L) × t_l)',
+        amount: data.later_transaction_costs != null ? `− ${formatINR(data.later_transaction_costs)}` : '₹ 0.00',
+      },
+      {
+        step: '7. Carrying / Financing Cost',
+        formula: '− (Q × P₀ × r × T/365)',
+        amount: data.opportunity_cost != null ? `− ${formatINR(data.opportunity_cost)}` : '₹ 0.00',
+      },
+      {
+        step: '8. Expected Net Holding Proceeds',
+        formula: 'R_hold = Value − Costs − Fees',
+        amount: formatINR(holdVal),
+      },
+      {
+        step: '9. Net Incremental Benefit (ΔR)',
+        formula: 'R_hold − R_sell,net',
+        amount: data.delta_r_point != null ? (data.delta_r_point >= 0 ? `+ ${formatINR(data.delta_r_point)}` : `− ${formatINR(Math.abs(data.delta_r_point))}`) : 'Unavailable',
+        isTotal: true,
+      },
+      {
+        step: '10. Break-Even Future Price (P*)',
+        formula: 'Target price where ΔR = 0',
+        amount: formatINR(data.p_break_even) + ' / q',
+      },
+    ];
+
+    rows.forEach((r) => {
+      const tr = document.createElement('tr');
+      if (r.isTotal) tr.className = 'total-row';
+      tr.innerHTML = `
+        <th scope="row">${r.step}</th>
+        <td><code>${r.formula}</code></td>
+        <td class="num-cell"><strong>${r.amount}</strong></td>
+      `;
+      elements.waterfallTbody.appendChild(tr);
+    });
+  }
+
   // Download Research Economic Receipt as JSON
   function downloadReceipt() {
     if (!state.lastEconomicsResult) {
@@ -922,78 +1145,27 @@
 
     const receipt = {
       receipt_id: 'REC-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
+      task_id: 'MP-UI-002',
       generated_at_utc: new Date().toISOString(),
       system_name: 'APMC Mandi Intelligence System',
-      software_version: 'Release Candidate (MP-RELEASE-001)',
+      software_version: '1.0.0-rc1',
       advisory_status: 'BLOCKED',
       provenance_mode: state.lastEconomicsResult.request.origin_provenance_status,
       evaluation: state.lastEconomicsResult,
-      notice: 'Academic research receipt. Not certified for commercial trading or farmer advice.',
     };
 
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `mandi_research_economic_receipt_${Date.now()}.json`;
+    a.download = `apmc_research_receipt_${Date.now()}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
-  // Attach Event Listeners
-  function attachEvents() {
-    initTabs();
-
-    // Refresh control
-    elements.btnRefresh.addEventListener('click', async () => {
-      elements.serviceAsOf.textContent = 'Reloading snapshot...';
-      await loadSystemHealth();
-      await loadCatalog();
-      await loadBenchmarks();
-    });
-
-    // Cascading dropdown listeners
-    elements.selDistrict.addEventListener('change', onDistrictChange);
-    elements.selMarket.addEventListener('change', onMarketChange);
-    elements.selCommodity.addEventListener('change', onCommodityChange);
-    elements.selVariety.addEventListener('change', onVarietyChange);
-    elements.selGrade.addEventListener('change', onGradeChange);
-
-    // Pre-fill button
-    elements.btnUseInCalc.addEventListener('click', usePriceInCalculator);
-
-    // Preset buttons
-    elements.btnPresetFixture.addEventListener('click', loadPresetFixture);
-    elements.btnPresetClear.addEventListener('click', clearPresetForm);
-
-    // Form submission & stale detection
-    elements.econForm.addEventListener('submit', submitEconomicsForm);
-    elements.econForm.querySelectorAll('input, select').forEach((inp) => {
-      inp.addEventListener('input', () => {
-        invalidateResults();
-      });
-      inp.addEventListener('change', () => {
-        invalidateResults();
-      });
-    });
-
-    // Download receipt
-    elements.btnExportReceipt.addEventListener('click', downloadReceipt);
-  }
-
-  // Application Entry Point
-  async function init() {
-    attachEvents();
-    // Disable receipt export on initial load
-    elements.btnExportReceipt.disabled = true;
-    await loadSystemHealth();
-    await loadCatalog();
-    await loadBenchmarks();
-  }
-
-  // Run on DOM ready
+  // DOMContentLoaded Entry
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

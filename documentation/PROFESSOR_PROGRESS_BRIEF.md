@@ -1,6 +1,6 @@
 # Mandi Prediction — research progress, 13 November 2026
 
-**The repaired local research interface, verified tables and economic controls are ready for a progress demonstration. Portable deployment, live farmer advice and observed profitability are not established.**
+**The research web interface has been elevated into a professor-ready Agricultural Price Research Instrument with verified tables, zero external dependencies, accessible zero-origin charts, and 10-step economic waterfall controls. Portable deployment, live farmer advice and observed profitability are not established.**
 
 ## What the project is building
 
@@ -45,9 +45,16 @@ Independent review reproduced 246 calibration quantiles and 24 model/level/fold-
 
 ## What remains
 
-**Step 11's repaired research interface is accepted for functional use.** Independent browser actions verified exact Lucknow/Banthara/Wheat/Dara/FAQ selection at 2721 INR/quintal with 11 November observation date, blank future/cost fields after price transfer, +470 fixture, 436.44 financing result and -20/470/960 conditional price-range gains. The table and narrative now display the source RMSE/fold counts. A 375px CSS viewport reflows correctly. All outputs remain conditional research evidence, with live advice blocked.
+**Step 11's research interface is accepted and elevated into an Agricultural Price Research Instrument (MP-UI-002).**
+- **Distinctive Scientific Instrument Aesthetic:** Replaced generic corporate admin templates with a calm editorial field notebook / statistical report design system (warm paper canvas `#fcfbf8`, deep ink `#1a1c1e`, restrained crop green `#235834`, turmeric `#b36605`, soil rust `#883a21`). Zero external npm/CDN dependencies (100% vanilla HTML5/CSS3/ES6+, total payload 120.98 KB).
+- **Epistemic Order of Legibility:** Strict 6-layer layout: (1) what was actually observed; (2) trustworthiness and freshness; (3) frozen retrospective benchmark achievements; (4) uncertainty across folds; (5) user-entered hold-versus-sell economics; and (6) scientifically unproven / fail-closed boundaries.
+- **Truth-Preserving Price Movement:** A single observation truthfully displays `Price change unavailable — a second verified observation is required.` No synthetic or min/max spread substitution.
+- **Audited Benchmarks & Uncertainty:** Accessible zero-origin horizontal bar charts (0–300 INR/q scale) for Naive MAE 106.96, HGB MAE 109.75 / RMSE 281.16, and Ridge MAE 110.32. Prominent 90% target reference line contrasting with 50.81% realized coverage, alongside explicit F2/F3/F4 fold cards and undercoverage disclosures.
+- **10-Step Waterfall Economics:** Arithmetic breakdown table connecting Gross Spot Value through Net Hold Benefit, alongside canonical equation banner, +470 INR fixture preset, 7% carrying cost (+436.44 INR), conditional price bounds (-20/470/960 INR), and cryptographic receipt export.
+- **Multi-Viewport & Print Parity:** Headless Chromium browser verification across 5 viewports (Desktop 1440x900, Desktop 1280x800, Tablet 768x1024, Mobile 390x844, Mobile 375x667) confirmed zero horizontal overflow. Print preview hides interactive widgets for publication-ready PDF export. Full keyboard navigation and `@media (prefers-reduced-motion: reduce)` verified.
+- **Verification Matrix:** 24/24 UI002 acceptance checks passed, 21/21 browser flow checks passed, 6/6 UI serving tests passed, 29/29 review gates passed, 10/10 integration tests passed, and combined test suite: 424 passed (379 tests/, 45 backing/, 0 failures).
 
-**Two main milestones remain: 12 integration/deployment and 13 forward validation/usability; plus 2 optional arrivals/weather ablations.**
+**Two main milestones remain: 12 deployment decision/target and 13 forward validation/usability; plus 2 optional arrivals/weather ablations.**
 
 Under task **MP-RELEASE-001R**, the Step 12 code, lifecycle, packaging assets, and test portability blockers were completely resolved:
 - **Launcher Entrypoints & Shutdown:** Repaired dynamic root resolution so `python3 src/run_release_service.py --help` and `python3 -m src.run_release_service --help` both succeed under sanitized environments without `PYTHONPATH`. Resolved shutdown deadlock via asynchronous daemon thread dispatch, cleanly terminating `serve_forever()` within 0.55s on SIGTERM and releasing the socket for immediate rebinding.

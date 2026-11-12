@@ -1,0 +1,28 @@
+{
+  "task_id": "MP-UI-002",
+  "timestamp_utc": "2026-11-12T23:48:55.327Z",
+  "static_assets": [
+    {
+      "file": "src/static/index.html",
+      "size_bytes": 46286
+    },
+    {
+      "file": "src/static/styles.css",
+      "size_bytes": 26330
+    },
+    {
+      "file": "src/static/app.js",
+      "size_bytes": 47905
+    },
+    {
+      "file": "src/static/favicon.svg",
+      "size_bytes": 456
+    }
+  ],
+  "total_static_bytes": 120977,
+  "network_checks": {
+    "total_requests_recorded": 25,
+    "external_requests_count": 0,
+    "verified_zero_external_dependencies": true
+  }
+}

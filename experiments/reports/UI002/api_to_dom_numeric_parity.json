@@ -1,0 +1,28 @@
+{
+  "task_id": "MP-UI-002",
+  "timestamp_utc": "2026-11-12T23:48:55.328Z",
+  "verified_series": {
+    "district": "Lucknow",
+    "market": "Banthara",
+    "commodity": "Wheat",
+    "variety": "Dara",
+    "grade": "FAQ",
+    "dom_modal_price": "₹ 2721.00",
+    "dom_observation_date": "2026-11-11"
+  },
+  "benchmarks": {
+    "naive_persistence_mae": "106.96",
+    "naive_persistence_rmse": "298.83",
+    "hist_gradient_boosting_mae": "109.75",
+    "hist_gradient_boosting_rmse": "281.16",
+    "ridge_mae": "110.32",
+    "ridge_rmse": "288.56",
+    "total_interval_origins": "26,918",
+    "total_point_origins": "64,776"
+  },
+  "economics_controls": {
+    "reference_fixture_delta_inr": "+ ₹ 470.00",
+    "financing_7_pct_delta_inr": "+ ₹ 436.44",
+    "sensitivity_range_bounds": "-20.00 / 470.00 / 960.00"
+  }
+}
