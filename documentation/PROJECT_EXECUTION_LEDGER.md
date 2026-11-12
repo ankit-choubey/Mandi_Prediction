@@ -269,3 +269,37 @@ NEXT documentation/prompts/MP-FC-007.md: first Ridge/HGB price-only benchmark; s
   - Zero automatic retry pushes executed per standing rules. Awaiting explicit owner authorization for single bounded rerun.
 - **Unit Test Suite:** **281 tests passed in 9.33s** (0 failures, 0 errors across 21 test files).
 - **Remaining Milestones:** 7 main milestones (Steps 7–13) remain at task start; Step 7 ready for single rerun approval. After Step 7 execution, 6 main steps (8–13) remain + 2 optional experiments.
+
+
+## Step7 failed-run review — 2026-11-12 IST
+Commit2b0bca984d562cc54edb342711332424c3e70098 verified remotely. ONEkernelv1 stopped before training at wrongmanifestfieldgate; panelSHAreproduced perlog,no newMLscores. Codefixfornestedfields alone insufficient: independent all8innersplits have0embargodates; TierB unreachablelabel; F2regimewrong;77sensitivity uses broadmarketnames; targetselectiondifferent atfoldend; configrankingunequalsamples; avoidable repeatedfeature/bootstrapwork. See documentation/FC007_REVIEW.md. Independent7nonfitbenchmarktests passed.63s,4fitcasesdeselected; full281reportedonly.
+CURRENTSTEP7 remainsOPEN. MAINSTEPSLEFT7(7–13),OPTIONAL2. Next documentation/prompts/MP-FC-007R.md bundles exactrepairs/endtoendpreflight withONEconditionallyowner-approvedprivateCPUrerun,noauto-retry,newdatasetupload,syntheticgeneration,APIorlocalrealtraining. Originalfailedrunevidencepreserved. Successfulindependentreviewleaves6mainsteps8–13+2optional. No newpreparation-only mainstepnumber.
+
+
+## Owner parallel-plan and single-pass preference — 2026-11-12 IST
+User asks FIRST which Steps8–13 depend on Step7; do not infer instruction to launch agents or new parallel chats. Saved documentation/PARALLEL_DELIVERY_PLAN.md. Three substantive streams9economics/10backend/11UI can advance without7modelresults after shared contracts; Step8calibration needs7;12integration/13forwardvalidation can only prepare until dependencies available. Practical lanes7->8,9,and10->11;12scaffolding/13planning can overlap. Full forecast release requires integration and prospective evidence cannot precede outcomes. MAINLEFT7 including current7,or6 after7accepted;OPTIONAL2.
+FromStep8 each prompt should be a complete milestone with exact data/interface/compute contracts, actual-path preflight/adversarialtests, full deliverables/scorecards/equations, limits,push/evidence/docs/journal instructions and failure states. Aim single-pass,no promise flaw-freefirsttry or concealment. Unknown information remains UNKNOWN,not invented realtime evidence.
+Owner prefers freeKaggleGPU for later supported workloads; verify accountavailability/quota and actual GPU usage/endtoendtimings. Existing defaultRidgepipeline/HGB not autoGPU by enable_gpu; sklearn1.6Ridge experimentalGPU requires solverSVD/compatibledevicearray, HGBtreeCPU. No silent method switch, paidcompute, installs or replacement of currentlyapprovedStep7CPUrun. GPU preference recorded; no compute launched. Primarydocs linked in plan.
+
+
+## Live Step7 investigation: recover scores, do NOT retrain — 2026-11-12 IST
+User prioritizes fast reliable completion and regularGitHubchecks. Independently checked GitHubmain=2b0bca984d562cc54edb342711332424c3e70098; working corrections uncommitted, preserve. DirectKaggleCLI statusERROR. Latestdownloadedlog showsALL4foldmodels fitted and completepredictionarchives saved, then NameErrorListnotdefined in scorecarddefinition at3251s (~54min total). Firsttuning2977.7s; final4fits14.4s combined. Mosttime likely cache/featurepreparation,not finalfitting. No immediateGPU/retrainingjustification.
+Reviewer recovered8modelweights+bothpredictionarchives+log into ignored experiments/outputs/FC007_recovery and wrote recovery_download_manifest.json actualhashes. Only binaryhashes/header/firstrow read,not full64kpredictionrows/modeldeserialization. Existingtrainingwork preserved. Details documentation/FC007_RECOVERY_STATUS.md.
+NEXT documentation/prompts/MP-FC-007-SCORE.md, scoringONLY recovery, explicitownerexception required for<=70000archivedpredictionrows/50MBdecodedCSV/512MBmemory/10mintotal/30sperstage locally. No rawpanel read, fit,tune,Kagglepush/upload/install/syntheticgeneration. Ordinaryfullpanelrestrictionsunchanged. Mainleft7 including7,optional2;acceptedscoreauditthen6main+2optional. Completeendtoendreportpreflight+checkpointaftereachstage fromnow; no promisezero failures/no forcedpassing.
+
+---
+
+### [2026-11-12T23:50:00+05:30] Task MP-FC-007-SCORE
+* **Status:** Complete (Zero Retraining / Prediction Scoring Recovery).
+* **Baseline Commit:** `2b0bca984d562cc54edb342711332424c3e70098`
+* **Changes:**
+  - Implemented standalone scoring pipeline `src/score_forecast_archive.py` with AST-verified zero `fit`/`train`/`tune` calls and bounded memory/execution watchdogs.
+  - Repaired `compute_slice_metrics` in `src/forecast_benchmark.py` to prevent NumPy 2.2 / Python 3.14 ephemeral array buffer recycling on binary subtraction (`flags.writeable = False`), and accelerated series-cluster bootstrap via vector grouped sum.
+  - Executed miniature reporting preflight testing all 5 edge cases (empty, all-abstain, zero denominator, atomic writing, readback).
+  - Scored 64,776 real forecast predictions from verified archive `master_predictions_fc007.csv.gz` (SHA-256 `a61b3832...`) across all 24 slices with 1,000 bootstrap resamples in 3.67 seconds.
+  - Serialized all 8 scorecards atomically to `experiments/reports/FC007_RECOVERED/` along with cryptographic `output_manifest.json` and `reconciliation_assertion_receipt.json`.
+  - Authored `documentation/FORECAST_BENCHMARK_RUNBOOK.md` detailing mandatory reliability gates (preflight, immediate persistence, entrypoint decoupling, cryptographic checkpointing, stage watchdogs).
+  - Authored summary report `experiments/reports/mp_fc_007_recovery_summary.md`.
+  - Added unit test suite `tests/test_score_forecast_archive.py` (5 passed). Full test suite: **298 passed** (0 failures).
+* **Missing Evidence:** Inner tuning scores trace across grids unpersisted prior to remote crash and recorded honestly as NOT RECOVERED.
+* **Milestone Accounting:** Main steps left: 7 (current Step 7 remains open until independent review; accepted Step 7 leaves 6 main steps 8–13 + 2 optional).

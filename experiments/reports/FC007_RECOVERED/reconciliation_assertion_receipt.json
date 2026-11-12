@@ -1,0 +1,37 @@
+{
+  "task_id": "MP-FC-007-SCORE",
+  "timestamp_utc": "2026-11-12T18:18:31.345521+00:00",
+  "predictions_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+  "total_predictions_rows": 64776,
+  "fold_counts": {
+    "F1": 37858,
+    "F2": 23490,
+    "F4": 2015,
+    "F3": 1413
+  },
+  "date_regimes": {
+    "HISTORICAL": 61348,
+    "MODERN": 2330,
+    "TRANSITION": 1098
+  },
+  "tier_counts": {
+    "is_tier_a": 64776,
+    "is_tier_b": 62932
+  },
+  "scope_a_disputed_keys_matches": 18,
+  "scope_b_historical_removal_sensitivity": "PENDING_RECOMPUTATION_BUDGET_EXCLUDED",
+  "inner_tuning_scores_trace": "NOT RECOVERED (Tuning scores unpersisted before crash; selected configs and sample sizes recovered from log)",
+  "assertions_executed_and_passed": [
+    "archive_sha256_match",
+    "total_row_count_64776",
+    "fold_row_counts_exact_match",
+    "tier_b_strict_subset_of_tier_a",
+    "price_integrity_strictly_positive_finite",
+    "temporal_boundary_conformance",
+    "scope_a_exact_77_keys_mask_match",
+    "miniature_preflight_passed_prior_to_full_scoring",
+    "scorecard_row_count_reconciliation",
+    "paired_skill_ratio_of_sums_verified"
+  ],
+  "status": "ALL_GATES_PASSED_RECOVERY_SUCCESS"
+}

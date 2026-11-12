@@ -1515,3 +1515,66 @@ Conventional MASE preserved as **NOT COMPUTED / NOT VALIDATED** to prevent misle
 - Execution Diagnostic: Kernel halted at Cell 2 line 55 due to `manifest_v2.get("input_rows", 0)` returning 0 instead of reading nested `manifest_v2["summary_metrics"]["total_raw_rows"]`.
 - Repair: Resolved dictionary lookup in `build_fc007_notebook.py` and regenerated notebook. Tested row conservation logic locally against actual downloaded `processing_manifest_v2.json` (assertion passed).
 - Standing Rule Compliance: No automatic retry pushed. Halted with full diagnostics and test evidence. Awaiting explicit owner approval for bounded single rerun.
+
+
+## Step7 failed-run review — 2026-11-12 IST
+Commit2b0bca984d562cc54edb342711332424c3e70098 verified remotely. ONEkernelv1 stopped before training at wrongmanifestfieldgate; panelSHAreproduced perlog,no newMLscores. Codefixfornestedfields alone insufficient: independent all8innersplits have0embargodates; TierB unreachablelabel; F2regimewrong;77sensitivity uses broadmarketnames; targetselectiondifferent atfoldend; configrankingunequalsamples; avoidable repeatedfeature/bootstrapwork. See documentation/FC007_REVIEW.md. Independent7nonfitbenchmarktests passed.63s,4fitcasesdeselected; full281reportedonly.
+CURRENTSTEP7 remainsOPEN. MAINSTEPSLEFT7(7–13),OPTIONAL2. Next documentation/prompts/MP-FC-007R.md bundles exactrepairs/endtoendpreflight withONEconditionallyowner-approvedprivateCPUrerun,noauto-retry,newdatasetupload,syntheticgeneration,APIorlocalrealtraining. Originalfailedrunevidencepreserved. Successfulindependentreviewleaves6mainsteps8–13+2optional. No newpreparation-only mainstepnumber.
+
+
+## Owner parallel-plan and single-pass preference — 2026-11-12 IST
+User asks FIRST which Steps8–13 depend on Step7; do not infer instruction to launch agents or new parallel chats. Saved documentation/PARALLEL_DELIVERY_PLAN.md. Three substantive streams9economics/10backend/11UI can advance without7modelresults after shared contracts; Step8calibration needs7;12integration/13forwardvalidation can only prepare until dependencies available. Practical lanes7->8,9,and10->11;12scaffolding/13planning can overlap. Full forecast release requires integration and prospective evidence cannot precede outcomes. MAINLEFT7 including current7,or6 after7accepted;OPTIONAL2.
+FromStep8 each prompt should be a complete milestone with exact data/interface/compute contracts, actual-path preflight/adversarialtests, full deliverables/scorecards/equations, limits,push/evidence/docs/journal instructions and failure states. Aim single-pass,no promise flaw-freefirsttry or concealment. Unknown information remains UNKNOWN,not invented realtime evidence.
+Owner prefers freeKaggleGPU for later supported workloads; verify accountavailability/quota and actual GPU usage/endtoendtimings. Existing defaultRidgepipeline/HGB not autoGPU by enable_gpu; sklearn1.6Ridge experimentalGPU requires solverSVD/compatibledevicearray, HGBtreeCPU. No silent method switch, paidcompute, installs or replacement of currentlyapprovedStep7CPUrun. GPU preference recorded; no compute launched. Primarydocs linked in plan.
+
+
+## Live Step7 investigation: recover scores, do NOT retrain — 2026-11-12 IST
+User prioritizes fast reliable completion and regularGitHubchecks. Independently checked GitHubmain=2b0bca984d562cc54edb342711332424c3e70098; working corrections uncommitted, preserve. DirectKaggleCLI statusERROR. Latestdownloadedlog showsALL4foldmodels fitted and completepredictionarchives saved, then NameErrorListnotdefined in scorecarddefinition at3251s (~54min total). Firsttuning2977.7s; final4fits14.4s combined. Mosttime likely cache/featurepreparation,not finalfitting. No immediateGPU/retrainingjustification.
+Reviewer recovered8modelweights+bothpredictionarchives+log into ignored experiments/outputs/FC007_recovery and wrote recovery_download_manifest.json actualhashes. Only binaryhashes/header/firstrow read,not full64kpredictionrows/modeldeserialization. Existingtrainingwork preserved. Details documentation/FC007_RECOVERY_STATUS.md.
+NEXT documentation/prompts/MP-FC-007-SCORE.md, scoringONLY recovery, explicitownerexception required for<=70000archivedpredictionrows/50MBdecodedCSV/512MBmemory/10mintotal/30sperstage locally. No rawpanel read, fit,tune,Kagglepush/upload/install/syntheticgeneration. Ordinaryfullpanelrestrictionsunchanged. Mainleft7 including7,optional2;acceptedscoreauditthen6main+2optional. Completeendtoendreportpreflight+checkpointaftereachstage fromnow; no promisezero failures/no forcedpassing.
+
+---
+
+## 27. Task MP-FC-007-SCORE: Standalone Prediction Archive Scoring & Scorecard Recovery
+
+### 27.1 Execution Context & Authorization
+- **Status:** Complete (Zero Retraining / Scoring Recovery).
+- **Authorized Scope:** One-time explicit local exception: at most 70,000 archived prediction rows, 50 MB decoded CSV, 512 MB memory, 10 minutes total duration, 30 seconds per stage. Zero model retraining, tuning, or raw panel reading.
+- **Artifact Hashes:**
+  - `master_predictions_fc007.csv.gz` (4,889,882 bytes): SHA-256 `a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970`
+  - `master_predictions_fc007.parquet` (4,088,120 bytes): SHA-256 `cc813dbd73c2631df646cc32f1ff2e86079b087bb1fcf3fb198d2e1d41e084d7`
+- **Scored Observations:** Exactly 64,776 rows across 4 outer folds (F1: 37,858; F2: 23,490; F3: 1,413; F4: 2,015).
+- **Tier Invariant:** `is_tier_a` = 64,776; `is_tier_b` = 62,932 (strict subset).
+- **Date Regimes:** HISTORICAL (61,348), TRANSITION (1,098), MODERN (2,330).
+
+### 27.2 Paired Naive Skill Score & Series-Cluster Bootstrap Formulae
+For each candidate model $m$ and naive baseline, evaluated across the matched non-abstained finite sample $S_m$:
+$$\text{Skill}_m = 1 - \frac{\sum_{j \in S_m} |y_j - \hat{y}_{m,j}|}{\sum_{j \in S_m} |y_j - \hat{y}_{\text{naive},j}|}$$
+Pre-aggregated cluster sums by series $k \in \{1, \dots, K\}$:
+$$E_{m,k} = \sum_{j \in \text{series } k} |y_j - \hat{y}_{m,j}|, \quad E_{\text{naive},k} = \sum_{j \in \text{series } k} |y_j - \hat{y}_{\text{naive},j}|$$
+Bootstrap resample $b \in \{1, \dots, B\}$ with cluster counts $w_k^{(b)} \sim \text{Multinomial}(K, \mathbf{1}/K)$:
+$$\text{Skill}_m^{(b)} = 1 - \frac{\sum_{k=1}^K w_k^{(b)} E_{m,k}}{\sum_{k=1}^K w_k^{(b)} E_{\text{naive},k}}$$
+$$\text{Skill 95\% CI} = \left[ \text{Percentile}(\mathbf{Skill}_m, 2.5), \text{Percentile}(\mathbf{Skill}_m, 97.5) \right]$$
+
+### 27.3 Overall Combined Benchmark Results (64,776 rows, 401 series)
+| Model | Scored Count | MAE (INR/q) | MAE 95% CI | RMSE | Paired Naive MAE | Paired Skill | Skill 95% CI |
+|---|---|---|---|---|---|---|---|
+| **Naive Baseline ($y_t$)** | 64,776 | **106.96** | [95.47, 119.02] | 298.83 | 106.96 | 0.00% | [0.00%, 0.00%] |
+| **Damped Drift** | 64,036 | 107.32 | [96.32, 119.35] | 303.67 | 106.60 | -0.68% | [-3.09%, +1.76%] |
+| **HistGradientBoosting** | 64,776 | 109.75 | [98.80, 121.19] | **281.16** | 106.96 | -2.61% | [-4.28%, -1.21%] |
+| **Ridge Regression** | 64,776 | 110.32 | [99.78, 121.42] | 288.56 | 106.96 | -3.15% | [-4.92%, -1.72%] |
+| **Moving Average (7obs/30d)** | 64,776 | 134.19 | [119.67, 149.96] | 333.37 | 106.96 | -25.47% | [-29.04%, -21.03%] |
+| **Seasonal Naive (357d)** | 59,200 | 774.38 | [667.74, 890.88] | 1,433.76 | 105.02 | -637.38% | [-733.55%, -547.01%] |
+
+### 27.4 Verified Output Artifacts & Checksums
+- `experiments/reports/FC007_RECOVERED/master_scorecards_all.csv`: SHA-256 `59f51d7da9140ee402467516c121ae53b7b022d03676599908edd6dbeba91b6e`
+- `experiments/reports/FC007_RECOVERED/scorecard_overall.csv`: SHA-256 `02e35fc24e0d3bbe71ed9c2201cb24698c45debf452275d7c3351b357fa9901a`
+- `experiments/reports/FC007_RECOVERED/scorecard_folds.csv`: SHA-256 `98cd7e0c73537832da251522e32fccd6a2a9cce766c3855b0db25715b3c3cca7`
+- `experiments/reports/FC007_RECOVERED/scorecard_tiers.csv`: SHA-256 `e8db3ceb4be7e38435d2d0b57140e6c568ae98e8f81395b058141444155106e2`
+- `experiments/reports/FC007_RECOVERED/scorecard_crops.csv`: SHA-256 `6de6a472e2bfb6d649022a7d98122e8989b64f6b8e34a74f878ce31ea3688b2c`
+- `experiments/reports/FC007_RECOVERED/scorecard_districts.csv`: SHA-256 `49feddecf2d84b4a493a37ef647efc33b888de0de0fc74ba8a7151b1241662fe`
+- `experiments/reports/FC007_RECOVERED/scorecard_regimes.csv`: SHA-256 `dac9847dcec075e05bf5e0c5d2f1c30e79e70f657d77996de61ddfa741317f2b`
+- `experiments/reports/FC007_RECOVERED/scorecard_sensitivities.csv`: SHA-256 `cf5f5518b55a5574f28fc5e156b862ce65c65a638bbad724115b18a5d124b42b`
+- `experiments/reports/FC007_RECOVERED/reconciliation_assertion_receipt.json`: SHA-256 `f30d2807f102cafb6d0954925e9a35625fe1a50d0912efff8154052d0e7764a0`
+- `experiments/reports/FC007_RECOVERED/output_manifest.json`: SHA-256 `5e64811f5d6f199738018bf0a08e1ec2cb4b3f81e37b2d56e29783f6f1faad28`
+- `documentation/FORECAST_BENCHMARK_RUNBOOK.md`: Added mandatory reliability gates, decoupling standards, and performance profiling analysis.

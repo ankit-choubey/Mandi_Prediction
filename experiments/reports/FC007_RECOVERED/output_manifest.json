@@ -1,0 +1,58 @@
+{
+  "manifest": [
+    {
+      "filename": "master_scorecards_all.csv",
+      "path": "experiments/reports/FC007_RECOVERED/master_scorecards_all.csv",
+      "size_bytes": 43227,
+      "sha256": "59f51d7da9140ee402467516c121ae53b7b022d03676599908edd6dbeba91b6e"
+    },
+    {
+      "filename": "reconciliation_assertion_receipt.json",
+      "path": "experiments/reports/FC007_RECOVERED/reconciliation_assertion_receipt.json",
+      "size_bytes": 1231,
+      "sha256": "f30d2807f102cafb6d0954925e9a35625fe1a50d0912efff8154052d0e7764a0"
+    },
+    {
+      "filename": "scorecard_crops.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_crops.csv",
+      "size_bytes": 10746,
+      "sha256": "6de6a472e2bfb6d649022a7d98122e8989b64f6b8e34a74f878ce31ea3688b2c"
+    },
+    {
+      "filename": "scorecard_districts.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_districts.csv",
+      "size_bytes": 9206,
+      "sha256": "49feddecf2d84b4a493a37ef647efc33b888de0de0fc74ba8a7151b1241662fe"
+    },
+    {
+      "filename": "scorecard_folds.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_folds.csv",
+      "size_bytes": 7277,
+      "sha256": "98cd7e0c73537832da251522e32fccd6a2a9cce766c3855b0db25715b3c3cca7"
+    },
+    {
+      "filename": "scorecard_overall.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_overall.csv",
+      "size_bytes": 2062,
+      "sha256": "02e35fc24e0d3bbe71ed9c2201cb24698c45debf452275d7c3351b357fa9901a"
+    },
+    {
+      "filename": "scorecard_regimes.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_regimes.csv",
+      "size_bytes": 5693,
+      "sha256": "dac9847dcec075e05bf5e0c5d2f1c30e79e70f657d77996de61ddfa741317f2b"
+    },
+    {
+      "filename": "scorecard_sensitivities.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_sensitivities.csv",
+      "size_bytes": 5940,
+      "sha256": "cf5f5518b55a5574f28fc5e156b862ce65c65a638bbad724115b18a5d124b42b"
+    },
+    {
+      "filename": "scorecard_tiers.csv",
+      "path": "experiments/reports/FC007_RECOVERED/scorecard_tiers.csv",
+      "size_bytes": 3749,
+      "sha256": "bdcf2f8b17633d3ceb47b8e4f1431e4eafaac42eae393ba386b8b55d8064be90"
+    }
+  ]
+}
