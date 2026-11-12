@@ -1,0 +1,44 @@
+{
+  "task_id": "MP-FC-008-GATE-B",
+  "timestamp_utc": "2026-11-12T18:57:38.770723+00:00",
+  "predictions_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+  "config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298",
+  "code_sha256": "c6678d9afcaab2375fefe7d038856855a8bbfd93881dc3a964607b65ccc81e31",
+  "total_source_rows": 64776,
+  "total_evaluated_rows_f2_f4": 26918,
+  "models_evaluated": [
+    "naive",
+    "ridge",
+    "hist_gradient_boosting"
+  ],
+  "nominal_levels": [
+    0.9,
+    0.95
+  ],
+  "calibration_windows": {
+    "F1": null,
+    "F2": [
+      "2025-01-09",
+      "2025-07-07"
+    ],
+    "F3": [
+      "2025-06-29",
+      "2025-12-25"
+    ],
+    "F4": [
+      "2025-10-10",
+      "2026-04-07"
+    ]
+  },
+  "assertions_verified": [
+    "zero_leakage_future_outcomes_not_used",
+    "strictly_earlier_folds_in_calibration",
+    "max_calibration_target_strictly_before_eval_origin",
+    "exact_conformal_rank_no_rounding",
+    "non_negative_support_clipping",
+    "series_cluster_bootstrap_resampled",
+    "memory_and_runtime_limits_strictly_observed"
+  ],
+  "limitations": "Chronological empirical calibration without exchangeability guarantee. Regime shifts and market volatility produce lower coverage during crisis folds (F3/F4). Reported intervals reflect empirical behavior under retrospective availability.",
+  "status": "GATE_B_INTERVALS_EVALUATED_SUCCESS"
+}

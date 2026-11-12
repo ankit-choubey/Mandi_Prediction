@@ -1,0 +1,25 @@
+{
+  "config_version": "1.0.0",
+  "task_id": "MP-FC-008",
+  "primary_model": "naive",
+  "exploratory_models": [
+    "ridge",
+    "hist_gradient_boosting"
+  ],
+  "nominal_levels": [
+    0.90,
+    0.95
+  ],
+  "score_type": "relative_absolute_residual",
+  "score_formula": "abs(y_true - y_hat) / y_t",
+  "rank_equation": "ceil((n + 1) * (1 - alpha))",
+  "window_calendar_days": 180,
+  "min_group_origins": 200,
+  "min_group_series": 10,
+  "fallback_label": "POOLED_FALLBACK",
+  "insufficient_label": "NO_CALIBRATION",
+  "support_clipping": "non_negative",
+  "clipping_formula": "lower = max(0.0, y_hat - half_width); upper = y_hat + half_width",
+  "citation": "Angelopoulos & Bates (2021), A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification, https://arxiv.org/abs/2107.07511",
+  "limitations": "Conformal-style chronological residual calibration; not proof of IID/exchangeable or distribution-free time-series coverage. Common market shocks, regime shifts and changing fold-specific model fits limit theoretical coverage guarantees. Reported intervals reflect empirical out-of-sample performance under retrospective availability assumptions."
+}

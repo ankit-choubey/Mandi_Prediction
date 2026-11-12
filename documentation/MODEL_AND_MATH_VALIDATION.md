@@ -1578,3 +1578,69 @@ $$\text{Skill 95\% CI} = \left[ \text{Percentile}(\mathbf{Skill}_m, 2.5), \text{
 - `experiments/reports/FC007_RECOVERED/reconciliation_assertion_receipt.json`: SHA-256 `f30d2807f102cafb6d0954925e9a35625fe1a50d0912efff8154052d0e7764a0`
 - `experiments/reports/FC007_RECOVERED/output_manifest.json`: SHA-256 `5e64811f5d6f199738018bf0a08e1ec2cb4b3f81e37b2d56e29783f6f1faad28`
 - `documentation/FORECAST_BENCHMARK_RUNBOOK.md`: Added mandatory reliability gates, decoupling standards, and performance profiling analysis.
+
+
+## Step7 recovered scoring independent audit; combined Step8 next — 2026-11-12 IST
+GitHubmain 1ddc2e184699e2bf070fa1b6735ea616c186ee77 verified. Independent stdlib CSV/gzip/math.fsum reference scanned 64776 saved rows in .44s under existing prediction exception, no NumPy/Pandas/refit. Reference experiments/reports/FC007_REFERENCE/independent_point_check.json. Overall MAE naive 106.9554, HGB 109.7489, Ridge 110.3247 verified, primary naive wins. But current reports contain impossible bias and wrong crop/exact T7/volatile counts; reject ALL GATES PASSED until numerical parity. Reference bias naive 17.1728, MAPE 4.16393%, within5%=76.763%; Wheat 4337; exact T7=56386; >2%=27858. Numeric platform buffer reuse cause NOT VERIFIED. See documentation/FC007_SCORE_REVIEW.md.
+No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory all-slice Step 7 numeric repair gate with prequential Step 8 empirical intervals on saved real out-of-sample predictions, no Kaggle/model refit/API/synthetic generation. Owner approval extends narrow local 70000 row prediction exception to calibration. Earlier-fold matured residuals only; F1 no calibration; 90/95% prespecified; no IID coverage guarantee. Current main left 7 incl open 7, optional 2; if 7 audit + 8 accepted, main left 5 steps 9–13 + optional 2.
+
+---
+
+## 28. Task MP-FC-008: Verified Step 7 Benchmark Parity & Step 8 Chronological Prediction Intervals
+
+### 28.1 Execution Context & Two Sequential Gates
+- **Task ID:** `MP-FC-008`
+- **Date:** 2026-11-13 IST
+- **Status:** ALL GATES PASSED (Gate A: 100% Numerical Parity Verified; Gate B: Chronological Intervals Evaluated).
+- **Execution Limits:** Strict adherence to owner-approved saved-prediction exception: at most 70,000 archived prediction rows (64,776 processed), 50 MB decoded CSV, 512 MB memory, 10 min total duration, 30s per stage. Zero model retraining, tuning, or raw historical panel processing.
+
+### 28.2 Gate A: 100% Numerical Parity Resolution
+All 24 scorecards were re-evaluated using pure Python standard library scalar arithmetic (`csv`/`gzip`, `Counter`, `math.fsum`, `statistics.median`, deterministic stdlib `random.Random(42)` cluster bootstrap) in `src/score_forecast_archive.py`.
+- **Numerical Parity Invariant:** Achieved 100% numerical equality against independent standard-library reference check (`experiments/reports/FC007_REFERENCE/independent_point_check.json`) with maximum floating point difference $\le 3.55 \times 10^{-15}$.
+- **Mathematical Invariants Verified:**
+  - $|\text{Bias}| \le \text{MAE} \le \text{RMSE}$ strictly satisfied across all models.
+  - Naive: $\text{MAE} = 106.9554$, $\text{Bias} = +17.1728$, $\text{RMSE} = 298.8337$, $\text{MAPE} = 4.1639\%$, $\text{Within-5\%} = 76.7630\%$.
+  - Ridge: $\text{MAE} = 110.3247$, $\text{Bias} = +26.6763$, $\text{RMSE} = 288.5644$, $\text{MAPE} = 4.3999\%$, $\text{Within-5\%} = 75.4415\%$.
+  - HGB: $\text{MAE} = 109.7489$, $\text{Bias} = +26.3678$, $\text{RMSE} = 281.1581$, $\text{MAPE} = 4.5153\%$, $\text{Within-5\%} = 73.9749\%$.
+- **Slice Counts Verified:** Total: 64,776; F1: 37,858; F2: 23,490; F3: 1,413; F4: 2,015. Focus crops: Wheat 4,337; Potato 3,628; Onion 3,454; Tomato 3,024; Paddy(Dhan)(Common) 594; Rice 2,732. Sensitivities: Exact T+7: 56,386; Realized >2% move: 27,858; Scope A disputed: 18 rows.
+- Authoritative reports saved in `experiments/reports/FC007_VERIFIED/`.
+
+### 28.3 Gate B: Chronological Prediction Interval Mathematical Formulation
+1. **Target Levels:** Nominal levels $1 - \alpha \in \{0.90, 0.95\}$ ($\alpha \in \{0.10, 0.05\}$).
+2. **Normalized Non-Conformity Score:**
+   $$s_i = \frac{|y_{\text{true}, i} - \hat{y}_i|}{y_{t, i}} \quad \text{for } y_{t, i} > 0$$
+3. **Finite-Sample Conformal Rank:**
+   $$k = \left\lceil (n + 1)(1 - \alpha) \right\rceil \quad \text{with no quantile rounding}$$
+   If $k > n$, the interval is withheld (`NO_CALIBRATION`).
+   The calibrated quantile $q = s_{(k)}$ is the $k$-th smallest sorted score.
+4. **Interval Endpoints & Non-Negative Support Clipping:**
+   $$\text{half\_width} = q \cdot y_t$$
+   $$\text{lower} = \max(0, \hat{y} - \text{half\_width}), \quad \text{upper} = \hat{y} + \text{half\_width}$$
+5. **Winkler Interval Score ($IS_\alpha$):**
+   $$IS_\alpha(l, u, y) = (u - l) + \frac{2}{\alpha}(l - y) \cdot \mathbb{I}(y < l) + \frac{2}{\alpha}(y - u) \cdot \mathbb{I}(y > u)$$
+6. **Chronological Residual Maturity Windows:**
+   - Preceding 180 calendar days strictly prior to fold test start date:
+     - F1: `NO_PRIOR_CALIBRATION` (0 calibration rows; 100% abstained).
+     - F2: window `[2025-01-09, 2025-07-07]` draws 37,858 rows from matured F1 ($\max \text{target} = \text{2025-06-30} < \text{2025-07-08}$).
+     - F3: window `[2025-06-29, 2025-12-25]` draws 23,920 rows from matured F1/F2 ($\max \text{target} = \text{2025-10-31} < \text{2025-12-26}$).
+     - F4: window `[2025-10-10, 2026-04-07]` draws 5,445 rows from matured F2/F3 ($\max \text{target} = \text{2026-03-31} < \text{2026-04-08}$).
+   - Disjoint origin keys: $\max(\text{target}_{\text{cal}}) < \min(\text{origin}_{\text{eval}})$. Zero future outcomes leaked.
+7. **Grouping Hierarchy:**
+   - Exact commodity: requires $N \ge 200$ origins and $\ge 10$ unique series.
+   - Fallback: pooled model calibration (`POOLED_FALLBACK`, same minimums).
+   - Insufficient: `NO_CALIBRATION`.
+
+### 28.4 Overall Interval Evaluation Results (F2–F4 Combined, $N = 26,918$)
+- **Naive Baseline (Primary Anchor):**
+  - **90% Level:** Empirical coverage = **89.9547%** (Nominal dev: -0.0453%), 95% Cluster Boot CI: [88.1801%, 91.4188%], Mean Width = 662.65 INR/q (21.12% of $y_t$), Lower Miss = 5.02%, Upper Miss = 5.02%, Mean Interval Score = 1,334.82.
+  - **95% Level:** Empirical coverage = **94.3829%** (Nominal dev: -0.6171%), 95% Cluster Boot CI: [93.0068%, 95.5155%], Mean Width = 977.14 INR/q (30.65% of $y_t$), Lower Miss = 2.82%, Upper Miss = 2.80%, Mean Interval Score = 1,935.48.
+- **Key Scientific Limitation Disclosed:**
+  - In Fold F2 (calm historical regime), empirical coverage is conservative (92.3% and 95.9%).
+  - In Folds F3 and F4 (crisis/transition and modern regime shifts), empirical coverage drops to 72%–76% (90% nominal) and 84% (95% nominal) because past 180-day volatility was lower than the shock periods encountered.
+  - This empirical under-coverage demonstrates that time-series residuals violate exchangeability during regime shifts (Angelopoulos & Bates, 2021). It is an honest finding, not permission to leak future outcomes.
+
+### 28.5 Project Milestone Accounting
+- **Current Step:** Step 8 complete.
+- **Milestones Remaining:**
+  - 7 main milestones (Steps 7–13) plus 2 optional experiments remain prior to independent review confirmation.
+  - Upon independent review confirmation of both Gate A and Gate B: **5 main milestones** (Steps 9–13) plus 2 optional remain.

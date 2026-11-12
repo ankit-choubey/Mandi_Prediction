@@ -1,0 +1,98 @@
+{
+  "Overall_Combined": {
+    "count": 64776,
+    "sha256": "c55b65b8752ee30fef8b6b7c8fcbeeb6cbf1306c715c6717f7255eca631f8534"
+  },
+  "Fold_F1": {
+    "count": 37858,
+    "sha256": "7a918e791844bac871f7d0a19829d138ab9d89652e7419459802efd896467b73"
+  },
+  "Fold_F2": {
+    "count": 23490,
+    "sha256": "5d692d177bfa5674d9377ead4b5a2f61916e3e08fd14ea9ecd1acd64f105081c"
+  },
+  "Fold_F3": {
+    "count": 1413,
+    "sha256": "7d05ffb95292756ffdf4fe5b936262eaa984bf68f28722121f309d8928fe8093"
+  },
+  "Fold_F4": {
+    "count": 2015,
+    "sha256": "62ae09a932602f535f7ffffcb28519a773f16406959450a053cb25c132cd4c35"
+  },
+  "TierA": {
+    "count": 64776,
+    "sha256": "c55b65b8752ee30fef8b6b7c8fcbeeb6cbf1306c715c6717f7255eca631f8534"
+  },
+  "TierB": {
+    "count": 62932,
+    "sha256": "c9449f67fa78fc9f32cd3b9f48fc06f39646e0bf5c6309fad88ca631930bc27f"
+  },
+  "Crop_Wheat": {
+    "count": 4337,
+    "sha256": "170ffdbe35a87ae1326e0e96fd8b3ccc0ed48a818a3926620737bbfde73f3a67"
+  },
+  "Crop_Potato": {
+    "count": 3628,
+    "sha256": "a39a17d0b77cb39111766889897a1d7ee3b564cf37c7e2f090a3d2a881eeeb01"
+  },
+  "Crop_Onion": {
+    "count": 3454,
+    "sha256": "079042d7e6599f1fddabb01de4d2aa1d7dfd75f5023037c3b3108623a5aea972"
+  },
+  "Crop_Tomato": {
+    "count": 3024,
+    "sha256": "dd44f1496adb2e95f33788669840cc918abc73878eab9679aa657eef4a020372"
+  },
+  "Crop_Paddy(Dhan)(Common)": {
+    "count": 594,
+    "sha256": "7724a0a3356215c8bb201be1f9895946ad053e95956b23d215ec29011b35ef20"
+  },
+  "Crop_Rice": {
+    "count": 2732,
+    "sha256": "3880185f1834004d16e47c3e3b2ad8c8bf0da2becc350d83219cba6a6a73e553"
+  },
+  "District_Ghaziabad": {
+    "count": 17016,
+    "sha256": "76ccb0756b4b2c0cd8db2db3d04a0fbe28b598a31de3e23757cd3003df288300"
+  },
+  "District_Jhansi": {
+    "count": 8074,
+    "sha256": "5b4283ae2335f81cec9a4e46a3e11db0d4d439fdbd5236ed988af3aab92dee61"
+  },
+  "District_Kanpur": {
+    "count": 16642,
+    "sha256": "fd55503051655a89ecf600633192a46d00bcf485d6b989917147addb28deef3f"
+  },
+  "District_Lucknow": {
+    "count": 8320,
+    "sha256": "6234d2ed138cd72171e8d32707cb32b17dd9c192c15580d1465b8424cc1961dd"
+  },
+  "District_Unnao": {
+    "count": 14724,
+    "sha256": "a62477b12edb24677fe9927e9e5432b29f10db92173fb46ccfc4e9ed6d49e280"
+  },
+  "Regime_HISTORICAL": {
+    "count": 61348,
+    "sha256": "9278c2d76a82ecbc2f5eee79ffca3f97f4a3ac249a3a9b6a598b6f7110dc03c6"
+  },
+  "Regime_TRANSITION": {
+    "count": 1098,
+    "sha256": "4df3dff15c5348d5bce06b32f6e92a3d7de117b9806ef4d1a83efeccffabbca2"
+  },
+  "Regime_MODERN": {
+    "count": 2330,
+    "sha256": "33b21fbbdc91c7473644bafef2219ce9f299dfee09a0d88d2a1cefea23d2c7d0"
+  },
+  "Sensitivity_Exact_T7": {
+    "count": 56386,
+    "sha256": "e3af83c0b5f4bfcfff1440f7bbf267dd45e7a39e7d0a7f4aeaaa8371f06746f7"
+  },
+  "Sensitivity_ScopeA_Disputed_Excluded": {
+    "count": 64758,
+    "sha256": "f749bb6b21891f6528396dee220656d73e28fca56c3043f74476f91b5dd3be55"
+  },
+  "Sensitivity_Realized_GT_2Pct_Move": {
+    "count": 27858,
+    "sha256": "e620c759ec7be8ce0bbd98ef4363ce077508683db6ef402192434a5dd104ab6a"
+  }
+}

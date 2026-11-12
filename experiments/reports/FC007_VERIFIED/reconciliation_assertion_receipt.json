@@ -1,0 +1,84 @@
+{
+  "task_id": "MP-FC-008-GATE-A",
+  "timestamp_utc": "2026-11-12T18:57:29.211786+00:00",
+  "predictions_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+  "total_predictions_rows": 64776,
+  "supersedes": "experiments/reports/FC007_RECOVERED/",
+  "mathematical_invariants_checked": [
+    "abs(bias) <= MAE <= RMSE",
+    "disjoint_counts_conservation",
+    "percentages_within_0_100",
+    "valid_positive_denominators",
+    "ratio_of_sums_paired_skill",
+    "deterministic_stdlib_cluster_bootstrap"
+  ],
+  "parity_verification": {
+    "reference_check_file": "/Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/FC007_REFERENCE/independent_point_check.json",
+    "parity_verified": true,
+    "checked_metrics": {
+      "naive": {
+        "mae": 106.95536973570458,
+        "bias": 17.1728385513153,
+        "rmse": 298.83366418131106,
+        "mape": 4.163928668529005,
+        "within_5pct": 76.76299864147215,
+        "paired_naive_mae": 106.95536973570458,
+        "skill": 0.0,
+        "diff_vs_reference_max": 8.881784197001252e-16
+      },
+      "moving_average_7obs_in_30d": {
+        "mae": 134.19252781710745,
+        "bias": 26.304378386395314,
+        "rmse": 333.36585549204614,
+        "mape": 5.084839210726691,
+        "within_5pct": 70.98462393479066,
+        "paired_naive_mae": 106.95536973570458,
+        "skill": -0.2546590989186248,
+        "diff_vs_reference_max": 2.220446049250313e-16
+      },
+      "seasonal_naive_357d": {
+        "mae": 774.3763937499999,
+        "bias": 351.690058277027,
+        "rmse": 1433.7629467212407,
+        "mape": 29.449170138354074,
+        "within_5pct": 22.699324324324323,
+        "paired_naive_mae": 105.0167287162162,
+        "skill": -6.373838465703647,
+        "diff_vs_reference_max": 3.552713678800501e-15
+      },
+      "drift": {
+        "mae": 107.32481829432363,
+        "bias": 7.809079798120523,
+        "rmse": 303.66585683111265,
+        "mape": 4.293277179820142,
+        "within_5pct": 76.55225185832968,
+        "paired_naive_mae": 106.59976122805921,
+        "skill": -0.006801676269361012,
+        "diff_vs_reference_max": 2.220446049250313e-16
+      },
+      "ridge": {
+        "mae": 110.32472167417697,
+        "bias": 26.676317000943673,
+        "rmse": 288.56442281012414,
+        "mape": 4.399951036921509,
+        "within_5pct": 75.4415215511918,
+        "paired_naive_mae": 106.95536973570458,
+        "skill": -0.03150241027447542,
+        "diff_vs_reference_max": 8.881784197001252e-16
+      },
+      "hist_gradient_boosting": {
+        "mae": 109.74892588082822,
+        "bias": 26.367825095534158,
+        "rmse": 281.15814294332023,
+        "mape": 4.515315632487993,
+        "within_5pct": 73.97492898604422,
+        "paired_naive_mae": 106.95536973570458,
+        "skill": -0.026118895685431687,
+        "diff_vs_reference_max": 8.881784197001252e-16
+      }
+    }
+  },
+  "inner_tuning_scores_trace": "NOT RECOVERED (Tuning scores unpersisted before remote crash; selected configs and sample sizes recovered from log)",
+  "scope_b_historical_removal": "PENDING_RECOMPUTATION_BUDGET_EXCLUDED",
+  "status": "GATE_A_VERIFIED_PARITY_PASSED"
+}

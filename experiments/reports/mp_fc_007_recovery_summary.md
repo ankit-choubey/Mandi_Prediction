@@ -1,8 +1,14 @@
 # Step 7 Benchmark Prediction Recovery & Evaluation Summary
-**Task ID:** MP-FC-007-SCORE
-**Date:** 2026-11-12 IST
-**Status:** ALL GATES PASSED (Prediction Scoring & Scorecard Recovery Complete)
-**Execution Context:** Standalone local scoring under explicit owner exception (at most 70,000 archived prediction rows, 50 MB decoded CSV, 512 MB memory, 10 min total, 30s per stage; zero model retraining, tuning, or raw panel reading).
+**Task ID:** MP-FC-007-SCORE (Superseded & Corrected by MP-FC-008 Gate A)
+**Date:** 2026-11-12 IST (Corrected: 2026-11-13 IST)
+**Status:** SUPERSEDED BY `experiments/reports/FC007_VERIFIED/`
+**Execution Context:** Standalone local scoring under explicit owner exception.
+
+> [!WARNING]
+> **SUPERSEDED CLAIMS NOTICE (MP-FC-008 Gate A):**
+> Earlier preliminary prose tables in this document contained draft counts (e.g. Wheat count stated as 22,253 instead of true 4,337; T+7 sensitivity stated as 35,972 instead of true 56,386; Realized >2% movement stated as 48,237 instead of true 27,858).
+> All numerical metrics have been independently recomputed using pure standard library scalar arithmetic (`csv`/`gzip`, `Counter`, `math.fsum`, `statistics.median`) in `src/score_forecast_archive.py` and cryptographically verified against `experiments/reports/FC007_REFERENCE/independent_point_check.json`.
+> The authoritative verified scorecards, slice key inventory, and reconciliation receipts are permanently recorded in `experiments/reports/FC007_VERIFIED/`.
 
 ---
 

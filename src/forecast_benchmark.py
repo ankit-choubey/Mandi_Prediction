@@ -872,19 +872,21 @@ def compute_slice_metrics(
     y_t.flags.writeable = False
     y_p = np.array(scored_df[pred_col].values, dtype=float, copy=True)
     y_p.flags.writeable = False
-    errors = y_p - y_t
-    abs_errors = np.abs(errors)
+    errors = np.array(y_p - y_t, dtype=float, copy=True)
+    errors.flags.writeable = False
+    abs_errors = np.array(np.abs(errors), dtype=float, copy=True)
+    abs_errors.flags.writeable = False
 
     mae = float(np.mean(abs_errors))
-    rmse = float(np.sqrt(np.mean(errors ** 2)))
     bias = float(np.mean(errors))
+    rmse = float(np.sqrt(np.mean(errors * errors)))
     med_ae = float(np.median(abs_errors))
 
     # MAPE on positive true prices
     pos_mask = y_t > 0
     if np.any(pos_mask):
-        mape = float(np.mean(np.abs(errors[pos_mask]) / y_t[pos_mask])) * 100.0
-        pct_within_5 = float(np.mean(np.abs(errors[pos_mask]) / y_t[pos_mask] <= 0.05)) * 100.0
+        mape = float(np.mean(abs_errors[pos_mask] / y_t[pos_mask])) * 100.0
+        pct_within_5 = float(np.mean(abs_errors[pos_mask] / y_t[pos_mask] <= 0.05)) * 100.0
     else:
         mape = np.nan
         pct_within_5 = np.nan

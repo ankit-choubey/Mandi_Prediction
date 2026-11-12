@@ -103,3 +103,32 @@ python3 src/score_forecast_archive.py \
 - `master_scorecards_all.csv`: Concatenated master scorecard containing all 24 evaluation slices.
 - `reconciliation_assertion_receipt.json`: Cryptographic and mathematical verification receipt.
 - `output_manifest.json`: Checksum and size manifest of all produced reports.
+
+---
+
+## 5. Chronological Prediction Interval Protocol (Step 8 / MP-FC-008)
+
+### Operational Standards for Uncertainty Calibration
+1. **Decoupled Interval Pipeline (`src/forecast_intervals.py`):**
+   - AST-safety: zero `fit`/`train`/`tune` calls.
+   - Accepts frozen configuration `experiments/configs/interval_calibration_v1.json`.
+   - Uses stored prediction archives only.
+2. **Temporal Windowing Standard:**
+   - Preceding 180 calendar days prior to fold test start date ($[T_{\text{start}} - 180\text{d}, T_{\text{start}} - 1\text{d}]$).
+   - Matured earlier folds only (F1: NO_CALIBRATION; F2: F1; F3: F1/F2; F4: F2/F3).
+   - Max calibration target strictly precedes min evaluation origin ($\max T_{\text{cal}} < \min T_{\text{eval}}$).
+3. **Exact Quantile Rank & Support Clipping:**
+   - Rank $k = \lceil (n+1)(1-\alpha) \rceil$, no rounding.
+   - Non-negative clipping: $\text{lower} = \max(0, \hat{y} - \text{half\_width})$.
+   - Commodity grouping ($N \ge 200, \text{series} \ge 10$) with `POOLED_FALLBACK` and `NO_CALIBRATION`.
+4. **Execution Command:**
+   ```bash
+   python3 src/forecast_intervals.py \
+       --predictions experiments/outputs/FC007_recovery/experiments/outputs/FC007/master_predictions_fc007.csv.gz \
+       --config experiments/configs/interval_calibration_v1.json \
+       --reports-dir experiments/reports/FC008 \
+       --outputs-dir experiments/outputs/FC008
+   ```
+5. **Verified Outputs (`experiments/reports/FC008/`):**
+   - `intervals_overall.csv`, `intervals_by_fold.csv`, `intervals_by_crop.csv`, `intervals_by_district.csv`, `intervals_by_regime.csv`, `master_intervals_scorecards.csv`.
+   - `calibration_quantiles.json`, `interval_evaluation_receipt.json`, `output_manifest.json`.

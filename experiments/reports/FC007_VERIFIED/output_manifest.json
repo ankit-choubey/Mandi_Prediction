@@ -1,0 +1,70 @@
+{
+  "manifest": [
+    {
+      "filename": "master_scorecards_all.csv",
+      "path": "experiments/reports/FC007_VERIFIED/master_scorecards_all.csv",
+      "size_bytes": 43196,
+      "sha256": "f41e7ea8e3dfb2aaa7d6f3850c873957c534618beeaf1067d0ea8c200f40f69f"
+    },
+    {
+      "filename": "output_manifest.json",
+      "path": "experiments/reports/FC007_VERIFIED/output_manifest.json",
+      "size_bytes": 2701,
+      "sha256": "d29664663c4b3ce541c262de7df473b162c1789119078fb950db2bd9f9e7eff2"
+    },
+    {
+      "filename": "reconciliation_assertion_receipt.json",
+      "path": "experiments/reports/FC007_VERIFIED/reconciliation_assertion_receipt.json",
+      "size_bytes": 3189,
+      "sha256": "fca55579cb30f0def62ce223e0cb33692981d5398f29da809836ae10776df580"
+    },
+    {
+      "filename": "scorecard_crops.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_crops.csv",
+      "size_bytes": 10737,
+      "sha256": "423219d89fb9899ff445ee4c0623284e6a2f776a72a8e62b16fc9b1949076945"
+    },
+    {
+      "filename": "scorecard_districts.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_districts.csv",
+      "size_bytes": 9217,
+      "sha256": "5ecf725bf648df9bd46dd357a7d32570a664a010536311136f185872e04f458e"
+    },
+    {
+      "filename": "scorecard_folds.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_folds.csv",
+      "size_bytes": 7284,
+      "sha256": "f5b19f22f9ba474dab116645c704ff3ba5f003dd6120309590d2e7371ad9ecbb"
+    },
+    {
+      "filename": "scorecard_overall.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_overall.csv",
+      "size_bytes": 2060,
+      "sha256": "30db4efdadb2c65563092be54fa9783001212681b2166d4a96871231319184cb"
+    },
+    {
+      "filename": "scorecard_regimes.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_regimes.csv",
+      "size_bytes": 5676,
+      "sha256": "189b468f3cd4bd00b45b01eece921b454795159abfa4d4bc54105ff42f37fc07"
+    },
+    {
+      "filename": "scorecard_sensitivities.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_sensitivities.csv",
+      "size_bytes": 5921,
+      "sha256": "47224629c1ea30656c46698b997acffff7fd3f7bbebcd5bc1e37d52e5de3ad1e"
+    },
+    {
+      "filename": "scorecard_tiers.csv",
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_tiers.csv",
+      "size_bytes": 3747,
+      "sha256": "babc54367c8e6502d9a04a90a4978862a347f19d6f878f29d49b5066972a29ad"
+    },
+    {
+      "filename": "slice_key_inventory.json",
+      "path": "experiments/reports/FC007_VERIFIED/slice_key_inventory.json",
+      "size_bytes": 3068,
+      "sha256": "855658cc1c14773c1a8f1fed756970f7af603279f86515d44f83a3072bba9914"
+    }
+  ]
+}

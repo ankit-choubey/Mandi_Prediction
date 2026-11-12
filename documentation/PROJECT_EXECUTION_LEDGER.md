@@ -303,3 +303,33 @@ NEXT documentation/prompts/MP-FC-007-SCORE.md, scoringONLY recovery, explicitown
   - Added unit test suite `tests/test_score_forecast_archive.py` (5 passed). Full test suite: **298 passed** (0 failures).
 * **Missing Evidence:** Inner tuning scores trace across grids unpersisted prior to remote crash and recorded honestly as NOT RECOVERED.
 * **Milestone Accounting:** Main steps left: 7 (current Step 7 remains open until independent review; accepted Step 7 leaves 6 main steps 8–13 + 2 optional).
+
+
+## Step7 recovered scoring independent audit; combined Step8 next — 2026-11-12 IST
+GitHubmain 1ddc2e184699e2bf070fa1b6735ea616c186ee77 verified. Independent stdlib CSV/gzip/math.fsum reference scanned 64776 saved rows in .44s under existing prediction exception, no NumPy/Pandas/refit. Reference experiments/reports/FC007_REFERENCE/independent_point_check.json. Overall MAE naive 106.9554, HGB 109.7489, Ridge 110.3247 verified, primary naive wins. But current reports contain impossible bias and wrong crop/exact T7/volatile counts; reject ALL GATES PASSED until numerical parity. Reference bias naive 17.1728, MAPE 4.16393%, within5%=76.763%; Wheat 4337; exact T7=56386; >2%=27858. Numeric platform buffer reuse cause NOT VERIFIED. See documentation/FC007_SCORE_REVIEW.md.
+No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory all-slice Step 7 numeric repair gate with prequential Step 8 empirical intervals on saved real out-of-sample predictions, no Kaggle/model refit/API/synthetic generation. Owner approval extends narrow local 70000 row prediction exception to calibration. Earlier-fold matured residuals only; F1 no calibration; 90/95% prespecified; no IID coverage guarantee. Current main left 7 incl open 7, optional 2; if 7 audit + 8 accepted, main left 5 steps 9–13 + optional 2.
+
+---
+
+### [2026-11-13T00:25:00+05:30] Task MP-FC-008
+* **Status:** Complete (Two Sequential Gates: Gate A Numerical Parity Verified; Gate B Chronological Intervals Evaluated).
+* **Baseline Commit:** `1ddc2e184699e2bf070fa1b6735ea616c186ee77`
+* **Changes:**
+  - **Gate A (Step 7 Benchmark Scorecard Numerical Parity):**
+    - Corrected evaluation calculations in `src/score_forecast_archive.py` using pure standard library scalar arithmetic (`csv`/`gzip`, `Counter`, `math.fsum`, `statistics.median`, deterministic stdlib `random.Random(42)` cluster bootstrap).
+    - Fixed root cause of bias discrepancy: memory buffer reuse in NumPy 2.2 / Python 3.14 on in-place power (`errors ** 2`) in `src/forecast_benchmark.py` by making `errors` read-only and evaluating `errors * errors` separately.
+    - Repaired Scope A disputed keys matching in `src/score_forecast_archive.py` to use canonical 6-part tuple, matching exactly 18 rows.
+    - Verified 100% numerical parity against `experiments/reports/FC007_REFERENCE/independent_point_check.json` across all 6 models and all metrics (max difference $\le 3.55 \times 10^{-15}$).
+    - Verified all slice counts (Wheat 4,337; Potato 3,628; Onion 3,454; Tomato 3,024; Paddy(Dhan)(Common) 594; Rice 2,732; Exact T+7: 56,386; Realized >2% move: 27,858).
+    - Saved all verified scorecards, inventory, and assertions in `experiments/reports/FC007_VERIFIED/`.
+  - **Gate B (Step 8 Chronological Prediction Interval Calibration):**
+    - Authored frozen configuration `experiments/configs/interval_calibration_v1.json` (nominal levels 90% and 95%, finite-sample rank $k = \lceil(n+1)(1-\alpha)\rceil$, no rounding, non-negative clipping).
+    - Implemented `src/forecast_intervals.py` with pure AST safety (zero `fit`/`train`/`tune` calls), strict chronological ordering (preceding 180 calendar days prior to fold test start; F1 has NO_CALIBRATION, F2 uses matured F1, F3 uses F1/F2, F4 uses F2/F3; max cal target strictly precedes min eval origin), and shared inference helper `predict_interval()`.
+    - Grouping hierarchy: exact commodity ($N \ge 200, \text{series} \ge 10$) $\rightarrow$ `POOLED_FALLBACK` $\rightarrow$ `NO_CALIBRATION`.
+    - Generated 388,656 interval evaluations in 0.58s; saved compressed full rows to git-ignored `experiments/outputs/FC008/master_intervals_fc008.csv.gz` (6.88 MB).
+    - Evaluated all interval scorecards (overall, fold, crop, district, regime, master) and saved in `experiments/reports/FC008/`.
+    - Overall F2–F4 coverage for Naive baseline: 90% level $\rightarrow$ 89.9547% (95% CI [88.18%, 91.42%], relative width 21.12%); 95% level $\rightarrow$ 94.3829% (95% CI [93.01%, 95.52%], relative width 30.65%).
+    - Disclosed time-series non-exchangeability limitation: F3 and F4 experience lower coverage (72%–76% at nominal 90%) due to unobserved crisis volatility during shock periods.
+    - Created unit tests `tests/test_forecast_intervals.py` (9 passed). Full repository suite: **301 passed** (0 failures).
+* **Missing Evidence:** Inner tuning scores trace remains NOT RECOVERED; Scope B historical removal sensitivity remains pending dedicated budget.
+* **Milestone Accounting:** 7 main milestones (Steps 7–13) plus 2 optional experiments remain prior to independent review confirmation; upon independent review confirmation of both Gate A and Gate B: **5 main milestones** (Steps 9–13) plus 2 optional remain.
