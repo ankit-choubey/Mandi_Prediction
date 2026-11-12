@@ -577,6 +577,76 @@ Four expanding 60-day folds ending `2026-09-30` with 7-date embargoes:
 | `series_level_availability_summary.json` | 999 | N/A | `c1484fe3da9377448261e081829219c84fd4591fbca0ed68a0bd70d809dc6829` |
 | `rolling_origin_feasibility.json` | 2,619 | N/A | `dddab43dbb193adc2c9fa668964376e1800520e3a2b07007d132f251ac2358fc` |
 
+---
+
+## 13. Evidence-Based Market Identity, Panel v2, and Regime Diagnostics (Task MP-DATA-006)
+
+* **Execution Date:** 2026-11-12
+* **Execution Environment:** Kaggle CPU Kernel (`theankitchoubey/mp-data-006-panel-v2`, version 3, internet disabled).
+* **Evaluated Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged).
+* **Execution Status:** Complete (`KernelWorkerStatus.COMPLETE`, exit code 0).
+* **Detailed Task Report:** [mp_data_006_summary.md](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/mp_data_006_summary.md).
+
+### 13.1 Market Inventory & Suffix Prevalence
+Across the 472,385 raw historical records, exactly 42 distinct raw market strings were cataloged across the 5 target districts (Ghaziabad: 8, Jhansi: 15, Kanpur: 9, Lucknow: 4, Unnao: 6). In the recent external snapshot (`9ef84268-...csv`, 2026-11-11), **14 of 14 target district markets (100.0%)** carry the `" APMC"` suffix, confirming that Agmarknet 2.0 systematically renamed reporting mandis.
+
+### 13.2 Evidence Rule Adjudication
+To prevent ungrounded fuzzy merging, market aliases were evaluated under the strict Evidence Rule:
+* **Rule A (Chronological Migration):** Accepted if normalized tokens match and overlap $\le 5$ days.
+  * **21 APMC transitions accepted:** 20 standard APMC variants (e.g., `Ghaziabad APMC` $\rightarrow$ `Ghaziabad`, overlap 4d; `Purwa APMC` $\rightarrow$ `Purwa`, overlap 0d) plus `Jhansi Grain APMC` $\rightarrow$ `Jhansi (Grain)` (overlap 0d).
+* **Unmapped / Review Preservation:**
+  * `Baripaal APMC` vs `Varipaal` (Kanpur): Normalized mismatch (`'baripaal'` vs `'varipaal'`). Preserved unmerged as `UNMAPPED/REVIEW`.
+
+### 13.3 Pipeline v2 Disposition & Rescued Rows
+Pipeline v2 canonicalizes market identity before series-id creation, duplicate filtering, and low-observation thresholding:
+* **Raw Records Ingested:** 472,385
+* **Invalid Records Quarantined:** 27
+* **Strategy 2 Conflicting Records:** 2,936
+* **Exact Duplicates Deduplicated:** 855 (feed overlap during transition)
+* **Low-Observation Dropped Rows (< 20 obs):** 5,350 in v2 vs 7,072 in v1 (**+1,722 rescued rows**)
+* **Final Accepted Clean Records:** **463,217 rows** across 1,167 series (**+867 net clean rows** vs v1's 462,350 rows)
+* **Unique Markets:** Consolidated from 41 in v1 to 21 in v2.
+
+### 13.4 Re-evaluation of Corroboration on Panel v2
+* **Agmarknet Daily Excel Corroboration (14,741 in-window rows):** Matched 12,846 rows (87.14%); **12,769 exact modal price matches (99.40%)**; exactly **77 non-zero price differences (0.60%)**.
+* **CEDA Price Data Corroboration (594 rows, Lucknow Wheat):** Matched 591 rows (99.49%); **591 exact modal price matches (100.00% concordance)**; 3 unmatched rows confirmed quarantined under Strategy 2.
+
+### 13.5 Rejection of Calendar Lag on 77 Differences
+Evaluating all 77 discrepancies across moving calendar shifts $k \in \{-3, -2, -1, 0, 1, 2, 3\}$ days yielded **0 of 77 matches (0.00%)**, demonstrating that the Feb–Mar 2026 discrepancies are not reporting lags or timestamp offsets.
+
+### 13.6 Monthly Regime Diagnostics (61 Months: 2021-09 to 2026-09)
+* **Historical Regime (2021-09 to 2025-10, 50 mos):** Mean 8,452.4 rows/mo; **0.00% APMC suffix**; **0.00% fractional prices**.
+* **Transition Regime (2025-11 to 2026-02, 4 mos):** Mean 2,249.5 rows/mo; **93.34% APMC suffix**; **4.14% fractional prices**. Marked by Agmarknet 2.0 go-live (`2025-11-07`).
+* **Fractional Modern Regime (2026-03 to 2026-09, 7 mos):** Mean 4,514.4 rows/mo; **100.00% APMC suffix**; **40.89% fractional prices**. Marked by UP 251 mandis integration (`2026-09-29`).
+
+### 13.7 Train-Only Eligibility & Cross-Validation on Panel v2
+* **Training Window ($T \le 2025-12-18$):** 492 Tier A series (obs $\ge 60$, cov $\ge 0.30$) and 470 Tier B series (obs $\ge 120$, cov $\ge 0.30$).
+* **Post-Migration Window Feasibility ($T \ge 2025-11-07$):** **231 Tier A series and 92 Tier B series** across 39,417 observations (vs only 3 Tier A series on v1).
+* **4-Fold Expanding Rolling-Origin Feasibility ($h=7$ embargo):** Fold 1 (22 Tier A origins $\ge 20$), Fold 2 (18 series), Fold 3 (16 series), Fold 4 (15 series).
+
+### 13.8 Output Artifacts & Checksums
+
+| Artifact File | Size (Bytes) | Lines | SHA-256 Digest |
+|---|---|---|---|
+| `market_inventory_raw.csv` | 2,798 | 43 | `5e273de64d0f8505d9a1a700421573336b627ebb418d5136afc333be42d79e09` |
+| `market_alias_candidates.csv` | 3,520 | 22 | `fc219b117638e3039c0aa76045988601674c1c9c4872a32f757f46247e981eef` |
+| `market_aliases_accepted.csv` | 6,361 | 43 | `e86609247db1706f09db688c3c87cc903471aaf43888666dd5fac626eb33f519` |
+| `market_aliases_review.csv` | 297 | 2 | `7b34aa29f23d7a665b1ea010870d8b1ebef236f98d604b87206f23ef0fa836dc` |
+| `pipeline_disposition_summary.json` | 706 | N/A | `d5349dd6064d92d7b3483af9e096df04c4f3036a1cc49b2397a760d89ef41e71` |
+| `panel_v1_vs_v2_comparison.csv` | 1,286 | 62 | `20e0b77177040f716d5c7ea59c4bab9452b77fc0de5794036ab76e2ac79c04a1` |
+| `corroboration_v2_summary.json` | 345 | N/A | `bacd95a93823d72419f1dce2a3949fef2677597de87d652ffdcb55de7ee76913` |
+| `regime_diagnostics_monthly.csv` | 3,823 | 62 | `2a62c9d883df3c7a85460fa224b8ce260dcc56f60f4756663e513a78e056bfde` |
+| `regime_diagnostics_summary.json` | 578 | N/A | `839ae4d843a097a1d03752d1f9ea93fe8214467db3593824b6efea232211bdaa` |
+| `diff_77_date_alignment.csv` | 8,522 | 78 | `b1b5b751e8baf4748d58712beae164e616447300ea9a9082eee7ad7243155bb1` |
+| `diff_77_date_alignment_summary.json` | 290 | N/A | `d2b07c5a20fa35ab0acb09500f792b77339b971cf2408b05ff57173df3e86666` |
+| `train_eligibility_tiers_v2.csv` | 108,769 | 805 | `f6b9e3847229afe5eccc7b209947c0c2d19a46968367e0a673ebbdd8b63b914a` |
+| `focus_crops_train_eligibility_v2.csv` | 4,668 | 118 | `ab072a2e3f6f189d4e2828b4161621a4f4647c2e64b9ec7a1ef256945603867f` |
+| `rolling_origin_feasibility_v2.json` | 2,167 | N/A | `98245b1ed7f46ec37187998bb3a134f01f4fbe457cc8d3d78c7bf96a8735b1c9` |
+| `processing_manifest_v2.json` | 5,136 | N/A | `c6f7089b94d2deaa7ca75f4ec85319d82d99fb8c1cd1be6c488398277a3518c1` |
+| `mandi_5year_validated_v2.csv` | 67,455,377 | 463,218 | `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` |
+| `kernel_execution_manifest.json` | 3,245 | N/A | `d558b34f8286ca3f707f43a0a19001cbe0ce194fa1f9747c04aa60b13ba8a230` |
+
+
 
 
 

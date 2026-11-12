@@ -1,0 +1,44 @@
+district,market_raw,market_canonical,rule,evidence,first_date,last_date,overlap_days,price_agreement,status
+Ghaziabad,Ghaziabad,Ghaziabad,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Ghaziabad,Ghaziabad APMC,Ghaziabad,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Ghaziabad,Hapur,Hapur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-05,0,,ACCEPTED
+Ghaziabad,Hapur APMC,Hapur,"Rule A (chronological transition, overlap <= 5d)",overlap_days=5 <= 5 (chronological migration),2025-11-01,2026-09-30,5,,ACCEPTED
+Ghaziabad,Muradnagar,Muradnagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Ghaziabad,Muradnagar APMC,Muradnagar,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Ghaziabad,Noida,Noida,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-03,0,,ACCEPTED
+Ghaziabad,Noida APMC,Noida,"Rule A (chronological transition, overlap <= 5d)",overlap_days=3 <= 5 (chronological migration),2025-11-01,2026-09-30,3,,ACCEPTED
+Jhansi,Baruwasagar,Baruwasagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-05,0,,ACCEPTED
+Jhansi,Baruwasagar APMC,Baruwasagar,"Rule A (chronological transition, overlap <= 5d)",overlap_days=3 <= 5 (chronological migration),2025-11-03,2026-09-30,3,,ACCEPTED
+Jhansi,Chirgaon,Chirgaon,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Jhansi,Chirgaon APMC,Chirgaon,"Rule A (chronological transition, overlap <= 5d)",overlap_days=3 <= 5 (chronological migration),2025-11-02,2026-09-30,3,,ACCEPTED
+Jhansi,Gurusarai,Gurusarai,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Jhansi,Gurusarai APMC,Gurusarai,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Jhansi,Jhansi,Jhansi,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Jhansi,Jhansi APMC,Jhansi,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Jhansi,Jhansi (Grain),Jhansi (Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2024-05-25,2025-11-03,0,,ACCEPTED
+Jhansi,Jhansi (Grain) APMC,Jhansi (Grain),"Rule A (chronological transition, overlap <= 5d)",overlap_days=2 <= 5 (chronological migration),2025-11-02,2026-01-14,2,,ACCEPTED
+Jhansi,Jhansi Grain APMC,Jhansi (Grain),"Rule A (chronological transition, overlap <= 5d)",overlap_days=0 <= 5 (chronological migration),2026-01-01,2026-01-14,0,,ACCEPTED
+Jhansi,Mauranipur,Mauranipur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Jhansi,Mauranipur APMC,Mauranipur,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Jhansi,Moth,Moth,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Jhansi,Moth APMC,Moth,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Kanpur,Baripaal APMC,Baripaal APMC,Identity (single token),Unique market for normalized token in district,2026-03-01,2026-09-30,0,,ACCEPTED
+Kanpur,Choubepur,Choubepur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Kanpur,Choubepur APMC,Choubepur,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Kanpur,Kanpur(Grain),Kanpur(Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Kanpur,Kanpur(Grain) APMC,Kanpur(Grain),"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Kanpur,Uttaripura,Uttaripura,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-10-24,2025-11-04,0,,ACCEPTED
+Kanpur,Uttaripura APMC,Uttaripura,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Kanpur,Varipaal,Varipaal,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Kanpur,Varipaal APMC,Varipaal,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-04-26,4,,ACCEPTED
+Lucknow,Banthara,Banthara,Identity (canonical anchor),Canonical baseline anchor for normalized token,2022-05-18,2025-11-04,0,,ACCEPTED
+Lucknow,Banthara APMC,Banthara,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Lucknow,Lucknow,Lucknow,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Lucknow,Lucknow APMC,Lucknow,"Rule A (chronological transition, overlap <= 5d)",overlap_days=3 <= 5 (chronological migration),2025-11-02,2026-09-30,3,,ACCEPTED
+Unnao,Bangarmau,Bangarmau,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Unnao,Bangarmau APMC,Bangarmau,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Unnao,Purwa,Purwa,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-07-31,0,,ACCEPTED
+Unnao,Purwa APMC,Purwa,"Rule A (chronological transition, overlap <= 5d)",overlap_days=0 <= 5 (chronological migration),2026-02-21,2026-09-30,0,,ACCEPTED
+Unnao,Unnao,Unnao,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED
+Unnao,Unnao APMC,Unnao,"Rule A (chronological transition, overlap <= 5d)",overlap_days=4 <= 5 (chronological migration),2025-11-01,2026-09-30,4,,ACCEPTED
+Kanpur,Baripaal APMC,Varipaal,Review Pending (cross-phonetic b/v),Normalized mismatch (baripaal vs varipaal); candidate for manual verification,2026-03-01,2026-09-30,0,,UNMAPPED/REVIEW

@@ -358,15 +358,17 @@ Use these states consistently:
 - NOT AVAILABLE: the required source or evidence has not been obtained.
 - ASSUMPTION: an explicitly documented modelling or scenario assumption, not an observed measurement.
 
-### 8.4 Series identity rule
+### 8.4 Series identity and market canonicalisation rule
 
 A distinct agricultural market price series is defined strictly by the natural tuple:
-$$\text{Series Identity} = (\text{Source Market}, \text{Commodity}, \text{Variety}, \text{Grade}, \text{Price Unit})$$
-*(e.g. `Kanpur Grain + Wheat + Dara + FAQ + INR/Quintal`)*
+$$\text{Series Identity} = (\text{Canonical Market}, \text{Commodity}, \text{Variety}, \text{Grade}, \text{Price Unit})$$
+*(e.g. `Kanpur(Grain) + Wheat + Dara + FAQ + INR/Quintal`)*
 
 Rules:
-- Preservation of Grade in series identity is mandatory to prevent collapsing distinct quality and price tiers occurring on the same market date.
-- Aggregation across markets, varieties, or grades into a composite district series is permitted only under an approved, documented, and tested weighting or averaging rule. Series must never be silently or arbitrarily collapsed.
+- **Preservation of Grade:** Preservation of Grade in series identity is mandatory to prevent collapsing distinct quality and price tiers occurring on the same market date.
+- **Evidence-Based Market Canonicalisation:** When platform migrations alter reporting market strings (e.g. Agmarknet 2.0 systematically appending `" APMC"` across all UP mandis on 2025-11-07), raw market names must be canonicalised via an evidence-based alias mapping (`data/reference/market_aliases.csv`) *before* series-id creation, duplicate detection, and low-observation filtering. The original raw name must always be preserved intact in `Market_Raw`.
+- **Strict Evidence Standard (No Fuzzy Guessing):** Alias pairs are accepted if and only if they share identical normalized names within the same district and satisfy either Rule A (chronological migration overlap $\le 5$ days) or Rule B (overlapping observations $\ge 10$ and price agreement $\ge 95\%$). Phonetic or spelling variants (e.g. `Baripaal APMC` vs `Varipaal`) must remain unmerged as `UNMAPPED/REVIEW` pending explicit provenance confirmation.
+- **No Arbitrary Aggregation:** Aggregation across markets, varieties, or grades into a composite district series is permitted only under an approved, documented, and tested weighting or averaging rule. Series must never be silently or arbitrarily collapsed.
 
 ### 8.5 Ingestion and publication contract
 

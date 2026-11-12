@@ -412,3 +412,87 @@ def test_cli_execution_on_test_data(tmp_path, sample_valid_csv):
     assert "SUCCESS: Mandi 5-year data processing pipeline completed successfully" in result.stdout
     assert os.path.exists(out_dir / "mandi_5year_processed.csv")
     assert os.path.exists(out_dir / "processing_manifest.json")
+
+
+def test_pipeline_v2_canonicalization_and_market_raw_preservation(tmp_path):
+    """Verify pipeline v2 canonicalizes Market, preserves Market_Raw, and isolates outputs."""
+    raw_csv = tmp_path / "raw_fixture.csv"
+    raw_df = pd.DataFrame([
+        {
+            "District": "Ghaziabad",
+            "Market": "Ghaziabad",
+            "Commodity": "Wheat",
+            "Variety": "Dara",
+            "Grade": "FAQ",
+            "Arrival_Date": "01/10/2025",
+            "Min_Price": 2000,
+            "Max_Price": 2200,
+            "Modal_Price": 2100
+        },
+        {
+            "District": "Ghaziabad",
+            "Market": "Ghaziabad APMC",
+            "Commodity": "Wheat",
+            "Variety": "Dara",
+            "Grade": "FAQ",
+            "Arrival_Date": "20/11/2025",
+            "Min_Price": 2100,
+            "Max_Price": 2300,
+            "Modal_Price": 2200
+        }
+    ])
+    raw_df.to_csv(raw_csv, index=False)
+    
+    alias_fixture = pd.DataFrame([
+        {
+            "district": "Ghaziabad",
+            "market_raw": "Ghaziabad",
+            "market_canonical": "Ghaziabad",
+            "rule": "Identity",
+            "evidence": "baseline",
+            "first_date": "2021-09-01",
+            "last_date": "2025-11-04",
+            "overlap_days": 0,
+            "price_agreement": None,
+            "status": "ACCEPTED"
+        },
+        {
+            "district": "Ghaziabad",
+            "market_raw": "Ghaziabad APMC",
+            "market_canonical": "Ghaziabad",
+            "rule": "Rule A",
+            "evidence": "overlap <= 5",
+            "first_date": "2025-11-20",
+            "last_date": "2026-09-30",
+            "overlap_days": 0,
+            "price_agreement": None,
+            "status": "ACCEPTED"
+        }
+    ])
+    
+    out_dir = tmp_path / "v2_out"
+    pipeline_v2 = MandiDataPipeline(
+        input_dir=str(tmp_path),
+        output_dir=str(out_dir),
+        pipeline_version="v2",
+        min_series_records=1,
+        alias_df=alias_fixture
+    )
+    df_v2, manifest_v2, out_csv, out_manifest = pipeline_v2.run([str(raw_csv)])
+    
+    # Check outputs isolation
+    assert os.path.basename(out_csv) == "mandi_5year_processed_v2.csv"
+    assert os.path.basename(out_manifest) == "processing_manifest_v2.json"
+    assert manifest_v2["configuration"]["pipeline_version"] == "v2"
+    
+    # Check Market_Raw preservation
+    assert "Market_Raw" in df_v2.columns
+    assert df_v2["Market_Raw"].tolist() == ["Ghaziabad", "Ghaziabad APMC"]
+    
+    # Check Market canonicalization
+    assert df_v2["Market"].tolist() == ["Ghaziabad", "Ghaziabad"]
+    
+    # Check series_id unification
+    assert df_v2["series_id"].nunique() == 1
+    assert "APMC" not in df_v2["series_id"].iloc[0]
+

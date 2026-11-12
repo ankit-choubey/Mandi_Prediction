@@ -133,3 +133,30 @@ $$17,720 = 17,028 + 97 + 0 + 595$$
 1. **Kaggle Heavy Compute Audit (MP-DATA-003B):** First remote Kaggle execution performs full row-level multiset reconciliation of all 472,385 raw price records against `mandi_5year_validated.csv`, extracts the 7,072 low-observation dropped rows, profiles series coverage, and conducts price corroboration against Agmarknet Excel and CEDA price data.
 2. **Cold Storage Outreach:** Any future transition of storage parameters from `SCENARIO_ASSUMPTION` to `EMPIRICAL_OBSERVATION` requires documented receipt of formal facility quotations.
 3. **Release 1 Scope Decoupling:** Ingestion of live price feeds remains decoupled from optional weather and production pipelines.
+
+---
+
+## 5. Agmarknet 2.0 Migration, External Snapshots, and Panel v2 Register
+
+### 5.1 Agmarknet 2.0 Architectural Transition
+* **System Migration Date:** `2025-11-07` (Agmarknet 2.0 national platform go-live).
+* **State API Integration Completion:** `2026-09-29` (Uttar Pradesh 251 APMC mandis completed automated API integration).
+* **Nomenclature Discontinuity:** All reporting mandi terminal names acquired an `" APMC"` suffix (e.g. `Ghaziabad` $\rightarrow$ `Ghaziabad APMC`, `Noida` $\rightarrow$ `Noida APMC`).
+* **Price Representation Shift:** Pre-November 2025 prices were 100% integer quotes; from March 2026 onward, **40.89% of quotes are fractional decimal values** resulting from modern automated weighing scale averaging.
+
+### 5.2 External Snapshot Register
+* **File Identifier:** `data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv`
+* **File Size & Rows:** 1,217,998 bytes (1.2 MB), 11,720 records.
+* **Extraction Timestamp:** `2026-11-11` (live export from post-migration portal).
+* **Target District Markets:** Exactly 14 markets belong to the 5 target districts; **14 of 14 (100.0%)** carry the `" APMC"` suffix.
+* **Provenance Adjudication:** Empirical evidence proving that modern feeds mandate automated market canonicalisation (`data/reference/market_aliases.csv`) to maintain backward compatibility with 5-year historical series.
+
+### 5.3 Validated Historical Price Panel v2
+* **Storage Location:** `experiments/outputs/006/mandi_5year_validated_v2.csv` (gitignored, heavy compute artifact).
+* **Tracked Processing Manifest:** `data/processed/processing_manifest_v2.json` (SHA-256: `c6f7089b94d2deaa7ca75f4ec85319d82d99fb8c1cd1be6c488398277a3518c1`).
+* **Source Raw Files:** 5 files in `5 year dataset/*.csv` (472,385 total rows).
+* **Accepted Clean Records:** **463,217 rows** across 1,167 unique series (+867 net rows over v1).
+* **Rescued Observations:** **+1,722 rows** previously dropped under the `< 20` observation threshold in v1 due to market identity forking.
+* **Schema Columns:** `Arrival_Date`, `District`, `Market_Raw`, `Market`, `Commodity`, `Variety`, `Grade`, `Min_Price`, `Max_Price`, `Modal_Price`, `Commodity_Code`, `State`, `series_id`.
+* **Corroboration Concordance:** 99.40% exact modal price agreement on 12,846 matched Agmarknet Excel rows; 100.00% exact agreement on 591 matched CEDA rows.
+

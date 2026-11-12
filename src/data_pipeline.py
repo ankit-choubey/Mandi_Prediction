@@ -66,10 +66,27 @@ OPTIONAL_COLUMNS = [
     "State"
 ]
 
-# Canonical ordering of output columns
+# Canonical ordering of output columns (v1 legacy)
 CANONICAL_COLUMNS = [
     "Arrival_Date",
     "District",
+    "Market",
+    "Commodity",
+    "Variety",
+    "Grade",
+    "Min_Price",
+    "Max_Price",
+    "Modal_Price",
+    "Commodity_Code",
+    "State",
+    "series_id"
+]
+
+# Canonical ordering of output columns (v2 canonicalized with Market_Raw preserved)
+CANONICAL_COLUMNS_V2 = [
+    "Arrival_Date",
+    "District",
+    "Market_Raw",
     "Market",
     "Commodity",
     "Variety",
@@ -287,18 +304,32 @@ class MandiDataPipeline:
         self,
         input_dir: str = "5 year dataset",
         output_dir: str = "data/processed",
-        output_filename: str = "mandi_5year_processed.csv",
-        manifest_filename: str = "processing_manifest.json",
+        output_filename: Optional[str] = None,
+        manifest_filename: Optional[str] = None,
         min_series_records: int = 20,
         exclude_ambiguous_same_grade: bool = True,
         target_crops_only: bool = False,
         date_format: str = "%Y-%m-%d",
-        schema_version: str = SCHEMA_VERSION
+        schema_version: str = SCHEMA_VERSION,
+        pipeline_version: str = "v1",
+        alias_file: Optional[str] = None,
+        alias_df: Optional[pd.DataFrame] = None
     ):
         self.input_dir = os.path.abspath(input_dir) if input_dir else ""
         self.output_dir = os.path.abspath(output_dir) if output_dir else ""
-        self.output_filename = output_filename
-        self.manifest_filename = manifest_filename
+        self.pipeline_version = str(pipeline_version).strip().lower()
+        self.alias_file = alias_file
+        self.alias_df = alias_df
+
+        if self.pipeline_version == "v2":
+            self.output_filename = output_filename if output_filename is not None else "mandi_5year_processed_v2.csv"
+            self.manifest_filename = manifest_filename if manifest_filename is not None else "processing_manifest_v2.json"
+            if self.alias_file is None:
+                self.alias_file = "data/reference/market_aliases.csv"
+        else:
+            self.output_filename = output_filename if output_filename is not None else "mandi_5year_processed.csv"
+            self.manifest_filename = manifest_filename if manifest_filename is not None else "processing_manifest.json"
+
         self.min_series_records = min_series_records
         self.exclude_ambiguous_same_grade = exclude_ambiguous_same_grade
         self.target_crops_only = target_crops_only
@@ -561,6 +592,32 @@ class MandiDataPipeline:
         if merged_df.empty:
             raise EmptyDatasetError("Dataset is empty after applying target crop filter.")
             
+        # Pipeline v2: Evidence-based Market Identity Canonicalization
+        # Must run BEFORE series-id creation, dedup, conflict detection and low-obs filter.
+        if self.pipeline_version == "v2":
+            from src.market_identity import apply_market_canonicalization, load_market_aliases
+            
+            alias_source = None
+            if self.alias_df is not None:
+                alias_source = self.alias_df
+            elif self.alias_file and os.path.exists(self.alias_file) and os.path.getsize(self.alias_file) > 0:
+                alias_source = load_market_aliases(self.alias_file)
+                
+            if alias_source is not None:
+                merged_df = apply_market_canonicalization(
+                    merged_df,
+                    alias_source,
+                    district_col="District",
+                    market_col="Market",
+                    raw_market_col="Market_Raw"
+                )
+                self.logger.info(
+                    "Pipeline v2: Market identity canonicalization applied; original names preserved in Market_Raw."
+                )
+            else:
+                if "Market_Raw" not in merged_df.columns:
+                    merged_df["Market_Raw"] = merged_df["Market"]
+
         # Series key definition including Grade (Grade-preserving series identity)
         series_cols = ["District", "Market", "Commodity", "Variety", "Grade"]
         key_grade_date = series_cols + ["Arrival_Date"]
@@ -620,10 +677,11 @@ class MandiDataPipeline:
         max_date_str = merged_df["Arrival_Date"].max().strftime("%Y-%m-%d")
         
         # Enforce canonical column order
-        for col in CANONICAL_COLUMNS:
+        cols_to_use = CANONICAL_COLUMNS_V2 if self.pipeline_version == "v2" else CANONICAL_COLUMNS
+        for col in cols_to_use:
             if col not in merged_df.columns:
                 merged_df[col] = None
-        final_df = merged_df[CANONICAL_COLUMNS].copy()
+        final_df = merged_df[cols_to_use].copy()
         
         end_utc = datetime.now(timezone.utc)
         processing_duration_sec = (end_utc - start_utc).total_seconds()
@@ -632,9 +690,11 @@ class MandiDataPipeline:
         manifest: Dict[str, Any] = {
             "schema_version": self.schema_version,
             "pipeline_name": "MandiDataPipeline",
+            "pipeline_version": self.pipeline_version,
             "execution_timestamp_utc": end_utc.isoformat(),
             "duration_seconds": round(processing_duration_sec, 3),
             "configuration": {
+                "pipeline_version": self.pipeline_version,
                 "input_dir": self.input_dir,
                 "output_dir": self.output_dir,
                 "output_filename": self.output_filename,
@@ -642,7 +702,8 @@ class MandiDataPipeline:
                 "min_series_records": self.min_series_records,
                 "exclude_ambiguous_same_grade": self.exclude_ambiguous_same_grade,
                 "target_crops_only": self.target_crops_only,
-                "date_format": self.date_format
+                "date_format": self.date_format,
+                "alias_file": self.alias_file if self.pipeline_version == "v2" else None
             },
             "source_files_audit": file_audits,
             "summary_metrics": {
@@ -765,19 +826,28 @@ class MandiDataPipeline:
 def process_5year_mandi_dataset(
     input_dir: str = "5 year dataset",
     output_dir: str = "data/processed",
-    output_filename: str = "mandi_5year_processed.csv",
+    output_filename: Optional[str] = None,
+    manifest_filename: Optional[str] = None,
     min_series_records: int = 20,
-    target_crops_only: bool = False
+    target_crops_only: bool = False,
+    pipeline_version: str = "v1",
+    alias_file: Optional[str] = None,
+    alias_df: Optional[pd.DataFrame] = None
 ) -> Tuple[pd.DataFrame, Dict[str, Any], str, str]:
     """
     Standard high-level entry point to process the 5-year APMC dataset.
+    Supports both legacy v1 and canonicalized v2 pipeline versions.
     """
     pipeline = MandiDataPipeline(
         input_dir=input_dir,
         output_dir=output_dir,
         output_filename=output_filename,
+        manifest_filename=manifest_filename,
         min_series_records=min_series_records,
-        target_crops_only=target_crops_only
+        target_crops_only=target_crops_only,
+        pipeline_version=pipeline_version,
+        alias_file=alias_file,
+        alias_df=alias_df
     )
     return pipeline.run()
 
@@ -807,14 +877,27 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output-filename",
         type=str,
-        default="mandi_5year_processed.csv",
-        help="Filename for the processed CSV dataset."
+        default=None,
+        help="Filename for the processed CSV dataset (default: mandi_5year_processed.csv for v1, mandi_5year_processed_v2.csv for v2)."
     )
     parser.add_argument(
         "--manifest-filename",
         type=str,
-        default="processing_manifest.json",
-        help="Filename for the processing manifest JSON."
+        default=None,
+        help="Filename for the processing manifest JSON (default: processing_manifest.json for v1, processing_manifest_v2.json for v2)."
+    )
+    parser.add_argument(
+        "--pipeline-version",
+        type=str,
+        default="v1",
+        choices=["v1", "v2"],
+        help="Pipeline version: 'v1' for legacy output, 'v2' for evidence-based market canonicalization."
+    )
+    parser.add_argument(
+        "--alias-file",
+        type=str,
+        default="data/reference/market_aliases.csv",
+        help="Path to market aliases CSV reference table (for pipeline v2)."
     )
     parser.add_argument(
         "--min-series-records",
@@ -856,9 +939,12 @@ def main():
         logger.setLevel(logging.DEBUG)
         
     print("=" * 80)
-    print("APMC MANDI 5-YEAR DATA PROCESSING PIPELINE")
+    print(f"APMC MANDI 5-YEAR DATA PROCESSING PIPELINE (Version: {args.pipeline_version.upper()})")
     print(f"Input Directory:  {args.input_dir}")
     print(f"Output Directory: {args.output_dir}")
+    print(f"Pipeline Version: {args.pipeline_version}")
+    if args.pipeline_version == "v2":
+        print(f"Market Aliases:   {args.alias_file}")
     print(f"Target Crops:     {'Yes (Potato, Onion, Tomato, Wheat)' if args.target_crops_only else 'All commodities'}")
     print(f"Ambiguity Filter: {'Disabled' if args.no_exclude_ambiguous else 'Enabled (Strategy 2)'}")
     print("=" * 80)
@@ -872,7 +958,9 @@ def main():
             min_series_records=args.min_series_records,
             exclude_ambiguous_same_grade=not args.no_exclude_ambiguous,
             target_crops_only=args.target_crops_only,
-            date_format=args.date_format
+            date_format=args.date_format,
+            pipeline_version=args.pipeline_version,
+            alias_file=args.alias_file
         )
         df, manifest, out_csv, out_manifest = pipeline.run()
         
