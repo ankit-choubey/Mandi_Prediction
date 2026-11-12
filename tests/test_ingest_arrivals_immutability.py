@@ -255,13 +255,12 @@ def test_independent_reconciliation_readback():
 
 
 # =============================================================================
-# 6. FIX 6: Excel dates handling (reported BLOCKED if openpyxl missing)
+# 6. FIX 6: Excel dates handling and openpyxl integration [MP-DATA-003A]
 # =============================================================================
 
 def test_excel_dates_handling():
     """Excel datetime/Timestamp objects are handled before string conversion."""
-    if not HAS_OPENPYXL:
-        pytest.skip("BLOCKED: openpyxl is not installed in environment")
+    assert HAS_OPENPYXL is True, "openpyxl must be installed in environment"
 
     with tempfile.TemporaryDirectory() as tmpdir:
         import datetime
@@ -276,6 +275,74 @@ def test_excel_dates_handling():
 
         res = load_arrivals_file(p)
         assert res.loc[0, "Arrival_Date"] == "2024-01-10"
+
+
+def test_excel_real_datetime_and_timestamp_cells_with_openpyxl():
+    """Test writing native datetime, Timestamp, and date cells with openpyxl."""
+    import datetime
+    import openpyxl
+
+    with tempfile.TemporaryDirectory() as tmp_in, tempfile.TemporaryDirectory() as tmp_out:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(["District", "Commodity", "Arrival Date", "Arrivals (Tonnes)"])
+        # Native datetime.datetime
+        ws.append(["Kanpur", "Wheat", datetime.datetime(2024, 4, 15, 12, 30, 0), 100.0])
+        # pd.Timestamp
+        ws.append(["Lucknow", "Rice", pd.Timestamp("2024-05-20 00:00:00"), 120.0])
+        # datetime.date
+        ws.append(["Jhansi", "Tomato", datetime.date(2024, 6, 25), 80.0])
+
+        path = os.path.join(tmp_in, "native_cells.xlsx")
+        wb.save(path)
+
+        loaded = load_arrivals_file(path)
+        assert list(loaded["Arrival_Date"]) == ["2024-04-15", "2024-05-20", "2024-06-25"]
+
+        res = organize_and_export_city_crop(input_dir=tmp_in, output_dir=tmp_out, write=False)
+        reconc = res["reconciliation"]
+        assert reconc["rejection_reasons"]["unparseable_date"] == 0
+        assert reconc["total_rejected"] == 0
+        assert reconc["total_rows_out"] == 3
+
+
+def test_excel_title_row_format_with_openpyxl():
+    """Test Agmarknet-style title row (row 0 title, row 1 headers) with openpyxl."""
+    import datetime
+    import openpyxl
+
+    with tempfile.TemporaryDirectory() as tmp_in, tempfile.TemporaryDirectory() as tmp_out:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Data_Report"
+        # Row 1: Title row
+        ws.append(["Daily Price Arrival Report-01-01-2024 to 31-12-2024 for Uttar Pradesh", "", "", "", "", "", "", "", "", ""])
+        # Row 2: Header row
+        ws.append(["State/UT", "District", "Market", "Commodity Group", "Commodity", "Variety", "Grade", "Arrival Date", "Arrival Quantity", "Arrival Unit"])
+        # Row 3: Data row with datetime.datetime cell
+        ws.append(["Uttar Pradesh", "Ghaziabad", "Ghaziabad APMC", "Foodgrains", "Wheat", "Dara", "FAQ", datetime.datetime(2024, 3, 10, 0, 0), 150.0, "Metric Tonnes"])
+        # Row 4: Data row with pd.Timestamp cell
+        ws.append(["Uttar Pradesh", "Lucknow", "Lucknow APMC", "Vegetables", "Potato", "Desi", "FAQ", pd.Timestamp("2024-03-11 00:00:00"), 200.0, "Tonnes"])
+
+        path = os.path.join(tmp_in, "title_report.xlsx")
+        wb.save(path)
+
+        loaded = load_arrivals_file(path)
+        assert list(loaded["Arrival_Date"]) == ["2024-03-10", "2024-03-11"]
+        assert list(loaded["District_Std"]) == ["Ghaziabad", "Lucknow"]
+        assert list(loaded["Commodity_Std"]) == ["Wheat", "Potato"]
+
+        res = organize_and_export_city_crop(input_dir=tmp_in, output_dir=tmp_out, write=True)
+        assert res["status"] == "SUCCESS"
+        reconc = res["reconciliation"]
+        assert reconc["rejection_reasons"]["unparseable_date"] == 0
+        assert reconc["total_rejected"] == 0
+        assert reconc["total_rows_out"] == 2
+
+        # Read back consolidated master
+        master = pd.read_csv(os.path.join(tmp_out, "agmarknet_arrivals_up_consolidated.csv"))
+        assert len(master) == 2
+        assert list(master["Arrival_Date"]) == ["2024-03-10", "2024-03-11"]
 
 
 # =============================================================================

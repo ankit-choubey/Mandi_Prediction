@@ -311,7 +311,7 @@ Where:
 | **D3** | Cross-file duplicates and conflicting values unhandled | Natural key grouping detects exact cross-file duplicates (deduplicated) and differing quantity/price (partitioned to `conflicts.csv`) | **FIXED** |
 | **D4** | Monolithic rejection without reason attribution | Row classification emits exact counts for `missing_district`, `missing_commodity`, `unparseable_date`, and `missing_quantity` | **FIXED** |
 | **D5** | Missing independent disk reconciliation | Post-write verification re-reads master and per-pair files from disk, asserting row counts with explicit `ValueError` | **FIXED** |
-| **D6** | Excel date objects distorted by string casting | Datetime/Timestamp objects formatted directly via `.strftime('%Y-%m-%d')` before string conversion; openpyxl test flagged BLOCKED when missing | **FIXED (BLOCKED: openpyxl)** |
+| **D6** | Excel date objects distorted by string casting | Datetime/Timestamp objects formatted directly via `.strftime('%Y-%m-%d')` before string conversion; openpyxl integration and native datetime tests fully verified | **implemented, now verified** |
 | **D7** | Substring matching on unit strings falsely matches words like 'cotton' | Replaced with exact set membership (`TONNE_UNITS`, `QUINTAL_UNITS`); non-matches set to `UNVERIFIED` | **FIXED** |
 | **D8** | Duplicate source columns mapping to same alias cause silent dataframe duplicate columns | Alias collision detection raises `AliasCollisionError` and marks file as failed in `failed_files` | **FIXED** |
 | **D9** | Single input directory constraint and symlink path traversal risks | Accepted multiple `--input-dir` arguments; recorded per-file `source_dir` in manifest; path containment verified with `os.path.realpath` | **FIXED** |
@@ -323,6 +323,7 @@ Where:
 |---|---|---|---|---|---|---|
 | **MP-DATA-002** | `src/ingest_agmarknet_arrivals.py` (Non-destructive arrivals) | 12 new / 133 passing (1 skipped) | 3 valid / 28 excluded / 0 failed | In: 481 / Out: 481 / Dups: 0 / Conflicts: 0 / Rej: 0 | Tonnes: 0 / Qtl: 0 / Unverified: 481 (CEDA files) | **VERIFIED & IMMUTABLE** |
 | **MP-DATA-002B** | `src/ingest_agmarknet_arrivals.py` (Quality & robustness fixes) | 5 new (17 total) / 138 passing (1 skipped: openpyxl BLOCKED) | 10 found (5 valid, 5 failed) / 28 excluded / 5 failed (xlsx openpyxl missing) | In: 1,690 / Out: 999 / Dups: 97 / Conflicts: 0 / Rej: 594 (missing_quantity) | Tonnes: 0 / Qtl: 0 / Unverified: 1,690 | **VERIFIED & DETERMINISTIC (PARTIAL)** |
+| **MP-DATA-003A** | `src/ingest_agmarknet_arrivals.py` (Excel ingestion & source register) | 2 new (19 total) / 141 passing (0 skipped) | 10 valid / 28 excluded / 0 failed | In: 17,720 / Out: 17,028 / Dups: 97 / Conflicts: 0 / Rej: 595 (594 price, 1 null qty) | Tonnes: 16,029 / Qtl: 0 / Unverified: 999 | **VERIFIED & IMMUTABLE (100% OPERATIONAL, 0 FAILED)** |
 
 ---
 
