@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "task": "MP-RELEASE-001",
+  "generated_at_utc": "2026-11-12T22:45:00.000000+00:00",
+  "directory": "experiments/reports/RELEASE001",
+  "files": {
+    "browser_interactive_flows_receipt.json": {
+      "bytes": 9547,
+      "sha256": "04903c6aabb88c4b901eff882753b304a7e2b373a167a6ffe306fc169c22696a"
+    },
+    "desktop_screenshot.png": {
+      "bytes": 143047,
+      "sha256": "e8df7cd40ee19108f904e294ce8c38e8101307c355ab51666921a0ee523accb0"
+    },
+    "latency_measurements_receipt.json": {
+      "bytes": 2214,
+      "sha256": "c5ac8d78428d49676e7b415248e994d3f625e502a0c472f2621a03fd4932adf5"
+    },
+    "mobile_375px_screenshot.png": {
+      "bytes": 130316,
+      "sha256": "f991e0401087d3c127893e2861a27d3a81eb1ffcbe300ec56633cef37e7b15cc"
+    },
+    "packaging_readiness_status.json": {
+      "bytes": 1069,
+      "sha256": "ae906c6459a4bb572090d2518a4f2fd087050c49d2e64a9c305acf82201b5373"
+    },
+    "release_candidate_manifest.json": {
+      "bytes": 2338,
+      "sha256": "f5abf0ec29efd6a0eb1b4cd16994e7e20d997b794ea3558eb11e75082a72cbe2"
+    },
+    "release_recovery_receipt.json": {
+      "bytes": 1679,
+      "sha256": "60130cf4eb8fe29ce118387f598e66c487ed5e265dd166deb5d84c8483898c30"
+    },
+    "scalar_cost_controls_receipt.json": {
+      "bytes": 2792,
+      "sha256": "7c9bd69142cec1d9493496a160e20312c94bdc048e65682baf9326322812ee68"
+    },
+    "source_api_dom_parity.json": {
+      "bytes": 1759,
+      "sha256": "62143d7330634bb6932b878fc8fcd7dffec1c140f7ee35b3f40122061f79bc36"
+    },
+    "test_suite_receipt.json": {
+      "bytes": 1337,
+      "sha256": "8fab0e3dc7875a0b8fcd733ccc1ad4855f8db94bc3de962996ba335b635de2b2"
+    },
+    "ui_field_contract_map.json": {
+      "bytes": 4541,
+      "sha256": "c43a2cea5e4d621fbcbe4c522464ffbbd44b8fdaa7a23cdae856a33ce08769cd"
+    }
+  }
+}

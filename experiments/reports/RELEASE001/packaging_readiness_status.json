@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "task": "MP-RELEASE-001",
+  "evaluated_at_utc": "2026-11-12T22:42:30.000000+00:00",
+  "tooling": {
+    "docker_cli_version": "Docker version 29.6.1, build d252e0d",
+    "docker_daemon_status": "INACTIVE",
+    "daemon_socket_error": "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?"
+  },
+  "packaging_status": "NOT_RUN (Docker daemon not running locally)",
+  "deployment_acceptance": "OPEN",
+  "artifacts_prepared": {
+    "dockerfile": "Dockerfile",
+    "dockerignore": ".dockerignore",
+    "release_runner": "src/run_release_service.py",
+    "runbook": "documentation/RELEASE_RUNBOOK.md"
+  },
+  "pending_commands": [
+    "docker build -t apmc-mandi-release:1.0.0-rc1 -f Dockerfile .",
+    "docker run -d --name apmc-release -p 127.0.0.1:8000:8000 apmc-mandi-release:1.0.0-rc1",
+    "curl -s http://127.0.0.1:8000/api/v1/health | jq ."
+  ],
+  "recommendation": "Maintain Step 12 deployment acceptance open until target container host or cloud environment is approved and provisioned."
+}

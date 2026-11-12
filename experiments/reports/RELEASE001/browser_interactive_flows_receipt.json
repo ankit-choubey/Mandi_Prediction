@@ -1,0 +1,321 @@
+{
+  "receipt_id": "RELEASE001_BROWSER_INTERACTION_1794523002467",
+  "timestamp_utc": "2026-11-12T22:36:42.467Z",
+  "runner": "Node.js 25 Native WebSocket + Chrome CDP Protocol",
+  "test_summary": {
+    "total": 21,
+    "passed": 21,
+    "failed": 0
+  },
+  "tests": [
+    {
+      "id": "F1_NO_UNSOLICITED_ECONOMICS",
+      "name": "Initial visit sends zero unsolicited economic evaluation requests",
+      "passed": true,
+      "details": {
+        "requestsCount": 0
+      }
+    },
+    {
+      "id": "F1_BLANK_INPUTS_INITIAL",
+      "name": "Initial form inputs are blank",
+      "passed": true,
+      "details": {
+        "q": "",
+        "p0": "",
+        "pf": "",
+        "promptVis": "block",
+        "gridVis": "none",
+        "exportDisabled": true,
+        "staleVis": false,
+        "totalStat": "30",
+        "accStat": "26",
+        "revStat": "4"
+      }
+    },
+    {
+      "id": "F1_INITIAL_PROMPT_VISIBLE",
+      "name": "Initial uncalculated message is visible and metrics grid is hidden",
+      "passed": true,
+      "details": {
+        "q": "",
+        "p0": "",
+        "pf": "",
+        "promptVis": "block",
+        "gridVis": "none",
+        "exportDisabled": true,
+        "staleVis": false,
+        "totalStat": "30",
+        "accStat": "26",
+        "revStat": "4"
+      }
+    },
+    {
+      "id": "F1_RECEIPT_DISABLED_INITIALLY",
+      "name": "Export receipt button is disabled before calculation",
+      "passed": true,
+      "details": {
+        "q": "",
+        "p0": "",
+        "pf": "",
+        "promptVis": "block",
+        "gridVis": "none",
+        "exportDisabled": true,
+        "staleVis": false,
+        "totalStat": "30",
+        "accStat": "26",
+        "revStat": "4"
+      }
+    },
+    {
+      "id": "F1_DYNAMIC_CATALOG_STATS",
+      "name": "Dynamic catalog stats loaded from API (30 total / 26 accepted / 4 review)",
+      "passed": true,
+      "details": {
+        "q": "",
+        "p0": "",
+        "pf": "",
+        "promptVis": "block",
+        "gridVis": "none",
+        "exportDisabled": true,
+        "staleVis": false,
+        "totalStat": "30",
+        "accStat": "26",
+        "revStat": "4"
+      }
+    },
+    {
+      "id": "F2_MARKET_DROPDOWN_DEFINED",
+      "name": "Market dropdown contains \"Banthara\" & \"Lucknow\" and zero \"undefined\" options",
+      "passed": true,
+      "details": {
+        "marketOptions": [
+          {
+            "value": "",
+            "text": "-- Choose Market --"
+          },
+          {
+            "value": "Banthara",
+            "text": "Banthara"
+          },
+          {
+            "value": "Lucknow",
+            "text": "Lucknow"
+          }
+        ]
+      }
+    },
+    {
+      "id": "F2_VERIFIED_CARD_DISPLAY",
+      "name": "Verified series card displayed with exact modal price ₹ 2721.00 and India calendar age",
+      "passed": true,
+      "details": {
+        "cardVis": "block",
+        "title": "Wheat (Dara - Grade FAQ)",
+        "subtitle": "Banthara APMC, Lucknow District",
+        "modal": "₹ 2721.00",
+        "min": "₹ 2721.00",
+        "max": "₹ 2721.00",
+        "date": "2026-11-11",
+        "age": "Observed 2 days ago (2026-11-11)"
+      }
+    },
+    {
+      "id": "F3_PRICE_WITHHELD_ON_REVIEW",
+      "name": "Review series card displayed, verified price card hidden, unapproved market noted",
+      "passed": true,
+      "details": {
+        "revCardVis": "block",
+        "verCardVis": "none",
+        "revMarket": "Baripaal APMC (Unapproved Market Identity)",
+        "revComm": "Paddy(Basmati)"
+      }
+    },
+    {
+      "id": "F4_USE_PRICE_TRANSFER_ACCURACY",
+      "name": "Transfers observed price 2721 and date; leaves future price and costs blank (no +150 default)",
+      "passed": true,
+      "details": {
+        "currPrice": "2721",
+        "origDate": "2026-11-11",
+        "origStatus": "OBSERVED_PRICE_TRANSFER",
+        "futurePoint": "",
+        "futureLower": "",
+        "futureUpper": "",
+        "storage": "",
+        "econTabActive": true
+      }
+    },
+    {
+      "id": "F5_REFERENCE_FIXTURE_DOM",
+      "name": "Reference fixture yields Gross ₹ 25,000.00, Net ₹ 25,000.00, Hold ₹ 25,470.00, Delta + ₹ 470.00, Break-even ₹ 2,602.04",
+      "passed": true,
+      "details": {
+        "gross": "₹ 25,000.00",
+        "net": "₹ 25,000.00",
+        "hold": "₹ 25,470.00",
+        "delta": "+ ₹ 470.00",
+        "be": "₹ 2,602.04",
+        "exportDisabled": false
+      }
+    },
+    {
+      "id": "F6_FINANCING_7_PCT",
+      "name": "Financing at 7% annual rate yields + ₹ 436.44 (436.438356... INR)",
+      "passed": true,
+      "details": {
+        "delta": "+ ₹ 436.44"
+      }
+    },
+    {
+      "id": "F7_OPPORTUNITY_COST_EQUIVALENCE",
+      "name": "Opportunity mode applies exact same formula, yielding + ₹ 436.44",
+      "passed": true,
+      "details": {
+        "delta": "+ ₹ 436.44"
+      }
+    },
+    {
+      "id": "F8_RANGE_RESULTS",
+      "name": "Price range 2600–2700 yields Lower ₹ -20.00, Point ₹ 470.00, Upper ₹ 960.00",
+      "passed": true,
+      "details": {
+        "boxVis": "block",
+        "bounds": "₹ 2600 – ₹ 2700",
+        "minG": "₹ -20.00",
+        "maxG": "₹ 960.00",
+        "pointG": "₹ 470.00"
+      }
+    },
+    {
+      "id": "F9_TRANSACTION_FEES_DOM",
+      "name": "Fees 10/20 yield Gross ₹ 25,000.00, Net ₹ 24,900.00, Hold ₹ 25,274.00, Delta + ₹ 374.00",
+      "passed": true,
+      "details": {
+        "gross": "₹ 25,000.00",
+        "net": "₹ 24,900.00",
+        "hold": "₹ 25,274.00",
+        "delta": "+ ₹ 374.00"
+      }
+    },
+    {
+      "id": "F10_BLANK_COST_DISCLOSURE",
+      "name": "Blank storage cost yields Net ₹ 24,900.00, Hold/Delta/BE \"Unavailable (Missing Cost)\", disclosures visible",
+      "passed": true,
+      "details": {
+        "net": "₹ 24,900.00",
+        "hold": "Unavailable (Missing Cost)",
+        "delta": "Unavailable (Missing Cost)",
+        "be": "Unavailable",
+        "discVis": "block"
+      }
+    },
+    {
+      "id": "F11_INPUT_CHANGE_INVALIDATION",
+      "name": "Changing input activates stale banner and disables export receipt button",
+      "passed": true,
+      "details": {
+        "staleVis": true,
+        "exportDisabled": true
+      }
+    },
+    {
+      "id": "F12_BENCHMARK_TABLE_EXACT_VALUES",
+      "name": "Scorecard table renders Naive (MAE 106.96, RMSE 298.83), HGB (MAE 109.75, RMSE 281.16), Ridge (MAE 110.32, RMSE 288.56)",
+      "passed": true,
+      "details": [
+        {
+          "model": "Naive Persistence (Baseline)",
+          "mae": "106.96",
+          "rmse": "298.83",
+          "skill": "0.00%",
+          "cov90": "89.95%",
+          "cov95": "94.38%"
+        },
+        {
+          "model": "Histogram Gradient Boosting",
+          "mae": "109.75",
+          "rmse": "281.16",
+          "skill": "-2.61%",
+          "cov90": "90.00%",
+          "cov95": "94.40%"
+        },
+        {
+          "model": "Ridge Regression",
+          "mae": "110.32",
+          "rmse": "288.56",
+          "skill": "-3.15%",
+          "cov90": "90.00%",
+          "cov95": "94.43%"
+        }
+      ]
+    },
+    {
+      "id": "F12_DYNAMIC_NARRATIVE_PARITY",
+      "name": "Narratives show Naive winner (106.96), HGB RMSE (281.16 vs 298.83, 5.91%), and 26,918 total origins",
+      "passed": true,
+      "details": {
+        "rows": [
+          {
+            "model": "Naive Persistence (Baseline)",
+            "mae": "106.96",
+            "rmse": "298.83",
+            "skill": "0.00%",
+            "cov90": "89.95%",
+            "cov95": "94.38%"
+          },
+          {
+            "model": "Histogram Gradient Boosting",
+            "mae": "109.75",
+            "rmse": "281.16",
+            "skill": "-2.61%",
+            "cov90": "90.00%",
+            "cov95": "94.40%"
+          },
+          {
+            "model": "Ridge Regression",
+            "mae": "110.32",
+            "rmse": "288.56",
+            "skill": "-3.15%",
+            "cov90": "90.00%",
+            "cov95": "94.43%"
+          }
+        ],
+        "winner": "Naive Persistence",
+        "winnerDesc": "Achieves lowest MAE (106.96 INR/q). Beating persistence on absolute error remains an open machine learning challenge.",
+        "rmseModel": "Histogram Gradient Boosting",
+        "rmseDesc": "Achieves lower RMSE (281.16 vs 298.83 for Naive Persistence, a 5.91% reduction in quadratic penalty), but persistence remains primary MAE winner.",
+        "regimeDesc": "Severe undercoverage observed in volatile folds: F2 achieved 92.32% (23,490 origins), while F3 (75.94%, 1,413 origins) and F4 (72.26%, 2,015 origins) fell well below 90% target.",
+        "foldNote": "Evaluated across 26,918 total forecast origins across F2–F4 test folds under chronological expanding window."
+      }
+    },
+    {
+      "id": "F13_KEYBOARD_TAB_ARROW_NAVIGATION",
+      "name": "ArrowRight key navigation moves focus and activates adjacent tab (Forecast)",
+      "passed": true,
+      "details": {
+        "activePanel": "panel-forecast",
+        "activeBtn": "tab-forecast"
+      }
+    },
+    {
+      "id": "F14_DESKTOP_VIEWPORT",
+      "name": "Desktop CSS viewport exactly 1280px",
+      "passed": true,
+      "details": {
+        "innerWidth": 1280,
+        "clientWidth": 1280
+      }
+    },
+    {
+      "id": "F14_MOBILE_VIEWPORT_375PX",
+      "name": "Mobile CSS viewport is exactly 375px without horizontal overflow",
+      "passed": true,
+      "details": {
+        "innerWidth": 375,
+        "docWidth": 375,
+        "bodyWidth": 375
+      }
+    }
+  ]
+}

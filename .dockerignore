@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+*.pyc
+__pycache__/
+.pytest_cache/
+brain/
+scratch/
+experiments/kaggle/
+experiments/notebooks/
+data/raw/
+research/
+docs/
+*.md

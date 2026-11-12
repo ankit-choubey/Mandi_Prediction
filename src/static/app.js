@@ -1,6 +1,6 @@
 /**
  * APMC Mandi Intelligence System - Research Interface Application Logic
- * Step 11 Interface (MP-APP-001B)
+ * Release Candidate (MP-RELEASE-001)
  * Pure standard-library browser JavaScript with same-origin Fetch.
  */
 
@@ -20,6 +20,7 @@
     benchmarkData: null,
     lastEconomicsResult: null,
     serverSnapshotTime: null,
+    currentEvaluationRequestId: 0,
   };
 
   // DOM Elements
@@ -67,8 +68,16 @@
     revVarietyGrade: document.getElementById('rev-variety-grade'),
     revDate: document.getElementById('rev-date'),
 
-    // Benchmark Table
+    // Benchmark Scorecard Elements
     benchmarkTbody: document.getElementById('benchmark-tbody'),
+    bmWinnerModel: document.getElementById('bm-winner-model'),
+    bmWinnerDesc: document.getElementById('bm-winner-desc'),
+    bmRmseModel: document.getElementById('bm-rmse-model'),
+    bmRmseDesc: document.getElementById('bm-rmse-desc'),
+    bmRegimeTitle: document.getElementById('bm-regime-title'),
+    bmRegimeDesc: document.getElementById('bm-regime-desc'),
+    bmFoldGrid: document.getElementById('bm-fold-grid'),
+    bmFoldNote: document.getElementById('bm-fold-note'),
 
     // Economics Form
     econForm: document.getElementById('economics-form'),
@@ -78,13 +87,16 @@
     econCalcStatus: document.getElementById('econ-calc-status'),
     staleBanner: document.getElementById('stale-banner'),
     btnExportReceipt: document.getElementById('btn-export-receipt'),
+    econInitialPrompt: document.getElementById('econ-initial-prompt'),
+    econMetricsGrid: document.getElementById('econ-metrics-grid'),
+    econDisclosuresBox: document.getElementById('econ-disclosures-box'),
 
     // Economics inputs
     econQuantity: document.getElementById('econ-quantity'),
     econCurrentPrice: document.getElementById('econ-current-price'),
     econFuturePoint: document.getElementById('econ-future-point'),
-    econFutureMin: document.getElementById('econ-future-min'),
-    econFutureMax: document.getElementById('econ-future-max'),
+    econFutureLower: document.getElementById('econ-future-lower'),
+    econFutureUpper: document.getElementById('econ-future-upper'),
     econHorizon: document.getElementById('econ-horizon'),
     econOriginDate: document.getElementById('econ-origin-date'),
     econOriginStatus: document.getElementById('econ-origin-status'),
@@ -108,6 +120,7 @@
     rangeFutureBounds: document.getElementById('range-future-bounds'),
     rangeGainMin: document.getElementById('range-gain-min'),
     rangeGainMax: document.getElementById('range-gain-max'),
+    rangeGainPoint: document.getElementById('range-gain-point'),
     econDisclosuresList: document.getElementById('econ-disclosures-list'),
   };
 
@@ -120,21 +133,58 @@
     });
   }
 
-  // Utility: Safe Date Diff
-  function computeFreshness(dateStr) {
-    if (!dateStr) return 'Unknown date';
-    try {
-      const obsDate = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now - obsDate;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      if (diffDays < 0) return 'Future date';
-      if (diffDays === 0) return 'Observed today';
-      if (diffDays === 1) return 'Observed 1 day ago';
-      return `Observed ${diffDays} days ago (${dateStr})`;
-    } catch {
-      return dateStr;
+  // Utility: Server-Computed Age Formatter (India Calendar Date)
+  function formatServerAge(ageDays, obsDate) {
+    if (ageDays === null || ageDays === undefined) {
+      return obsDate ? `Observation date: ${obsDate}` : 'Unknown date';
     }
+    const days = Number(ageDays);
+    if (days < 0) return `Future date (${obsDate})`;
+    if (days === 0) return `Observed today (${obsDate})`;
+    if (days === 1) return `Observed 1 day ago (${obsDate})`;
+    return `Observed ${days} days ago (${obsDate})`;
+  }
+
+  // Explicit Validated API-to-View Adapter for Price Series Records
+  function adaptPriceRecord(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+
+    const market = String(raw.market_canonical || raw.market_raw || raw.market || '').trim();
+    const district = String(raw.district || '').trim();
+    const commodity = String(raw.commodity || '').trim();
+    const variety = String(raw.variety || '').trim();
+    const grade = String(raw.grade || '').trim();
+
+    // Check display permission derived dynamically on server
+    const displayPermitted = Boolean(
+      raw.capabilities?.price_display_permitted ?? raw.price_display_permitted
+    );
+
+    const ageDays = typeof raw.age_days === 'number'
+      ? raw.age_days
+      : (raw.freshness?.age_days != null ? Number(raw.freshness.age_days) : null);
+
+    return {
+      series_id: raw.series_id || `${district}_${market}_${commodity}_${variety}_${grade}`,
+      district: district,
+      market: market,
+      market_raw: raw.market_raw || market,
+      market_canonical: raw.market_canonical || market,
+      commodity: commodity,
+      variety: variety,
+      grade: grade,
+      modal_price: raw.modal_price != null ? Number(raw.modal_price) : null,
+      min_price: raw.min_price != null ? Number(raw.min_price) : null,
+      max_price: raw.max_price != null ? Number(raw.max_price) : null,
+      price_unit: raw.price_unit || 'INR/quintal',
+      observation_date: raw.observation_date || '',
+      age_days: ageDays,
+      import_date: raw.import_date || '',
+      source_mode: raw.source_mode || 'FILE_IMPORT',
+      price_display_permitted: displayPermitted,
+      capabilities: raw.capabilities || { price_display_permitted: displayPermitted },
+      status: raw.status || (displayPermitted ? 'ACCEPTED' : 'UNKNOWN_MARKET_REVIEW'),
+    };
   }
 
   // Generic JSON Fetch Helper
@@ -223,23 +273,27 @@
 
       if (catResp.status === 'SUCCESS' && catResp.data) {
         state.catalog = catResp.data;
-        elements.statTotalSeries.textContent = catResp.data.total_series_count ?? 30;
-        elements.statAcceptedSeries.textContent = catResp.data.accepted_series_count ?? 26;
-        elements.statReviewSeries.textContent = catResp.data.review_series_count ?? 4;
+        elements.statTotalSeries.textContent = catResp.data.total_series_count ?? '--';
+        elements.statAcceptedSeries.textContent = catResp.data.accepted_series_count ?? '--';
+        elements.statReviewSeries.textContent = catResp.data.review_series_count ?? '--';
       }
 
       if (priceResp.status === 'SUCCESS' && priceResp.data) {
-        state.allSeries = priceResp.data.series || [];
+        const rawList = priceResp.data.series || [];
+        state.allSeries = rawList.map(adaptPriceRecord).filter(Boolean);
         populateDistrictDropdown();
       }
     } catch (err) {
       console.error('Failed to load catalog:', err);
+      elements.statTotalSeries.textContent = 'Unavailable';
+      elements.statAcceptedSeries.textContent = 'Unavailable';
+      elements.statReviewSeries.textContent = 'Unavailable';
     }
   }
 
   // Populate Dropdowns in Cascade
   function populateDistrictDropdown() {
-    const districts = [...new Set(state.allSeries.map((s) => s.district))].sort();
+    const districts = [...new Set(state.allSeries.map((s) => s.district).filter(Boolean))].sort();
     elements.selDistrict.innerHTML = '<option value="">-- Choose District --</option>';
     districts.forEach((d) => {
       const opt = document.createElement('option');
@@ -280,7 +334,7 @@
     }
 
     const filtered = state.allSeries.filter((s) => s.district === state.selectedDistrict);
-    const markets = [...new Set(filtered.map((s) => s.market))].sort();
+    const markets = [...new Set(filtered.map((s) => s.market).filter(Boolean))].sort();
     markets.forEach((m) => {
       const opt = document.createElement('option');
       opt.value = m;
@@ -312,7 +366,7 @@
     const filtered = state.allSeries.filter(
       (s) => s.district === state.selectedDistrict && s.market === state.selectedMarket
     );
-    const commodities = [...new Set(filtered.map((s) => s.commodity))].sort();
+    const commodities = [...new Set(filtered.map((s) => s.commodity).filter(Boolean))].sort();
     commodities.forEach((c) => {
       const opt = document.createElement('option');
       opt.value = c;
@@ -344,7 +398,7 @@
         s.market === state.selectedMarket &&
         s.commodity === state.selectedCommodity
     );
-    const varieties = [...new Set(filtered.map((s) => s.variety))].sort();
+    const varieties = [...new Set(filtered.map((s) => s.variety).filter(Boolean))].sort();
     varieties.forEach((v) => {
       const opt = document.createElement('option');
       opt.value = v;
@@ -374,7 +428,7 @@
         s.commodity === state.selectedCommodity &&
         s.variety === state.selectedVariety
     );
-    const grades = [...new Set(filtered.map((s) => s.grade))].sort();
+    const grades = [...new Set(filtered.map((s) => s.grade).filter(Boolean))].sort();
     grades.forEach((g) => {
       const opt = document.createElement('option');
       opt.value = g;
@@ -395,6 +449,7 @@
   }
 
   function resetObservationDisplay() {
+    state.latestObservation = null;
     elements.obsEmptyState.style.display = 'block';
     elements.obsVerifiedCard.style.display = 'none';
     elements.obsReviewCard.style.display = 'none';
@@ -419,7 +474,6 @@
     state.latestObservation = match;
     elements.obsEmptyState.style.display = 'none';
 
-    // Check display permission derived dynamically on server
     if (match.price_display_permitted) {
       // Verified Accepted Series Card
       elements.obsReviewCard.style.display = 'none';
@@ -427,13 +481,12 @@
 
       elements.obsSeriesTitle.textContent = `${match.commodity} (${match.variety} - Grade ${match.grade})`;
       elements.obsMarketSubtitle.textContent = `${match.market} APMC, ${match.district} District`;
-      elements.obsModalPrice.textContent = match.modal_price != null ? `₹ ${match.modal_price}` : 'Unavailable';
-
-      elements.obsMinPrice.textContent = match.min_price != null ? `₹ ${match.min_price}` : 'Unavailable';
-      elements.obsMaxPrice.textContent = match.max_price != null ? `₹ ${match.max_price}` : 'Unavailable';
+      elements.obsModalPrice.textContent = match.modal_price != null ? `₹ ${match.modal_price.toFixed(2)}` : 'Unavailable';
+      elements.obsMinPrice.textContent = match.min_price != null ? `₹ ${match.min_price.toFixed(2)}` : 'Unavailable';
+      elements.obsMaxPrice.textContent = match.max_price != null ? `₹ ${match.max_price.toFixed(2)}` : 'Unavailable';
 
       elements.obsDate.textContent = match.observation_date || 'Unknown';
-      elements.obsAge.textContent = computeFreshness(match.observation_date);
+      elements.obsAge.textContent = formatServerAge(match.age_days, match.observation_date);
     } else {
       // Review Preview Card (Price Withheld)
       elements.obsVerifiedCard.style.display = 'none';
@@ -454,6 +507,7 @@
       if (resp.status === 'SUCCESS' && resp.data) {
         state.benchmarkData = resp.data;
         renderBenchmarkTable(resp.data.model_performance_summary || []);
+        renderBenchmarkNarratives(resp.data);
       }
     } catch (err) {
       console.error('Failed to load benchmarks:', err);
@@ -464,6 +518,9 @@
           </td>
         </tr>
       `;
+      elements.bmWinnerModel.textContent = 'Unavailable';
+      elements.bmRmseModel.textContent = 'Unavailable';
+      elements.bmFoldNote.textContent = 'Benchmark dataset currently unavailable.';
     }
   }
 
@@ -492,7 +549,9 @@
 
       const statusBadge = r.model === 'naive_persistence'
         ? '<span class="badge badge-success">MAE Winner</span>'
-        : '<span class="badge badge-info">Challenger</span>';
+        : (r.status === 'NON_WINNING_MAE_BEST_RMSE'
+          ? '<span class="badge badge-info">Lowest RMSE</span>'
+          : '<span class="badge badge-info">Challenger</span>');
 
       tr.innerHTML = `
         <th scope="row">${modelDisplayName}</th>
@@ -507,16 +566,91 @@
     });
   }
 
+  function renderBenchmarkNarratives(data) {
+    const summary = data.model_performance_summary || [];
+    const naive = summary.find((m) => m.model === 'naive_persistence');
+    const hgb = summary.find((m) => m.model === 'hist_gradient_boosting');
+    const breakdown = data.fold_level_breakdown_naive_90 || {};
+    const scope = data.metric_denominators?.interval_metrics_scope || {};
+
+    // 1. Primary Winner
+    if (naive) {
+      elements.bmWinnerModel.textContent = 'Naive Persistence';
+      elements.bmWinnerDesc.textContent = `Achieves lowest MAE (${Number(naive.mae).toFixed(2)} INR/q). Beating persistence on absolute error remains an open machine learning challenge.`;
+    }
+
+    // 2. RMSE Comparison
+    if (hgb && naive) {
+      elements.bmRmseModel.textContent = 'Histogram Gradient Boosting';
+      const pct = hgb.rmse_improvement_vs_persistence_pct != null
+        ? Number(hgb.rmse_improvement_vs_persistence_pct).toFixed(2)
+        : (100 * (naive.rmse - hgb.rmse) / naive.rmse).toFixed(2);
+      elements.bmRmseDesc.textContent = `Achieves lower RMSE (${Number(hgb.rmse).toFixed(2)} vs ${Number(naive.rmse).toFixed(2)} for Naive Persistence, a ${pct}% reduction in quadratic penalty), but persistence remains primary MAE winner.`;
+    }
+
+    // 3. Regime Generalization Gap
+    const f2 = breakdown.F2;
+    const f3 = breakdown.F3;
+    const f4 = breakdown.F4;
+    elements.bmRegimeTitle.textContent = 'Regime Generalization Gap';
+    if (f2 && f3 && f4) {
+      elements.bmRegimeDesc.textContent = `Severe undercoverage observed in volatile folds: F2 achieved ${Number(f2.coverage_pct).toFixed(2)}% (${Number(f2.issued_count).toLocaleString()} origins), while F3 (${Number(f3.coverage_pct).toFixed(2)}%, ${Number(f3.issued_count).toLocaleString()} origins) and F4 (${Number(f4.coverage_pct).toFixed(2)}%, ${Number(f4.issued_count).toLocaleString()} origins) fell well below 90% target.`;
+    }
+
+    // 4. Fold Cards
+    if (elements.bmFoldGrid && (f2 || f3 || f4)) {
+      elements.bmFoldGrid.innerHTML = '';
+      const folds = [
+        { id: 'F2', label: 'Fold F2 (Calm)', data: f2, border: 'var(--color-brand-primary)' },
+        { id: 'F3', label: 'Fold F3 (Volatile)', data: f3, border: 'var(--color-alert-danger)' },
+        { id: 'F4', label: 'Fold F4 (Crisis)', data: f4, border: 'var(--color-alert-danger)' },
+      ];
+
+      folds.forEach((f) => {
+        if (!f.data) return;
+        const box = document.createElement('div');
+        box.className = 'stat-box';
+        box.style.borderLeft = `4px solid ${f.border}`;
+        const cov = Number(f.data.coverage_pct).toFixed(2);
+        const count = Number(f.data.issued_count).toLocaleString();
+        box.innerHTML = `
+          <div class="stat-label">${f.label}</div>
+          <div style="font-size: 1.25rem; font-weight: 700;">${cov}%</div>
+          <div class="stat-desc">
+            ${count} origins (90% target). Mean width: ${Number(f.data.mean_width).toFixed(1)} INR/q.
+          </div>
+        `;
+        elements.bmFoldGrid.appendChild(box);
+      });
+    }
+
+    // 5. Total Fold Note
+    const totalIssued = scope.total_issued_origins || (
+      (f2 ? f2.issued_count : 0) + (f3 ? f3.issued_count : 0) + (f4 ? f4.issued_count : 0)
+    );
+    if (totalIssued) {
+      elements.bmFoldNote.textContent = `Evaluated across ${Number(totalIssued).toLocaleString()} total forecast origins across F2–F4 test folds under chronological expanding window.`;
+    }
+  }
+
   // Pre-fill Price from Verified Card into Calculator
   function usePriceInCalculator() {
     if (!state.latestObservation || !state.latestObservation.price_display_permitted) return;
 
+    // Transfer ONLY permitted observed current price, date, and provenance
     elements.econCurrentPrice.value = state.latestObservation.modal_price;
     if (state.latestObservation.observation_date) {
       elements.econOriginDate.value = state.latestObservation.observation_date;
     }
-    // Set future point assumption default (+ ₹150 over current)
-    elements.econFuturePoint.value = Number(state.latestObservation.modal_price) + 150;
+    elements.econOriginStatus.value = 'OBSERVED_PRICE_TRANSFER';
+
+    // Future prices and costs remain UNKNOWN / BLANK (no +150 assumption!)
+    elements.econFuturePoint.value = '';
+    elements.econFutureLower.value = '';
+    elements.econFutureUpper.value = '';
+
+    // Invalidate any active calculation
+    invalidateResults();
 
     // Switch to Economics tab
     const econTabBtn = document.getElementById('tab-economics');
@@ -524,42 +658,23 @@
       switchTab(econTabBtn);
       econTabBtn.focus();
     }
+  }
+
+  // Invalidate Results State on Input Modification
+  function invalidateResults() {
     elements.staleBanner.classList.add('visible');
+    elements.btnExportReceipt.disabled = true;
+    state.lastEconomicsResult = null;
   }
 
-  // Preset Buttons Handling
-  function loadPresetFixture() {
-    elements.econQuantity.value = 10;
-    elements.econCurrentPrice.value = 2500;
-    elements.econFuturePoint.value = 2650;
-    elements.econFutureMin.value = '';
-    elements.econFutureMax.value = '';
-    elements.econHorizon.value = 7;
-    elements.econOriginDate.value = '2026-11-13';
-    elements.econOriginStatus.value = 'USER_ENTERED';
-
-    elements.econStorageCost.value = 50;
-    elements.econHandlingCost.value = 0;
-    elements.econTransportCost.value = 0;
-    elements.econTransNow.value = 0;
-    elements.econTransLater.value = 0;
-
-    elements.econLossPct.value = 2.0;
-    elements.econMarkdownPct.value = 0.0;
-    elements.econAnnualRate.value = 0.0;
-    elements.econCarryingType.value = 'none';
-
-    elements.staleBanner.classList.remove('visible');
-    submitEconomicsForm();
-  }
-
+  // Clear Form completely
   function clearPresetForm() {
     elements.econForm.reset();
     elements.econQuantity.value = '';
     elements.econCurrentPrice.value = '';
     elements.econFuturePoint.value = '';
-    elements.econFutureMin.value = '';
-    elements.econFutureMax.value = '';
+    elements.econFutureLower.value = '';
+    elements.econFutureUpper.value = '';
     elements.econStorageCost.value = '';
     elements.econHandlingCost.value = '';
     elements.econTransportCost.value = '';
@@ -568,15 +683,46 @@
     elements.econLossPct.value = '';
     elements.econMarkdownPct.value = '';
     elements.econAnnualRate.value = '';
+    elements.econCarryingType.value = 'none';
+    elements.econOriginDate.value = '';
+    elements.econOriginStatus.value = 'USER_ENTERED';
 
     elements.staleBanner.classList.remove('visible');
-    elements.resGrossProceeds.textContent = 'Unavailable';
-    elements.resNetProceeds.textContent = 'Unavailable';
-    elements.resHoldingProceeds.textContent = 'Unavailable';
-    elements.resDeltaR.textContent = 'Unavailable';
-    elements.resDeltaR.className = 'result-metric-val';
-    elements.resBreakeven.textContent = 'Unavailable';
+    elements.btnExportReceipt.disabled = true;
+    elements.econCalcStatus.textContent = '';
+    state.lastEconomicsResult = null;
+
+    // Show initial prompt, hide metrics
+    elements.econInitialPrompt.style.display = 'block';
+    elements.econMetricsGrid.style.display = 'none';
     elements.rangeResultsBox.style.display = 'none';
+    elements.econDisclosuresBox.style.display = 'none';
+  }
+
+  // Load Reference Mathematical Fixture (+470 INR)
+  function loadPresetFixture() {
+    elements.econQuantity.value = '10';
+    elements.econCurrentPrice.value = '2500';
+    elements.econFuturePoint.value = '2650';
+    elements.econFutureLower.value = '';
+    elements.econFutureUpper.value = '';
+    elements.econHorizon.value = '7';
+    elements.econOriginDate.value = '2026-11-13';
+    elements.econOriginStatus.value = 'TEST_FIXTURE';
+
+    elements.econStorageCost.value = '50';
+    elements.econHandlingCost.value = '0';
+    elements.econTransportCost.value = '0';
+    elements.econTransNow.value = '0';
+    elements.econTransLater.value = '0';
+
+    elements.econLossPct.value = '2.0';
+    elements.econMarkdownPct.value = '0.0';
+    elements.econAnnualRate.value = '0.0';
+    elements.econCarryingType.value = 'none';
+
+    elements.staleBanner.classList.remove('visible');
+    submitEconomicsForm();
   }
 
   // Evaluate Economics via POST /api/v1/economics/evaluate
@@ -596,11 +742,11 @@
     const futurePoint = elements.econFuturePoint.value.trim() !== ''
       ? parseFloat(elements.econFuturePoint.value)
       : null;
-    const futureMin = elements.econFutureMin.value.trim() !== ''
-      ? parseFloat(elements.econFutureMin.value)
+    const futureLower = elements.econFutureLower.value.trim() !== ''
+      ? parseFloat(elements.econFutureLower.value)
       : null;
-    const futureMax = elements.econFutureMax.value.trim() !== ''
-      ? parseFloat(elements.econFutureMax.value)
+    const futureUpper = elements.econFutureUpper.value.trim() !== ''
+      ? parseFloat(elements.econFutureUpper.value)
       : null;
     const horizon = parseInt(elements.econHorizon.value || '7', 10);
 
@@ -639,13 +785,17 @@
       quantity_quintals: quantity,
       current_price: currentPrice,
       future_price_point: futurePoint,
-      future_price_min: futureMin,
-      future_price_max: futureMax,
+      future_price_lower: futureLower,
+      future_price_upper: futureUpper,
       holding_period_days: horizon,
       origin_date: elements.econOriginDate.value || '2026-11-13',
       origin_provenance_status: elements.econOriginStatus.value || 'USER_ENTERED',
       params: params,
     };
+
+    // Request tokening: avoid out-of-order race conditions
+    state.currentEvaluationRequestId += 1;
+    const thisRequestId = state.currentEvaluationRequestId;
 
     elements.econCalcStatus.textContent = 'Calculating...';
     elements.econCalcStatus.style.color = 'var(--color-text-secondary)';
@@ -658,22 +808,35 @@
         body: JSON.stringify(payload),
       });
 
+      // Ignore response if a newer request was dispatched
+      if (thisRequestId !== state.currentEvaluationRequestId) {
+        return;
+      }
+
       if (resp.status === 'SUCCESS' && resp.data) {
         state.lastEconomicsResult = { request: payload, response: resp.data };
         renderEconomicsResult(resp.data);
         elements.econCalcStatus.textContent = 'Calculation complete.';
         elements.econCalcStatus.style.color = 'var(--color-brand-primary)';
         elements.staleBanner.classList.remove('visible');
+        elements.btnExportReceipt.disabled = false;
       }
     } catch (err) {
+      if (thisRequestId !== state.currentEvaluationRequestId) return;
       elements.econCalcStatus.textContent = `Error: ${err.message}`;
       elements.econCalcStatus.style.color = 'var(--color-alert-danger)';
     } finally {
-      elements.btnCalcSubmit.disabled = false;
+      if (thisRequestId === state.currentEvaluationRequestId) {
+        elements.btnCalcSubmit.disabled = false;
+      }
     }
   }
 
   function renderEconomicsResult(data) {
+    // Show metrics, hide initial prompt
+    elements.econInitialPrompt.style.display = 'none';
+    elements.econMetricsGrid.style.display = 'grid';
+
     // Gross proceeds
     elements.resGrossProceeds.textContent = formatINR(data.r_sell_gross);
 
@@ -685,14 +848,23 @@
     }
 
     // Holding proceeds
-    const holdVal = data.r_hold_point_net !== undefined && data.r_hold_point_net !== null ? data.r_hold_point_net : data.r_hold;
-    elements.resHoldingProceeds.textContent = formatINR(holdVal);
+    const holdVal = data.r_hold_point_net !== undefined && data.r_hold_point_net !== null
+      ? data.r_hold_point_net
+      : data.r_hold;
+    if (holdVal !== null && holdVal !== undefined) {
+      elements.resHoldingProceeds.textContent = formatINR(holdVal);
+    } else {
+      elements.resHoldingProceeds.textContent = 'Unavailable (Missing Cost)';
+    }
 
     // Delta R (Net Incremental Gain)
     if (data.delta_r_point !== null && data.delta_r_point !== undefined) {
       const val = data.delta_r_point;
       const prefix = val >= 0 ? '+ ' : '- ';
-      elements.resDeltaR.textContent = `${prefix}₹ ${Math.abs(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elements.resDeltaR.textContent = `${prefix}₹ ${Math.abs(val).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
       elements.resDeltaR.className = `result-metric-val ${val >= 0 ? 'positive' : 'negative'}`;
     } else {
       elements.resDeltaR.textContent = 'Unavailable (Missing Cost)';
@@ -703,23 +875,42 @@
     elements.resBreakeven.textContent = formatINR(data.p_break_even);
 
     // Range results
-    if (data.delta_r_min != null && data.delta_r_max != null) {
+    const rLower = data.delta_r_lower != null ? data.delta_r_lower : data.delta_r_min;
+    const rUpper = data.delta_r_upper != null ? data.delta_r_upper : data.delta_r_max;
+    const req = state.lastEconomicsResult?.request || data.request || {};
+    const pLower = req.future_price_lower != null ? req.future_price_lower : req.future_price_min;
+    const pUpper = req.future_price_upper != null ? req.future_price_upper : req.future_price_max;
+
+    if (rLower != null && rUpper != null && pLower != null && pUpper != null) {
       elements.rangeResultsBox.style.display = 'block';
-      elements.rangeFutureBounds.textContent = `₹ ${data.request?.future_price_min} &ndash; ₹ ${data.request?.future_price_max}`;
-      elements.rangeGainMin.textContent = `₹ ${Number(data.delta_r_min).toFixed(2)}`;
-      elements.rangeGainMax.textContent = `₹ ${Number(data.delta_r_max).toFixed(2)}`;
+      elements.rangeFutureBounds.textContent = `₹ ${pLower} – ₹ ${pUpper}`;
+      elements.rangeGainMin.textContent = `₹ ${Number(rLower).toFixed(2)}`;
+      elements.rangeGainMax.textContent = `₹ ${Number(rUpper).toFixed(2)}`;
+      if (elements.rangeGainPoint && data.delta_r_point != null) {
+        elements.rangeGainPoint.textContent = `₹ ${Number(data.delta_r_point).toFixed(2)}`;
+      }
     } else {
       elements.rangeResultsBox.style.display = 'none';
     }
 
     // Disclosures list
     elements.econDisclosuresList.innerHTML = '';
-    const disclosures = data.disclosures || [];
-    disclosures.forEach((disc) => {
-      const li = document.createElement('li');
-      li.textContent = disc;
-      elements.econDisclosuresList.appendChild(li);
-    });
+    const disclosures = [];
+    if (data.disclaimer) disclosures.push(data.disclaimer);
+    if (Array.isArray(data.gate_reasons)) disclosures.push(...data.gate_reasons);
+    if (Array.isArray(data.missing_cost_inputs) && data.missing_cost_inputs.length > 0) {
+      disclosures.push(`Missing parameters: ${data.missing_cost_inputs.join(', ')}`);
+    }
+    if (disclosures.length > 0) {
+      elements.econDisclosuresBox.style.display = 'block';
+      disclosures.forEach((disc) => {
+        const li = document.createElement('li');
+        li.textContent = disc;
+        elements.econDisclosuresList.appendChild(li);
+      });
+    } else {
+      elements.econDisclosuresBox.style.display = 'none';
+    }
   }
 
   // Download Research Economic Receipt as JSON
@@ -733,7 +924,7 @@
       receipt_id: 'REC-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
       generated_at_utc: new Date().toISOString(),
       system_name: 'APMC Mandi Intelligence System',
-      software_version: 'Step 11 Interface (MP-APP-001B)',
+      software_version: 'Release Candidate (MP-RELEASE-001)',
       advisory_status: 'BLOCKED',
       provenance_mode: state.lastEconomicsResult.request.origin_provenance_status,
       evaluation: state.lastEconomicsResult,
@@ -781,7 +972,10 @@
     elements.econForm.addEventListener('submit', submitEconomicsForm);
     elements.econForm.querySelectorAll('input, select').forEach((inp) => {
       inp.addEventListener('input', () => {
-        elements.staleBanner.classList.add('visible');
+        invalidateResults();
+      });
+      inp.addEventListener('change', () => {
+        invalidateResults();
       });
     });
 
@@ -792,11 +986,11 @@
   // Application Entry Point
   async function init() {
     attachEvents();
+    // Disable receipt export on initial load
+    elements.btnExportReceipt.disabled = true;
     await loadSystemHealth();
     await loadCatalog();
     await loadBenchmarks();
-    // Pre-load +470 fixture on initial page load for instant demonstration
-    loadPresetFixture();
   }
 
   // Run on DOM ready

@@ -114,8 +114,8 @@ The service strictly adheres to the official **India Date Policy**:
 - **Route:** `GET /api/v1/models/benchmark`
 - **Verified Facts Disclosed:**
   - Naive persistence baseline MAE `106.96` (verified `106.955369`) beats HistGradientBoosting (`109.75`) and Ridge (`110.32`).
-  - HistGradientBoosting improves RMSE by `5.91%` (`264.45` vs `275.69` INR/quintal) but does not win primary MAE.
-  - Overall 90% empirical coverage is `89.94%`, but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
+  - HistGradientBoosting improves RMSE by `5.91%` (`281.16` vs `298.83` INR/quintal, reducing large-error variance penalties) but does not win primary MAE.
+  - Overall 90% empirical coverage is `89.95%`, but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
   - Denominators are strictly separated: point metrics cover 64,776 origins across 401 series in F1–F4; interval evaluation covers 26,918 issued origins across 365 series in F2–F4 (F1 abstained due to strict chronological inner calibration requiring prior residuals).
 
 ### 4.6 Forecast Gating
@@ -125,7 +125,9 @@ The service strictly adheres to the official **India Date Policy**:
 
 ### 4.7 Research Economics Evaluation
 - **Route:** `POST /api/v1/economics/evaluate`
-- **Request Body:** `ResearchEconomicRequest` payload (quantity, spot price, optional interval bounds, holding period, and optional `params`).
+- **Request Body:** `ResearchEconomicRequest` payload (quantity, spot price, optional interval bounds `future_price_lower`/`future_price_upper` or aliases `future_price_min`/`future_price_max`, holding period, and optional `params`).
+- **Approved Carrying Cost Modes:** `'none'`, `'financing'`, `'opportunity'` with simple annual rate convention ($r \times T / 365$). Note: `simple_interest` and `compound_interest` are rejected.
+- **Cost Bases:** Now transaction fee labeled per initial quintal ($t_n$), later transaction fee per remaining quintal ($t_l$), storage/handling/incremental transport per initial quintal.
 - **Behaviors:**
   - If `params` is omitted or empty: Returns incomplete holding proceeds (`r_hold = null`, `gain = null`, `p_break_even = null`), `break_even_relation: "INCOMPLETE_PARAMETERS"`, `r_sell_net = null` (immediate transaction fee unknown), `r_sell_gross = Q * p0`, and explicit `missing_cost_inputs`.
   - If partial cost object is provided: Requires all 10 explicit cost components for holding comparison; missing fields produce `INCOMPLETE_PARAMETERS` with null dependent proceeds/gains rather than auto-filling with zero.
@@ -133,12 +135,13 @@ The service strictly adheres to the official **India Date Policy**:
   - Strict provenance validation: Rejects mismatched units (e.g. `INR/tonne` raises HTTP 400 with `INVALID_ECONOMIC_PARAMETERS`) and invalid provenance statuses (e.g. `NOT_A_VALID_STATUS`).
   - Strict finite number parsing: Exponent overflows like `1e999` are rejected at the JSON boundary with HTTP 400 (`NON_FINITE_NUMERIC_INPUT`).
 
-### 4.8 Research Web Interface & Static Assets (MP-APP-001B)
+### 4.8 Research Web Interface & Release Candidate (MP-RELEASE-001)
 - **Routes:**
   - `GET /` or `GET /index.html`: Serves accessible, responsive research interface (`text/html`).
   - `GET /static/*`: Serves static assets (`styles.css`, `app.js`, `favicon.svg`) with strict path traversal checking (HTTP 403 on traversal attempts) and 5 MB size limit.
-- **Visual Design:** Calm agricultural aesthetic (off-white surface, dark high-contrast text, restrained green accents, responsive tables, accessible focus rings, touch targets $\ge 44$px).
-- **Exact Numeric Parity:** DOM displays verified scalar metrics directly loaded from `/api/v1/models/benchmark`, `/api/v1/catalog`, `/api/v1/prices/latest`, and `/api/v1/economics/evaluate`.
+- **Defensive Adapter:** Series mapping uses `adaptPriceRecord` reading `market_canonical`, `market_raw`, and nested capabilities.
+- **India-Calendar Age:** Synchronized observation freshness to server `age_days` (IST timezone $\text{UTC}+05:30$).
+- **Verified Parity:** Real browser CDP suite (`test_interactive_browser_flows.js`) verifies 21/21 flows, including true CSS mobile viewport (375px) without horizontal overflow.
 
 ---
 

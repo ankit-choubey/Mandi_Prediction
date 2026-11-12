@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "task": "MP-RELEASE-001",
+  "executed_at_utc": "2026-11-12T22:43:00.000000+00:00",
+  "test_runner": "pytest 9.1.1 on Python 3.14.0 (macOS Darwin 24.3)",
+  "reconciliation": {
+    "prior_baseline_tests_count": 369,
+    "prior_backing_tests_count": 45,
+    "prior_total_passes": 414,
+    "new_integration_release_tests": 6,
+    "current_tests_count": 375,
+    "current_backing_tests_count": 45,
+    "current_total_passes": 420,
+    "total_failed": 0,
+    "total_skipped": 0,
+    "numerical_warnings": 18,
+    "warning_classification": "RuntimeWarning: invalid value/divide by zero in sklearn extmath matmul during retrospective benchmark matrix multiplication (documented historical behavior)"
+  },
+  "subsuites": {
+    "tests_directory": {
+      "path": "tests/",
+      "passed": 375,
+      "failed": 0,
+      "duration_seconds": 10.63
+    },
+    "backing_directory": {
+      "path": "backing/",
+      "passed": 45,
+      "failed": 0,
+      "duration_seconds": 5.28
+    },
+    "review_gates": {
+      "script": "experiments/reviews/check_app001a_review_gates.py",
+      "passed": 29,
+      "total": 29,
+      "failed": 0
+    },
+    "browser_interaction_flows": {
+      "script": "experiments/reviews/test_interactive_browser_flows.js",
+      "passed": 21,
+      "total": 21,
+      "failed": 0
+    }
+  }
+}

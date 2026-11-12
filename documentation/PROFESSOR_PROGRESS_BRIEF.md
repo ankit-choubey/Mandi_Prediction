@@ -1,6 +1,6 @@
 # Mandi Prediction — research progress, 13 November 2026
 
-**Ready for a research progress presentation, with explicit limitations. A completed live farmer advisory or proven profitable storage system has not been established.**
+**Verified research tables and API results are ready for a progress discussion. The interactive demonstration still needs functional repairs. Live farmer advice and observed profitability are not established.**
 
 ## What the project is building
 
@@ -13,8 +13,8 @@ The legacy validated benchmark panel contains 463,217 observations across 1,167 
 - Data ingestion, provenance, alias review, conflict handling, freshness and feature eligibility policies, with remaining operational review gates recorded.
 - A price-only forecasting benchmark using chronological folds, calendar lag and historical window features, four simple baselines, Ridge and histogram gradient boosting. Ridge tests a regularized linear relationship; boosting tests nonlinear tabular relationships. Neither was assumed superior in advance.
 - An immutable archive of 64,776 forecast origins across 401 series. Overall results include benchmark commodities beyond the six focus crops. Target matching is approximately seven calendar days, with the declared six-to-eight-day tolerance. These already-inspected folds are development evidence, not a new untouched final test.
-- Empirical prediction intervals calibrated only from matured earlier-fold residuals, with explicit no-calibration abstention for the first fold. Saved-level JSON lookup and manifest self-exclusion are repaired. Envelope identity/time/quantile validation remains incomplete under adversarial checks.
-- Cost-aware research economics accounting reconciled with exact algebraic equivalence ($R_{\text{hold}} - R_{\text{sell}} \equiv Q \cdot \delta$ and $\delta(p_{\text{break-even}}) \equiv 0$). Monotonic affine transformation propagates price intervals to holding benefit bounds. Research economics returns `RESEARCH_ONLY` / `ADVICE_BLOCKED`; source-record capability forwarding in the backend still needs correction.
+- Empirical prediction intervals calibrated only from matured earlier-fold residuals, with explicit no-calibration abstention for the first fold. Saved-level JSON lookup and manifest self-exclusion are repaired. Reviewed saved-artifact payload checks pass; unsafe full local generation is blocked by default.
+- Cost-aware research economics accounting reconciled with exact algebraic equivalence ($R_{\text{hold}} - R_{\text{sell}} \equiv Q \cdot \delta$ and $\delta(p_{\text{break-even}}) \equiv 0$). Monotonic affine transformation propagates price intervals to holding benefit bounds. Research economics returns `RESEARCH_ONLY` / `ADVICE_BLOCKED`; the backend now preserves26accepted versus4review display decisions. The client mapping still needs repair.
 - Audit of the local directory of 22 UP facilities: 0/22 rate amounts are recorded and all quotations are marked Not received. Empirical policy backtest is honestly designated `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`, avoiding fabricated profit claims. Zero synthetic operational data generated.
 
 ## Results to show
@@ -45,23 +45,12 @@ Independent review reproduced 246 calibration quantiles and 24 model/level/fold-
 
 ## What remains
 
-The numerical backend repair and responsive research interface are independently verified:
-- **Three Boundary Closures Accepted:**
-  1. Real source index dynamically derives 26 accepted eligible series (`price_display_permitted: true`) and isolates 4 unapproved market review series (`price_display_permitted: false`) into an amber review preview with withheld prices.
-  2. Strict provenance validation rejects unsupported units (e.g. `INR/tonne`), invalid statuses (e.g. `NOT_A_VALID_STATUS`), and overflowing exponents (`1e999`) with HTTP 400. Missing costs leave dependent fields null while preserving explicit-zero inputs.
-  3. Historical full generator pipeline raises `PermissionError: LOCAL_FULL_GENERATION_BLOCKED` before any stream decoding or I/O when unauthorized.
-- **Step 11 Research Interface Delivered:**
-  - Accessible, responsive UI built with pure standard-library vanilla JavaScript and CSS, adhering to calm agricultural aesthetics.
-  - Verified across desktop (`1280x800`) and mobile (`375x667`) viewports using real Google Chrome headless automation. Screenshots saved in `experiments/reports/APP001B/screenshot_desktop_1280x800.png` and `experiments/reports/APP001B/screenshot_mobile_375x667.png`.
-  - 100% exact scalar and formatted numeric parity confirmed between source CSVs, API envelopes, and rendered DOM elements (catalog inventory 30/26/4, MAE 106.96, RMSE 275.69, F2 92.32%, F3 75.94%, F4 72.26%, economics gross ₹25,000, holding ₹25,470, net gain +₹470.00, break-even ₹2,602.04).
-- **Execution & Test Status:**
-  - Original 29 executable review gates: **29/29 passed, exit 0**.
-  - New boundary and parity verification: **41/41 checks passed, exit 0**.
-  - Full test suite: **414 passed** (369 in `tests/` + 45 in `backing/`, 0 failures, 18 numerical runtime warnings).
-  - Measured latencies: Full Python process startup `73.36 ms`; warm in-process WSGI handler execution `0.20`–`0.56 ms`.
-- **Milestone Accounting:**
-  - Steps 8, 9, 10, and 11 are completed and verified.
-  - Exactly **2 main milestones remain**: Step 12 (Integration & Production Deployment Architecture) and Step 13 (Forward Prospective Validation & Usability Trial).
-  - **2 optional ablations remain**: Arrivals Ablation and Weather Ablation.
+Steps 8–10 are accepted for bounded research with recorded limitations. Step 11 interface repairs and interactive flows have now been fully completed and verified via Chrome DevTools Protocol automation (21/21 flows passing, true 375px mobile and 1280px desktop screenshots, zero unsolicited evaluation, exact scalar parity).
 
-The local quotation directory records 0/22 received rates. Commercial profitability and forward reliability remain research debt to be addressed in prospective trials. Future operational forecasts must be logged before outcomes; synthetic operational or scenario data requires prior proposal and approval. See `experiments/reports/APP001B/output_manifest.json` for verified evidence hashes.
+A concrete local research release candidate has been integrated (`src/run_release_service.py`, `documentation/RELEASE_RUNBOOK.md`, and `tests/test_integration_release.py`). Multi-stage Docker packaging configuration is provided; packaging runtime execution is marked `NOT_RUN (Docker daemon not running locally)` so deployment acceptance remains open pending host/container infrastructure decision.
+
+There are **2 main milestones left: Step 12 (deployment target & container authorization) and Step 13 (prospective forward validation & usability trial)**, plus 2 optional arrivals/weather ablations.
+
+The full test suite stands at **420 passing tests** (375 in `tests/`, 45 in `backing/`, 0 failed, 18 numerical runtime warnings in historical benchmark matrix math), and all 29 original review gates pass.
+
+The local facility directory still has 0/22 received quotations. Prospective outcomes must be observed after immutable predictions, and new synthetic operational/scenario data needs prior proposal and explicit approval. Model undercoverage causes and warning mechanisms remain unresolved. See `RELEASE_RUNBOOK.md`, `MODEL_AND_MATH_VALIDATION.md`, and `experiments/reports/RELEASE001/` for current evidence.

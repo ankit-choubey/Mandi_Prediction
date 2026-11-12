@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "tested_at_utc": "2026-11-12T22:36:42.468Z",
+  "parity_checks": [
+    {
+      "claim": "Total series count",
+      "source": 30,
+      "api": 30,
+      "dom": 30,
+      "matched": true
+    },
+    {
+      "claim": "Accepted series count",
+      "source": 26,
+      "api": 26,
+      "dom": 26,
+      "matched": true
+    },
+    {
+      "claim": "Review series count",
+      "source": 4,
+      "api": 4,
+      "dom": 4,
+      "matched": true
+    },
+    {
+      "claim": "Naive Persistence MAE",
+      "source": 106.9553697,
+      "api": 106.96,
+      "dom": "106.96",
+      "matched": true
+    },
+    {
+      "claim": "Naive Persistence RMSE",
+      "source": 298.833664,
+      "api": 298.83,
+      "dom": "298.83",
+      "matched": true
+    },
+    {
+      "claim": "HGB MAE",
+      "source": 109.7489258,
+      "api": 109.75,
+      "dom": "109.75",
+      "matched": true
+    },
+    {
+      "claim": "HGB RMSE",
+      "source": 281.1581429,
+      "api": 281.16,
+      "dom": "281.16",
+      "matched": true
+    },
+    {
+      "claim": "HGB RMSE Reduction",
+      "source": "5.9148%",
+      "api": "5.91%",
+      "dom": "5.91%",
+      "matched": true
+    },
+    {
+      "claim": "F2 90% Coverage",
+      "source": "92.3159%",
+      "api": "92.32%",
+      "dom": "92.32%",
+      "matched": true
+    },
+    {
+      "claim": "F3 90% Coverage",
+      "source": "75.9377%",
+      "api": "75.94%",
+      "dom": "75.94%",
+      "matched": true
+    },
+    {
+      "claim": "F4 90% Coverage",
+      "source": "72.2581%",
+      "api": "72.26%",
+      "dom": "72.26%",
+      "matched": true
+    },
+    {
+      "claim": "Total Issued Origins",
+      "source": 26918,
+      "api": 26918,
+      "dom": "26,918",
+      "matched": true
+    }
+  ]
+}

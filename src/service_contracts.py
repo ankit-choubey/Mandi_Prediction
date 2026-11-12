@@ -168,7 +168,10 @@ class PriceSeriesRecord:
         return bool(self.capabilities.get("price_display_permitted", False))
 
     def to_dict(self) -> Dict[str, Any]:
-        return asdict(self)
+        d = asdict(self)
+        d["price_display_permitted"] = self.price_display_permitted
+        d["market"] = self.market_canonical
+        return d
 
 
 @dataclass

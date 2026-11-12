@@ -1,0 +1,66 @@
+{
+  "release_version": "1.0.0-rc1",
+  "task": "MP-RELEASE-001",
+  "generated_at_utc": "2026-11-12T22:41:00.000000+00:00",
+  "system_identity": "APMC Mandi Intelligence System",
+  "runtime_environment": {
+    "python_version": "3.14.0",
+    "node_version": "25.2.1",
+    "chrome_version": "131.0.6778.86",
+    "operating_system": "macOS 15.3 (Darwin 24.3)",
+    "docker_cli_version": "29.6.1",
+    "docker_daemon_status": "INACTIVE"
+  },
+  "capabilities": {
+    "prices": {
+      "status": "AVAILABLE",
+      "total_series": 30,
+      "accepted_series": 26,
+      "review_series": 4,
+      "source_index_file": "data/imported_snapshots/latest_observation_index.json",
+      "sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11"
+    },
+    "benchmarks": {
+      "status": "AVAILABLE",
+      "primary_model": "naive_persistence",
+      "naive_mae": 106.9553697,
+      "naive_rmse": 298.8336642,
+      "hgb_mae": 109.7489259,
+      "hgb_rmse": 281.1581429,
+      "hgb_rmse_reduction_pct": 5.9148,
+      "total_point_origins": 64776,
+      "total_interval_origins": 26918,
+      "f2_coverage_pct": 92.3159,
+      "f3_coverage_pct": 75.9377,
+      "f4_coverage_pct": 72.2581
+    },
+    "economics": {
+      "status": "RESEARCH_ONLY",
+      "advisory_action": "BLOCKED",
+      "gating_policy": "FAIL_CLOSED",
+      "modes": ["none", "financing", "opportunity"],
+      "convention": "linear_annual_rate_365_days"
+    },
+    "forecast": {
+      "status": "UNAVAILABLE",
+      "reason": "NO_APPROVED_SERVING_MODEL_ARTIFACT: Retrospective temporal fold models (F1-F4) cannot be served as current operational forecasts without approved prospective validation."
+    },
+    "active_advice": {
+      "status": "BLOCKED",
+      "reason": "Advisory action is strictly blocked pending approved prospective validation and live market verification."
+    }
+  },
+  "release_artifacts": {
+    "entrypoint": "src/run_release_service.py",
+    "wsgi_api": "src/api.py",
+    "service_backend": "src/service.py",
+    "economic_model": "src/economic_model.py",
+    "contracts": "src/service_contracts.py",
+    "ui_html": "src/static/index.html",
+    "ui_css": "src/static/styles.css",
+    "ui_js": "src/static/app.js",
+    "dockerfile": "Dockerfile",
+    "dockerignore": ".dockerignore",
+    "runbook": "documentation/RELEASE_RUNBOOK.md"
+  }
+}

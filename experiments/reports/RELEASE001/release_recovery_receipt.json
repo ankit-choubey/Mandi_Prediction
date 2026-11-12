@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "task": "MP-RELEASE-001",
+  "tested_at_utc": "2026-11-12T22:42:00.000000+00:00",
+  "test_driver": "pytest tests/test_integration_release.py",
+  "recovery_cases": [
+    {
+      "case_id": "RECOV_01_HEALTHY_INTEGRATION",
+      "scenario": "Valid source index file present at configured location",
+      "observed_status": "HEALTHY",
+      "series_count": 30,
+      "passed": true
+    },
+    {
+      "case_id": "RECOV_02_MISSING_INDEX_DEGRADED",
+      "scenario": "Source index file missing / non-existent path",
+      "observed_status": "DEGRADED",
+      "path_leakage_prevented": true,
+      "passed": true
+    },
+    {
+      "case_id": "RECOV_03_CORRUPT_JSON_HANDLING",
+      "scenario": "Source index file contains malformed non-JSON bytes",
+      "observed_status": "DEGRADED",
+      "prices_endpoint_status": 503,
+      "crash_prevented": true,
+      "passed": true
+    },
+    {
+      "case_id": "RECOV_04_ATOMIC_SNAPSHOT_RECOVERY",
+      "scenario": "Degraded service reloaded with atomic valid index snapshot",
+      "initial_status": "DEGRADED",
+      "recovered_status": "HEALTHY",
+      "recovered_series_count": 30,
+      "passed": true
+    },
+    {
+      "case_id": "RECOV_05_NON_FINITE_INPUT_REJECTION",
+      "scenario": "Input contains NaN, Inf, or 1e999 numeric overflow",
+      "http_status": 400,
+      "error_code": "NON_FINITE_NUMERIC_INPUT",
+      "passed": true
+    },
+    {
+      "case_id": "RECOV_06_RESTART_DETERMINISM",
+      "scenario": "Multiple independent process instances started on identical files",
+      "source_sha256_identical": true,
+      "benchmark_metrics_identical": true,
+      "passed": true
+    }
+  ]
+}

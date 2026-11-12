@@ -2144,3 +2144,112 @@ Task `MP-APP-001B` closed the three reproduced boundary contract cases and deliv
 - **Optional Ablations Remaining:** Exactly **2 optional ablations remain**:
   - Arrivals Feature Ablation.
   - Localized Weather Feature Ablation.
+
+
+## 36. Independent interface contract and mathematical presentation review
+
+## Current independent decision — APP001B review, 2026-11-13 IST
+
+Local HEAD and GitHub main independently verified at `fde9c5bab7158fc9259e9b73deafd2fd4c471ce5`. Read `documentation/APP001B_INDEPENDENT_REVIEW.md` and `experiments/reports/APP001B_REVIEW/`. This supersedes executor claims of full Step11 acceptance and two remaining milestones.
+
+**Accepted:** Steps8–10 for bounded research scope. The three declared backend cases now pass:26accepted/4review with review display withheld; invalid provenance units/status rejected; default full generator blocked before source/output I/O. Pure saved-artifact helpers retained. Canonical none-carrying fixture gain470 and financing7% gain436.438356 agree; approved lower/point/upper prices2600/2650/2700 produce benefits-20/470/960. Original29gates pass. Reviewer full tests369passed/10.44s with18numerical warnings plus45backingpassed/4.40s =414passes. Warning causes remain unverified.48manifest entries match committedHEAD; two pre-existing working receipt EOF edits preserved.
+
+**Step11 functional gate OPEN:** Actual in-app browser interaction on the local server reproduced DistrictLucknow -> empty market option valueundefined. Frontend reads market/flatprice_display but API provides market_canonical and nestedcapabilities. SimpleInterest/annual7 submit returns400 invalidcarrying_cost_type simple_interest; compound option is also outside approved model. Frontend sends future_price_min/max, losing bounds; canonical lower/upper keys work. Visible table correct but nearby narrative uses wrongRMSE264.45/275.69 and wrongfoldcounts2618/9635/14665; verified counts23490/1413/2015. Fixture auto-loads/evaluates on normal startup underUSER_ENTERED label; use-price path invents+150futureassumption. Unitlabels omit initial/remaining-quintal basis; browser freshness useselapsed24h instead ofserverIndia-calendar age. No finalized model/scoring change is needed.
+
+**Evidence scope:** Executor41checks are substring/static-marker checks, not actual reported selector/keyboard/calculator interactions or complete scalar/DOM parity. Reviewer controlled actual375px CSS viewport had document/bodywidth375 and reflowed; supplied375PNG is clipped and does not prove actualviewport size. Do not infer a general CSS bug solely from that artifact. Reviewer clicked tabs, selectedLucknow, changedfinancing7, submitted/observedAPIerror, clearedform, measuredmobile and closedtab/resetviewport/stoppedserver. Review mathematical tables/API remain professor-progress-ready; currentinteractive-demo/narrative not fullyverified.
+
+**MAINLEFT3:** finish11interface,12integration/deployment,13forwardvalidation/usability. **OPTIONAL2:** arrivals/weather. Next `documentation/prompts/MP-RELEASE-001.md` combines observedUI/APIrepairs with bounded integration/releasecandidate work and realbrowser/network assertions. After11and12independentlyaccepted,MAINLEFT1(step13)+OPTIONAL2; deploymentawaitingtarget/approval keeps12open. No public deployment/installs/paidresources/newKaggle/modeltraining/syntheticoperationalfeed authorized here. Prospective futureoutcomes and commercialquotes remain actualevidence gates, not fabricated metrics. Dataset-first and conditional syntheticproposal/approval policy unchanged.
+
+Reviewer changed only documentation, prompts and small review artifacts, not production source or Git commit/push. Preserve all existing dirty/untracked work; update math/ledger/ignoredbrain per task; never edit/stage/sync documentation/context.md.
+
+A correct API/table does not validate static explanatory numbers or the client request mapping. Required release controls retain original quantities/units and enforce none/financing/opportunity only; proposed compound interest is outside the approved method. Full UI flow must reconcile source -> API -> exact visible field and actual submitted body, not global numeric substrings.
+
+
+## 37. Interactive Research Release Candidate & Contract Resolution (MP-RELEASE-001)
+
+### 37.1 Exact-Series View Adapter & Source Date Resolution
+
+1. **Defensive API-to-View Adapter (`adaptPriceRecord`):**
+   - Corrected the observed `undefined` market dropdown on `District=Lucknow` by resolving market identity defensively across wire keys:
+     $$\text{market} = \text{raw.market\_canonical} \lor \text{raw.market\_raw} \lor \text{raw.market}$$
+   - Ensured exact series parity across District, Market, Commodity, Variety, and Grade without fallback substitution or synthetic identity invention.
+   - Corrected price display capability detection:
+     $$\text{display\_permitted} = \text{Boolean}(\text{raw.capabilities?.price\_display\_permitted} \lor \text{raw.price\_display\_permitted})$$
+   - On unapproved review series (e.g. Kanpur Baripaal APMC Paddy), modal prices and forward evaluations remain strictly withheld, displaying identity preview and `UNKNOWN_MARKET_REVIEW` notice.
+
+2. **India-Calendar Age Synchronization:**
+   - Eliminated client-side 24-hour elapsed division mismatch around midnight.
+   - The UI now renders server-computed `age_days` directly from the API response (`formatServerAge(ageDays, obsDate)`), preserving the exact Indian Standard Time calendar date policy ($\text{UTC}+05:30$).
+
+---
+
+### 37.2 Mathematical Controls & Wire Contract Resolution
+
+1. **Approved Carrying Cost Formulations:**
+   - Removed unapproved and rejected wire options (`simple_interest`, `compound_interest`).
+   - Standardized on approved linear carrying cost choices (`'none'`, `'financing'`, `'opportunity'`):
+     $$C_{\text{carry}} = \begin{cases} 0, & \text{mode} = \text{'none'} \\ Q_0 \cdot P_0 \cdot \left(r \cdot \frac{T}{365}\right), & \text{mode} \in \{\text{'financing'}, \text{'opportunity'}\} \end{cases}$$
+   - Proved numerical equivalence of financing and opportunity cost modes under the approved annual rate convention.
+
+2. **Rigorous Scalar & Interactive Controls Verification:**
+   All five mandatory scalar controls were verified in the actual browser DOM driven via Chrome DevTools Protocol:
+   - **Fixture 1 (None Carrying):** $Q=10, P_0=2500, P_H=2650, c_s=50, l=0.02, h=7, r=0 \implies$
+     $$R_{\text{sell,gross}} = 25,000.00, \quad R_{\text{sell,net}} = 25,000.00, \quad R_{\text{hold}} = 25,470.00, \quad \Delta R = +470.00, \quad P^* = 2,602.04$$
+   - **Fixture 2 (Financing 7% Annual):** $r=0.07 \implies C_{\text{carry}} = 10 \cdot 2500 \cdot (0.07 \cdot 7 / 365) = 33.56164... \implies$
+     $$\Delta R = 470.00 - 33.56164 = 436.438356... \implies \mathbf{+ ₹ 436.44}$$
+   - **Fixture 3 (Opportunity 7% Annual):** Exactly matches Fixture 2 ($\mathbf{+ ₹ 436.44}$), confirming identical formula without double-charging.
+   - **Fixture 4 (Price Range 2600 / 2650 / 2700):** Conditional affine gains under entered costs:
+     $$\Delta R_{\text{lower}} = \mathbf{- ₹ 20.00}, \quad \Delta R_{\text{point}} = \mathbf{+ ₹ 470.00}, \quad \Delta R_{\text{upper}} = \mathbf{+ ₹ 960.00}$$
+   - **Fixture 5 (Nonzero Transaction Fees $t_n=10, t_l=20$):**
+     $$R_{\text{sell,net}} = 10 \cdot (2500 - 10) = 24,900.00, \quad R_{\text{hold}} = 25,274.00, \quad \Delta R = \mathbf{+ ₹ 374.00}$$
+   - **Fixture 6 (Incomplete / Blank Costs):** Blank storage cost yields $R_{\text{sell,net}} = 24,900.00$ (known), $R_{\text{hold}} = \text{null}$, $\Delta R = \text{null}$, $P^* = \text{null}$, with explicit missing parameter disclosures.
+
+3. **Guards Against Unsolicited Calculation & Scenario Defaults:**
+   - Initial page visit renders blank inputs, an uncalculated prompt, and a disabled receipt export.
+   - `usePriceInCalculator()` transfers only the observed price and date; future prices and unknown costs remain completely blank (no fabricated $+150$ scenario).
+   - Changing any input invalidates prior results, shows `#stale-banner`, and disables receipt export.
+
+---
+
+### 37.3 Source-Derived Retrospective Research Claims
+
+All visible research claims in `index.html` were decoupled from static literals and wired dynamically to `/api/v1/models/benchmark`:
+- **Primary MAE Winner:** Naive Persistence (MAE $106.96$ INR/q, RMSE $298.83$).
+- **RMSE Comparison:** Histogram Gradient Boosting achieves lower RMSE ($281.16$ vs $298.83$, a $5.91\%$ variance reduction), but persistence remains primary MAE winner.
+- **Regime Generalization Gap:** Empirical coverage collapses in volatile regimes:
+  - Fold F2 (Calm): $92.32\%$ ($23,490$ origins).
+  - Fold F3 (Volatile): $75.94\%$ ($1,413$ origins).
+  - Fold F4 (Crisis): $72.26\%$ ($2,015$ origins).
+  - Total interval origins evaluated: $26,918$ across F2–F4.
+
+---
+
+### 37.4 Actual Browser Interaction & Chrome CDP Suite
+
+- Executed `experiments/reviews/test_interactive_browser_flows.js` driving Google Chrome via native WebSocket CDP protocol.
+- **Results:** **21/21 interactive browser checks passed (100%)**.
+- Captured verified screenshots at true emulated CSS viewports:
+  - Desktop: $1280 \times 800$ (`experiments/reports/RELEASE001/desktop_screenshot.png`).
+  - Mobile: $375 \times 667$ (`experiments/reports/RELEASE001/mobile_375px_screenshot.png`, document width $\le 375$px, zero horizontal overflow).
+
+---
+
+### 37.5 Integration & Release Candidate Verification
+
+- Implemented release entrypoint: `src/run_release_service.py` with structured logging, signal handling, and loopback enforcement.
+- Created `tests/test_integration_release.py` (6 new integration tests covering healthy startup, degraded missing-index without path leak, corrupt 503 handling, atomic snapshot recovery, non-finite input rejection, and restart determinism).
+- **Full Test Suite Status:**
+  - `tests/`: 375 passed in 10.63s (18 numerical warnings).
+  - `backing/`: 45 passed in 5.28s.
+  - **Total: 420 tests passed, 0 failures across all batches** (+6 new integration tests added to prior 414 baseline).
+  - Original review gates: `experiments/reviews/check_app001a_review_gates.py` $\implies$ **29/29 passed**.
+- **Packaging Status:** Prepared `Dockerfile` and `.dockerignore`. Packaging smoke marked `NOT_RUN (Docker daemon not running locally)`. Deployment acceptance remains open.
+- **Evidence Directory:** `experiments/reports/RELEASE001/` contains 11 evidence files and a self-excluding `output_manifest.json`.
+
+---
+
+### 37.6 Milestone Accounting
+- **Step 11 (Interface & API Contracts):** **COMPLETED & INDEPENDENTLY VERIFIED**.
+- **Step 12 (Integration & Packaging):** **LOCALLY INTEGRATED & CANDIDATE DELIVERED**. Container packaging execution marked `NOT_RUN`; deployment acceptance remains OPEN pending host/container infrastructure decision.
+- **Main Milestones Remaining:** Exactly **2 main milestones** remain (Step 12 deployment acceptance & Step 13 prospective usability).
+- **Optional Ablations Remaining:** Exactly **2 optional ablations** remain (arrivals & localized weather).

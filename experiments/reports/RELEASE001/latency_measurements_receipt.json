@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "measured_at_utc": "2026-11-12T22:41:11Z",
+  "environment": {
+    "python_version": "3.14.0",
+    "platform": "darwin"
+  },
+  "startup_latencies": {
+    "full_python_process_startup_ms": 56.71,
+    "in_process_app_construction_ms": 0.4224,
+    "ready_to_first_response_ms": 0.16
+  },
+  "warm_endpoint_benchmarks": {
+    "/": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 33973,
+      "sample_size": 50,
+      "min_ms": 0.0412,
+      "p50_ms": 0.042,
+      "p95_ms": 0.0557,
+      "mean_ms": 0.0444
+    },
+    "/static/styles.css": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 14714,
+      "sample_size": 50,
+      "min_ms": 0.0405,
+      "p50_ms": 0.0425,
+      "p95_ms": 0.0581,
+      "mean_ms": 0.0446
+    },
+    "/static/app.js": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 40180,
+      "sample_size": 50,
+      "min_ms": 0.0426,
+      "p50_ms": 0.0433,
+      "p95_ms": 0.047,
+      "mean_ms": 0.0441
+    },
+    "/api/v1/health": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 1850,
+      "sample_size": 50,
+      "min_ms": 0.1348,
+      "p50_ms": 0.1369,
+      "p95_ms": 0.155,
+      "mean_ms": 0.1675
+    },
+    "/api/v1/catalog": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 12150,
+      "sample_size": 50,
+      "min_ms": 0.182,
+      "p50_ms": 0.1877,
+      "p95_ms": 0.2062,
+      "mean_ms": 0.224
+    },
+    "/api/v1/prices/latest": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 27774,
+      "sample_size": 50,
+      "min_ms": 0.3241,
+      "p50_ms": 0.337,
+      "p95_ms": 0.3692,
+      "mean_ms": 0.3424
+    },
+    "/api/v1/models/benchmark": {
+      "method": "GET",
+      "status_code": 200,
+      "payload_bytes": 2702,
+      "sample_size": 50,
+      "min_ms": 0.1371,
+      "p50_ms": 0.1403,
+      "p95_ms": 0.1657,
+      "mean_ms": 0.1464
+    },
+    "/api/v1/economics/evaluate": {
+      "method": "POST",
+      "status_code": 200,
+      "payload_bytes": 1330,
+      "sample_size": 50,
+      "min_ms": 0.0207,
+      "p50_ms": 0.0213,
+      "p95_ms": 0.0311,
+      "mean_ms": 0.0236
+    }
+  }
+}

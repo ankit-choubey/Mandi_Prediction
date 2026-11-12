@@ -26,7 +26,7 @@
           </svg>
           <div class="header-title-block">
             <h1>APMC Mandi Intelligence System</h1>
-            <p>Agri-Market Observation &amp; Research Economics (Step 11 Interface)</p>
+            <p>Agri-Market Observation &amp; Research Economics (Release Candidate)</p>
           </div>
         </div>
         <div class="header-meta">
@@ -165,7 +165,7 @@
               <h3 class="card-title" id="obs-series-title" style="margin-top: 0.5rem;">Commodity Title</h3>
               <p class="card-subtitle" id="obs-market-subtitle">Market, District</p>
             </div>
-            <button id="btn-use-in-calc" class="btn btn-primary btn-sm">
+            <button id="btn-use-in-calc" class="btn btn-primary btn-sm" type="button">
               Use Price in Calculator &rarr;
             </button>
           </div>
@@ -343,41 +343,33 @@
           </table>
         </div>
 
-        <!-- Empirical Findings Cards -->
+        <!-- Empirical Findings Cards (Dynamically Populated from API) -->
         <div class="stat-grid" style="margin-top: 1.5rem;">
           <div class="stat-box" style="border-left: 4px solid var(--color-brand-primary);">
             <div class="stat-label">Primary Metric Winner</div>
-            <div style="font-size: 1.125rem; font-weight: 700; color: var(--color-brand-primary);">Naive Persistence</div>
-            <div class="stat-desc">
-              Achieves lowest MAE (106.96 INR/q). Beating persistence on absolute error remains an open machine learning challenge.
-            </div>
+            <div id="bm-winner-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-brand-primary);">Loading...</div>
+            <div class="stat-desc" id="bm-winner-desc">Evaluating baseline absolute error...</div>
           </div>
           <div class="stat-box" style="border-left: 4px solid var(--color-alert-info);">
-            <div class="stat-label">RMSE Observation</div>
-            <div style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-info);">HGB Lower Variance</div>
-            <div class="stat-desc">
-              Histogram Gradient Boosting achieves lower RMSE (264.45 vs 275.69), reducing extreme outlier magnitude but losing on MAE.
-            </div>
+            <div class="stat-label">RMSE Comparison</div>
+            <div id="bm-rmse-model" style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-info);">Loading...</div>
+            <div class="stat-desc" id="bm-rmse-desc">Comparing root-mean-squared error against persistence...</div>
           </div>
           <div class="stat-box" style="border-left: 4px solid var(--color-alert-danger);">
-            <div class="stat-label">Recent Regime Vulnerability</div>
-            <div style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-danger);">Coverage Collapse</div>
-            <div class="stat-desc">
-              Fold F3 coverage drops to 75.94% and Fold F4 to 72.26%. Pooled ~90% coverage masks failure during price spike regimes.
-            </div>
+            <div class="stat-label">Temporal Regime Disparity</div>
+            <div id="bm-regime-title" style="font-size: 1.125rem; font-weight: 700; color: var(--color-alert-danger);">Loading...</div>
+            <div class="stat-desc" id="bm-regime-desc">Evaluating fold-specific empirical coverage...</div>
           </div>
         </div>
 
-        <!-- Regime Collapse Callout -->
+        <!-- Regime Collapse Callout (Dynamically Populated from API) -->
         <div class="alert-box alert-amber" style="margin-top: 1.5rem;">
-          <h4 class="alert-title">Critical Uncertainty Disclosure: Temporal Coverage Breakdown (Naive 90% Nominal)</h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
-            <div><strong>Fold F2 (Calm):</strong> 92.32% coverage &bull; 2,618 origins</div>
-            <div><strong>Fold F3 (Volatile):</strong> 75.94% coverage &bull; 9,635 origins</div>
-            <div><strong>Fold F4 (Crisis):</strong> 72.26% coverage &bull; 14,665 origins</div>
+          <h4 class="alert-title">Audited Interval Coverage Breakdown (Naive 90% Nominal)</h4>
+          <div id="bm-fold-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-top: 0.5rem;">
+            <div>Loading fold records...</div>
           </div>
-          <p class="alert-text" style="margin-top: 0.5rem;">
-            <em>Scientific Takeaway:</em> Pooled near-90% coverage does not validate conditional or recent validity. In volatile regimes, conformal intervals derived from calm periods severely under-cover actual price movements.
+          <p class="alert-text" id="bm-fold-note" style="margin-top: 0.5rem;">
+            <em>Scientific Observation:</em> Total interval evaluation population: 26,918 issued origins across Folds F2&ndash;F4 (Fold F1 abstained due to zero prior calibration residuals). Empirical coverage shortfall in F3 and F4 highlights regime vulnerability.
           </p>
         </div>
       </div>
@@ -400,9 +392,9 @@
 
         <!-- Presets Toolbar -->
         <div class="presets-bar">
-          <span class="presets-label">Evaluation Presets:</span>
+          <span class="presets-label">Evaluation Controls:</span>
           <button id="btn-preset-fixture" class="btn btn-secondary btn-sm" type="button">
-            Load +470 INR Test Fixture (10q, 2500 &rarr; 2650, 7d, ₹50 stor, 2% loss)
+            Load Reference Mathematical Fixture (+470 INR)
           </button>
           <button id="btn-preset-clear" class="btn btn-outline btn-sm" type="button">
             Clear Form (Blank Inputs)
@@ -420,7 +412,7 @@
                 <label for="econ-quantity" class="form-label">
                   Quantity (quintals) <span style="color: var(--color-alert-danger);">*</span>
                 </label>
-                <input type="number" id="econ-quantity" class="form-input" min="0.001" step="any" required value="10">
+                <input type="number" id="econ-quantity" class="form-input" min="0.001" step="any" required placeholder="e.g. 10">
                 <span class="form-hint">Initial harvest quantity ($Q_0$)</span>
               </div>
 
@@ -428,7 +420,7 @@
                 <label for="econ-current-price" class="form-label">
                   Current Price (INR/quintal) <span style="color: var(--color-alert-danger);">*</span>
                 </label>
-                <input type="number" id="econ-current-price" class="form-input" min="1" step="any" required value="2500">
+                <input type="number" id="econ-current-price" class="form-input" min="1" step="any" required placeholder="e.g. 2500">
                 <span class="form-hint">Immediate spot price ($P_0$)</span>
               </div>
 
@@ -436,15 +428,15 @@
                 <label for="econ-future-point" class="form-label">
                   Assumed Future Price Point (INR/q)
                 </label>
-                <input type="number" id="econ-future-point" class="form-input" min="0" step="any" value="2650">
-                <span class="form-hint">Hypothetical point price ($P_1$)</span>
+                <input type="number" id="econ-future-point" class="form-input" min="0" step="any" placeholder="e.g. 2650">
+                <span class="form-hint">User-entered hypothetical price ($P_1$)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-horizon" class="form-label">
                   Holding Horizon (days)
                 </label>
-                <input type="number" id="econ-horizon" class="form-input" min="1" max="365" step="1" value="7">
+                <input type="number" id="econ-horizon" class="form-input" min="1" max="365" step="1" placeholder="e.g. 7">
                 <span class="form-hint">Storage period ($T$)</span>
               </div>
 
@@ -456,24 +448,27 @@
 
               <div class="form-group">
                 <label for="econ-origin-date" class="form-label">Origin Observation Date</label>
-                <input type="date" id="econ-origin-date" class="form-input" value="2026-11-13">
-                <span class="form-hint">Exact calendar date (YYYY-MM-DD)</span>
+                <input type="date" id="econ-origin-date" class="form-input">
+                <span class="form-hint">Observation calendar date</span>
               </div>
             </div>
 
             <!-- Optional Future Price Range -->
             <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--color-border-subtle);">
-              <span class="form-label" style="display: block; margin-bottom: 0.5rem;">
-                Optional Assumed Price Range (Sensitivity / Interval bounds)
+              <span class="form-label" style="display: block; margin-bottom: 0.25rem;">
+                Optional Conditional Price Range (Sensitivity Bounds)
               </span>
+              <p class="form-hint" style="margin: 0 0 0.5rem 0;">
+                Calculates conditional net return range under user-entered costs. Not a probability interval.
+              </p>
               <div class="form-grid">
                 <div class="form-group">
-                  <label for="econ-future-min" class="form-label">Min Future Price (INR/q)</label>
-                  <input type="number" id="econ-future-min" class="form-input" min="0" step="any" placeholder="e.g. 2550">
+                  <label for="econ-future-lower" class="form-label">Future Price Lower Bound (INR/q)</label>
+                  <input type="number" id="econ-future-lower" class="form-input" min="0" step="any" placeholder="e.g. 2600">
                 </div>
                 <div class="form-group">
-                  <label for="econ-future-max" class="form-label">Max Future Price (INR/q)</label>
-                  <input type="number" id="econ-future-max" class="form-input" min="0" step="any" placeholder="e.g. 2750">
+                  <label for="econ-future-upper" class="form-label">Future Price Upper Bound (INR/q)</label>
+                  <input type="number" id="econ-future-upper" class="form-input" min="0" step="any" placeholder="e.g. 2700">
                 </div>
               </div>
             </div>
@@ -487,33 +482,33 @@
             </p>
             <div class="form-grid">
               <div class="form-group">
-                <label for="econ-storage-cost" class="form-label">Storage Cost (INR/quintal)</label>
-                <input type="number" id="econ-storage-cost" class="form-input" min="0" step="any" value="50">
-                <span class="form-hint">Assessed on initial quantity basis</span>
+                <label for="econ-storage-cost" class="form-label">Storage Cost (INR / initial quintal for period T)</label>
+                <input type="number" id="econ-storage-cost" class="form-input" min="0" step="any" placeholder="e.g. 50">
+                <span class="form-hint">Assessed on initial quantity basis ($Q_0$)</span>
               </div>
 
               <div class="form-group">
-                <label for="econ-handling-cost" class="form-label">Handling Cost (INR/quintal)</label>
-                <input type="number" id="econ-handling-cost" class="form-input" min="0" step="any" value="0">
+                <label for="econ-handling-cost" class="form-label">Handling Cost (INR / initial quintal)</label>
+                <input type="number" id="econ-handling-cost" class="form-input" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Loading / unloading cost</span>
               </div>
 
               <div class="form-group">
-                <label for="econ-transport-cost" class="form-label">Incremental Transport (INR/q)</label>
-                <input type="number" id="econ-transport-cost" class="form-input" min="0" step="any" value="0">
+                <label for="econ-transport-cost" class="form-label">Incremental Transport (INR / initial quintal)</label>
+                <input type="number" id="econ-transport-cost" class="form-input" min="0" step="any" placeholder="e.g. 0">
                 <span class="form-hint">Extra transport to storage warehouse</span>
               </div>
 
               <div class="form-group">
-                <label for="econ-trans-now" class="form-label">Immediate Transaction Cost (INR)</label>
-                <input type="number" id="econ-trans-now" class="form-input" min="0" step="any" value="0">
-                <span class="form-hint">Commission / mandi fees at spot sale</span>
+                <label for="econ-trans-now" class="form-label">Immediate Transaction Cost (INR / initial quintal)</label>
+                <input type="number" id="econ-trans-now" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <span class="form-hint">Commission / mandi fees at spot sale ($t_n$)</span>
               </div>
 
               <div class="form-group">
-                <label for="econ-trans-later" class="form-label">Later Transaction Cost (INR)</label>
-                <input type="number" id="econ-trans-later" class="form-input" min="0" step="any" value="0">
-                <span class="form-hint">Fees assessed at post-storage sale</span>
+                <label for="econ-trans-later" class="form-label">Later Transaction Cost (INR / remaining quintal)</label>
+                <input type="number" id="econ-trans-later" class="form-input" min="0" step="any" placeholder="e.g. 0">
+                <span class="form-hint">Fees at post-storage sale ($t_l$)</span>
               </div>
             </div>
           </fieldset>
@@ -524,13 +519,13 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="econ-loss-pct" class="form-label">Physical Storage Loss (%)</label>
-                <input type="number" id="econ-loss-pct" class="form-input" min="0" max="100" step="any" value="2.0">
+                <input type="number" id="econ-loss-pct" class="form-input" min="0" max="100" step="any" placeholder="e.g. 2.0">
                 <span class="form-hint">Shrinkage / spoilage rate (e.g. 2.0% &rarr; 0.02)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-markdown-pct" class="form-label">Quality Markdown (%)</label>
-                <input type="number" id="econ-markdown-pct" class="form-input" min="0" max="100" step="any" value="0.0">
+                <input type="number" id="econ-markdown-pct" class="form-input" min="0" max="100" step="any" placeholder="e.g. 0.0">
                 <span class="form-hint">Price discount due to storage age (e.g. 0.0%)</span>
               </div>
             </div>
@@ -541,19 +536,19 @@
             <legend>4. Opportunity / Financing Cost</legend>
             <div class="form-grid">
               <div class="form-group">
-                <label for="econ-annual-rate" class="form-label">Annual Financing Rate (%)</label>
-                <input type="number" id="econ-annual-rate" class="form-input" min="0" max="100" step="any" value="0.0">
-                <span class="form-hint">Annual interest / opportunity rate (e.g. 7.0%)</span>
+                <label for="econ-annual-rate" class="form-label">Annual Carrying Rate (%)</label>
+                <input type="number" id="econ-annual-rate" class="form-input" min="0" max="100" step="any" placeholder="e.g. 7.0">
+                <span class="form-hint">Annual rate (e.g. 7.0% &rarr; 0.07 per annum)</span>
               </div>
 
               <div class="form-group">
                 <label for="econ-carrying-type" class="form-label">Carrying Cost Formulation</label>
                 <select id="econ-carrying-type" class="form-select">
-                  <option value="none" selected>None (No financing cost)</option>
-                  <option value="simple_interest">Simple Interest (r &times; T/365)</option>
-                  <option value="compound_interest">Compound Interest ((1+r)^(T/365) - 1)</option>
+                  <option value="none" selected>None (No carrying cost)</option>
+                  <option value="financing">Financing Cost (r &times; T/365, borrowed capital)</option>
+                  <option value="opportunity">Opportunity Cost (r &times; T/365, alternative capital return)</option>
                 </select>
-                <span class="form-hint">Formulation for capital tie-up</span>
+                <span class="form-hint">Applies linear time convention (r &times; T / 365)</span>
               </div>
             </div>
           </fieldset>
@@ -575,8 +570,9 @@
             <p class="card-subtitle">Server-evaluated economic quantities</p>
           </div>
           <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span class="badge badge-info" id="res-mode-badge" style="display: none;">TEST_FIXTURE</span>
             <span class="badge badge-blocked" id="res-advisory-badge">Advisory: BLOCKED</span>
-            <button id="btn-export-receipt" class="btn btn-secondary btn-sm" type="button">
+            <button id="btn-export-receipt" class="btn btn-secondary btn-sm" type="button" disabled>
               Download Receipt (JSON)
             </button>
           </div>
@@ -584,38 +580,43 @@
 
         <!-- Stale Warning Banner -->
         <div id="stale-banner" class="stale-banner">
-          Inputs have been modified. Click &ldquo;Calculate Research Economics&rdquo; to re-evaluate.
+          Inputs have been modified. Click &ldquo;Calculate Research Economics&rdquo; to evaluate.
+        </div>
+
+        <!-- Initial Uncalculated Message -->
+        <div id="econ-initial-prompt" style="padding: 1.5rem; color: var(--color-text-secondary); text-align: center;">
+          No active calculation. Enter parameters above and click &ldquo;Calculate Research Economics&rdquo;, or select a verified market price, or click &ldquo;Load Reference Mathematical Fixture (+470 INR)&rdquo;.
         </div>
 
         <!-- Metrics Grid -->
-        <div class="results-grid">
+        <div class="results-grid" id="econ-metrics-grid" style="display: none;">
           <div class="result-metric">
             <div class="result-metric-label">Immediate Gross Proceeds ($R_{\text{sell,gross}}$)</div>
-            <div class="result-metric-val" id="res-gross-proceeds">₹ 25,000.00</div>
+            <div class="result-metric-val" id="res-gross-proceeds">--</div>
             <div class="result-metric-sub">Current sale: $Q_0 \times P_0$</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Immediate Net Proceeds ($R_{\text{sell,net}}$)</div>
-            <div class="result-metric-val" id="res-net-proceeds">₹ 25,000.00</div>
-            <div class="result-metric-sub">Gross minus immediate transaction fee</div>
+            <div class="result-metric-val" id="res-net-proceeds">--</div>
+            <div class="result-metric-sub">Gross minus immediate transaction fee ($t_n$)</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Expected Holding Proceeds ($R_{\text{hold}}$)</div>
-            <div class="result-metric-val" id="res-holding-proceeds">₹ 25,470.00</div>
-            <div class="result-metric-sub">Net revenue after storage, loss &amp; fees</div>
+            <div class="result-metric-val" id="res-holding-proceeds">--</div>
+            <div class="result-metric-sub">Net revenue after storage, loss, fees &amp; carrying</div>
           </div>
 
           <div class="result-metric result-metric-hero">
             <div class="result-metric-label">Net Incremental Benefit ($\Delta R$)</div>
-            <div class="result-metric-val positive" id="res-delta-r">+ ₹ 470.00</div>
+            <div class="result-metric-val" id="res-delta-r">--</div>
             <div class="result-metric-sub">$R_{\text{hold}} - R_{\text{sell,net}}$</div>
           </div>
 
           <div class="result-metric">
             <div class="result-metric-label">Break-even Future Price ($P^*$)</div>
-            <div class="result-metric-val" id="res-breakeven">₹ 2,602.04</div>
+            <div class="result-metric-val" id="res-breakeven">--</div>
             <div class="result-metric-sub">Future price needed for zero incremental gain</div>
           </div>
         </div>
@@ -625,16 +626,15 @@
           <h4 style="font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.5rem 0;">Conditional Benefit Range</h4>
           <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin: 0;">
             Under the specified price range (<span id="range-future-bounds">--</span>), conditional incremental gain spans
-            <strong><span id="range-gain-min">--</span></strong> to <strong><span id="range-gain-max">--</span></strong>.
+            <strong><span id="range-gain-min">--</span></strong> to <strong><span id="range-gain-max">--</span></strong>
+            (point estimate: <strong><span id="range-gain-point">--</span></strong>).
           </p>
         </div>
 
         <!-- Disclosures & Missing Parameters -->
-        <div id="econ-disclosures-box" class="alert-box alert-info" style="margin-bottom: 0;">
+        <div id="econ-disclosures-box" class="alert-box alert-info" style="display: none; margin-bottom: 0;">
           <h4 class="alert-title">Economic Evaluation Disclosures</h4>
           <ul id="econ-disclosures-list" style="margin: 0.25rem 0 0 0; padding-left: 1.25rem; font-size: 0.8125rem; line-height: 1.5;">
-            <li>All calculations assume constant price parameters across the entire quantity.</li>
-            <li>No advice guarantee: actual post-harvest storage involves physical risk, spoilage, and price volatility.</li>
           </ul>
         </div>
       </div>
@@ -651,7 +651,7 @@
         or commercial trading advice. Operational deployment requires prospective validation under Steps 12 and 13.
       </div>
       <div>
-        <span>Version: Step 11 Interface (MP-APP-001B)</span><br>
+        <span>Version: Release Candidate (MP-RELEASE-001)</span><br>
         <span>Environment: Loopback Development</span>
       </div>
     </div>

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "task": "MP-RELEASE-001",
+  "generated_at_utc": "2026-11-12T22:40:00.000000+00:00",
+  "description": "Defensive UI-to-API Contract Mapping for APMC Mandi Intelligence System",
+  "endpoints": {
+    "/api/v1/health": {
+      "process_status": { "element_id": "badge-health", "adapter": "Service: {process_status}", "class_mapping": "HEALTHY -> badge-success, DEGRADED -> badge-amber, UNREACHABLE -> badge-blocked" },
+      "as_of_utc": { "element_id": "service-as-of", "adapter": "Server As-Of: {as_of_utc} (Startup Snapshot)" }
+    },
+    "/api/v1/catalog": {
+      "total_series_count": { "element_id": "stat-total-series", "adapter": "Number(val).toLocaleString()", "expected": 30 },
+      "accepted_series_count": { "element_id": "stat-accepted-series", "adapter": "Number(val).toLocaleString()", "expected": 26 },
+      "review_series_count": { "element_id": "stat-review-series", "adapter": "Number(val).toLocaleString()", "expected": 4 }
+    },
+    "/api/v1/prices/latest": {
+      "series[].market": { "element_id": "sel-market", "adapter": "raw.market_canonical || raw.market_raw || raw.market", "fix": "Eliminated undefined market option on Lucknow" },
+      "series[].modal_price": { "element_id": "obs-modal-price", "adapter": "formatINR(val)" },
+      "series[].min_price": { "element_id": "obs-min-price", "adapter": "formatINR(val)" },
+      "series[].max_price": { "element_id": "obs-max-price", "adapter": "formatINR(val)" },
+      "series[].observation_date": { "element_id": "obs-date", "adapter": "String(val)" },
+      "series[].age_days": { "element_id": "obs-age", "adapter": "formatServerAge(ageDays, obsDate)", "fix": "Server-side India calendar date age, eliminates client-side 24h division mismatch" },
+      "series[].capabilities.price_display_permitted": { "element_id": "obs-verified-card / obs-review-card", "adapter": "Boolean(raw.capabilities?.price_display_permitted ?? raw.price_display_permitted)", "fix": "Price withheld on unapproved review series" }
+    },
+    "/api/v1/models/benchmark": {
+      "model_performance_summary[naive_persistence].mae": { "element_id": "table td / bm-winner-desc", "adapter": "Number(val).toFixed(2)", "expected": 106.96 },
+      "model_performance_summary[naive_persistence].rmse": { "element_id": "table td / bm-rmse-desc", "adapter": "Number(val).toFixed(2)", "expected": 298.83 },
+      "model_performance_summary[hist_gradient_boosting].mae": { "element_id": "table td", "adapter": "Number(val).toFixed(2)", "expected": 109.75 },
+      "model_performance_summary[hist_gradient_boosting].rmse": { "element_id": "table td / bm-rmse-desc", "adapter": "Number(val).toFixed(2)", "expected": 281.16 },
+      "model_performance_summary[hist_gradient_boosting].rmse_improvement_vs_persistence_pct": { "element_id": "bm-rmse-desc", "adapter": "Number(val).toFixed(2) + '%'", "expected": "5.91%" },
+      "fold_level_breakdown_naive_90.F2.coverage_pct": { "element_id": "bm-fold-grid / bm-regime-desc", "adapter": "Number(val).toFixed(2) + '%'", "expected": "92.32%" },
+      "fold_level_breakdown_naive_90.F3.coverage_pct": { "element_id": "bm-fold-grid / bm-regime-desc", "adapter": "Number(val).toFixed(2) + '%'", "expected": "75.94%" },
+      "fold_level_breakdown_naive_90.F4.coverage_pct": { "element_id": "bm-fold-grid / bm-regime-desc", "adapter": "Number(val).toFixed(2) + '%'", "expected": "72.26%" },
+      "metric_denominators.interval_metrics_scope.total_issued_origins": { "element_id": "bm-fold-note", "adapter": "Number(val).toLocaleString()", "expected": "26,918" }
+    },
+    "/api/v1/economics/evaluate": {
+      "r_sell_gross": { "element_id": "res-gross-proceeds", "adapter": "formatINR(val)" },
+      "r_sell_net": { "element_id": "res-net-proceeds", "adapter": "formatINR(val)", "null_fallback": "Unavailable (Missing Cost)" },
+      "r_hold_point_net": { "element_id": "res-holding-proceeds", "adapter": "formatINR(val)", "null_fallback": "Unavailable (Missing Cost)" },
+      "delta_r_point": { "element_id": "res-delta-r", "adapter": "+/- formatINR(val)", "null_fallback": "Unavailable (Missing Cost)" },
+      "p_break_even": { "element_id": "res-breakeven", "adapter": "formatINR(val)", "null_fallback": "Unavailable" },
+      "delta_r_lower": { "element_id": "range-gain-min", "adapter": "formatINR(val)" },
+      "delta_r_upper": { "element_id": "range-gain-max", "adapter": "formatINR(val)" },
+      "gate_reasons / disclaimer": { "element_id": "econ-disclosures-box", "adapter": "DOM <li> injection" }
+    }
+  }
+}

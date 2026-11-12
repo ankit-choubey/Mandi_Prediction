@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0.0",
+  "tested_at_utc": "2026-11-12T22:36:42.468Z",
+  "fixtures": [
+    {
+      "name": "None Carrying Fixture",
+      "inputs": {
+        "Q": 10,
+        "P0": 2500,
+        "Pf": 2650,
+        "storage": 50,
+        "loss": 0.02,
+        "carrying": "none",
+        "horizon": 7
+      },
+      "expected": {
+        "gross": 25000,
+        "net": 25000,
+        "hold": 25470,
+        "delta": 470,
+        "breakeven": 2602.040816
+      },
+      "observed": {
+        "gross": "₹ 25,000.00",
+        "net": "₹ 25,000.00",
+        "hold": "₹ 25,470.00",
+        "delta": "+ ₹ 470.00",
+        "be": "₹ 2,602.04",
+        "exportDisabled": false
+      },
+      "matched": true
+    },
+    {
+      "name": "Financing 7% Annual",
+      "inputs": {
+        "Q": 10,
+        "P0": 2500,
+        "Pf": 2650,
+        "storage": 50,
+        "loss": 0.02,
+        "carrying": "financing",
+        "rate": 0.07,
+        "horizon": 7
+      },
+      "expected": {
+        "delta": 436.43835616438537,
+        "display_delta": "+ ₹ 436.44"
+      },
+      "observed": {
+        "delta": "+ ₹ 436.44"
+      },
+      "matched": true
+    },
+    {
+      "name": "Opportunity Cost 7% Annual",
+      "inputs": {
+        "Q": 10,
+        "P0": 2500,
+        "Pf": 2650,
+        "storage": 50,
+        "loss": 0.02,
+        "carrying": "opportunity",
+        "rate": 0.07,
+        "horizon": 7
+      },
+      "expected": {
+        "delta": 436.43835616438537,
+        "display_delta": "+ ₹ 436.44"
+      },
+      "observed": {
+        "delta": "+ ₹ 436.44"
+      },
+      "matched": true
+    },
+    {
+      "name": "Price Range 2600/2650/2700",
+      "inputs": {
+        "Q": 10,
+        "P0": 2500,
+        "lower": 2600,
+        "point": 2650,
+        "upper": 2700,
+        "storage": 50,
+        "loss": 0.02,
+        "carrying": "none",
+        "horizon": 7
+      },
+      "expected": {
+        "delta_lower": -20,
+        "delta_point": 470,
+        "delta_upper": 960
+      },
+      "observed": {
+        "boxVis": "block",
+        "bounds": "₹ 2600 – ₹ 2700",
+        "minG": "₹ -20.00",
+        "maxG": "₹ 960.00",
+        "pointG": "₹ 470.00"
+      },
+      "matched": true
+    },
+    {
+      "name": "Transaction Fees (10 now, 20 later)",
+      "inputs": {
+        "Q": 10,
+        "P0": 2500,
+        "Pf": 2650,
+        "storage": 50,
+        "loss": 0.02,
+        "t_now": 10,
+        "t_later": 20,
+        "horizon": 7
+      },
+      "expected": {
+        "gross": 25000,
+        "net": 24900,
+        "hold": 25274,
+        "delta": 374
+      },
+      "observed": {
+        "gross": "₹ 25,000.00",
+        "net": "₹ 24,900.00",
+        "hold": "₹ 25,274.00",
+        "delta": "+ ₹ 374.00"
+      },
+      "matched": true
+    }
+  ]
+}
