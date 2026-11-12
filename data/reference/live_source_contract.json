@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0.0",
+  "contract_version": "1.2.0",
   "source_metadata": {
     "source_name": "Government of India Daily Mandi Prices (data.gov.in / AGMARKNET)",
     "resource_id": "9ef84268-d588-465a-a308-a864a43d0070",
@@ -10,7 +10,20 @@
     "documentation_url": "https://data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi",
     "access_date": "2026-11-12",
     "published_price_unit": "Rs./Quintal",
-    "unit_verification": "Standard Agmarknet mandi wholesale price unit confirmed via official portal documentation and Agmarknet metadata; not inferred from price values."
+    "unit_verification": "Standard Agmarknet mandi wholesale price unit confirmed via official portal documentation and Agmarknet metadata; not inferred from price values.",
+    "documentation_vs_headers": "Portal documentation declares published units in Rs./Quintal and response format in JSON/XML/CSV. Observed response headers (Content-Type, Content-Length, Date) provide transport metadata but do not declare data units."
+  },
+  "provenance_modes": {
+    "supported_modes": [
+      "LIVE_FETCH",
+      "HISTORICAL_REPLAY",
+      "TEST_FIXTURE",
+      "FILE_IMPORT"
+    ],
+    "reserved_modes": [
+      "SYNTHETIC_SIMULATION"
+    ],
+    "policy": "Mode LIVE_FETCH requires verified production HTTP transport and live credentials. Mode FILE_IMPORT applies to owner-selected real CSV/Excel APMC data imports (never sets is_live_verified=True or advances live-success index). Mode TEST_FIXTURE applies to offline test harnesses and mock transports, which must never set is_live_verified=True or advance the live-success index. Mode HISTORICAL_REPLAY preserves original observation dates and retrieval times."
   },
   "scope": {
     "state": "Uttar Pradesh",
@@ -24,7 +37,7 @@
     "kanpur_subdivision_policy": {
       "approved_district_token": "Kanpur",
       "kanpur_dehat_policy": "EXCLUDE_AND_QUARANTINE",
-      "explanation": "Official administrative division separates Kanpur Nagar (urban/grain markets) from Kanpur Dehat (rural markets such as Jhijhank, Rura, Pukharayan). The five-district scope authorizes 'Kanpur' (Kanpur Nagar / Kanpur Grain APMC, Baripaal APMC, Uttaripura APMC, Choubepur APMC). 'Kanpur Dehat' records must not be silently merged into 'Kanpur' and are rejected/quarantined as out-of-scope subdivision records."
+      "explanation": "Administrative division separates Kanpur Nagar (urban/grain markets) from Kanpur Dehat (rural markets such as Jhijhank, Rura, Pukharayan). The five-district scope authorizes 'Kanpur' (Kanpur Nagar / Kanpur Grain APMC, Baripaal APMC, Uttaripura APMC, Choubepur APMC). 'Kanpur Dehat' records must not be silently merged into 'Kanpur' and are rejected/quarantined as out-of-scope subdivision records. This represents a repository operational scope boundary, not an official gazette determination."
     }
   },
   "request_parameters": {
@@ -71,7 +84,8 @@
   "data_validation_rules": {
     "missing_grade_policy": "Missing, null, or whitespace-only grade values must be explicitly recorded as 'SOURCE_NOT_PROVIDED'. Silent mapping to 'FAQ' is strictly forbidden.",
     "unknown_market_alias_policy": "Markets not matching accepted canonical aliases in the reference alias table enter disposition 'REVIEW'.",
-    "price_bounds_rule": "0.0 < min_price <= modal_price <= max_price. Violations are quarantined as INVALID_PRICE_BOUNDS.",
+    "price_bounds_rule": "All price fields (min_price, modal_price, max_price) must be present, positive, and finite floats satisfying 0.0 < min_price <= modal_price <= max_price. Modal substitution for missing min/max is strictly forbidden. Non-positive, infinite, NaN, or inverted bounds are quarantined as INVALID_PRICE_BOUNDS.",
+    "conflict_safety_rule": "When two or more observations in a batch share the identical natural key but divergent prices, ALL members of the conflict group are quarantined as CONFLICTING_QUOTE and removed from accepted outputs.",
     "date_format_rule": "Accept YYYY-MM-DD or DD/MM/YYYY. Reject future dates relative to reference date (IST). Unparseable dates quarantined as MALFORMED_DATE."
   },
   "operational_bounds": {
@@ -85,8 +99,11 @@
     "non_retry_status_codes": [400, 401, 403, 404]
   },
   "storage_conventions": {
-    "snapshots_root": "data/live_snapshots",
-    "path_template": "data/live_snapshots/{run_id_utc}/{district}/page_{page_offset:05d}.json",
+    "live_snapshots_root": "data/live_snapshots",
+    "fixture_snapshots_root": "data/fixture_snapshots",
+    "file_import_snapshots_root": "data/imported_snapshots",
+    "last_successful_campaign_pointer": "data/live_snapshots/last_successful_campaign.json",
+    "path_template": "{snapshots_root}/{run_id_utc}/{district}/page_{page_offset:05d}.json",
     "manifest_name": "run_receipt.json",
     "write_mode": "EXCLUSIVE_NO_OVERWRITE"
   }

@@ -1,5 +1,13 @@
 # MP-SRC-004 Summary — Live Price Ingestion, Immutable Snapshots & Trust Reporting
 
+> [!NOTE]
+> **SUPERSEDED CLAIMS NOTICE (2026-11-12 IST, Task MP-SRC-004B):**
+> 1. **Mock Provenance:** The claim in Section 1 and Table 2 that mock execution could represent live verification or set `is_live_verified=True` has been strictly superseded. Mock transports are restricted to `DataMode.TEST_FIXTURE` and can never claim live verification.
+> 2. **Conflict Safety:** The previous conflict resolution logic quarantined only incoming conflicting quotes while retaining the original quote in accepted records. In MP-SRC-004B, this has been corrected to order-invariant quarantine of ALL members of any conflict group.
+> 3. **Price Bounds:** The previous modal price substitution for missing min/max prices is strictly forbidden and has been eliminated. Missing bounds are honestly preserved as `None` and quarantined as `MISSING_REQUIRED_FIELDS`.
+> 4. **Dataset-First Default:** Per owner directive, downloaded real APMC CSV datasets (`data/raw/*.csv`) with `FILE_IMPORT` provenance serve as primary operational source.
+> See full details in `experiments/reports/mp_src_004b_summary.md`.
+
 **Task ID:** `MP-SRC-004` (Steps 3–5 Foundations)
 **Date:** 2026-11-12 IST
 **Baseline Git Commit:** `ed066bea9c0141c5fcb465864f5a5fbc9f74b121`

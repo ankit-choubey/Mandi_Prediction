@@ -20,6 +20,8 @@ env/
 *.zip
 
 /brain/
+/data/fixture_snapshots/
+/data/imported_snapshots/
 /data/interim/
 /data/live_snapshots/
 /experiments/outputs/

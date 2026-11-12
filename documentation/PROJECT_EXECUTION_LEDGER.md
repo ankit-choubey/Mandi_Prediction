@@ -172,3 +172,29 @@ Next prompt documentation/prompts/MP-SRC-004.md integrates live client, manual i
 - **Runbook & Scheduler Status:** Authored `documentation/LIVE_INGESTION_RUNBOOK.md`. Scheduler activation is strictly deferred; zero background automations activated.
 - **Next Step:** Await owner configuration of `OGD_API_KEY` in local `.env` for bounded live verification campaign.
 
+
+
+## MP-SRC-004 review and owner synthetic approval rule — 2026-11-12 IST
+Owner now requires explanation and explicit approval BEFORE any new synthetic operational dataset/feed, training data or economics scenario generation. Supersedes prior blanket scenario permission. Explain missing data, assumptions/method, effect on evaluation/live claims/advice and alternatives first; wait for approval. Never label synthetic with actual current observation timestamps. Existing isolated test fixtures are test evidence only. No new synthetic dataset generated in this review.
+SRC004 commit ce780f5772ed640eab1d2071f7427fcd49a523df independently verified on GitHub; 56 targeted ingestion/gate/output tests passed in 15.48s, full239 executor-reported. Key absent per executor, no live request made: access not verified, NOT demonstrated data unavailability. Implemented interface accepted as partial; corrections required for mock-live provenance, quarantining all conflicting quotes, invented missing min/max bounds, persistent prior-success/revisions and transport dependencies/bounded reads. See documentation/SRC004_REVIEW.md. Next documentation/prompts/MP-SRC-004B.md, existing-fixture repairs, no synthetic generation, real verification only with existing key, no key writes/installs/Kaggle/training/scheduler.
+
+
+## Owner direction: dataset-first operation — 2026-11-12 IST
+Owner explicitly authorizes reliance on the latest available downloaded real datasets instead of requiring an API key; API is optional due to call limits. Default supported workflow: explicit source-file selection -> schema/unit/provenance validation -> immutable FILE_IMPORT snapshot -> deterministic overlap/dedup/conflict/revision handling -> per-series observed-date freshness -> reports/forecasts when independently eligible. Import timestamp must not replace trade observation date. Real historical data remains suitable for retrospective forecasting development; missing live API is not a model-development blocker. Future manual official CSV/Excel downloads may refresh the store. No live verification claim or automatic synthetic fallback. Synthetic generation still requires prior proposal and explicit approval. API rate limits are not assumed numerically; apply documented source limits if API is later enabled.
+After SRC004B repairs/ingestion milestone, roadmap stages4–13 remain: 10 main milestones, with stages4/5 partly implemented and 8 further core packages stages6–13; optional arrivals/weather add 2 experiments. This is not 10 code sessions: repairs and prospective outcomes affect timing. Source availability is not future field evidence.
+
+---
+
+## MP-SRC-004B — Truthful Provenance, Conflict Safety & Dataset-First Ingestion (2026-11-12 IST)
+- **Task ID:** `MP-SRC-004B` (Steps 3–5 Foundations)
+- **Baseline Git Commit:** `ce780f5772ed640eab1d2071f7427fcd49a523df`
+- **Execution Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`
+- **Standing Owner Rule Enforced:** Zero synthetic datasets, simulated operational feeds, model-training rows, or storage scenarios without prior explanation and explicit owner approval. Zero synthetic rows generated.
+- **Truthful Provenance (`DataMode`):** Implemented explicit `DataMode` enum (`LIVE_FETCH`, `FILE_IMPORT`, `HISTORICAL_REPLAY`, `TEST_FIXTURE`, `SYNTHETIC_SIMULATION`). Mock transport restricted to `TEST_FIXTURE`, writing to `data/fixture_snapshots/`. Mocks asserting `LIVE_FETCH` raise `ValueError`. Live verification flag and `last_successful_campaign.json` pointer strictly reserved for authenticated real live runs.
+- **Dataset-First Default Ingestion:** Implemented `execute_file_import` and CLI `--import-file` path. Verified on all 5 official raw APMC archives in `data/raw/` (`Gaziabaad.csv`, `Jhansi.csv`, `Kanpur.csv`, `Lukhnow.csv`, `Unnao.csv`), totaling 160,192 rows ($154,262$ accepted, $865$ duplicates, $5,065$ quarantined, balanced $\Delta = 0$). Snapshot receipts archived under `data/imported_snapshots/`.
+- **Order-Invariant Conflict Safety:** Repaired conflicting quote logic to quarantine ALL members of any conflict group when prices diverge on an identical natural key. Verified permutation invariance across `[A,A,B]`, `[A,B,B]`, `[B,A,A]`, `[A,B,A]`.
+- **Honest Price Bounds:** Modal substitution strictly forbidden. Missing min/max preserved as `None` and quarantined as `MISSING_REQUIRED_FIELDS`. Non-finite (NaN/Inf) and inverted bounds quarantined as `INVALID_PRICE_BOUNDS`.
+- **Production Transport:** Implemented `UrllibHttpTransport` using Python standard library with bounded streaming ($\le 10$ MB limit).
+- **Persistent Fallback:** Collision-safe microsecond run IDs, mode `'x'` exclusive writes for page and run receipts, and `load_prior_validated_snapshot` fallback loader.
+- **Unit Test Receipts:** 34 tests passed in `tests/test_live_price_ingestion.py`; 251 tests passed repository-wide (0 failures).
+- **Next Step:** Proceed with Step 2 dataset consolidation / candidate identity policy before Step 6 remote training.

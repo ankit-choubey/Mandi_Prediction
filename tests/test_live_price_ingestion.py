@@ -1,12 +1,14 @@
 """
 Unit and Integration Test Suite for Live Price Ingestion Client & Snapshot Engine
 APMC Mandi Market Intelligence System
-Task: MP-SRC-004 (Steps 3–5)
+Tasks: MP-SRC-004 & MP-SRC-004B (Steps 3–5)
 
 Tests exercise:
 - Complete multiple-page pagination
-- Exact duplicates and conflicting quote detection
-- Same payload refetch with new receipt and content hash sharing
+- Exact duplicates and order-invariant conflicting quote safety
+- Provenance tracking via explicit DataMode (LIVE_FETCH vs TEST_FIXTURE vs HISTORICAL_REPLAY)
+- Provenance/transport mismatch rejection
+- Isolated snapshot namespaces (test fixtures write to fixture_snapshots, not live root)
 - Repeated page detection and abort
 - Total change detection mid-pagination
 - Ignored district filter fail-closed quarantine
@@ -14,21 +16,27 @@ Tests exercise:
 - Timeout, malformed JSON, and source-error JSON handling
 - Empty valid result handling
 - Missing fields and grade normalization policy (SOURCE_NOT_PROVIDED, never silently FAQ)
-- Price bounds violations ($P_min <= P_modal <= P_max$)
+- Honest price bounds (NO modal substitution for missing min/max, non-finite NaN/Inf rejected)
 - Malformed and future-dated observations
 - Unknown market alias enters REVIEW
 - Kanpur subdivision ambiguity (Kanpur Dehat quarantined)
 - IST day boundary and freshness lag
 - Delayed advice blocked and decoupled capabilities
-- Immutable exclusive writes (no overwrite)
-- Partial runs never advance last_successful_fetch
+- Collision-safe immutable exclusive writes (no overwrite on page or run receipts)
+- Atomic last_success pointer updated strictly on real LIVE_FETCH success
+- Persistent prior-success fallback loader
 - Secret sentinel absent from URLs, errors, and stored JSON receipts
+- Order-invariance across all conflict permutations ([A,A,B], [A,B,B], [B,A,A], [A,B,A])
+- Cross-page conflict quarantine
+- Urllib standard library transport bounded streaming
 - End-to-end fixture fetch -> archive -> validation -> health output
 """
 
 import json
+import math
 import os
 import shutil
+import sys
 import tempfile
 import unittest
 from datetime import date, datetime, timedelta, timezone
@@ -43,6 +51,8 @@ from src.health_status import (
 from src.live_price_ingestion import (
     APPROVED_DISTRICTS,
     CompletenessState,
+    DataMode,
+    DistrictIngestionResult,
     HttpTransport,
     IngestionCampaignResult,
     LivePriceIngestionClient,
@@ -50,9 +60,11 @@ from src.live_price_ingestion import (
     PageReceipt,
     RawPriceRecord,
     RecordDisposition,
+    UrllibHttpTransport,
     build_health_report_from_ingestion,
     load_api_key,
     load_contract,
+    load_prior_validated_snapshot,
     redact_credential_echo,
     sanitize_params,
     sanitize_url,
@@ -64,12 +76,13 @@ class TestLivePriceIngestion(unittest.TestCase):
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp(prefix="mandi_live_test_")
-        self.snapshots_dir = os.path.join(self.temp_dir, "live_snapshots")
+        self.snapshots_dir = os.path.join(self.temp_dir, "test_snapshots")
         self.ref_date = date(2026, 11, 12)
         self.mock_transport = MockHttpTransport()
         self.client = LivePriceIngestionClient(
             api_key="TEST_API_KEY_ABCD1234",
             transport=self.mock_transport,
+            data_mode=DataMode.TEST_FIXTURE,
             reference_date=self.ref_date,
             snapshots_root=self.snapshots_dir,
         )
@@ -86,30 +99,27 @@ class TestLivePriceIngestion(unittest.TestCase):
         client = LivePriceIngestionClient(
             api_key=secret_sentinel,
             transport=self.mock_transport,
+            data_mode=DataMode.TEST_FIXTURE,
             reference_date=self.ref_date,
             snapshots_root=self.snapshots_dir,
         )
 
-        # 1. URL Sanitization check
         url_with_secret = f"https://api.data.gov.in/resource/123?api-key={secret_sentinel}&format=json"
         clean_url = sanitize_url(url_with_secret)
         self.assertNotIn(secret_sentinel, clean_url)
         self.assertIn("REDACTED", clean_url)
 
-        # 2. Params Sanitization check
         params = {"api-key": secret_sentinel, "filters[district]": "Kanpur"}
         clean_params = sanitize_params(params)
         self.assertNotIn(secret_sentinel, str(clean_params))
         self.assertEqual(clean_params["api-key"], "[REDACTED]")
 
-        # 3. Echo detection & redaction in body
         echo_body = f'{{"error": "Invalid key: {secret_sentinel}", "records": []}}'
         redacted_body, echo_found = redact_credential_echo(echo_body, secret_sentinel)
         self.assertTrue(echo_found)
         self.assertNotIn(secret_sentinel, redacted_body)
         self.assertIn("[REDACTED_API_KEY]", redacted_body)
 
-        # 4. Storage receipt check
         self.mock_transport.set_response(
             "Kanpur", 0, 200, json.dumps({
                 "total": 1,
@@ -136,7 +146,6 @@ class TestLivePriceIngestion(unittest.TestCase):
         with open(receipt_file, "r", encoding="utf-8") as f:
             receipt_content = f.read()
 
-        # Assert secret sentinel is completely absent from written file
         self.assertNotIn(secret_sentinel, receipt_content)
         self.assertIn("[REDACTED]", receipt_content)
 
@@ -233,7 +242,7 @@ class TestLivePriceIngestion(unittest.TestCase):
         payload = json.dumps({
             "total": 2,
             "count": 2,
-            "records": [row, dict(row)]  # Identical duplicates
+            "records": [row, dict(row)]
         })
         self.mock_transport.set_response("Ghaziabad", 0, 200, payload)
 
@@ -245,10 +254,10 @@ class TestLivePriceIngestion(unittest.TestCase):
         self.assertTrue(res.validate_arithmetic()["is_balanced"])
 
     # -------------------------------------------------------------------------
-    # 4. Conflicting Quotes Quarantined
+    # 4. Conflicting Quotes Quarantined (ALL Members Quarantined)
     # -------------------------------------------------------------------------
     def test_04_conflicting_quote_quarantined(self):
-        """Conflicting quotes on identical key with divergent prices are quarantined."""
+        """When conflicting quotes appear for a natural key, ALL members are quarantined."""
         row1 = {
             "state": "Uttar Pradesh",
             "district": "Jhansi",
@@ -273,10 +282,13 @@ class TestLivePriceIngestion(unittest.TestCase):
 
         res = self.client.fetch_district_batch("Jhansi", "run_conflict", [0])
         self.assertEqual(res.records_fetched, 2)
-        self.assertEqual(res.records_accepted, 1)
-        self.assertEqual(res.records_quarantined, 1)
-        self.assertEqual(res.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value], 1)
+        # BOTH records are quarantined: 0 accepted!
+        self.assertEqual(res.records_accepted, 0)
+        self.assertEqual(res.records_quarantined, 2)
+        self.assertEqual(res.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value], 2)
         self.assertTrue(res.validate_arithmetic()["is_balanced"])
+        self.assertIsNone(res.oldest_observation_date)
+        self.assertIsNone(res.newest_observation_date)
 
     # -------------------------------------------------------------------------
     # 5. Same Payload Refetch Produces New Receipt with Independent Provenance
@@ -332,7 +344,6 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "modal_price": 550,
             }]
         })
-        # Both offset 0 and offset 1 return identical body
         self.mock_transport.set_response("Kanpur", 0, 200, page_payload)
         self.mock_transport.set_response("Kanpur", 1, 200, page_payload)
 
@@ -362,7 +373,7 @@ class TestLivePriceIngestion(unittest.TestCase):
             }]
         })
         page2 = json.dumps({
-            "total": 5,  # Changed mid-pagination!
+            "total": 5,
             "count": 0,
             "records": []
         })
@@ -383,7 +394,7 @@ class TestLivePriceIngestion(unittest.TestCase):
             "count": 1,
             "records": [{
                 "state": "Uttar Pradesh",
-                "district": "Agra",  # Wrong district!
+                "district": "Agra",
                 "market": "Agra APMC",
                 "commodity": "Potato",
                 "variety": "Other",
@@ -413,7 +424,7 @@ class TestLivePriceIngestion(unittest.TestCase):
         res = self.client.fetch_district_batch("Kanpur", "run_401", tracker)
 
         self.assertEqual(res.completeness_state, CompletenessState.BLOCKED)
-        self.assertEqual(tracker[0], 1)  # Only 1 request, zero retries
+        self.assertEqual(tracker[0], 1)
 
     # -------------------------------------------------------------------------
     # 10. HTTP 429 Rate Limiting with Retry-After
@@ -427,7 +438,7 @@ class TestLivePriceIngestion(unittest.TestCase):
         res = self.client.fetch_district_batch("Kanpur", "run_429", tracker)
 
         self.assertEqual(res.completeness_state, CompletenessState.PARTIAL)
-        self.assertGreater(tracker[0], 1)  # Tried retries
+        self.assertGreater(tracker[0], 1)
 
     # -------------------------------------------------------------------------
     # 11. HTTP 500 Server Error
@@ -446,13 +457,11 @@ class TestLivePriceIngestion(unittest.TestCase):
     # -------------------------------------------------------------------------
     def test_12_malformed_and_error_json(self):
         """Malformed JSON or API error payload is rejected with clean diagnostic."""
-        # Malformed JSON
         self.mock_transport.set_response("Kanpur", 0, 200, '{"records": [incomplete')
         res = self.client.fetch_district_batch("Kanpur", "run_malformed", [0])
         self.assertEqual(res.completeness_state, CompletenessState.FAILED)
         self.assertTrue(any("malformed json" in e.lower() for e in res.errors))
 
-        # API Error JSON
         self.mock_transport.set_response("Kanpur", 0, 200, '{"status": "error", "message": "Resource unavailable"}')
         res2 = self.client.fetch_district_batch("Kanpur", "run_apierr", [0])
         self.assertEqual(res2.completeness_state, CompletenessState.FAILED)
@@ -483,7 +492,7 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "market": "Kanpur(Grain) APMC",
                 "commodity": "Potato",
                 "variety": "Other",
-                "grade": None,  # Missing grade!
+                "grade": None,
                 "arrival_date": "2026-11-12",
                 "min_price": 500,
                 "max_price": 600,
@@ -502,7 +511,6 @@ class TestLivePriceIngestion(unittest.TestCase):
     # -------------------------------------------------------------------------
     def test_15_price_bounds_violations_quarantined(self):
         """Price bounds violations (negative price, min > modal, modal > max) are quarantined."""
-        # Non-positive price
         rec1 = self.client.parse_and_validate_record(
             raw_row={
                 "district": "Kanpur",
@@ -520,7 +528,6 @@ class TestLivePriceIngestion(unittest.TestCase):
         )
         self.assertEqual(rec1.disposition, RecordDisposition.INVALID_PRICE_BOUNDS)
 
-        # Min > Modal
         rec2 = self.client.parse_and_validate_record(
             raw_row={
                 "district": "Kanpur",
@@ -543,7 +550,6 @@ class TestLivePriceIngestion(unittest.TestCase):
     # -------------------------------------------------------------------------
     def test_16_malformed_and_future_dates_quarantined(self):
         """Unparseable or future dates relative to reference date are quarantined."""
-        # Malformed date
         rec_bad = self.client.parse_and_validate_record(
             raw_row={
                 "district": "Kanpur",
@@ -551,6 +557,8 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "commodity": "Potato",
                 "variety": "Other",
                 "arrival_date": "not-a-valid-date",
+                "min_price": 400,
+                "max_price": 600,
                 "modal_price": 500,
             },
             requested_district="Kanpur",
@@ -559,7 +567,6 @@ class TestLivePriceIngestion(unittest.TestCase):
         )
         self.assertEqual(rec_bad.disposition, RecordDisposition.MALFORMED_DATE)
 
-        # Future date (ref_date is 2026-11-12)
         rec_future = self.client.parse_and_validate_record(
             raw_row={
                 "district": "Kanpur",
@@ -567,6 +574,8 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "commodity": "Potato",
                 "variety": "Other",
                 "arrival_date": "2026-11-20",
+                "min_price": 400,
+                "max_price": 600,
                 "modal_price": 500,
             },
             requested_district="Kanpur",
@@ -587,6 +596,8 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "commodity": "Potato",
                 "variety": "Other",
                 "arrival_date": "2026-11-12",
+                "min_price": 450,
+                "max_price": 550,
                 "modal_price": 500,
             },
             requested_district="Kanpur",
@@ -608,6 +619,8 @@ class TestLivePriceIngestion(unittest.TestCase):
                 "commodity": "Paddy(Common)",
                 "variety": "Common",
                 "arrival_date": "2026-11-12",
+                "min_price": 1800,
+                "max_price": 1900,
                 "modal_price": 1850,
             },
             requested_district="Kanpur",
@@ -624,7 +637,6 @@ class TestLivePriceIngestion(unittest.TestCase):
         """Freshness lag is evaluated accurately against IST calendar reference date."""
         engine = RecommendationSafetyGate(current_ref_date=date(2026, 11, 12))
 
-        # Current (0-2 days lag)
         dec_today = engine.evaluate_gate(observation_date="2026-11-12")
         self.assertEqual(dec_today.freshness_status, FreshnessStatus.CURRENT.value)
         self.assertEqual(dec_today.lag_days, 0)
@@ -635,13 +647,11 @@ class TestLivePriceIngestion(unittest.TestCase):
         self.assertEqual(dec_2d.lag_days, 2)
         self.assertTrue(dec_2d.is_permitted)
 
-        # Delayed (3-5 days lag)
         dec_3d = engine.evaluate_gate(observation_date="2026-11-09")
         self.assertEqual(dec_3d.freshness_status, FreshnessStatus.DELAYED.value)
         self.assertEqual(dec_3d.lag_days, 3)
-        self.assertFalse(dec_3d.is_permitted)  # Active advice withheld
+        self.assertFalse(dec_3d.is_permitted)
 
-        # Stale (> 5 days lag)
         dec_6d = engine.evaluate_gate(observation_date="2026-11-06")
         self.assertEqual(dec_6d.freshness_status, FreshnessStatus.STALE.value)
         self.assertEqual(dec_6d.lag_days, 6)
@@ -664,13 +674,12 @@ class TestLivePriceIngestion(unittest.TestCase):
             completeness_state=CompletenessState.COMPLETE,
             sanitized_params={"format": "json"},
             endpoint_sanitized="https://api.data.gov.in/resource/test",
+            data_mode=DataMode.TEST_FIXTURE,
         )
 
-        # First write succeeds
         path = self.client.write_snapshot_page("run_collision_test", "Kanpur", receipt)
         self.assertTrue(os.path.exists(path))
 
-        # Second write to identical file must fail
         with self.assertRaises(FileExistsError):
             self.client.write_snapshot_page("run_collision_test", "Kanpur", receipt)
 
@@ -684,6 +693,7 @@ class TestLivePriceIngestion(unittest.TestCase):
             execution_timestamp_utc="2026-11-12T12:00:00Z",
             execution_timestamp_ist="2026-11-12 17:30:00 IST",
             overall_operational_state=OperationalState.PARTIAL,
+            data_mode=DataMode.LIVE_FETCH,
             is_live_verified=False,
             capabilities={"price_display_permitted": True, "active_advice_permitted": False},
         )
@@ -697,7 +707,7 @@ class TestLivePriceIngestion(unittest.TestCase):
     # 22. End-to-End Fixture Fetch -> Archive -> Validation -> Health Output
     # -------------------------------------------------------------------------
     def test_22_end_to_end_fixture_fetch_archive_validation_health(self):
-        """Complete workflow test from mock transport to HealthReport and terminal dashboard."""
+        """Complete workflow test: mock transport produces TEST_FIXTURE with is_live_verified=False."""
         payload = json.dumps({
             "total": 2,
             "count": 2,
@@ -735,25 +745,491 @@ class TestLivePriceIngestion(unittest.TestCase):
         campaign = self.client.execute_campaign(districts=["Kanpur"], run_id_utc="run_e2e_01")
 
         self.assertEqual(campaign.overall_operational_state, OperationalState.SUCCESS)
-        self.assertTrue(campaign.is_live_verified)
+        # CRITICAL MP-SRC-004B RULE: Test fixtures must NEVER set is_live_verified=True
+        self.assertFalse(campaign.is_live_verified)
+        self.assertEqual(campaign.data_mode, DataMode.TEST_FIXTURE)
+        self.assertFalse(campaign.is_synthetic)
         self.assertEqual(campaign.total_records_fetched, 2)
         self.assertEqual(campaign.total_records_accepted, 2)
         self.assertTrue(campaign.validate_arithmetic()["is_balanced"])
 
-        # Verify receipt file was written
         receipt_path = os.path.join(self.snapshots_dir, "run_e2e_01", "Kanpur", "page_00000.json")
         self.assertTrue(os.path.exists(receipt_path))
 
-        # Verify run-level receipt was written
         run_receipt_path = os.path.join(self.snapshots_dir, "run_e2e_01", "run_receipt.json")
         self.assertTrue(os.path.exists(run_receipt_path))
 
-        # Verify HealthReport conversion
         health_report = build_health_report_from_ingestion(campaign, reference_date=self.ref_date)
         self.assertEqual(health_report.operational_state, OperationalState.SUCCESS)
         self.assertEqual(health_report.freshness_status, FreshnessStatus.CURRENT)
         self.assertEqual(health_report.reconciliation.records_accepted, 2)
-        self.assertTrue(health_report.is_source_live)
+        self.assertFalse(health_report.is_source_live)
+
+    # -------------------------------------------------------------------------
+    # 23. Provenance Mode & Transport Mismatch Rejection (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_23_provenance_mode_and_mismatch_rejection(self):
+        """Mock transport must reject LIVE_FETCH claim and write only to fixture namespace."""
+        with self.assertRaises(ValueError):
+            LivePriceIngestionClient(
+                api_key="TEST_KEY",
+                transport=self.mock_transport,
+                data_mode=DataMode.LIVE_FETCH,  # Mismatch! Mock cannot masquerade as LIVE_FETCH
+            )
+
+        client_fixture = LivePriceIngestionClient(
+            api_key="TEST_KEY",
+            transport=self.mock_transport,
+            data_mode=DataMode.TEST_FIXTURE,
+        )
+        self.assertEqual(client_fixture.data_mode, DataMode.TEST_FIXTURE)
+        self.assertIn("fixture_snapshots", client_fixture.snapshots_root)
+
+    # -------------------------------------------------------------------------
+    # 24. Order-Invariant Conflict Safety Across All Permutations (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_24_conflict_safety_all_permutations(self):
+        """
+        Verify that conflicting quotes quarantine ALL members of the group, and that
+        any permutation of [A, A, B], [A, B, B], [B, A, A], [A, B, A] yields identical outcomes.
+        """
+        quote_a = {
+            "state": "Uttar Pradesh",
+            "district": "Kanpur",
+            "market": "Kanpur(Grain) APMC",
+            "commodity": "Potato",
+            "variety": "Other",
+            "grade": "FAQ",
+            "arrival_date": "2026-11-12",
+            "min_price": 500,
+            "max_price": 600,
+            "modal_price": 550,
+        }
+        quote_b = dict(quote_a)
+        quote_b["modal_price"] = 575  # Divergent price!
+
+        permutations = [
+            ("A_A_B", [quote_a, dict(quote_a), quote_b]),
+            ("A_B_B", [quote_a, quote_b, dict(quote_b)]),
+            ("B_A_A", [quote_b, quote_a, dict(quote_a)]),
+            ("A_B_A", [quote_a, quote_b, dict(quote_a)]),
+        ]
+
+        for label, record_list in permutations:
+            payload = json.dumps({"total": 3, "count": 3, "records": record_list})
+            mock_trans = MockHttpTransport()
+            mock_trans.set_response("Kanpur", 0, 200, payload)
+
+            c = LivePriceIngestionClient(
+                api_key="TEST_KEY",
+                transport=mock_trans,
+                data_mode=DataMode.TEST_FIXTURE,
+                reference_date=self.ref_date,
+                snapshots_root=os.path.join(self.temp_dir, f"snap_{label}"),
+            )
+            res = c.fetch_district_batch("Kanpur", f"run_{label}", [0])
+
+            self.assertEqual(res.records_fetched, 3, f"Failed on {label}: records_fetched")
+            self.assertEqual(res.records_accepted, 0, f"Failed on {label}: records_accepted must be 0")
+            self.assertEqual(res.records_duplicate, 0, f"Failed on {label}: records_duplicate must be 0")
+            self.assertEqual(res.records_quarantined, 3, f"Failed on {label}: records_quarantined must be 3")
+            self.assertTrue(res.validate_arithmetic()["is_balanced"], f"Failed on {label}: balance")
+            self.assertIsNone(res.oldest_observation_date, f"Failed on {label}: oldest_date")
+            self.assertIsNone(res.newest_observation_date, f"Failed on {label}: newest_date")
+
+    # -------------------------------------------------------------------------
+    # 25. Cross-Page Conflict Safety (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_25_cross_page_conflict_quarantines_all(self):
+        """Cross-page conflict: Quote A on page 1 is retroactively quarantined when Quote B appears on page 2."""
+        quote_a = {
+            "state": "Uttar Pradesh",
+            "district": "Lucknow",
+            "market": "Lucknow APMC",
+            "commodity": "Wheat",
+            "variety": "Dara",
+            "grade": "FAQ",
+            "arrival_date": "2026-11-12",
+            "min_price": 2400,
+            "max_price": 2500,
+            "modal_price": 2450,
+        }
+        quote_b = dict(quote_a)
+        quote_b["modal_price"] = 2480  # Divergent!
+
+        page1 = json.dumps({"total": 2, "count": 1, "offset": "0", "records": [quote_a]})
+        page2 = json.dumps({"total": 2, "count": 1, "offset": "1", "records": [quote_b]})
+
+        self.mock_transport.set_response("Lucknow", 0, 200, page1)
+        self.mock_transport.set_response("Lucknow", 1, 200, page2)
+
+        res = self.client.fetch_district_batch("Lucknow", "run_cross_page", [0])
+
+        self.assertEqual(res.records_fetched, 2)
+        self.assertEqual(res.records_accepted, 0)
+        self.assertEqual(res.records_quarantined, 2)
+        self.assertTrue(res.validate_arithmetic()["is_balanced"])
+
+    # -------------------------------------------------------------------------
+    # 26. Honest Missing Price Bounds (NO Modal Substitution) (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_26_honest_missing_price_bounds_no_modal_substitution(self):
+        """Missing min/max prices must NOT be substituted with modal_price, but quarantined."""
+        # Missing min_price
+        rec_no_min = self.client.parse_and_validate_record(
+            raw_row={
+                "district": "Kanpur",
+                "market": "Kanpur(Grain) APMC",
+                "commodity": "Potato",
+                "variety": "Other",
+                "arrival_date": "2026-11-12",
+                "min_price": None,
+                "max_price": 600,
+                "modal_price": 550,
+            },
+            requested_district="Kanpur",
+            retrieval_utc="2026-11-12T10:00:00Z",
+            display_ist="2026-11-12 15:30:00 IST",
+        )
+        self.assertEqual(rec_no_min.disposition, RecordDisposition.MISSING_REQUIRED_FIELDS)
+        self.assertIsNone(rec_no_min.min_price)
+        self.assertIn("Modal substitution is strictly forbidden", rec_no_min.disposition_reason)
+
+        # Missing max_price
+        rec_no_max = self.client.parse_and_validate_record(
+            raw_row={
+                "district": "Kanpur",
+                "market": "Kanpur(Grain) APMC",
+                "commodity": "Potato",
+                "variety": "Other",
+                "arrival_date": "2026-11-12",
+                "min_price": 500,
+                "max_price": "",
+                "modal_price": 550,
+            },
+            requested_district="Kanpur",
+            retrieval_utc="2026-11-12T10:00:00Z",
+            display_ist="2026-11-12 15:30:00 IST",
+        )
+        self.assertEqual(rec_no_max.disposition, RecordDisposition.MISSING_REQUIRED_FIELDS)
+        self.assertIsNone(rec_no_max.max_price)
+
+        # NaN price bounds
+        rec_nan = self.client.parse_and_validate_record(
+            raw_row={
+                "district": "Kanpur",
+                "market": "Kanpur(Grain) APMC",
+                "commodity": "Potato",
+                "variety": "Other",
+                "arrival_date": "2026-11-12",
+                "min_price": float("nan"),
+                "max_price": 600,
+                "modal_price": 550,
+            },
+            requested_district="Kanpur",
+            retrieval_utc="2026-11-12T10:00:00Z",
+            display_ist="2026-11-12 15:30:00 IST",
+        )
+        self.assertEqual(rec_nan.disposition, RecordDisposition.INVALID_PRICE_BOUNDS)
+
+        # Infinite price bounds
+        rec_inf = self.client.parse_and_validate_record(
+            raw_row={
+                "district": "Kanpur",
+                "market": "Kanpur(Grain) APMC",
+                "commodity": "Potato",
+                "variety": "Other",
+                "arrival_date": "2026-11-12",
+                "min_price": 500,
+                "max_price": float("inf"),
+                "modal_price": 550,
+            },
+            requested_district="Kanpur",
+            retrieval_utc="2026-11-12T10:00:00Z",
+            display_ist="2026-11-12 15:30:00 IST",
+        )
+        self.assertEqual(rec_inf.disposition, RecordDisposition.INVALID_PRICE_BOUNDS)
+
+    # -------------------------------------------------------------------------
+    # 27. Atomic Last Success Pointer & Persistent Fallback Loader (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_27_atomic_last_success_pointer_and_fallback_loader(self):
+        """
+        Prove last_successful_campaign.json is NEVER updated by TEST_FIXTURE,
+        and verify fallback loader recovers prior validated snapshot metadata.
+        """
+        # 1. Run campaign with TEST_FIXTURE: must NOT create pointer file
+        self.client.execute_campaign(districts=["Kanpur"], run_id_utc="run_fixture_01")
+        pointer_file = os.path.join(self.snapshots_dir, "last_successful_campaign.json")
+        self.assertFalse(os.path.exists(pointer_file))
+
+        # 2. Simulate a verified LIVE_FETCH success and write pointer file
+        live_dir = os.path.join(self.temp_dir, "simulated_live_snapshots")
+        os.makedirs(os.path.join(live_dir, "run_live_01"), exist_ok=True)
+        live_campaign = IngestionCampaignResult(
+            run_id_utc="run_live_01",
+            execution_timestamp_utc="2026-11-12T10:00:00.000000Z",
+            execution_timestamp_ist="2026-11-12 15:30:00 IST",
+            overall_operational_state=OperationalState.SUCCESS,
+            data_mode=DataMode.LIVE_FETCH,
+            is_live_verified=True,
+            total_records_accepted=42,
+            district_results={
+                "Kanpur": DistrictIngestionResult(
+                    district="Kanpur",
+                    completeness_state=CompletenessState.COMPLETE,
+                    newest_observation_date="2026-11-12",
+                )
+            },
+        )
+        # Write live receipt and pointer
+        with open(os.path.join(live_dir, "run_live_01", "run_receipt.json"), "w", encoding="utf-8") as f:
+            json.dump(live_campaign.to_dict(), f)
+
+        pointer_data = {
+            "run_id_utc": "run_live_01",
+            "execution_timestamp_utc": "2026-11-12T10:00:00.000000Z",
+            "execution_timestamp_ist": "2026-11-12 15:30:00 IST",
+            "total_records_accepted": 42,
+            "districts": ["Kanpur"],
+            "receipt_path": os.path.join("run_live_01", "run_receipt.json"),
+        }
+        with open(os.path.join(live_dir, "last_successful_campaign.json"), "w", encoding="utf-8") as f:
+            json.dump(pointer_data, f)
+
+        # 3. Fallback loader recovers prior validated snapshot
+        loaded = load_prior_validated_snapshot(snapshots_root=live_dir)
+        self.assertIsNotNone(loaded)
+        self.assertEqual(loaded["run_id_utc"], "run_live_01")
+        self.assertEqual(loaded["total_records_accepted"], 42)
+
+        # 4. Convert to health report with fallback active
+        blocked_campaign = IngestionCampaignResult(
+            run_id_utc="run_failed_02",
+            execution_timestamp_utc="2026-11-12T12:00:00.000000Z",
+            execution_timestamp_ist="2026-11-12 17:30:00 IST",
+            overall_operational_state=OperationalState.SOURCE_DOWN,
+            data_mode=DataMode.LIVE_FETCH,
+            is_live_verified=False,
+        )
+        report = build_health_report_from_ingestion(
+            blocked_campaign,
+            reference_date=self.ref_date,
+            prior_validated_snapshot=loaded,
+        )
+        self.assertTrue(report.is_fallback_active)
+        self.assertEqual(report.last_successful_fetch_utc, "2026-11-12T10:00:00.000000Z")
+        self.assertEqual(report.latest_observation_date, "2026-11-12")
+
+    # -------------------------------------------------------------------------
+    # 28. Run Receipt Collision Safety (MP-SRC-004B)
+    # -------------------------------------------------------------------------
+    def test_28_run_receipt_collision_safety(self):
+        """Attempting to write run_receipt.json when it already exists must raise FileExistsError."""
+        campaign = IngestionCampaignResult(
+            run_id_utc="run_collision_check",
+            execution_timestamp_utc="2026-11-12T10:00:00.000000Z",
+            execution_timestamp_ist="2026-11-12 15:30:00 IST",
+            overall_operational_state=OperationalState.SUCCESS,
+            data_mode=DataMode.TEST_FIXTURE,
+        )
+        # First write succeeds
+        self.client._write_run_receipt(campaign)
+        receipt_path = os.path.join(self.snapshots_dir, "run_collision_check", "run_receipt.json")
+        self.assertTrue(os.path.exists(receipt_path))
+
+        # Second write to same run_id must fail closed
+        with self.assertRaises(FileExistsError):
+            self.client._write_run_receipt(campaign)
+
+    # -------------------------------------------------------------------------
+    # 29. File Import Provenance & Integrity (Dataset-First Default)
+    # -------------------------------------------------------------------------
+    def test_29_file_import_provenance_and_integrity(self):
+        """
+        Verify that execute_file_import assigns FILE_IMPORT provenance, computes
+        file SHA-256, writes immutable snapshot receipt, and NEVER sets is_live_verified.
+        """
+        fixture_path = os.path.join(self.temp_dir, "fixture_kanpur.csv")
+        with open(fixture_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Potato,Other,FAQ,12/11/2026,550,600,575\n")
+            f.write("Uttar Pradesh,Kanpur,Uttaripura APMC,Wheat,Dara,FAQ,12/11/2026,2300,2400,2350\n")
+
+        import_dir = os.path.join(self.temp_dir, "import_snapshots")
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=import_dir,
+            reference_date=self.ref_date,
+        )
+        campaign = client.execute_file_import(
+            file_path=fixture_path,
+            district="Kanpur",
+            source_url="https://agmarknet.gov.in/test_archive.csv",
+            retrieval_timestamp_utc="2026-11-12T12:00:00Z",
+        )
+
+        self.assertEqual(campaign.data_mode, DataMode.FILE_IMPORT)
+        self.assertFalse(campaign.is_synthetic)
+        self.assertFalse(campaign.is_live_verified)
+        self.assertEqual(campaign.total_records_fetched, 2)
+        self.assertEqual(campaign.total_records_accepted, 2)
+        self.assertEqual(campaign.total_records_quarantined, 0)
+        self.assertEqual(campaign.total_records_duplicate, 0)
+        self.assertTrue(campaign.capabilities["price_display_permitted"])
+        self.assertFalse(campaign.capabilities["active_advice_permitted"])
+        self.assertTrue(campaign.capabilities["is_import_verified"])
+
+        # Verify pointer file was NOT created
+        pointer_file = os.path.join(import_dir, "last_successful_campaign.json")
+        self.assertFalse(os.path.exists(pointer_file))
+
+        # Verify immutable page receipt exists and has file SHA
+        page_file = os.path.join(import_dir, campaign.run_id_utc, "Kanpur", "page_00000.json")
+        self.assertTrue(os.path.exists(page_file))
+        with open(page_file, "r", encoding="utf-8") as pf:
+            receipt_json = json.load(pf)
+        self.assertEqual(receipt_json["data_mode"], "FILE_IMPORT")
+        self.assertEqual(receipt_json["source_file_path"], fixture_path)
+        self.assertTrue(len(receipt_json["source_file_sha256"]) == 64)
+
+    # -------------------------------------------------------------------------
+    # 30. File Import Order-Invariant Conflicts & Deduplication
+    # -------------------------------------------------------------------------
+    def test_30_file_import_order_invariant_conflicts_and_duplicates(self):
+        """
+        Verify that conflicting quotes in an imported CSV trigger order-invariant
+        quarantine of ALL conflicting records, while exact duplicates are counted.
+        """
+        fixture_path = os.path.join(self.temp_dir, "fixture_conflicts.csv")
+        with open(fixture_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            # Anchor quote A
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Potato,Other,FAQ,12/11/2026,550,600,575\n")
+            # Exact duplicate of A
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Potato,Other,FAQ,12/11/2026,550,600,575\n")
+            # Divergent quote B (different price) -> causes all 3 to be quarantined!
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Potato,Other,FAQ,12/11/2026,600,700,650\n")
+            # Clean record for another commodity
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Wheat,Dara,FAQ,12/11/2026,2000,2100,2050\n")
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=os.path.join(self.temp_dir, "import_snapshots_2"),
+            reference_date=self.ref_date,
+        )
+        campaign = client.execute_file_import(file_path=fixture_path, district="Kanpur")
+
+        # Arithmetic check: 4 fetched = 1 accepted (wheat) + 0 dup + 3 quarantined (potato conflict)
+        self.assertEqual(campaign.total_records_fetched, 4)
+        self.assertEqual(campaign.total_records_accepted, 1)
+        self.assertEqual(campaign.total_records_quarantined, 3)
+        self.assertEqual(campaign.total_records_duplicate, 0)
+        recon = campaign.validate_arithmetic()
+        self.assertTrue(recon["is_balanced"])
+
+    # -------------------------------------------------------------------------
+    # 31. File Import Honest Price Bounds & Rejection of Modal Substitution
+    # -------------------------------------------------------------------------
+    def test_31_file_import_honest_price_bounds_and_invalid_data(self):
+        """
+        Verify that missing min/max prices in imported CSV are NEVER replaced by modal_price,
+        and invalid bounds / out-of-scope subdivisions are quarantined.
+        """
+        fixture_path = os.path.join(self.temp_dir, "fixture_bounds.csv")
+        with open(fixture_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            # Missing min_price: must be MISSING_REQUIRED_FIELDS (NO modal substitution)
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Potato,Other,FAQ,12/11/2026,,600,575\n")
+            # Inverted bounds: min > modal
+            f.write("Uttar Pradesh,Kanpur,Kanpur(Grain) APMC,Wheat,Dara,FAQ,12/11/2026,2500,2400,2300\n")
+            # Kanpur Dehat: out of scope subdivision
+            f.write("Uttar Pradesh,Kanpur Dehat,Rura APMC,Maize,Other,FAQ,12/11/2026,1800,1900,1850\n")
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=os.path.join(self.temp_dir, "import_snapshots_3"),
+            reference_date=self.ref_date,
+        )
+        campaign = client.execute_file_import(file_path=fixture_path)
+
+        self.assertEqual(campaign.total_records_fetched, 3)
+        self.assertEqual(campaign.total_records_accepted, 0)
+        self.assertEqual(campaign.total_records_quarantined, 3)
+        recon = campaign.validate_arithmetic()
+        self.assertTrue(recon["is_balanced"])
+
+    # -------------------------------------------------------------------------
+    # 32. File Import Repeated Idempotent Runs
+    # -------------------------------------------------------------------------
+    def test_32_file_import_repeated_idempotent_runs(self):
+        """Re-importing the same dataset file produces identical counts and balances."""
+        fixture_path = os.path.join(self.temp_dir, "fixture_idempotent.csv")
+        with open(fixture_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Jhansi,Jhansi APMC,Wheat,Dara,FAQ,12/11/2026,2200,2300,2250\n")
+            f.write("Uttar Pradesh,Jhansi,Jhansi APMC,Gram,Other,FAQ,12/11/2026,5000,5200,5100\n")
+
+        client = LivePriceIngestionClient(
+            data_mode=DataMode.FILE_IMPORT,
+            snapshots_root=os.path.join(self.temp_dir, "import_snapshots_4"),
+            reference_date=self.ref_date,
+        )
+        c1 = client.execute_file_import(file_path=fixture_path, district="Jhansi")
+        c2 = client.execute_file_import(file_path=fixture_path, district="Jhansi")
+
+        self.assertEqual(c1.total_records_fetched, c2.total_records_fetched)
+        self.assertEqual(c1.total_records_accepted, c2.total_records_accepted)
+        self.assertEqual(c1.total_records_quarantined, c2.total_records_quarantined)
+        self.assertEqual(c1.total_records_duplicate, c2.total_records_duplicate)
+        self.assertNotEqual(c1.run_id_utc, c2.run_id_utc)
+
+    # -------------------------------------------------------------------------
+    # 33. File Import Size & Row Limits Rejection
+    # -------------------------------------------------------------------------
+    def test_33_file_import_size_and_row_budget_rejections(self):
+        """Files exceeding 10MB or 50,000 rows must fail with ValueError before reading."""
+        oversized_rows_path = os.path.join(self.temp_dir, "oversized_rows.csv")
+        with open(oversized_rows_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            # Write 50,001 rows
+            for i in range(50001):
+                f.write(f"Uttar Pradesh,Unnao,Unnao APMC,Commodity_{i},Other,FAQ,12/11/2026,100,200,150\n")
+
+        client = LivePriceIngestionClient(data_mode=DataMode.FILE_IMPORT)
+        with self.assertRaises(ValueError) as ctx:
+            client.execute_file_import(file_path=oversized_rows_path)
+        self.assertIn("exceeds maximum allowed local processing limit", str(ctx.exception))
+
+    # -------------------------------------------------------------------------
+    # 34. File Import CLI Invocation
+    # -------------------------------------------------------------------------
+    def test_34_file_import_cli_invocation(self):
+        """Invoke CLI with --import-file and --json and verify execution code and JSON output."""
+        fixture_path = os.path.join(self.temp_dir, "fixture_cli.csv")
+        with open(fixture_path, "w", encoding="utf-8") as f:
+            f.write("State,District,Market,Commodity,Variety,Grade,Arrival_Date,Min_Price,Max_Price,Modal_Price\n")
+            f.write("Uttar Pradesh,Lucknow,Lucknow APMC,Potato,Other,FAQ,12/11/2026,700,800,750\n")
+
+        import subprocess
+        cmd = [
+            sys.executable,
+            "-m",
+            "src.live_price_ingestion",
+            "--import-file",
+            fixture_path,
+            "--district",
+            "Lucknow",
+            "--snapshots-dir",
+            os.path.join(self.temp_dir, "cli_snapshots"),
+            "--json",
+        ]
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        self.assertEqual(res.returncode, 0)
+        output = json.loads(res.stdout)
+        self.assertEqual(output["data_mode"], "FILE_IMPORT")
+        self.assertFalse(output["is_live_verified"])
+        self.assertEqual(output["total_records_accepted"], 1)
 
 
 if __name__ == "__main__":

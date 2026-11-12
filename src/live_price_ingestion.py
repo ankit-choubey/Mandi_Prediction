@@ -1,19 +1,26 @@
 """
 Live Price Ingestion Client & Snapshot Engine
 APMC Mandi Market Intelligence System
-Task: MP-SRC-004 (Steps 3–5)
+Tasks: MP-SRC-004 & MP-SRC-004B (Steps 3–5)
 
-Provides:
-1. Bounded, safe, read-only ingestion client for official api.data.gov.in daily mandi prices:
-   Resource UUID: 9ef84268-d588-465a-a308-a864a43d0070
-2. Injected transport and clock interfaces for 100% deterministic, offline testability.
-3. Strict secret sanitization: zero credential leakage in URLs, logs, exceptions, or payloads.
-4. Fail-closed pagination, duplicate detection, conflicting quote quarantine, and supersession provenance.
-5. Scope enforcement: 5 approved districts (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao).
-   Explicit quarantine for Kanpur Dehat subdivision ambiguity.
-6. Missing grade policy: explicitly 'SOURCE_NOT_PROVIDED', never silently 'FAQ'.
-7. Immutable, collision-safe snapshot storage with independent retrieval provenance.
-8. Decoupled capability tracking: Price Display vs Forecast Eligibility vs Economics Advisory.
+Core Capabilities:
+1. Truthful source provenance tracking via explicit DataMode:
+   - LIVE_FETCH: authenticated real-network harvest via official data.gov.in API.
+   - HISTORICAL_REPLAY: replay of previously captured verified snapshots.
+   - TEST_FIXTURE: isolated regression test fixtures (never sets live verified flags).
+   - SYNTHETIC_SIMULATION: reserved mode requiring explicit prior owner approval.
+2. Standard library transport (urllib.request) with bounded chunked streaming (stops <= 10MB).
+3. Secret-safe parameter/URL sanitization and body echo detection/redaction.
+4. Conflict Safety: quarantines ALL members of any natural-key conflict group (order-invariant).
+5. Honest price bounds: missing min/max prices are preserved as missing/quarantined;
+   modal price substitution is strictly forbidden.
+6. Scope enforcement: 5 authorized districts (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao).
+   Kanpur Dehat subdivision ambiguity explicitly quarantined.
+7. Missing grade normalized to SOURCE_NOT_PROVIDED, never silently FAQ.
+8. Collision-safe immutable persistence (microsecond run IDs, exclusive 'x' writes for both
+   page receipts and run receipts).
+9. Atomic last_success pointer updated strictly on complete real-live campaigns.
+10. Decoupled capability tracking (Price Display vs Forecasting vs Economics Advisory).
 """
 
 from __future__ import annotations
@@ -22,6 +29,7 @@ import argparse
 import hashlib
 import json
 import logging
+import math
 import os
 import re
 import sys
@@ -29,8 +37,10 @@ import time
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Tuple, Union
+from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
+import urllib.request
 
 from src.health_status import (
     DEFAULT_RESOURCE_ID,
@@ -65,10 +75,22 @@ DEFAULT_ALIAS_PATH = os.path.join(
     "market_alias_candidates_v21.csv",
 )
 
-DEFAULT_SNAPSHOTS_ROOT = os.path.join(
+DEFAULT_LIVE_SNAPSHOTS_ROOT = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "data",
     "live_snapshots",
+)
+
+DEFAULT_FIXTURE_SNAPSHOTS_ROOT = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "data",
+    "fixture_snapshots",
+)
+
+DEFAULT_FILE_IMPORT_SNAPSHOTS_ROOT = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "data",
+    "imported_snapshots",
 )
 
 APPROVED_DISTRICTS = ("Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao")
@@ -76,7 +98,9 @@ APPROVED_STATE = "Uttar Pradesh"
 
 MAX_HTTP_REQUESTS_BUDGET = 50
 MAX_RECORDS_BUDGET = 25000
+MAX_IMPORT_RECORDS_BUDGET = 50000
 MAX_RESPONSE_BYTES = 10 * 1024 * 1024  # 10 MB
+STREAM_CHUNK_BYTES = 64 * 1024        # 64 KB
 PER_REQUEST_TIMEOUT_SECONDS = 10.0
 PER_DISTRICT_TIMEOUT_SECONDS = 30.0
 MAX_RETRIES_PER_PAGE = 2
@@ -90,6 +114,14 @@ IST_TIMEZONE = timezone(timedelta(hours=5, minutes=30))
 # =============================================================================
 # ENUMS & DATA MODELS
 # =============================================================================
+
+class DataMode(str, Enum):
+    LIVE_FETCH = "LIVE_FETCH"
+    HISTORICAL_REPLAY = "HISTORICAL_REPLAY"
+    TEST_FIXTURE = "TEST_FIXTURE"
+    FILE_IMPORT = "FILE_IMPORT"
+    SYNTHETIC_SIMULATION = "SYNTHETIC_SIMULATION"  # Reserved: requires prior owner approval
+
 
 class RecordDisposition(str, Enum):
     ACCEPTED = "ACCEPTED"
@@ -136,6 +168,8 @@ class RawPriceRecord:
     display_timestamp_ist: str
     source_resource_id: str
     source_endpoint: str
+    data_mode: DataMode = DataMode.LIVE_FETCH
+    is_synthetic: bool = False
     price_unit: str = PUBLISHED_PRICE_UNIT
     superseded_by: Optional[str] = None
     supersedes: Optional[str] = None
@@ -157,6 +191,7 @@ class RawPriceRecord:
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
         d["disposition"] = self.disposition.value
+        d["data_mode"] = self.data_mode.value
         return d
 
 
@@ -173,13 +208,21 @@ class PageReceipt:
     completeness_state: CompletenessState
     sanitized_params: Dict[str, Any]
     endpoint_sanitized: str
+    data_mode: DataMode = DataMode.LIVE_FETCH
+    is_synthetic: bool = False
     records: List[Dict[str, Any]] = field(default_factory=list)
     error_message: Optional[str] = None
     sanitized_credential_detected: bool = False
+    source_file_path: Optional[str] = None
+    source_file_sha256: Optional[str] = None
+    source_file_bytes: Optional[int] = None
+    source_url_declared: str = "UNKNOWN"
+    retrieval_time_declared: str = "UNKNOWN"
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
         d["completeness_state"] = self.completeness_state.value
+        d["data_mode"] = self.data_mode.value
         return d
 
 
@@ -187,6 +230,8 @@ class PageReceipt:
 class DistrictIngestionResult:
     district: str
     completeness_state: CompletenessState
+    data_mode: DataMode = DataMode.LIVE_FETCH
+    is_synthetic: bool = False
     total_pages_fetched: int = 0
     source_reported_total: Optional[int] = None
     records_fetched: int = 0
@@ -219,6 +264,8 @@ class DistrictIngestionResult:
         return {
             "district": self.district,
             "completeness_state": self.completeness_state.value,
+            "data_mode": self.data_mode.value,
+            "is_synthetic": self.is_synthetic,
             "total_pages_fetched": self.total_pages_fetched,
             "source_reported_total": self.source_reported_total,
             "records_fetched": self.records_fetched,
@@ -241,6 +288,8 @@ class IngestionCampaignResult:
     execution_timestamp_utc: str
     execution_timestamp_ist: str
     overall_operational_state: OperationalState
+    data_mode: DataMode = DataMode.LIVE_FETCH
+    is_synthetic: bool = False
     district_results: Dict[str, DistrictIngestionResult] = field(default_factory=dict)
     total_http_requests: int = 0
     total_records_fetched: int = 0
@@ -252,6 +301,7 @@ class IngestionCampaignResult:
     is_blocked: bool = False
     blocked_reason: Optional[str] = None
     capabilities: Dict[str, Any] = field(default_factory=dict)
+    source_files: List[Dict[str, Any]] = field(default_factory=list)
 
     def validate_arithmetic(self) -> Dict[str, Any]:
         accounted = (
@@ -273,6 +323,8 @@ class IngestionCampaignResult:
             "execution_timestamp_utc": self.execution_timestamp_utc,
             "execution_timestamp_ist": self.execution_timestamp_ist,
             "overall_operational_state": self.overall_operational_state.value,
+            "data_mode": self.data_mode.value,
+            "is_synthetic": self.is_synthetic,
             "total_http_requests": self.total_http_requests,
             "total_records_fetched": self.total_records_fetched,
             "total_records_accepted": self.total_records_accepted,
@@ -282,6 +334,7 @@ class IngestionCampaignResult:
             "is_live_verified": self.is_live_verified,
             "is_blocked": self.is_blocked,
             "blocked_reason": self.blocked_reason,
+            "source_files": self.source_files,
             "arithmetic_reconciliation": self.validate_arithmetic(),
             "capabilities": self.capabilities,
             "district_results": {
@@ -382,7 +435,7 @@ def load_api_key(
 
 
 # =============================================================================
-# HTTP TRANSPORT INTERFACES
+# HTTP TRANSPORT INTERFACES & BOUNDED STREAMING
 # =============================================================================
 
 class HttpTransport:
@@ -393,12 +446,78 @@ class HttpTransport:
         url: str,
         params: Optional[Dict[str, Any]] = None,
         timeout: float = PER_REQUEST_TIMEOUT_SECONDS,
+        max_bytes: int = MAX_RESPONSE_BYTES,
     ) -> Tuple[int, str, Dict[str, str]]:
         raise NotImplementedError
 
 
+class UrllibHttpTransport(HttpTransport):
+    """
+    Production-grade HTTP transport using Python standard library (urllib.request).
+    Streams chunks bounded to max_bytes <= 10MB to prevent memory exhaustion.
+    Strictly sanitizes error strings and URLs.
+    """
+
+    def get(
+        self,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        timeout: float = PER_REQUEST_TIMEOUT_SECONDS,
+        max_bytes: int = MAX_RESPONSE_BYTES,
+    ) -> Tuple[int, str, Dict[str, str]]:
+        query_str = urlencode(params or {}) if params else ""
+        req_url = f"{url}?{query_str}" if query_str else url
+        sanitized_req_url = sanitize_url(req_url)
+
+        req = urllib.request.Request(
+            req_url,
+            headers={
+                "User-Agent": "MandiPriceIntelligence/1.0",
+                "Accept": "application/json",
+            },
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                status_code = response.status
+                headers = dict(response.headers)
+
+                # Bounded streaming read
+                chunks = []
+                total_bytes = 0
+                while True:
+                    chunk = response.read(STREAM_CHUNK_BYTES)
+                    if not chunk:
+                        break
+                    total_bytes += len(chunk)
+                    if total_bytes > max_bytes:
+                        raise ValueError(f"Response exceeded maximum allowed size ({max_bytes} bytes).")
+                    chunks.append(chunk)
+
+                body_bytes = b"".join(chunks)
+                body_text = body_bytes.decode("utf-8", errors="replace")
+                return status_code, body_text, headers
+
+        except HTTPError as http_err:
+            sanitized_err_url = sanitize_url(http_err.filename or sanitized_req_url)
+            err_headers = dict(http_err.headers) if http_err.headers else {}
+            # Read error body bounded
+            try:
+                err_body = http_err.read(min(STREAM_CHUNK_BYTES, 65536)).decode("utf-8", errors="replace")
+            except Exception:
+                err_body = ""
+            return http_err.code, err_body, err_headers
+
+        except URLError as url_err:
+            sanitized_reason = sanitize_url(str(url_err.reason))
+            raise RuntimeError(f"Network error accessing {sanitized_req_url}: {sanitized_reason}") from None
+        except Exception as exc:
+            sanitized_exc = sanitize_url(str(exc))
+            raise RuntimeError(f"HTTP GET failed for {sanitized_req_url}: {sanitized_exc}") from None
+
+
 class RequestsHttpTransport(HttpTransport):
-    """Production HTTP transport using requests with strict sanitization."""
+    """Supported dependency transport using requests with bounded streaming."""
 
     def __init__(self):
         try:
@@ -412,29 +531,43 @@ class RequestsHttpTransport(HttpTransport):
         url: str,
         params: Optional[Dict[str, Any]] = None,
         timeout: float = PER_REQUEST_TIMEOUT_SECONDS,
+        max_bytes: int = MAX_RESPONSE_BYTES,
     ) -> Tuple[int, str, Dict[str, str]]:
         if self._requests is None:
-            raise RuntimeError(
-                "requests library is not available in environment. "
-                "Use MockHttpTransport or install requests."
-            )
+            raise RuntimeError("requests library is not installed. Use UrllibHttpTransport.")
 
         sanitized_req_url = sanitize_url(url)
         try:
-            resp = self._requests.get(url, params=params, timeout=timeout)
-            headers = dict(resp.headers)
-            return resp.status_code, resp.text, headers
+            with self._requests.get(url, params=params, timeout=timeout, stream=True) as resp:
+                status_code = resp.status_code
+                headers = dict(resp.headers)
+
+                chunks = []
+                total_bytes = 0
+                for chunk in resp.iter_content(chunk_size=STREAM_CHUNK_BYTES):
+                    if not chunk:
+                        continue
+                    total_bytes += len(chunk)
+                    if total_bytes > max_bytes:
+                        raise ValueError(f"Response exceeded maximum allowed size ({max_bytes} bytes).")
+                    chunks.append(chunk)
+
+                body_bytes = b"".join(chunks)
+                body_text = body_bytes.decode(resp.encoding or "utf-8", errors="replace")
+                return status_code, body_text, headers
+
         except Exception as exc:
-            # Strictly sanitize exception representations to never expose query keys
             sanitized_exc_msg = sanitize_url(str(exc))
             raise RuntimeError(f"HTTP GET failed for {sanitized_req_url}: {sanitized_exc_msg}") from None
 
 
 class MockHttpTransport(HttpTransport):
-    """Mock HTTP transport for testing without network access."""
+    """
+    Mock HTTP transport for testing without network access.
+    Explicitly designated for TEST_FIXTURE provenance.
+    """
 
     def __init__(self, response_map: Optional[Dict[Tuple[str, int], Tuple[int, str, Dict[str, str]]]] = None):
-        # Key: (district, offset) -> (status_code, body, headers)
         self.response_map = response_map or {}
         self.call_history: List[Dict[str, Any]] = []
 
@@ -453,6 +586,7 @@ class MockHttpTransport(HttpTransport):
         url: str,
         params: Optional[Dict[str, Any]] = None,
         timeout: float = PER_REQUEST_TIMEOUT_SECONDS,
+        max_bytes: int = MAX_RESPONSE_BYTES,
     ) -> Tuple[int, str, Dict[str, str]]:
         params = params or {}
         self.call_history.append({
@@ -473,7 +607,6 @@ class MockHttpTransport(HttpTransport):
         if fallback_key in self.response_map:
             return self.response_map[fallback_key]
 
-        # Default empty JSON response
         empty_payload = json.dumps({
             "total": 0,
             "count": 0,
@@ -497,10 +630,6 @@ def load_contract(contract_path: Optional[str] = None) -> Dict[str, Any]:
 
 
 def load_alias_mapping(alias_path: Optional[str] = None) -> Dict[Tuple[str, str], Dict[str, Any]]:
-    """
-    Load reference alias policy table.
-    Maps: (district, raw_market) -> alias record dict
-    """
     path = alias_path or DEFAULT_ALIAS_PATH
     mapping: Dict[Tuple[str, str], Dict[str, Any]] = {}
     if not os.path.exists(path):
@@ -518,7 +647,6 @@ def load_alias_mapping(alias_path: Optional[str] = None) -> Dict[Tuple[str, str]
 
 
 def parse_observation_date(date_str: Any) -> Optional[date]:
-    """Parse string date from Agmarknet API into a date object."""
     if not date_str or not isinstance(date_str, str):
         return None
     cleaned = date_str.strip()
@@ -543,25 +671,52 @@ def extract_field(record: Dict[str, Any], candidates: Sequence[str]) -> Any:
 
 class LivePriceIngestionClient:
     """
-    Client for fetching, validating, and persisting live daily APMC mandi market prices.
-    Designed for bounded execution, fail-closed security, and strict data trust.
+    Client for fetching, validating, and persisting daily APMC mandi market prices.
+    Enforces explicit DataMode provenance, order-invariant conflict safety, honest
+    price bounds, and collision-safe immutable persistence.
     """
 
     def __init__(
         self,
         api_key: Optional[str] = None,
         transport: Optional[HttpTransport] = None,
+        data_mode: Optional[DataMode] = None,
         contract: Optional[Dict[str, Any]] = None,
         alias_mapping: Optional[Dict[Tuple[str, str], Dict[str, Any]]] = None,
         reference_date: Optional[date] = None,
         snapshots_root: Optional[str] = None,
     ):
         self.api_key = api_key or load_api_key()
-        self.transport = transport or RequestsHttpTransport()
         self.contract = contract or load_contract()
         self.alias_mapping = alias_mapping if alias_mapping is not None else load_alias_mapping()
         self.ref_date = reference_date or datetime.now(IST_TIMEZONE).date()
-        self.snapshots_root = snapshots_root or DEFAULT_SNAPSHOTS_ROOT
+
+        # Determine transport & provenance mode
+        if transport is not None:
+            self.transport = transport
+            if isinstance(transport, MockHttpTransport):
+                # Mock transport defaults to TEST_FIXTURE
+                self.data_mode = data_mode or DataMode.TEST_FIXTURE
+                if self.data_mode == DataMode.LIVE_FETCH:
+                    raise ValueError(
+                        "Provenance mismatch: LIVE_FETCH mode cannot be used with MockHttpTransport."
+                    )
+            else:
+                self.data_mode = data_mode or DataMode.LIVE_FETCH
+        else:
+            # Default to standard library UrllibHttpTransport for production
+            self.transport = UrllibHttpTransport()
+            self.data_mode = data_mode or DataMode.LIVE_FETCH
+
+        # Namespace separation: test fixtures and file imports must never write to live snapshots root
+        if snapshots_root:
+            self.snapshots_root = snapshots_root
+        elif self.data_mode == DataMode.TEST_FIXTURE:
+            self.snapshots_root = DEFAULT_FIXTURE_SNAPSHOTS_ROOT
+        elif self.data_mode == DataMode.FILE_IMPORT:
+            self.snapshots_root = DEFAULT_FILE_IMPORT_SNAPSHOTS_ROOT
+        else:
+            self.snapshots_root = DEFAULT_LIVE_SNAPSHOTS_ROOT
 
         self.source_metadata = self.contract.get("source_metadata", {})
         self.resource_id = self.source_metadata.get("resource_id", DEFAULT_RESOURCE_ID)
@@ -585,7 +740,6 @@ class LivePriceIngestionClient:
         display_ist: str,
     ) -> RawPriceRecord:
         """Parse raw JSON dict into RawPriceRecord with deterministic disposition."""
-        # 1. Extract raw field values supporting casing / XML encoding
         state = str(extract_field(raw_row, ["state", "State"]) or "").strip()
         dist = str(extract_field(raw_row, ["district", "District"]) or "").strip()
         market = str(extract_field(raw_row, ["market", "Market"]) or "").strip()
@@ -598,7 +752,7 @@ class LivePriceIngestionClient:
         max_p_raw = extract_field(raw_row, ["max_price", "Max_Price", "Max_x0020_Price"])
         modal_p_raw = extract_field(raw_row, ["modal_price", "Modal_Price", "Modal_x0020_Price"])
 
-        # 2. Grade normalization: missing grade is explicitly SOURCE_NOT_PROVIDED, never silently FAQ
+        # Grade normalization: missing grade is explicitly SOURCE_NOT_PROVIDED, never silently FAQ
         if grade_raw is None or str(grade_raw).strip() == "":
             grade_norm = GRADE_NOT_PROVIDED
             grade_raw_str = ""
@@ -606,21 +760,31 @@ class LivePriceIngestionClient:
             grade_raw_str = str(grade_raw).strip()
             grade_norm = grade_raw_str
 
-        # 3. Required fields presence check
+        base_kwargs = {
+            "state": state,
+            "district": dist,
+            "market_raw": market,
+            "commodity": commodity,
+            "variety": variety,
+            "grade_raw": grade_raw_str,
+            "grade_normalized": grade_norm,
+            "arrival_date_raw": arrival_date_raw,
+            "min_price_raw": min_p_raw,
+            "max_price_raw": max_p_raw,
+            "modal_price_raw": modal_p_raw,
+            "retrieval_timestamp_utc": retrieval_utc,
+            "display_timestamp_ist": display_ist,
+            "source_resource_id": self.resource_id,
+            "source_endpoint": self.endpoint_url,
+            "data_mode": self.data_mode,
+            "is_synthetic": (self.data_mode == DataMode.SYNTHETIC_SIMULATION),
+        }
+
+        # 1. Required fields presence check
         if not (dist and market and commodity and arrival_date_raw and modal_p_raw is not None):
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=None,
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -628,27 +792,13 @@ class LivePriceIngestionClient:
                 market_alias_status="UNKNOWN",
                 disposition=RecordDisposition.MISSING_REQUIRED_FIELDS,
                 disposition_reason="One or more mandatory fields are missing from API payload.",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
-        # 4. Scope & Subdivision Check (Kanpur vs Kanpur Dehat)
+        # 2. Scope & Subdivision Check (Kanpur vs Kanpur Dehat)
         if dist.lower() == "kanpur dehat":
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=None,
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -659,26 +809,12 @@ class LivePriceIngestionClient:
                     "Kanpur Dehat is an administrative subdivision outside the authorized "
                     "5-district scope (Kanpur Nagar/Kanpur Grain APMC). Quarantined."
                 ),
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
         if dist.lower() != requested_district.lower() or dist not in APPROVED_DISTRICTS:
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=None,
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -686,28 +822,14 @@ class LivePriceIngestionClient:
                 market_alias_status="OUT_OF_SCOPE",
                 disposition=RecordDisposition.OUT_OF_SCOPE_DISTRICT,
                 disposition_reason=f"District '{dist}' does not match requested scope '{requested_district}'.",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
-        # 5. Date validation
+        # 3. Date validation
         parsed_d = parse_observation_date(arrival_date_raw)
         if parsed_d is None:
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=None,
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -715,26 +837,12 @@ class LivePriceIngestionClient:
                 market_alias_status="UNKNOWN",
                 disposition=RecordDisposition.MALFORMED_DATE,
                 disposition_reason=f"Arrival date '{arrival_date_raw}' could not be parsed into valid calendar date.",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
         if parsed_d > self.ref_date:
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=parsed_d.isoformat(),
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -742,31 +850,31 @@ class LivePriceIngestionClient:
                 market_alias_status="UNKNOWN",
                 disposition=RecordDisposition.FUTURE_DATED,
                 disposition_reason=f"Arrival date {parsed_d} is in the future relative to reference {self.ref_date}.",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
-        # 6. Price numeric conversion and physical bounds check
+        # 4. Honest Price Bounds & Required Price Check (NO MODAL SUBSTITUTION)
+        # Check if min_price or max_price are missing
+        if min_p_raw is None or str(min_p_raw).strip() == "" or max_p_raw is None or str(max_p_raw).strip() == "":
+            return RawPriceRecord(
+                **base_kwargs,
+                arrival_date_parsed=parsed_d.isoformat(),
+                min_price=None,
+                max_price=None,
+                modal_price=None,
+                market_canonical=None,
+                market_alias_status="UNKNOWN",
+                disposition=RecordDisposition.MISSING_REQUIRED_FIELDS,
+                disposition_reason="Mandatory price bounds (min_price or max_price) missing. Modal substitution is strictly forbidden.",
+            )
+
         try:
             p_modal = float(modal_p_raw)
-            p_min = float(min_p_raw) if min_p_raw is not None else p_modal
-            p_max = float(max_p_raw) if max_p_raw is not None else p_modal
+            p_min = float(min_p_raw)
+            p_max = float(max_p_raw)
         except (ValueError, TypeError):
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=parsed_d.isoformat(),
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=None,
                 max_price=None,
                 modal_price=None,
@@ -774,26 +882,27 @@ class LivePriceIngestionClient:
                 market_alias_status="UNKNOWN",
                 disposition=RecordDisposition.INVALID_PRICE_BOUNDS,
                 disposition_reason="One or more price fields cannot be converted to float.",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
+
+        # Non-finite or non-positive check
+        for p_val in (p_min, p_modal, p_max):
+            if math.isnan(p_val) or math.isinf(p_val) or p_val <= 0.0:
+                return RawPriceRecord(
+                    **base_kwargs,
+                    arrival_date_parsed=parsed_d.isoformat(),
+                    min_price=p_min if not (math.isnan(p_min) or math.isinf(p_min)) else None,
+                    max_price=p_max if not (math.isnan(p_max) or math.isinf(p_max)) else None,
+                    modal_price=p_modal if not (math.isnan(p_modal) or math.isinf(p_modal)) else None,
+                    market_canonical=None,
+                    market_alias_status="UNKNOWN",
+                    disposition=RecordDisposition.INVALID_PRICE_BOUNDS,
+                    disposition_reason=f"Prices must be positive finite floats; received ({p_min}, {p_modal}, {p_max}).",
+                )
 
         if not (0.0 < p_min <= p_modal <= p_max):
             return RawPriceRecord(
-                state=state,
-                district=dist,
-                market_raw=market,
-                commodity=commodity,
-                variety=variety,
-                grade_raw=grade_raw_str,
-                grade_normalized=grade_norm,
-                arrival_date_raw=arrival_date_raw,
+                **base_kwargs,
                 arrival_date_parsed=parsed_d.isoformat(),
-                min_price_raw=min_p_raw,
-                max_price_raw=max_p_raw,
-                modal_price_raw=modal_p_raw,
                 min_price=p_min,
                 max_price=p_max,
                 modal_price=p_modal,
@@ -801,13 +910,9 @@ class LivePriceIngestionClient:
                 market_alias_status="UNKNOWN",
                 disposition=RecordDisposition.INVALID_PRICE_BOUNDS,
                 disposition_reason=f"Violates price bounds: 0 < Min ({p_min}) <= Modal ({p_modal}) <= Max ({p_max}).",
-                retrieval_timestamp_utc=retrieval_utc,
-                display_timestamp_ist=display_ist,
-                source_resource_id=self.resource_id,
-                source_endpoint=self.endpoint_url,
             )
 
-        # 7. Market Alias Policy Lookup
+        # 5. Market Alias Policy Lookup
         alias_key = (dist, market)
         alias_entry = self.alias_mapping.get(alias_key)
 
@@ -830,25 +935,14 @@ class LivePriceIngestionClient:
                 canonical_name = market
                 alias_status = raw_status
         else:
-            # Not in alias table -> enters REVIEW
             canonical_name = market
             alias_status = "REVIEW"
             disposition = RecordDisposition.UNKNOWN_MARKET_REVIEW
             reason = f"Market '{market}' in {dist} not found in reference alias register. Quarantined for review."
 
         return RawPriceRecord(
-            state=state,
-            district=dist,
-            market_raw=market,
-            commodity=commodity,
-            variety=variety,
-            grade_raw=grade_raw_str,
-            grade_normalized=grade_norm,
-            arrival_date_raw=arrival_date_raw,
+            **base_kwargs,
             arrival_date_parsed=parsed_d.isoformat(),
-            min_price_raw=min_p_raw,
-            max_price_raw=max_p_raw,
-            modal_price_raw=modal_p_raw,
             min_price=p_min,
             max_price=p_max,
             modal_price=p_modal,
@@ -856,10 +950,6 @@ class LivePriceIngestionClient:
             market_alias_status=alias_status,
             disposition=disposition,
             disposition_reason=reason,
-            retrieval_timestamp_utc=retrieval_utc,
-            display_timestamp_ist=display_ist,
-            source_resource_id=self.resource_id,
-            source_endpoint=self.endpoint_url,
         )
 
     def write_snapshot_page(
@@ -869,7 +959,7 @@ class LivePriceIngestionClient:
         page_receipt: PageReceipt,
     ) -> str:
         """
-        Store receipt under data/live_snapshots/<UTC run id>/<district>/page_<offset:05d>.json.
+        Store receipt under <snapshots_root>/<run_id_utc>/<district>/page_<offset:05d>.json.
         Enforces collision-safe exclusive creation (mode 'x') to guarantee immutability.
         """
         dist_dir = os.path.join(self.snapshots_root, run_id_utc, district)
@@ -883,11 +973,19 @@ class LivePriceIngestionClient:
             )
 
         receipt_dict = page_receipt.to_dict()
-        # Atomic/exclusive write
         with open(target_file, "x", encoding="utf-8") as f:
             json.dump(receipt_dict, f, indent=2)
 
         return target_file
+
+    def _recompute_date_range(self, accepted_records: List[RawPriceRecord]) -> Tuple[Optional[str], Optional[str]]:
+        """Recompute oldest and newest observation date strictly from current accepted records."""
+        if not accepted_records:
+            return None, None
+        dates = [r.arrival_date_parsed for r in accepted_records if r.arrival_date_parsed]
+        if not dates:
+            return None, None
+        return min(dates), max(dates)
 
     def fetch_district_batch(
         self,
@@ -896,22 +994,27 @@ class LivePriceIngestionClient:
         requests_tracker: List[int],
     ) -> DistrictIngestionResult:
         """
-        Execute bounded, fail-closed pagination loop for a single district.
-        Enforces per-request and per-district budgets, transient retries, and row conservation.
+        Execute bounded pagination loop for a single district.
+        Enforces order-invariant conflict resolution: when prices diverge for any natural key,
+        ALL records for that natural key are quarantined.
         """
         dist_start_time = time.monotonic()
         result = DistrictIngestionResult(
             district=district,
             completeness_state=CompletenessState.COMPLETE,
+            data_mode=self.data_mode,
+            is_synthetic=(self.data_mode == DataMode.SYNTHETIC_SIMULATION),
         )
 
         offset = 0
         limit = 1000
         seen_page_hashes: Set[str] = set()
-        natural_key_registry: Dict[Tuple[str, str, str, str, str, str], RawPriceRecord] = {}
+
+        # Natural key registries for order-invariant conflict safety
+        accepted_registry: Dict[Tuple[str, str, str, str, str, str], List[RawPriceRecord]] = {}
+        conflicted_keys: Set[Tuple[str, str, str, str, str, str]] = set()
 
         while True:
-            # Check budgets before initiating request
             if requests_tracker[0] >= self.max_requests:
                 result.completeness_state = CompletenessState.PARTIAL
                 result.warnings.append(
@@ -949,7 +1052,6 @@ class LivePriceIngestionClient:
             body_text = ""
             headers: Dict[str, str] = {}
 
-            # Retry loop for transient failures (429, 5xx)
             while retries_remaining >= 0:
                 requests_tracker[0] += 1
                 try:
@@ -957,6 +1059,7 @@ class LivePriceIngestionClient:
                         self.endpoint_url,
                         params=params,
                         timeout=self.timeout_per_request,
+                        max_bytes=MAX_RESPONSE_BYTES,
                     )
                 except Exception as exc:
                     sanitized_err = sanitize_url(str(exc))
@@ -969,7 +1072,6 @@ class LivePriceIngestionClient:
                     continue
 
                 if status_code == 429:
-                    # Respect Retry-After header within reasonable budget
                     retry_after_str = headers.get("retry-after") or headers.get("Retry-After")
                     wait_sec = 2.0
                     if retry_after_str:
@@ -994,7 +1096,6 @@ class LivePriceIngestionClient:
                     time.sleep(1.0)
                     continue
 
-                # Authentication or client error: fail closed immediately without retry
                 if status_code in (401, 403):
                     result.completeness_state = CompletenessState.BLOCKED
                     result.errors.append(
@@ -1007,23 +1108,14 @@ class LivePriceIngestionClient:
                     result.errors.append(f"Unexpected HTTP status {status_code} at offset {offset}.")
                     return result
 
-                # Success 200
                 break
 
             req_end_utc = datetime.now(timezone.utc).isoformat()
             now_ist_str = datetime.now(IST_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S IST")
 
-            # Check response body size
-            if len(body_text.encode("utf-8")) > MAX_RESPONSE_BYTES:
-                result.completeness_state = CompletenessState.FAILED
-                result.errors.append(f"Response size exceeded {MAX_RESPONSE_BYTES} bytes limit.")
-                return result
-
-            # Detect & redact credential echo
             sanitized_body, echo_detected = redact_credential_echo(body_text, self.api_key)
             content_sha = hashlib.sha256(sanitized_body.encode("utf-8")).hexdigest()
 
-            # Parse JSON payload
             try:
                 payload = json.loads(sanitized_body)
             except json.JSONDecodeError as jde:
@@ -1036,14 +1128,12 @@ class LivePriceIngestionClient:
                 result.errors.append(f"Invalid payload format at offset {offset}: expected JSON object.")
                 return result
 
-            # Handle source-level error dictionaries e.g. {"error": "..."}
             if "error" in payload or "status" in payload and payload.get("status") == "error":
                 err_msg = payload.get("error") or payload.get("message") or "Unknown API error"
                 result.completeness_state = CompletenessState.FAILED
                 result.errors.append(f"Source API returned error payload: {err_msg}")
                 return result
 
-            # Validate pagination consistency
             raw_records = payload.get("records", [])
             if not isinstance(raw_records, list):
                 result.completeness_state = CompletenessState.FAILED
@@ -1060,17 +1150,15 @@ class LivePriceIngestionClient:
                 if result.source_reported_total is None:
                     result.source_reported_total = reported_total
                 elif result.source_reported_total != reported_total:
-                    # Mismatched/unstable totals during pagination
                     result.completeness_state = CompletenessState.PARTIAL
                     result.warnings.append(
                         f"Unstable source total: changed from {result.source_reported_total} to {reported_total} at offset {offset}."
                     )
 
-            # Fail closed on repeated pages / duplicate content hash
             if content_sha in seen_page_hashes and len(raw_records) > 0:
                 result.completeness_state = CompletenessState.FAILED
                 result.errors.append(
-                    f"Repeated page detected: content hash {content_sha[:12]} reappeared at offset {offset}. Aborting to prevent infinite loop."
+                    f"Repeated page detected: content hash {content_sha[:12]} reappeared at offset {offset}. Aborting."
                 )
                 break
             seen_page_hashes.add(content_sha)
@@ -1089,11 +1177,12 @@ class LivePriceIngestionClient:
                 completeness_state=CompletenessState.COMPLETE,
                 sanitized_params=sanitize_params(params),
                 endpoint_sanitized=sanitize_url(self.endpoint_url),
+                data_mode=self.data_mode,
+                is_synthetic=(self.data_mode == DataMode.SYNTHETIC_SIMULATION),
                 records=raw_records,
                 sanitized_credential_detected=echo_detected,
             )
 
-            # Store snapshot file under ignored path
             try:
                 self.write_snapshot_page(run_id_utc, district, receipt)
             except Exception as write_err:
@@ -1105,7 +1194,7 @@ class LivePriceIngestionClient:
             result.total_pages_fetched += 1
             result.records_fetched += fetched_count
 
-            # Process and validate records
+            # Process and validate records with Order-Invariant Conflict Safety
             for raw_row in raw_records:
                 result.records_parsed += 1
                 rec = self.parse_and_validate_record(
@@ -1115,15 +1204,25 @@ class LivePriceIngestionClient:
                     display_ist=now_ist_str,
                 )
 
-                disp_key = rec.disposition.value
-                result.disposition_counts[disp_key] = result.disposition_counts.get(disp_key, 0) + 1
-
                 if rec.disposition == RecordDisposition.ACCEPTED:
                     nat_key = rec.natural_key()
-                    if nat_key in natural_key_registry:
-                        prev = natural_key_registry[nat_key]
-                        if prev.price_tuple() == rec.price_tuple():
-                            # Exact duplicate
+
+                    if nat_key in conflicted_keys:
+                        # Key was already identified as conflicted: quarantine incoming record immediately
+                        rec.disposition = RecordDisposition.CONFLICTING_QUOTE
+                        rec.disposition_reason = "Unresolved divergent prices observed for this natural key in batch."
+                        result.records_quarantined += 1
+                        result.quarantined_records.append(rec)
+                        result.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
+                            result.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
+                        )
+
+                    elif nat_key in accepted_registry:
+                        prev_list = accepted_registry[nat_key]
+                        anchor_rec = prev_list[0]
+
+                        if anchor_rec.price_tuple() == rec.price_tuple():
+                            # Exact duplicate of accepted record
                             rec.disposition = RecordDisposition.EXACT_DUPLICATE
                             rec.disposition_reason = "Identical observation already accepted in this batch."
                             result.records_duplicate += 1
@@ -1131,47 +1230,77 @@ class LivePriceIngestionClient:
                             result.disposition_counts[RecordDisposition.EXACT_DUPLICATE.value] = (
                                 result.disposition_counts.get(RecordDisposition.EXACT_DUPLICATE.value, 0) + 1
                             )
-                            # Adjust ACCEPTED count
-                            result.disposition_counts[RecordDisposition.ACCEPTED.value] -= 1
+                            prev_list.append(rec)
+
                         else:
-                            # Conflicting quote on identical natural key
+                            # DIVERGENT PRICES DETECTED: Quarantine ALL records for this key
+                            conflicted_keys.add(nat_key)
+
+                            # 1. Quarantine incoming record
                             rec.disposition = RecordDisposition.CONFLICTING_QUOTE
                             rec.disposition_reason = (
-                                f"Divergent price quote for natural key: existing {prev.price_tuple()} vs incoming {rec.price_tuple()}."
+                                f"Divergent price quote for natural key: existing {anchor_rec.price_tuple()} vs incoming {rec.price_tuple()}."
                             )
                             result.records_quarantined += 1
                             result.quarantined_records.append(rec)
                             result.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
                                 result.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
                             )
-                            result.disposition_counts[RecordDisposition.ACCEPTED.value] -= 1
+
+                            # 2. Retroactively quarantine ALL previously accepted / duplicate records for this key
+                            for prev_rec in prev_list:
+                                if prev_rec in result.accepted_records:
+                                    result.accepted_records.remove(prev_rec)
+                                    result.records_accepted -= 1
+                                    result.disposition_counts[RecordDisposition.ACCEPTED.value] -= 1
+                                elif prev_rec in result.duplicate_records:
+                                    result.duplicate_records.remove(prev_rec)
+                                    result.records_duplicate -= 1
+                                    result.disposition_counts[RecordDisposition.EXACT_DUPLICATE.value] -= 1
+
+                                prev_rec.disposition = RecordDisposition.CONFLICTING_QUOTE
+                                prev_rec.disposition_reason = (
+                                    f"Retroactively quarantined: conflicting price quote {rec.price_tuple()} appeared in batch."
+                                )
+                                result.records_quarantined += 1
+                                result.quarantined_records.append(prev_rec)
+                                result.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
+                                    result.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
+                                )
+
+                            del accepted_registry[nat_key]
+
                     else:
-                        natural_key_registry[nat_key] = rec
+                        # First observation for this key: provisionally accept
+                        accepted_registry[nat_key] = [rec]
                         result.records_accepted += 1
                         result.accepted_records.append(rec)
+                        result.disposition_counts[RecordDisposition.ACCEPTED.value] = (
+                            result.disposition_counts.get(RecordDisposition.ACCEPTED.value, 0) + 1
+                        )
 
-                        # Update observation dates range
-                        obs_d = rec.arrival_date_parsed
-                        if obs_d:
-                            if result.oldest_observation_date is None or obs_d < result.oldest_observation_date:
-                                result.oldest_observation_date = obs_d
-                            if result.newest_observation_date is None or obs_d > result.newest_observation_date:
-                                result.newest_observation_date = obs_d
                 elif rec.disposition == RecordDisposition.EXACT_DUPLICATE:
                     result.records_duplicate += 1
                     result.duplicate_records.append(rec)
+                    disp_key = rec.disposition.value
+                    result.disposition_counts[disp_key] = result.disposition_counts.get(disp_key, 0) + 1
                 else:
                     result.records_quarantined += 1
                     result.quarantined_records.append(rec)
+                    disp_key = rec.disposition.value
+                    result.disposition_counts[disp_key] = result.disposition_counts.get(disp_key, 0) + 1
 
-            # Pagination advance check
             if fetched_count == 0:
-                # Valid empty page reached
                 break
 
             offset += fetched_count
             if reported_total is not None and offset >= reported_total:
                 break
+
+        # Recompute honest observation date range strictly from remaining accepted records
+        old_d, new_d = self._recompute_date_range(result.accepted_records)
+        result.oldest_observation_date = old_d
+        result.newest_observation_date = new_d
 
         if result.records_fetched == 0:
             result.completeness_state = CompletenessState.EMPTY
@@ -1184,11 +1313,13 @@ class LivePriceIngestionClient:
         run_id_utc: Optional[str] = None,
     ) -> IngestionCampaignResult:
         """
-        Execute bounded ingestion across authorized districts.
-        If credentials or endpoint are unavailable, marks blocked without crashing.
+        Execute bounded ingestion campaign.
+        Enforces strict provenance: only real network runs on LIVE_FETCH mode can set
+        is_live_verified=True or advance the persistent last_success pointer.
         """
         target_districts = list(districts or APPROVED_DISTRICTS)
-        run_id = run_id_utc or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        # Microsecond timestamp ensures collision safety across rapid executions
+        run_id = run_id_utc or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
         exec_start_utc = datetime.now(timezone.utc).isoformat()
         exec_start_ist = datetime.now(IST_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S IST")
 
@@ -1197,20 +1328,24 @@ class LivePriceIngestionClient:
             execution_timestamp_utc=exec_start_utc,
             execution_timestamp_ist=exec_start_ist,
             overall_operational_state=OperationalState.UNINITIALIZED,
+            data_mode=self.data_mode,
+            is_synthetic=(self.data_mode == DataMode.SYNTHETIC_SIMULATION),
             snapshot_directory=os.path.join(self.snapshots_root, run_id),
             capabilities={
                 "price_display_permitted": False,
                 "forecast_eligible": False,
                 "economics_eligible": False,
                 "active_advice_permitted": False,
+                "data_mode": self.data_mode.value,
+                "is_synthetic": (self.data_mode == DataMode.SYNTHETIC_SIMULATION),
             },
         )
 
-        # Preflight credentials check
-        if not self.is_credentials_available():
+        # Preflight credentials check for LIVE_FETCH mode
+        if self.data_mode == DataMode.LIVE_FETCH and not self.is_credentials_available():
             campaign.is_blocked = True
             campaign.blocked_reason = (
-                "OGD_API_KEY is not configured in environment or local .env. "
+                "KEY_MISSING: OGD_API_KEY is not configured in environment or local .env. "
                 "LIVE VERIFICATION BLOCKED awaiting local key configuration."
             )
             campaign.overall_operational_state = OperationalState.UNINITIALIZED
@@ -1218,8 +1353,10 @@ class LivePriceIngestionClient:
                 campaign.district_results[dist] = DistrictIngestionResult(
                     district=dist,
                     completeness_state=CompletenessState.BLOCKED,
+                    data_mode=self.data_mode,
                     errors=["Credentials blocked: OGD_API_KEY missing."],
                 )
+            self._write_run_receipt(campaign)
             return campaign
 
         requests_tracker = [0]
@@ -1254,32 +1391,360 @@ class LivePriceIngestionClient:
             campaign.overall_operational_state = OperationalState.UNCHANGED
         else:
             campaign.overall_operational_state = OperationalState.SUCCESS
-            campaign.is_live_verified = True
 
-        # Capability decisions
+        # CRITICAL PROVENANCE RULE: Only real LIVE_FETCH runs can set is_live_verified=True
+        if self.data_mode == DataMode.LIVE_FETCH and campaign.overall_operational_state in (
+            OperationalState.SUCCESS, OperationalState.UNCHANGED
+        ):
+            campaign.is_live_verified = True
+        else:
+            campaign.is_live_verified = False
+
+        # Capabilities
         has_accepted = campaign.total_records_accepted > 0
         campaign.capabilities = {
             "price_display_permitted": has_accepted,
-            "forecast_eligible": False,  # Live forecasting requires dedicated model release
-            "economics_eligible": False,  # Active storage advisory requires empirical farmgate costs
-            "active_advice_permitted": False,  # Blocked in this task per safety gate policy
+            "forecast_eligible": False,  # Blocked until approved model release
+            "economics_eligible": False,  # Blocked until empirical cost quotes verified
+            "active_advice_permitted": False,  # Blocked per safety gate policy
+            "data_mode": self.data_mode.value,
+            "is_synthetic": (self.data_mode == DataMode.SYNTHETIC_SIMULATION),
+            "is_live_verified": campaign.is_live_verified,
         }
 
-        # Write run-level summary receipt
+        # Persist run receipt exclusively
         self._write_run_receipt(campaign)
+
+        # Update persistent last_success pointer ONLY on complete real LIVE_FETCH success
+        if campaign.is_live_verified:
+            self._update_last_success_pointer(campaign)
 
         return campaign
 
+    def execute_file_import(
+        self,
+        file_path: Union[str, Sequence[str]],
+        district: Optional[str] = None,
+        run_id_utc: Optional[str] = None,
+        source_url: str = "UNKNOWN",
+        retrieval_timestamp_utc: str = "UNKNOWN",
+    ) -> IngestionCampaignResult:
+        """
+        Execute deterministic dataset file import from local CSV/Excel APMC file(s).
+        Enforces:
+        - <= 10MB per file and <= 50,000 rows limit
+        - Explicit FILE_IMPORT provenance (is_live_verified=False, never advances live-success index)
+        - Order-invariant conflict resolution (all divergent quotes quarantined)
+        - Honest price bounds (missing min/max preserved/quarantined, NO modal substitution)
+        - Collision-safe immutable snapshot storage and exclusive run receipt writing
+        """
+        import csv
+
+        if isinstance(file_path, (str, bytes, os.PathLike)):
+            file_paths = [str(file_path)]
+        else:
+            file_paths = [str(p) for p in file_path]
+
+        run_id = run_id_utc or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+        exec_start_utc = datetime.now(timezone.utc).isoformat()
+        exec_start_ist = datetime.now(IST_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S IST")
+
+        campaign = IngestionCampaignResult(
+            run_id_utc=run_id,
+            execution_timestamp_utc=exec_start_utc,
+            execution_timestamp_ist=exec_start_ist,
+            overall_operational_state=OperationalState.UNINITIALIZED,
+            data_mode=DataMode.FILE_IMPORT,
+            is_synthetic=False,
+            snapshot_directory=os.path.join(self.snapshots_root, run_id),
+            capabilities={
+                "price_display_permitted": False,
+                "forecast_eligible": False,
+                "economics_eligible": False,
+                "active_advice_permitted": False,
+                "data_mode": DataMode.FILE_IMPORT.value,
+                "is_synthetic": False,
+                "is_live_verified": False,
+                "is_import_verified": True,
+            },
+        )
+
+        all_file_metadata = []
+        raw_rows_by_district: Dict[str, List[Tuple[Dict[str, Any], str, str, int]]] = {}
+
+        for f_path in file_paths:
+            if not os.path.exists(f_path):
+                raise FileNotFoundError(f"Import file not found: {f_path}")
+
+            file_bytes = os.path.getsize(f_path)
+            if file_bytes > MAX_RESPONSE_BYTES:
+                raise ValueError(
+                    f"File '{os.path.basename(f_path)}' size ({file_bytes} bytes) exceeds "
+                    f"maximum allowed local processing limit ({MAX_RESPONSE_BYTES} bytes = 10MB)."
+                )
+
+            with open(f_path, "rb") as bf:
+                file_sha = hashlib.sha256(bf.read()).hexdigest()
+
+            file_meta = {
+                "file_path": f_path,
+                "file_name": os.path.basename(f_path),
+                "file_bytes": file_bytes,
+                "file_sha256": file_sha,
+                "source_url_declared": source_url,
+                "retrieval_timestamp_declared": retrieval_timestamp_utc,
+            }
+            all_file_metadata.append(file_meta)
+
+            row_count = 0
+            with open(f_path, "r", encoding="utf-8", errors="replace") as cf:
+                reader = csv.DictReader(cf)
+                for row in reader:
+                    row_count += 1
+                    if row_count > MAX_IMPORT_RECORDS_BUDGET:
+                        raise ValueError(
+                            f"File '{os.path.basename(f_path)}' row count exceeds maximum allowed "
+                            f"local processing limit ({MAX_IMPORT_RECORDS_BUDGET} rows = 50,000)."
+                        )
+                    d_val = str(extract_field(row, ["district", "District"]) or "").strip()
+                    if district and district.lower() != "all" and d_val.lower() != district.lower():
+                        continue
+                    raw_rows_by_district.setdefault(d_val, []).append((row, f_path, file_sha, file_bytes))
+
+        campaign.source_files = all_file_metadata
+
+        if not raw_rows_by_district:
+            campaign.overall_operational_state = OperationalState.EMPTY
+            self._write_run_receipt(campaign)
+            return campaign
+
+        for dist_name, row_tuples in raw_rows_by_district.items():
+            dist_res = DistrictIngestionResult(
+                district=dist_name,
+                completeness_state=CompletenessState.COMPLETE,
+                data_mode=DataMode.FILE_IMPORT,
+                is_synthetic=False,
+            )
+
+            accepted_registry: Dict[Tuple[str, str, str, str, str, str], List[RawPriceRecord]] = {}
+            conflicted_keys: Set[Tuple[str, str, str, str, str, str]] = set()
+            raw_records_for_receipt: List[Dict[str, Any]] = []
+
+            for raw_row, src_file, src_sha, src_bytes in row_tuples:
+                dist_res.records_fetched += 1
+                dist_res.records_parsed += 1
+                raw_records_for_receipt.append(raw_row)
+
+                rec = self.parse_and_validate_record(
+                    raw_row=raw_row,
+                    requested_district=dist_name,
+                    retrieval_utc=retrieval_timestamp_utc,
+                    display_ist="UNKNOWN",
+                )
+                rec.data_mode = DataMode.FILE_IMPORT
+                rec.is_synthetic = False
+
+                if rec.disposition == RecordDisposition.ACCEPTED:
+                    nat_key = rec.natural_key()
+
+                    if nat_key in conflicted_keys:
+                        rec.disposition = RecordDisposition.CONFLICTING_QUOTE
+                        rec.disposition_reason = "Unresolved divergent prices observed for this natural key in imported dataset."
+                        dist_res.records_quarantined += 1
+                        dist_res.quarantined_records.append(rec)
+                        dist_res.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
+                            dist_res.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
+                        )
+                    elif nat_key in accepted_registry:
+                        prev_list = accepted_registry[nat_key]
+                        anchor_rec = prev_list[0]
+
+                        if anchor_rec.price_tuple() == rec.price_tuple():
+                            rec.disposition = RecordDisposition.EXACT_DUPLICATE
+                            rec.disposition_reason = "Identical observation already accepted in this dataset import."
+                            dist_res.records_duplicate += 1
+                            dist_res.duplicate_records.append(rec)
+                            dist_res.disposition_counts[RecordDisposition.EXACT_DUPLICATE.value] = (
+                                dist_res.disposition_counts.get(RecordDisposition.EXACT_DUPLICATE.value, 0) + 1
+                            )
+                            prev_list.append(rec)
+                        else:
+                            conflicted_keys.add(nat_key)
+                            rec.disposition = RecordDisposition.CONFLICTING_QUOTE
+                            rec.disposition_reason = (
+                                f"Divergent price quote for natural key: existing {anchor_rec.price_tuple()} vs incoming {rec.price_tuple()}."
+                            )
+                            dist_res.records_quarantined += 1
+                            dist_res.quarantined_records.append(rec)
+                            dist_res.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
+                                dist_res.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
+                            )
+
+                            for prev_rec in prev_list:
+                                if prev_rec in dist_res.accepted_records:
+                                    dist_res.accepted_records.remove(prev_rec)
+                                    dist_res.records_accepted -= 1
+                                    dist_res.disposition_counts[RecordDisposition.ACCEPTED.value] -= 1
+                                elif prev_rec in dist_res.duplicate_records:
+                                    dist_res.duplicate_records.remove(prev_rec)
+                                    dist_res.records_duplicate -= 1
+                                    dist_res.disposition_counts[RecordDisposition.EXACT_DUPLICATE.value] -= 1
+
+                                prev_rec.disposition = RecordDisposition.CONFLICTING_QUOTE
+                                prev_rec.disposition_reason = (
+                                    f"Retroactively quarantined: conflicting price quote {rec.price_tuple()} appeared in imported file."
+                                )
+                                dist_res.records_quarantined += 1
+                                dist_res.quarantined_records.append(prev_rec)
+                                dist_res.disposition_counts[RecordDisposition.CONFLICTING_QUOTE.value] = (
+                                    dist_res.disposition_counts.get(RecordDisposition.CONFLICTING_QUOTE.value, 0) + 1
+                                )
+
+                            del accepted_registry[nat_key]
+                    else:
+                        accepted_registry[nat_key] = [rec]
+                        dist_res.records_accepted += 1
+                        dist_res.accepted_records.append(rec)
+                        dist_res.disposition_counts[RecordDisposition.ACCEPTED.value] = (
+                            dist_res.disposition_counts.get(RecordDisposition.ACCEPTED.value, 0) + 1
+                        )
+                elif rec.disposition == RecordDisposition.EXACT_DUPLICATE:
+                    dist_res.records_duplicate += 1
+                    dist_res.duplicate_records.append(rec)
+                    disp_key = rec.disposition.value
+                    dist_res.disposition_counts[disp_key] = dist_res.disposition_counts.get(disp_key, 0) + 1
+                else:
+                    dist_res.records_quarantined += 1
+                    dist_res.quarantined_records.append(rec)
+                    disp_key = rec.disposition.value
+                    dist_res.disposition_counts[disp_key] = dist_res.disposition_counts.get(disp_key, 0) + 1
+
+            old_d, new_d = self._recompute_date_range(dist_res.accepted_records)
+            dist_res.oldest_observation_date = old_d
+            dist_res.newest_observation_date = new_d
+            if dist_res.records_fetched == 0:
+                dist_res.completeness_state = CompletenessState.EMPTY
+
+            primary_file_sha = all_file_metadata[0]["file_sha256"] if all_file_metadata else ""
+            primary_file_path = all_file_metadata[0]["file_path"] if all_file_metadata else ""
+            primary_file_bytes = all_file_metadata[0]["file_bytes"] if all_file_metadata else 0
+
+            receipt = PageReceipt(
+                page_offset=0,
+                page_limit=dist_res.records_fetched,
+                retrieval_start_utc=exec_start_utc,
+                retrieval_end_utc=exec_start_utc,
+                http_status=200,
+                source_total=dist_res.records_fetched,
+                fetched_count=dist_res.records_fetched,
+                content_sha256=primary_file_sha,
+                completeness_state=dist_res.completeness_state,
+                sanitized_params={"import_source": primary_file_path, "district": dist_name},
+                endpoint_sanitized=f"file://{primary_file_path}",
+                data_mode=DataMode.FILE_IMPORT,
+                is_synthetic=False,
+                records=raw_records_for_receipt,
+                source_file_path=primary_file_path,
+                source_file_sha256=primary_file_sha,
+                source_file_bytes=primary_file_bytes,
+                source_url_declared=source_url,
+                retrieval_time_declared=retrieval_timestamp_utc,
+            )
+            self.write_snapshot_page(run_id, dist_name, receipt)
+            dist_res.page_receipts.append(receipt)
+            dist_res.total_pages_fetched = 1
+
+            campaign.district_results[dist_name] = dist_res
+            campaign.total_records_fetched += dist_res.records_fetched
+            campaign.total_records_accepted += dist_res.records_accepted
+            campaign.total_records_quarantined += dist_res.records_quarantined
+            campaign.total_records_duplicate += dist_res.records_duplicate
+
+        if campaign.total_records_quarantined > 0:
+            campaign.overall_operational_state = OperationalState.QUARANTINED
+        elif campaign.total_records_accepted == 0:
+            campaign.overall_operational_state = OperationalState.EMPTY
+        else:
+            campaign.overall_operational_state = OperationalState.SUCCESS
+
+        campaign.is_live_verified = False
+        has_accepted = campaign.total_records_accepted > 0
+        campaign.capabilities = {
+            "price_display_permitted": has_accepted,
+            "forecast_eligible": False,
+            "economics_eligible": False,
+            "active_advice_permitted": False,
+            "data_mode": DataMode.FILE_IMPORT.value,
+            "is_synthetic": False,
+            "is_live_verified": False,
+            "is_import_verified": True,
+        }
+
+        self._write_run_receipt(campaign)
+        return campaign
+
     def _write_run_receipt(self, campaign: IngestionCampaignResult) -> None:
-        """Write run-level receipt in snapshot root."""
+        """Write run-level receipt in snapshot root with exclusive creation."""
         run_dir = os.path.join(self.snapshots_root, campaign.run_id_utc)
         os.makedirs(run_dir, exist_ok=True)
         receipt_path = os.path.join(run_dir, "run_receipt.json")
         try:
-            with open(receipt_path, "w", encoding="utf-8") as f:
+            with open(receipt_path, "x", encoding="utf-8") as f:
                 json.dump(campaign.to_dict(), f, indent=2)
-        except Exception as e:
-            logger.warning(f"Could not write run_receipt.json: {e}")
+        except FileExistsError:
+            raise FileExistsError(f"Run receipt collision: '{receipt_path}' already exists.")
+
+    def _update_last_success_pointer(self, campaign: IngestionCampaignResult) -> None:
+        """
+        Atomically persist pointer to last successful live campaign.
+        Strictly called ONLY when campaign.is_live_verified is True.
+        """
+        pointer_path = os.path.join(self.snapshots_root, "last_successful_campaign.json")
+        payload = {
+            "run_id_utc": campaign.run_id_utc,
+            "execution_timestamp_utc": campaign.execution_timestamp_utc,
+            "execution_timestamp_ist": campaign.execution_timestamp_ist,
+            "total_records_accepted": campaign.total_records_accepted,
+            "districts": list(campaign.district_results.keys()),
+            "receipt_path": os.path.join(campaign.run_id_utc, "run_receipt.json"),
+        }
+        temp_path = f"{pointer_path}.tmp_{os.getpid()}"
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        os.replace(temp_path, pointer_path)
+
+
+# =============================================================================
+# PERSISTENT FALLBACK & SNAPSHOT LOADERS
+# =============================================================================
+
+def load_prior_validated_snapshot(
+    snapshots_root: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """
+    Load prior validated successful snapshot as labeled fallback.
+    Preserves original trade and retrieval timestamps.
+    Returns None if no validated snapshot exists.
+    """
+    root = snapshots_root or DEFAULT_LIVE_SNAPSHOTS_ROOT
+    pointer_path = os.path.join(root, "last_successful_campaign.json")
+    if not os.path.exists(pointer_path):
+        return None
+
+    try:
+        with open(pointer_path, "r", encoding="utf-8") as f:
+            pointer = json.load(f)
+        rel_receipt = pointer.get("receipt_path")
+        if not rel_receipt:
+            return None
+        full_receipt_path = os.path.join(root, rel_receipt)
+        if not os.path.exists(full_receipt_path):
+            return None
+        with open(full_receipt_path, "r", encoding="utf-8") as f:
+            campaign_data = json.load(f)
+        return campaign_data
+    except Exception:
+        return None
 
 
 # =============================================================================
@@ -1289,20 +1754,39 @@ class LivePriceIngestionClient:
 def build_health_report_from_ingestion(
     campaign: IngestionCampaignResult,
     reference_date: Optional[date] = None,
+    prior_validated_snapshot: Optional[Dict[str, Any]] = None,
 ) -> HealthReport:
     """
-    Adapter converting IngestionCampaignResult into a canonical HealthReport
-    compatible with health_status.py and current_data_output.py.
+    Adapter converting IngestionCampaignResult into a canonical HealthReport.
+    Enforces honest data_mode, provenance labels, and fallback provenance.
     """
     ref_d = reference_date or datetime.now(IST_TIMEZONE).date()
     engine = HealthStatusEngine(current_ref_date=ref_d)
 
-    # Find the newest observation across all districts
     newest_obs: Optional[str] = None
     for res in campaign.district_results.values():
         if res.newest_observation_date:
             if newest_obs is None or res.newest_observation_date > newest_obs:
                 newest_obs = res.newest_observation_date
+
+    # If current run is blocked/failed but prior snapshot exists, use fallback metadata
+    is_fallback = False
+    fetch_utc = None
+    fetch_local = None
+
+    if campaign.is_live_verified:
+        fetch_utc = campaign.execution_timestamp_utc
+        fetch_local = campaign.execution_timestamp_ist
+    elif prior_validated_snapshot:
+        is_fallback = True
+        fetch_utc = prior_validated_snapshot.get("execution_timestamp_utc")
+        fetch_local = prior_validated_snapshot.get("execution_timestamp_ist")
+        # If no new observations, use prior newest observation
+        if not newest_obs:
+            for dist_info in prior_validated_snapshot.get("district_results", {}).values():
+                d_obs = dist_info.get("newest_observation_date")
+                if d_obs and (newest_obs is None or d_obs > newest_obs):
+                    newest_obs = d_obs
 
     freshness_status, lag_days = engine.evaluate_freshness(newest_obs)
 
@@ -1317,19 +1801,29 @@ def build_health_report_from_ingestion(
         records_new=campaign.total_records_accepted,
         current_unique_keys=campaign.total_records_accepted,
         latest_observation_date=newest_obs,
-        last_successful_fetch_utc=campaign.execution_timestamp_utc if campaign.is_live_verified else None,
+        last_successful_fetch_utc=fetch_utc,
         snapshot_sha256=None,
     )
 
     warnings: List[str] = []
     errors: List[str] = []
 
+    if campaign.data_mode == DataMode.TEST_FIXTURE:
+        warnings.append("PROVENANCE: TEST_FIXTURE run using offline fixtures; NOT a live verified market data feed.")
+    elif campaign.data_mode == DataMode.HISTORICAL_REPLAY:
+        warnings.append("PROVENANCE: HISTORICAL_REPLAY using preserved past observations.")
+    elif campaign.data_mode == DataMode.FILE_IMPORT:
+        warnings.append("PROVENANCE: FILE_IMPORT from local APMC dataset archive; NOT an active live network feed.")
+
     if campaign.is_blocked:
-        warnings.append(f"LIVE VERIFICATION BLOCKED: {campaign.blocked_reason}")
+        warnings.append(f"{campaign.blocked_reason}")
     if campaign.overall_operational_state == OperationalState.PARTIAL:
-        warnings.append("PARTIAL DATA WARNING: District ingestion was truncated or exceeded page/record budget.")
+        warnings.append("PARTIAL DATA WARNING: District ingestion was truncated or exceeded budget.")
     if campaign.total_records_quarantined > 0:
         warnings.append(f"{campaign.total_records_quarantined} records quarantined across districts.")
+
+    if is_fallback:
+        warnings.append("FALLBACK ACTIVE: Report generated from prior validated offline snapshot.")
 
     for dist, res in campaign.district_results.items():
         for err in res.errors:
@@ -1337,7 +1831,6 @@ def build_health_report_from_ingestion(
         for w in res.warnings:
             warnings.append(f"[{dist}] {w}")
 
-    # Explicit policy warning: active advice is blocked
     warnings.append(
         "FARMER ADVISORY POLICY: Active commercial storage recommendations are blocked on live prices. "
         "Price display is permitted with explicit observation date disclosures."
@@ -1355,10 +1848,10 @@ def build_health_report_from_ingestion(
         freshness_status=freshness_status,
         freshness_lag_days=lag_days,
         latest_observation_date=newest_obs,
-        last_successful_fetch_utc=campaign.execution_timestamp_utc if campaign.is_live_verified else None,
-        last_successful_fetch_local=campaign.execution_timestamp_ist if campaign.is_live_verified else None,
+        last_successful_fetch_utc=fetch_utc,
+        last_successful_fetch_local=fetch_local,
         is_source_live=campaign.is_live_verified,
-        is_fallback_active=(not campaign.is_live_verified and campaign.total_records_accepted == 0),
+        is_fallback_active=is_fallback,
         reconciliation=ledger,
         districts_represented=districts_present,
         markets_count=sum(len(r.accepted_records) for r in campaign.district_results.values()),
@@ -1391,7 +1884,7 @@ def main() -> int:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Run without network calls using an offline mock transport",
+        help="Run offline using existing test fixtures (never sets live verified)",
     )
     parser.add_argument(
         "--json",
@@ -1404,6 +1897,24 @@ def main() -> int:
         default=None,
         help="Custom root directory for immutable snapshot receipts",
     )
+    parser.add_argument(
+        "--import-file",
+        type=str,
+        default=None,
+        help="Path to local APMC CSV/Excel file to ingest under FILE_IMPORT provenance",
+    )
+    parser.add_argument(
+        "--source-url",
+        type=str,
+        default="UNKNOWN",
+        help="Declared original source download URL if known (default: UNKNOWN)",
+    )
+    parser.add_argument(
+        "--retrieval-time",
+        type=str,
+        default="UNKNOWN",
+        help="Declared original retrieval timestamp UTC if known (default: UNKNOWN)",
+    )
 
     args = parser.parse_args()
 
@@ -1415,58 +1926,82 @@ def main() -> int:
             print(f"Error: Invalid date format '{args.date}'. Expected YYYY-MM-DD.", file=sys.stderr)
             return 2
 
-    # Transport selection
-    if args.dry_run:
-        mock_transport = MockHttpTransport()
-        # Prepopulate clean synthetic fixture for offline dry-run verification
-        sample_payload = json.dumps({
-            "total": 2,
-            "count": 2,
-            "limit": "1000",
-            "offset": "0",
-            "records": [
-                {
-                    "state": "Uttar Pradesh",
-                    "district": "Kanpur",
-                    "market": "Kanpur(Grain) APMC",
-                    "commodity": "Potato",
-                    "variety": "Other",
-                    "grade": "FAQ",
-                    "arrival_date": "2026-11-12",
-                    "min_price": 550,
-                    "max_price": 600,
-                    "modal_price": 575,
-                },
-                {
-                    "state": "Uttar Pradesh",
-                    "district": "Kanpur",
-                    "market": "Baripaal APMC",
-                    "commodity": "Paddy(Basmati)",
-                    "variety": "Basmati",
-                    "grade": "FAQ",
-                    "arrival_date": "2026-11-12",
-                    "min_price": 2800,
-                    "max_price": 3000,
-                    "modal_price": 2900,
-                },
-            ],
-        })
-        mock_transport.set_response("Kanpur", 0, 200, sample_payload)
+    if args.import_file:
         client = LivePriceIngestionClient(
-            api_key="DRY_RUN_MOCK_KEY",
-            transport=mock_transport,
+            data_mode=DataMode.FILE_IMPORT,
             reference_date=ref_d,
-            snapshots_root=args.snapshots_dir,
+            snapshots_root=args.snapshots_dir or DEFAULT_FILE_IMPORT_SNAPSHOTS_ROOT,
+        )
+        target_dist = None if args.district.lower() == "all" else args.district
+        campaign = client.execute_file_import(
+            file_path=args.import_file,
+            district=target_dist,
+            source_url=args.source_url,
+            retrieval_timestamp_utc=args.retrieval_time,
         )
     else:
-        client = LivePriceIngestionClient(
-            reference_date=ref_d,
-            snapshots_root=args.snapshots_dir,
-        )
+        if args.dry_run:
+            # Dry-run uses TEST_FIXTURE data mode and distinct test namespace
+            mock_transport = MockHttpTransport()
+            sample_payload = json.dumps({
+                "total": 2,
+                "count": 2,
+                "limit": "1000",
+                "offset": "0",
+                "records": [
+                    {
+                        "state": "Uttar Pradesh",
+                        "district": "Kanpur",
+                        "market": "Kanpur(Grain) APMC",
+                        "commodity": "Potato",
+                        "variety": "Other",
+                        "grade": "FAQ",
+                        "arrival_date": "2026-11-12",
+                        "min_price": 550,
+                        "max_price": 600,
+                        "modal_price": 575,
+                    },
+                    {
+                        "state": "Uttar Pradesh",
+                        "district": "Kanpur",
+                        "market": "Baripaal APMC",
+                        "commodity": "Paddy(Basmati)",
+                        "variety": "Basmati",
+                        "grade": "FAQ",
+                        "arrival_date": "2026-11-12",
+                        "min_price": 2800,
+                        "max_price": 3000,
+                        "modal_price": 2900,
+                    },
+                ],
+            })
+            mock_transport.set_response("Kanpur", 0, 200, sample_payload)
+            client = LivePriceIngestionClient(
+                api_key="TEST_FIXTURE_KEY",
+                transport=mock_transport,
+                data_mode=DataMode.TEST_FIXTURE,
+                reference_date=ref_d,
+                snapshots_root=args.snapshots_dir or DEFAULT_FIXTURE_SNAPSHOTS_ROOT,
+            )
+        else:
+            client = LivePriceIngestionClient(
+                reference_date=ref_d,
+                snapshots_root=args.snapshots_dir or DEFAULT_LIVE_SNAPSHOTS_ROOT,
+            )
 
-    target_districts = APPROVED_DISTRICTS if args.district.lower() == "all" else [args.district]
-    campaign = client.execute_campaign(districts=target_districts)
-    health_rep = build_health_report_from_ingestion(campaign, reference_date=ref_d)
+        target_districts = APPROVED_DISTRICTS if args.district.lower() == "all" else [args.district]
+        campaign = client.execute_campaign(districts=target_districts)
+
+    # Check for prior validated fallback if live run failed/blocked
+    prior_snapshot = None
+    if not campaign.is_live_verified:
+        prior_snapshot = load_prior_validated_snapshot(snapshots_root=client.snapshots_root)
+
+    health_rep = build_health_report_from_ingestion(
+        campaign,
+        reference_date=ref_d,
+        prior_validated_snapshot=prior_snapshot,
+    )
 
     if args.json:
         payload = campaign.to_dict()
@@ -1474,12 +2009,20 @@ def main() -> int:
         print(json.dumps(payload, indent=2))
     else:
         print("=" * 78)
-        print("     APMC MANDI LIVE PRICE INGESTION & DATA TRUST REPORT")
-        print("=" * 78)
+        if campaign.data_mode == DataMode.TEST_FIXTURE:
+            print("  [OFFLINE TEST FIXTURE RUN] NOT A LIVE MARKET DATA FEED")
+            print("=" * 78)
+        elif campaign.data_mode == DataMode.FILE_IMPORT:
+            print("  [DATASET FILE IMPORT] PROVENANCE: FILE_IMPORT (OFFICIAL OBSERVED ARCHIVE)")
+            print("=" * 78)
+        else:
+            print("     APMC MANDI LIVE PRICE INGESTION & DATA TRUST REPORT")
+            print("=" * 78)
         print(f"Run ID (UTC)         : {campaign.run_id_utc}")
         print(f"Execution Time (IST) : {campaign.execution_timestamp_ist}")
+        print(f"Data Mode            : [{campaign.data_mode.value}] (is_synthetic: {campaign.is_synthetic})")
         print(f"Operational State    : [{campaign.overall_operational_state.value}]")
-        print(f"Live Verified        : {'YES' if campaign.is_live_verified else 'NO (BLOCKED / OFFLINE)'}")
+        print(f"Live Verified        : {'YES' if campaign.is_live_verified else 'NO (DATASET IMPORT / FIXTURE / KEY_MISSING)'}")
         if campaign.is_blocked:
             print(f"Blocked Reason       : {campaign.blocked_reason}")
         print("-" * 78)
@@ -1499,13 +2042,16 @@ def main() -> int:
         print("-" * 78)
         print("CAPABILITIES & SAFETY DIRECTIVES:")
         for cap, val in campaign.capabilities.items():
-            print(f"  • {cap:<28}: {'ENABLED' if val else 'DISABLED / BLOCKED'}")
+            print(f"  • {cap:<28}: {val}")
         print("=" * 78)
 
-    # Return exit code: 0 on success/unchanged, 1 on failed/partial, 2 on credentials blocked
     if campaign.is_blocked:
         return 2
-    if campaign.overall_operational_state in (OperationalState.SUCCESS, OperationalState.UNCHANGED):
+    if campaign.overall_operational_state in (
+        OperationalState.SUCCESS,
+        OperationalState.UNCHANGED,
+        OperationalState.QUARANTINED,
+    ):
         return 0
     return 1
 

@@ -2,27 +2,40 @@
 
 **Repository:** `ankit-choubey/Mandi_Prediction`
 **Document ID:** `LIVE_INGESTION_RUNBOOK`
-**Established Under Task:** `MP-SRC-004` (Steps 3–5 Foundations)
+**Established Under Task:** `MP-SRC-004` (Foundations)
+**Updated Under Task:** `MP-SRC-004B` (Provenance, Conflict Safety & Dataset-First Default)
 **Date:** 2026-11-12 IST
 **Engine:** `src/live_price_ingestion.py`
-**Contract Specification:** `data/reference/live_source_contract.json`
+**Contract Specification:** `data/reference/live_source_contract.json` (Version 1.2.0)
 
 ---
 
 ## 1. Overview & Architectural Principles
 
-This runbook documents the operational workflow for manual and future scheduled ingestion of daily wholesale mandi prices from the official Government of India Open Government Data (OGD) platform (`data.gov.in`), resource UUID `9ef84268-d588-465a-a308-a864a43d0070` (AGMARKNET Daily Price Arrivals).
+This runbook documents the operational workflow for dataset file ingestion and live/offline ingestion of daily wholesale mandi prices from the official Government of India Open Government Data (OGD) platform (`data.gov.in`), resource UUID `9ef84268-d588-465a-a308-a864a43d0070` (AGMARKNET Daily Price Arrivals).
+
+### Standing Owner Rule:
+> [!IMPORTANT]
+> **ZERO SYNTHETIC DATASETS / SIMULATED OPERATIONAL FEEDS:**
+> No new synthetic datasets, simulated operational feeds, model-training rows, or storage scenarios may be generated without prior explanation and explicit owner approval. Never replace unavailable live data with fake-now records.
 
 ### Core Architectural Guarantees:
-1. **Zero Credential Exposure:** API keys are never printed, logged, committed, or embedded in stored receipt URLs or error messages. Echoed keys in response bodies are automatically redacted.
-2. **Immutable Snapshot Receipts:** Raw API responses are stored under ignored `data/live_snapshots/<UTC_RUN_ID>/<District>/page_<offset:05d>.json` using exclusive writes (`mode 'x'`). No snapshot is ever overwritten or modified.
-3. **Strict Disjoint Accounting:** Every fetched record is accounted for without silent loss:
+1. **Explicit Provenance Modes (`DataMode`):**
+   - `LIVE_FETCH`: Authenticated real network harvest. Only mode that can set `is_live_verified=True` or advance `last_successful_campaign.json`.
+   - `FILE_IMPORT`: Primary dataset-first operational source from official downloaded APMC raw files (`data/raw/*.csv`). Never claims live verification.
+   - `HISTORICAL_REPLAY`: Replay of preserved snapshots preserving original trade and retrieval timestamps.
+   - `TEST_FIXTURE`: Offline mock tests. Writes to `data/fixture_snapshots/`. Never claims live verification.
+   - `SYNTHETIC_SIMULATION`: Reserved mode requiring explicit owner approval.
+2. **Zero Credential Exposure:** API keys are never printed, logged, committed, or embedded in stored receipt URLs or error messages. Echoed keys in response bodies are automatically redacted.
+3. **Immutable Snapshot Receipts:** Raw API responses and import receipts are stored under ignored directories (`data/live_snapshots/`, `data/imported_snapshots/`, `data/fixture_snapshots/`) using exclusive writes (`mode 'x'`). No snapshot is ever overwritten or modified.
+4. **Order-Invariant Conflict Safety:** When divergent prices appear for the identical natural key, ALL records for that key are quarantined as `CONFLICTING_QUOTE`.
+5. **Honest Price Bounds:** Modal substitution ($P_{\min} = P_{\text{modal}}$) is strictly eliminated. Missing min/max bounds remain missing and are quarantined as `MISSING_REQUIRED_FIELDS`. Non-finite bounds (`NaN`, `Inf`) are quarantined as `INVALID_PRICE_BOUNDS`.
+6. **Strict Disjoint Accounting:** Every fetched record is accounted for without silent loss:
    $$\text{records\_fetched} = \text{records\_accepted} + \text{records\_duplicate} + \sum \text{records\_quarantined}$$
-4. **Decoupled Capabilities:** Fresh price availability alone does not authorize ML forecasting or synthetic-cost farmer advice. Capabilities are strictly segregated:
+7. **Decoupled Capabilities:** Fresh price availability alone does not authorize ML forecasting or synthetic-cost farmer advice. Capabilities are strictly segregated:
    - **Price Display:** Enabled for `CURRENT` ($\le 2$d) and `DELAYED` (3–5d) with explicit observation date disclosures.
    - **Forecast Eligibility:** Blocked (requires approved model release).
    - **Economics / Farmer Advisory:** Blocked (commercial storage advice requires empirical farmgate costs, not synthetic parameters).
-5. **Fail-Closed Safety Gates:** Ingestion fails closed upon repeated page cycles, unadvancing offsets, unstable totals, district filter leaks, or HTTP authorization failures.
 
 ---
 
@@ -64,7 +77,32 @@ print('OGD_API_KEY detected:', bool(key and key.strip()))
 
 ## 3. Manual Execution Workflows
 
-### 3.1 Offline Dry-Run (Synthetic Mock)
+### 3.1 Primary Operational Source: Dataset-First File Import (`FILE_IMPORT`)
+Per the repository's dataset-first operational default, official observed APMC raw archives in `data/raw/*.csv` serve as the primary operational source:
+
+```bash
+# Ingest single district raw file
+python3 -m src.live_price_ingestion --import-file data/raw/Kanpur.csv --district Kanpur
+
+# Ingest single district with declared metadata
+python3 -m src.live_price_ingestion \
+  --import-file data/raw/Kanpur.csv \
+  --district Kanpur \
+  --source-url "https://agmarknet.gov.in" \
+  --retrieval-time "2026-09-01T00:00:00Z"
+
+# Ingest with machine-readable JSON output
+python3 -m src.live_price_ingestion --import-file data/raw/Jhansi.csv --json
+```
+
+**Dataset Refresh Steps for Operators:**
+1. Download official daily/monthly APMC mandi arrivals CSV from Agmarknet or data.gov.in for the target district.
+2. Verify file size $\le 10$ MB and row count $\le 50,000$ (if file exceeds limits, request remote workflow).
+3. Compute SHA-256 and confirm schema headers match `data/reference/live_source_contract.json`.
+4. Run `--import-file` pointing to the downloaded file.
+5. Review the generated `run_receipt.json` under `data/imported_snapshots/<RUN_ID>/` to confirm row reconciliation and zero unhandled errors.
+
+### 3.2 Offline Dry-Run (Mock Transport)
 Runs the full ingestion pipeline, validation engine, reconciliation arithmetic, and health report formatting without initiating external network calls:
 
 ```bash
@@ -77,30 +115,30 @@ To view machine-readable JSON output:
 python3 -m src.live_price_ingestion --dry-run --json
 ```
 
-### 3.2 Single District Live Harvest
+### 3.3 Single District Live Harvest (Requires OGD_API_KEY)
 Fetches and validates the daily price batch for one authorized district (e.g. `Kanpur`):
 
 ```bash
 python3 -m src.live_price_ingestion --district Kanpur
 ```
 
-### 3.3 Full 5-District Live Campaign
+### 3.4 Full 5-District Live Campaign (Requires OGD_API_KEY)
 Executes a bounded harvest across all five authorized districts (`Ghaziabad`, `Jhansi`, `Kanpur`, `Lucknow`, `Unnao`):
 
 ```bash
 python3 -m src.live_price_ingestion --district all
 ```
 
-### 3.4 Custom Reference Date
+### 3.5 Custom Reference Date
 Specify an explicit evaluation date for backtesting or specific calendar reconciliation:
 
 ```bash
 python3 -m src.live_price_ingestion --district all --date 2026-11-12
 ```
 
-### 3.5 CLI Exit Code Contract
-- `0`: Ingestion succeeded cleanly (`SUCCESS` or `UNCHANGED`).
-- `1`: Ingestion encountered data quality issues (`QUARANTINED`, `PARTIAL`, or `SOURCE_DOWN`).
+### 3.6 CLI Exit Code Contract
+- `0`: Ingestion succeeded cleanly (`SUCCESS`, `UNCHANGED`, or `QUARANTINED` under dataset import).
+- `1`: Ingestion encountered fatal operational failure (`SOURCE_DOWN` or unhandled error).
 - `2`: Ingestion blocked due to missing or invalid credentials (`UNINITIALIZED` / `BLOCKED`).
 
 ---
@@ -143,10 +181,20 @@ $$\text{Grade} = \text{"SOURCE\_NOT\_PROVIDED"}$$
 - Market names classified as `UNMAPPED/REVIEW` (e.g. `Purwa APMC` in Unnao, `Baripaal APMC -> Varipaal` in Kanpur) are isolated under disposition `UNKNOWN_MARKET_REVIEW`.
 - Unrecognized market yards not present in the reference register enter disposition `UNKNOWN_MARKET_REVIEW`.
 
-### 5.4 Physical Price Bounds
+### 5.4 Honest Physical Price Bounds (No Modal Substitution)
 Prices must satisfy:
 $$0.0 < P_{\min} \le P_{\text{modal}} \le P_{\max}$$
-Records violating these physical inequalities are quarantined as `INVALID_PRICE_BOUNDS`.
+- All price fields must be positive finite floats.
+- **Modal substitution is strictly forbidden:** Missing `min_price` or `max_price` is never substituted with `modal_price`; it is honestly preserved as `None` and quarantined under `MISSING_REQUIRED_FIELDS`.
+- Non-finite (`NaN`, `Inf`), non-positive ($\le 0$), and inverted bounds are quarantined as `INVALID_PRICE_BOUNDS`. Original raw inputs are preserved.
+
+### 5.5 Order-Invariant Conflict Safety
+If two or more observations in a batch share an identical natural key $(date, district, market, commodity, variety, grade)$ with divergent prices:
+- **ALL** members of the conflict group are quarantined under `RecordDisposition.CONFLICTING_QUOTE`.
+- Previously accepted or duplicate records for that natural key are retroactively removed from accepted counts.
+- The observation date range is recomputed strictly from remaining accepted records.
+- All input permutations (`[A,A,B]`, `[A,B,B]`, `[B,A,A]`, `[A,B,A]`) yield identical output arithmetic:
+  $$\text{Fetched}(3) = \text{Accepted}(0) + \text{Duplicates}(0) + \text{Quarantined}(3)$$
 
 ---
 

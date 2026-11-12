@@ -1300,3 +1300,62 @@ $$\text{records\_fetched} = \text{records\_accepted} + \text{records\_duplicate}
 - **Full Test Suite:** 239 passed in 9.46s (0 failures, 0 errors).
 - **Runbook:** Authored `documentation/LIVE_INGESTION_RUNBOOK.md` detailing CLI usage, key setup, and deferred scheduler blueprint. Zero automated schedulers (cron/launchd) activated.
 
+
+
+## MP-SRC-004 review and owner synthetic approval rule — 2026-11-12 IST
+Owner now requires explanation and explicit approval BEFORE any new synthetic operational dataset/feed, training data or economics scenario generation. Supersedes prior blanket scenario permission. Explain missing data, assumptions/method, effect on evaluation/live claims/advice and alternatives first; wait for approval. Never label synthetic with actual current observation timestamps. Existing isolated test fixtures are test evidence only. No new synthetic dataset generated in this review.
+SRC004 commit ce780f5772ed640eab1d2071f7427fcd49a523df independently verified on GitHub; 56 targeted ingestion/gate/output tests passed in 15.48s, full239 executor-reported. Key absent per executor, no live request made: access not verified, NOT demonstrated data unavailability. Implemented interface accepted as partial; corrections required for mock-live provenance, quarantining all conflicting quotes, invented missing min/max bounds, persistent prior-success/revisions and transport dependencies/bounded reads. See documentation/SRC004_REVIEW.md. Next documentation/prompts/MP-SRC-004B.md, existing-fixture repairs, no synthetic generation, real verification only with existing key, no key writes/installs/Kaggle/training/scheduler.
+
+
+## Owner direction: dataset-first operation — 2026-11-12 IST
+Owner explicitly authorizes reliance on the latest available downloaded real datasets instead of requiring an API key; API is optional due to call limits. Default supported workflow: explicit source-file selection -> schema/unit/provenance validation -> immutable FILE_IMPORT snapshot -> deterministic overlap/dedup/conflict/revision handling -> per-series observed-date freshness -> reports/forecasts when independently eligible. Import timestamp must not replace trade observation date. Real historical data remains suitable for retrospective forecasting development; missing live API is not a model-development blocker. Future manual official CSV/Excel downloads may refresh the store. No live verification claim or automatic synthetic fallback. Synthetic generation still requires prior proposal and explicit approval. API rate limits are not assumed numerically; apply documented source limits if API is later enabled.
+After SRC004B repairs/ingestion milestone, roadmap stages4–13 remain: 10 main milestones, with stages4/5 partly implemented and 8 further core packages stages6–13; optional arrivals/weather add 2 experiments. This is not 10 code sessions: repairs and prospective outcomes affect timing. Source availability is not future field evidence.
+
+---
+
+## 24. Mathematical & Operational Validation: Truthful Provenance, Conflict Safety & Dataset-First Ingestion (MP-SRC-004B)
+
+### 24.1 Explicit Provenance Partitioning
+Every ingestion campaign, page receipt, and price record strictly records its operational `DataMode`:
+- $\text{DataMode} \in \{\text{LIVE\_FETCH}, \text{FILE\_IMPORT}, \text{HISTORICAL\_REPLAY}, \text{TEST\_FIXTURE}, \text{SYNTHETIC\_SIMULATION}\}$
+- **Mock Transport Prohibition:** Mock HTTP transports are restricted to `TEST_FIXTURE` and routed to `data/fixture_snapshots/`. Asserting `LIVE_FETCH` with a mock transport raises `ValueError`.
+- **Live Verification Gate:** $\text{is\_live\_verified} = \text{True}$ strictly requires $\text{data\_mode} == \text{LIVE\_FETCH}$ and authenticated HTTP transport execution. Mode `FILE_IMPORT` or `TEST_FIXTURE` strictly forces $\text{is\_live\_verified} = \text{False}$.
+- **Persistent Pointer Invariance:** `last_successful_campaign.json` is updated strictly when $\text{is\_live\_verified} == \text{True}$. Neither `FILE_IMPORT` nor `TEST_FIXTURE` can advance or overwrite this pointer.
+
+### 24.2 Order-Invariant Conflict Safety Proof
+For any natural key $K = (\text{date}, \text{district}, \text{market}, \text{commodity}, \text{variety}, \text{grade})$, let $Q(K) = \{q_1, q_2, \dots, q_n\}$ be the sequence of quotes observed in a batch:
+- If all quotes share identical price tuples $P(q_1) = P(q_2) = \dots = P(q_n)$, the first quote $q_1$ is accepted and subsequent quotes $\{q_2, \dots, q_n\}$ are classified as `EXACT_DUPLICATE`.
+- If there exist indices $i, j$ such that $P(q_i) \ne P(q_j)$, the conflict set is non-empty. In MP-SRC-004B, **ALL** members of $Q(K)$ are quarantined:
+  $$\forall q \in Q(K), \quad \text{disposition}(q) \leftarrow \text{CONFLICTING\_QUOTE}$$
+  $$\text{accepted\_records} \leftarrow \text{accepted\_records} \setminus Q(K)$$
+  $$\text{duplicate\_records} \leftarrow \text{duplicate\_records} \setminus Q(K)$$
+- Recomputation of observation date bounds strictly excludes all members of $Q(K)$:
+  $$D_{\text{obs}} = \left[\min_{q \in \text{accepted}} \text{date}(q), \max_{q \in \text{accepted}} \text{date}(q)\right]$$
+- **Permutation Invariance:** For any permutation $\pi(Q(K))$, the resulting disposition counts satisfy:
+  $$\text{accepted}(\pi) \equiv 0, \quad \text{duplicate}(\pi) \equiv 0, \quad \text{quarantined}(\pi) \equiv |Q(K)|$$
+  $$\text{fetched}(\pi) = \text{accepted}(\pi) + \text{duplicate}(\pi) + \text{quarantined}(\pi)$$
+
+### 24.3 Honest Price Bounds & Rejection of Modal Substitution
+- **Modal Substitution Forbidden:** Missing `min_price` or `max_price` is preserved as `None` and quarantined under `MISSING_REQUIRED_FIELDS`. The relation $P_{\min} \leftarrow P_{\text{modal}}$ is strictly prohibited.
+- **Physical Feasibility Filter:** Records are required to satisfy:
+  $$0.0 < P_{\min} \le P_{\text{modal}} \le P_{\max} < \infty$$
+  Violations including non-positive values, non-finite values (`NaN`, `Inf`), or inverted bounds are quarantined as `INVALID_PRICE_BOUNDS`. Original raw inputs are preserved unaltered.
+
+### 24.4 Dataset-First Operational Accounting (160,192 Rows Verified)
+Using the authorized file import path (`client.execute_file_import`), all 5 official raw APMC archives in `data/raw/` were verified against the production validation and conflict engine:
+
+$$\begin{aligned}
+\text{Total Fetched (160,192)} &= \text{Accepted (154,262)} + \text{Duplicates (865)} + \text{Quarantined (5,065)} \\
+&= 160,192 \quad (\text{Balanced: } \Delta = 0)
+\end{aligned}$$
+
+- **Ghaziabad (`Gaziabaad.csv`, 3.49 MB):** $41,495 = 40,654\text{ accepted} + 237\text{ dup} + 604\text{ quar}$ (Dates: 2024-09-01 to 2026-09-01)
+- **Jhansi (`Jhansi.csv`, 1.86 MB):** $23,625 = 23,066\text{ accepted} + 189\text{ dup} + 370\text{ quar}$ (Dates: 2024-09-01 to 2026-09-01)
+- **Kanpur (`Kanpur.csv`, 3.53 MB):** $42,644 = 40,373\text{ accepted} + 242\text{ dup} + 2,029\text{ quar}$ (Dates: 2024-09-01 to 2026-09-01)
+- **Lucknow (`Lukhnow.csv`, 1.76 MB):** $21,063 = 20,233\text{ accepted} + 82\text{ dup} + 748\text{ quar}$ (Dates: 2024-09-01 to 2026-09-01)
+- **Unnao (`Unnao.csv`, 2.45 MB):** $31,365 = 29,936\text{ accepted} + 115\text{ dup} + 1,314\text{ quar}$ (Dates: 2024-09-01 to 2026-09-01)
+
+### 24.5 Test Suite Evidence
+- **Targeted Tests:** `tests/test_live_price_ingestion.py` (34 tests passed in 4.23s).
+- **Full Test Suite:** 251 tests passed in 9.03s (0 failures across all 19 test files).
+- **Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`.
