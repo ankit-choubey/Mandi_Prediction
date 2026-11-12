@@ -175,3 +175,13 @@ tests/test_fc006_audit.py ..........                                     [100%]
 - **Kaggle Baseline Scorecard:** **RERUN REQUIRED**.
   - A remote Kaggle kernel rerun is required to execute the updated notebook and regenerate `scorecard_sensitivities.csv`, `canonical_disputed_keys_audit.csv`, and `exclusion_stage_counts.json`.
   - Staging of scorecard CSVs without a verified remote run is strictly avoided per push rules.
+
+---
+
+## 7. Review Follow-Up & Addendum (MP-AUDIT-008)
+
+The completion record arithmetic and scoring engine were further refined under `MP-AUDIT-008`:
+1. **Fold Origins Breakdown:** Verified Tier A Naive fold origin counts from `scorecard_fold_x_tier.csv`: F1: 37,858; F2: 23,490; F3: 1,413; F4: 2,015 (total: 64,776). The previously pasted counts (45,958 / 15,390 / 1,791 / 1,637) in the MP-AUDIT-007 completion message were in error and are officially superseded.
+2. **MAE 95% Bootstrap Confidence Intervals:** Reconciled from artifact CSVs: Naive `[96.3545, 119.0323]`, MA `[120.7251, 149.3536]`, Seasonal Naive `[661.0247, 895.0745]`, Drift `[95.8185, 119.1334]`.
+3. **Volatile Subgroup Accounting:** 27,858 represents eligible origins for the $>2\%$ target move subset; Drift scores 27,451 (1.46% abstention / 398 missing anchor origins).
+4. **Scoring Engine Integration:** Unified production scoring helpers (`score_series_origin`, `evaluate_series_train_eligibility`) implemented in `src/baselines.py` and called directly by notebook Cell 4. Scope B historical excising implemented for all four baselines. Joint finite masking applied to shared scorer denominators.

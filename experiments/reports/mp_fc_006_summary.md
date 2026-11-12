@@ -6,7 +6,7 @@
 **Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged)
 **Baseline Git Commit:** `b231e27cefc8d29bdf448233253eaed7fe44fca0`
 **Panel v2 Status:** **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`)
-**Audit Status:** Audited under Task `MP-AUDIT-007` (**CHANGES REQUIRED**). Scorecards are artifact-backed provisional benchmarks. The 77-disputed keys sensitivity is superseded due to uncanonicalized APMC matching; full rerun is designated **RERUN REQUIRED**. MASE is **NOT COMPUTED** (skill metric is paired test-relative MAE ratio vs Naive).
+**Audit Status:** Audited and repaired under Tasks `MP-AUDIT-007` and `MP-AUDIT-008` (**LOCAL REPAIRS COMPLETE; BASELINE SCORECARD RERUN REQUIRED**). Scorecards are artifact-backed provisional benchmarks. The 77-disputed keys sensitivity is superseded; scoring engine is unified with the notebook loop; Scope B covers all four baselines; shared scorer denominators use joint finite masking; full rerun is designated **RERUN REQUIRED**. MASE is **NOT COMPUTED** (skill metric is paired test-relative MAE ratio vs Naive).
 
 ---
 

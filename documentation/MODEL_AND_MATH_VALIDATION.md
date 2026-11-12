@@ -889,3 +889,96 @@ The table below presents the verified, artifact-backed scorecard results from `s
 
 *(All numbers above match the saved scorecard CSV artifacts. Prior prose summaries containing rounded or discrepant metrics are superseded).*
 
+
+
+## 17. Independent review of MP-AUDIT-007 — 2026-11-12 IST
+
+Commit 250eb45e10e8accc614f7c9334a19b9042a5b8f7 verified on GitHub. Targeted command `python3 -m pytest tests/test_baselines.py tests/test_fc006_audit.py -q -o cache_dir=/tmp/mandi_audit008_cache --basetemp=/tmp/mandi_audit008_tmp`: 18 passed in 0.37s, exit 0. Full 170-pass receipt remains REPORTED; not independently rerun here. Verdict: useful partial repairs, CHANGES REQUIRED before remote execution.
+
+New findings: notebook retains inline prediction implementation instead of invoking tested predict_series_vectorized; Scope B recomputes MA/drift but not seasonal naive; cleaned history does not reapply general recency eligibility; boundary test asserts standalone date arithmetic rather than actual evaluator. Shared scorer counts three-way validity but metric routine uses a different mask when naive is missing. The real-key integration test depends on ignored outputs and can skip. documentation/context.md is an untracked, unignored journal duplicate; preserve without syncing or committing.
+
+Pasted fold counts are incorrect: actual Tier A naive F1/F2/F3/F4 are 37,858 / 23,490 / 1,413 / 2,015. Legacy overall MA/seasonal/drift MAE CIs remain [120.7251,149.3536] / [661.0247,895.0745] / [95.8185,119.1334]. Other values in the completion message are unsupported by unchanged artifacts. Volatile subgroup 27,858 is eligible; drift scores 27,451. Do not call matching pair totals verification of each fold.
+
+Next: documentation/prompts/MP-AUDIT-008.md, local-only repair pass. No Kaggle rerun approved, no new model training, no panel freeze. Scope B must remove history for all baselines and compare paired cases with explicit exclusions. Existing retrospective/lookahead limitations remain open.
+
+
+
+## 18. Unified Production Scoring Engine & Scope B Sensitivity (MP-AUDIT-008)
+
+**Document Reference:** `MP-AUDIT-008`
+**Date:** `2026-11-12` (Asia/Kolkata)
+**Status:** **LOCAL REPAIRS COMPLETE; BASELINE SCORECARD RERUN REQUIRED**
+**Audit Baseline Commit:** `250eb45e10e8accc614f7c9334a19b9042a5b8f7`
+
+### 18.1 Mathematical Formulation of Unified Production Scoring Path
+To eliminate the architectural discrepancy between modular tests and the high-performance notebook loop (Finding A007-05 / Section 17 Review), the scoring logic is encapsulated into `score_series_origin()` in `src/baselines.py`.
+
+Given a series array of dates $D = (d_1, \dots, d_N)$ and clean prices $P = (p_1, \dots, p_N)$ sorted chronologically ($d_1 < d_2 < \dots < d_N$), for an origin date $t$ and fold test window $[T_{\text{test\_start}}, T_{\text{test\_end}}]$:
+
+1. **Test Window Containment:**
+   $$t \in [T_{\text{test\_start}}, T_{\text{test\_end}}]$$
+2. **Origin Observation:**
+   $$\exists i : d_i = t, \quad y(t) = p_i$$
+3. **Serving-Time Recency Rule:**
+   $$N_{\text{recency}}(t) = \sum_{k=1}^N \mathbf{1}_{\{t - 30\text{d} \le d_k \le t\}} \ge 3$$
+4. **Target Extraction & Tie-Breaking:**
+   $$\mathcal{T}(t) = \{k : t + 6\text{d} \le d_k \le t + 8\text{d}\}$$
+   If $\mathcal{T}(t) \ne \emptyset$, select $k^* = \arg\min_{k \in \mathcal{T}(t)} (|d_k - (t+7\text{d})|, d_k)$ (breaking distance ties to earlier calendar date).
+   The target date $d_{k^*}$ must strictly obey the fold boundary:
+   $$d_{k^*} \le T_{\text{test\_end}}$$
+   If $d_{k^*} > T_{\text{test\_end}}$, the origin is dropped (`drop_reason = "dropped_target_after_fold_end"`).
+
+### 18.2 Scope B Sensitivity Formulation for All Baselines
+Scope B models an interventionist policy where disputed discrepancy observations are excised from historical series data:
+
+$$\mathcal{K}_{77} = \{(d_i, m_i, c_i, v_i, g_i, \tau_i)\}_{i=1}^{77}$$
+
+For an origin instance with metadata $(d, m, c, v, g)$ at date $t$ and target date $t_{\text{target}}$:
+1. **Explicit Origin/Target Exclusion:**
+   - If $(d, m, c, v, g, t) \in \mathcal{K}_{77}$: $\mathtt{scope\_b\_eligible} = \text{False}$, $\mathtt{reason} = \text{"disputed\_origin"}$.
+   - If $(d, m, c, v, g, t_{\text{target}}) \in \mathcal{K}_{77}$: $\mathtt{scope\_b\_eligible} = \text{False}$, $\mathtt{reason} = \text{"disputed\_target"}$.
+2. **Counterfactual Clean History Construction:**
+   $$\mathcal{H}_{\text{clean}}(t) = \{k : d_k \le t \land (d, m, c, v, g, d_k) \notin \mathcal{K}_{77}\}$$
+3. **Clean Recency Verification:**
+   $$N_{\text{clean\_recency}}(t) = \sum_{k \in \mathcal{H}_{\text{clean}}(t)} \mathbf{1}_{\{t - 30\text{d} \le d_k \le t\}} \ge 3$$
+   If $N_{\text{clean\_recency}}(t) < 3$, $\mathtt{scope\_b\_eligible} = \text{False}$, $\mathtt{reason} = \text{"recency\_failure\_after\_removal"}$.
+4. **Counterfactual Predictions on $\mathcal{H}_{\text{clean}}(t)$:**
+   - **Naive:** $\hat{y}_{\text{naive}, B}(t+7) = y(t)$
+   - **Moving Average:** Mean of last $\le 7$ observations in $\mathcal{H}_{\text{clean}}(t) \cap [t-30\text{d}, t]$
+   - **Seasonal Naive:** Nearest observation to $t - 357$ in $\mathcal{H}_{\text{clean}}(t) \cap [t-360, t-354]$
+   - **Damped Drift:** Anchor nearest $t - 14$ in $\mathcal{H}_{\text{clean}}(t) \cap [t-17, t-11]$, slope $\frac{y(t) - y_{\text{anchor}}}{\Delta t}$
+
+### 18.3 Shared Scorer Denominators & Joint Finite Masking
+In `evaluate_model_slice()`, evaluation is strictly performed on the joint finite intersection:
+
+$$\mathcal{S}_{\text{scored}} = \{i \in \mathcal{S}_{\text{eligible}} : y_{\text{true}, i} \in \mathbb{R} \land \hat{y}_{\text{model}, i} \in \mathbb{R} \land \hat{y}_{\text{naive}, i} \in \mathbb{R}\}$$
+
+- **Observation Conservation:** $N_{\text{scored}} = |\mathcal{S}_{\text{scored}}| \le N_{\text{eligible}} = |\mathcal{S}_{\text{eligible}}|$.
+- **Abstention Rate:** $\text{Abstention} = \frac{N_{\text{eligible}} - N_{\text{scored}}}{N_{\text{eligible}}} \times 100\%$.
+- **Skill vs Naive:** Computed on the exact matching paired sample:
+  $$\text{Skill} = 1 - \frac{\sum_{i \in \mathcal{S}_{\text{scored}}} |\hat{y}_{\text{model}, i} - y_{\text{true}, i}|}{\sum_{i \in \mathcal{S}_{\text{scored}}} |\hat{y}_{\text{naive}, i} - y_{\text{true}, i}|}$$
+- **Low-N Flag:** Evaluated strictly on scored counts:
+  $$\mathtt{low\_n\_flag} = (N_{\text{scored}} < 200) \lor (N_{\text{scored\_series}} < 10)$$
+
+### 18.4 Reconciled Fold Counts & Confidence Intervals
+
+From `scorecard_fold_x_tier.csv`, exact fold counts and confidence intervals for Tier A Naive are:
+- **Fold F1 (Train $\le$ 2024-12-31):** $N = 37,858$ origins across 359 series. MAE $= 101.59$ (95% CI: $[89.35, 114.11]$).
+- **Fold F2 (Train $\le$ 2025-06-30):** $N = 23,490$ origins across 346 series. MAE $= 106.46$ (95% CI: $[93.44, 118.92]$).
+- **Fold F3 (Train $\le$ 2025-12-18):** $N = 1,413$ origins across 102 series. MAE $= 108.11$ (95% CI: $[87.32, 131.00]$).
+- **Fold F4 (Train $\le$ 2026-03-31):** $N = 2,015$ origins across 37 series. MAE $= 212.84$ (95% CI: $[46.91, 458.94]$).
+- **Overall Tier A:** $N = 64,776$ origins across 401 series. MAE $= 106.96$ (95% CI: $[96.3545, 119.0323]$).
+
+Overall Tier A MAE 95% Confidence Intervals from persisted artifacts:
+- **Naive:** $[96.3545, 119.0323]$
+- **Moving Average:** $[120.7251, 149.3536]$
+- **Seasonal Naive:** $[661.0247, 895.0745]$
+- **Damped Drift:** $[95.8185, 119.1334]$
+
+Volatile Subgroup ($|y(t+7) - y(t)| / y(t) > 0.02$):
+- Eligible origins: $N = 27,858$.
+- Drift scored origins: $N = 27,451$ (1.46% abstention).
+- Drift Skill vs Naive: $+0.0695$ (95% CI: $[0.0432, 0.0950]$).
+
+*(Prior pasted counts 45,958 / 15,390 / 1,791 / 1,637 and unexecuted alternate CIs are officially superseded).*
+
