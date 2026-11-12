@@ -150,33 +150,53 @@ flowchart TD
 
 The configuration in `experiments/configs/price_forecast_v1.json` defines the remote execution protocol across four temporal folds:
 
-### 6.1 Temporal Folds
+### 6.1 Primary Dataset & Reference Inputs
+- **Primary Input Panel:** Regenerated legacy panel V2 with SHA-256 `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` and row conservation $472,385 = 463,217 + 855 + 2,936 + 5,350 + 27$.
+- **Reference Market Aliases:** Embedded immutable `data/reference/market_aliases.csv` (77 canonicalized mapping rows).
+- **Focus Crops:** Exactly `Wheat`, `Potato`, `Onion`, `Tomato`, `Paddy(Dhan)(Common)`, `Rice`. Mustard and Basmati are not focus crops. Missing snapshot records reflect single-day absence, not evidence of zero real trading.
 
-| Fold | Training Cutoff ($T_{\text{train}}$) | Max Training Origin ($t \le T - 8$) | Test Start Date | Test End Date | Embargo Span | Role |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **F1** | 2024-12-31 | 2024-12-23 | 2025-01-08 | 2025-06-30 | 7 days | Historical Development Benchmark |
-| **F2** | 2025-06-30 | 2025-06-22 | 2025-07-08 | 2025-10-31 | 7 days | Historical Development Benchmark |
-| **F3** | 2025-12-18 | 2025-12-10 | 2025-12-26 | 2026-03-31 | 7 days | Historical Development Benchmark |
-| **F4** | 2026-03-31 | 2026-03-23 | 2026-04-08 | 2026-09-30 | 7 days | Historical Development Benchmark |
+### 6.2 Target Formulation & Response Choice
+- **Horizon & Window:** Modal price in $[t+6, t+8]$ closest to $t+7$ (earlier tie-breaker).
+- **Response Choice:** Additive price change $\Delta = y_{\text{target}} - y_t$ for both candidates.
+- **Reconstructed Forecast:** $\hat{y} = y_t + \hat{\Delta}$. Non-positive or non-finite forecasts abstain with reason `NON_POSITIVE_RECONSTRUCTED_FORECAST`. No arbitrary clipping.
+
+### 6.3 Temporal Folds & Regimes
+
+| Fold | Training Cutoff ($T_{\text{train}}$) | Max Training Origin ($t \le T - 8$) | Test Start Date | Test End Date | Embargo Span | Regime | Role |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **F1** | 2024-12-31 | 2024-12-23 | 2025-01-08 | 2025-06-30 | 7 days | HISTORICAL | Historical Development Benchmark |
+| **F2** | 2025-06-30 | 2025-06-22 | 2025-07-08 | 2025-10-31 | 7 days | TRANSITION | Historical Development Benchmark |
+| **F3** | 2025-12-18 | 2025-12-10 | 2025-12-26 | 2026-03-31 | 7 days | TRANSITION | Historical Development Benchmark |
+| **F4** | 2026-03-31 | 2026-03-23 | 2026-04-08 | 2026-09-30 | 7 days | MODERN | Historical Development Benchmark |
 
 > [!NOTE]
 > All test folds have been inspected in preceding audit passes and serve as **development benchmarks**. Final generalization claims require prospective evaluation on newly acquired operational observations.
 
-### 6.2 Candidate Models
+### 6.4 Inner Chronological Validation
+For each outer fold, two prespecified expanding inner chronological splits are used for hyperparameter selection:
+- **Split 1:** Validation window $[T_{\text{train}} - 119\text{d}, T_{\text{train}} - 60\text{d}]$. Inner training cutoff $T_{\text{train}} - 120\text{d}$, 7-day embargo, label maturity $\text{target\_date} \le T_{\text{train}} - 120\text{d}$.
+- **Split 2:** Validation window $[T_{\text{train}} - 59\text{d}, T_{\text{train}}]$. Inner training cutoff $T_{\text{train}} - 60\text{d}$, 7-day embargo, label maturity $\text{target\_date} \le T_{\text{train}} - 60\text{d}$.
+- **Transform Isolation:** Preprocessors (median imputer and standard scaler) fit strictly on inner training data.
+- **Selection Metric:** Pooled inner validation MAE across both splits on matched available origins, with deterministic tie-break to simpler models (higher $\alpha$, HGB depth 3). Default fallback if inadequate data: Ridge $\alpha=1.0$, HGB depth 3.
+
+### 6.5 Candidate Models & Baselines
 1. **Linear Regularized Baseline (`Ridge`):**
    - L2-regularized linear model on standardized price lags and calendar encodings.
    - Median imputation and standard scaling fitted strictly within training partition.
-   - Inner chronological validation for penalty parameter $\alpha \in \{0.01, 0.1, 1.0, 10.0, 100.0\}$.
+   - Pre-fixed grid: $\alpha \in \{0.1, 1.0, 10.0\}$.
 2. **Nonlinear Tabular Gradient Boosting (`HistGradientBoostingRegressor`):**
    - Histogram-based gradient tree boosting with native missing-value (`NaN`) routing.
-   - Requires zero feature imputation, eliminating imputer leakage risks.
-   - Hyperparameters tuned chronologically on training fold.
-3. **Rescored Baselines:**
-   - Naive $H=7$, 7-day Moving Average, Linear Drift, and 364-day Seasonal Naive rescored strictly on exact non-abstained matched cases.
+   - Two pre-fixed configurations: `{max_iter: 100, max_depth: 3, lr: 0.05, min_leaf: 20}` and `{max_iter: 100, max_depth: 5, lr: 0.05, min_leaf: 30}`, with `random_state=42` and `early_stopping=False`.
+3. **Rescored Baselines (strictly on identical matched cases):**
+   - `naive`: $\hat{y} = y(t)$
+   - `moving_average_7obs_in_30d`: Mean of last $\le 7$ observations within $[t-30\text{d}, t]$, minimum 3 observations (distinguished from feature rolling 7 calendar days).
+   - `seasonal_naive_357d`: Observation nearest to $(t + 7 - 364) = (t - 357\text{d})$ within $\pm 3$ days.
+   - `drift`: Damped drift $y(t) + 0.5 \times \text{slope} \times 7$, anchor nearest to $t - 14\text{d}$ within $\pm 3$ days.
 
-### 6.3 Evaluation Metrics & MASE Stance
-- **Primary Accuracy:** Mean Absolute Error ($\text{MAE}$), Root Mean Squared Error ($\text{RMSE}$), Mean Directional Bias, Median Absolute Error ($\text{MedianAE}$).
+### 6.6 Evaluation Metrics, Paired Skill & Bootstrap CIs
+- **Point Metrics:** Mean Absolute Error ($\text{MAE}$), Root Mean Squared Error ($\text{RMSE}$), Mean Directional Bias, Median Absolute Error ($\text{MedianAE}$), MAPE (valid positive denominator), and percentage within 5% error.
 - **Paired Skill Score:**
   $$\text{Skill}_m = 1 - \frac{\sum_{j \in S_m} |y_j - \hat{y}_{m,j}|}{\sum_{j \in S_m} |y_j - \hat{y}_{\text{naive},j}|}$$
-  Evaluated on strictly non-zero denominators with series-clustered 95% bootstrap confidence intervals.
+  Evaluated on strictly non-zero denominators with series-clustered 95% bootstrap confidence intervals (1,000 resamples, seed 42).
+- **Sensitivities:** Exact $T+7$ subset, disputed 77 keys subset, retrospective $\gt 2\%$ target move diagnostic subset.
 - **Conventional MASE Stance:** Conventional non-seasonal $\text{MASE}$ requires a training-only 1-step naive scale ($d_s$). Because historical panel pairs have not had this scale independently verified in code, $\text{MASE}$ remains explicitly **NOT COMPUTED / NOT VALIDATED** to prevent misleading metric claims.

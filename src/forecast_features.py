@@ -301,8 +301,9 @@ class ForecastFeatureBuilder:
             alias_key = (d_clean, m_raw)
             if alias_key in self.alias_mapping:
                 entry = self.alias_mapping[alias_key]
-                action = entry.get("action", "")
-                if action in ("MAP_CANONICAL", "EXACT_CANONICAL", "ACCEPTED"):
+                status = str(entry.get("status", "")).strip().upper()
+                action = str(entry.get("action", "")).strip().upper()
+                if status in ("ACCEPTED", "CANONICAL") or action in ("MAP_CANONICAL", "EXACT_CANONICAL", "ACCEPTED"):
                     m_canon = entry.get("market_canonical") or m_raw
 
         # Grade normalization: never silently merge missing grade with FAQ
@@ -366,6 +367,8 @@ class ForecastFeatureBuilder:
             try:
                 price = float(price_raw)
             except (ValueError, TypeError):
+                continue
+            if not math.isfinite(price) or price <= 0:
                 continue
 
             series_key = self.normalize_series_identity(d_val, m_val, c_val, v_val, g_val)
@@ -699,3 +702,4 @@ class ForecastFeatureBuilder:
         w_start = t - timedelta(days=window_days)
         obs_count = sum(1 for d in clean_history.keys() if w_start <= d <= t)
         return obs_count >= min_recency_obs
+

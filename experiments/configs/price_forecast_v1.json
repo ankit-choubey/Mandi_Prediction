@@ -1,17 +1,46 @@
 {
   "schema_version": "1.0.0",
   "contract_id": "PRICE_FORECAST_V1_SPECIFICATION",
-  "task_id": "MP-DATA-008",
+  "task_id": "MP-FC-007",
   "generated_date_ist": "2026-11-12",
-  "status": "SPECIFIED_PENDING_REMOTE_EXECUTION",
-  "execution_notes": "Local model training and Kaggle execution are strictly forbidden in this task. This configuration specifies the reproducible protocol for Step 7 price-only ML benchmarking.",
+  "status": "APPROVED_SINGLE_KAGGLE_CPU_RUN",
+  "execution_notes": "Single authorized Kaggle CPU run on existing dataset theankitchoubey/mandi-prediction-audit-003b (v1). Zero local model fitting or full-panel joins.",
+  "input_dataset": {
+    "name": "mandi_5year_legacy_panel_v2",
+    "sha256": "851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31",
+    "row_count": 472385,
+    "row_conservation": "472385 = 463217 + 855 + 2936 + 5350 + 27",
+    "source_file": "5 year dataset/*.csv (regenerated via data_pipeline.py)",
+    "notes": "Primary input is regenerated legacy panel V2. Candidate v2.1 remains separate; no second panel/experiment in this run."
+  },
+  "market_aliases": {
+    "file": "data/reference/market_aliases.csv",
+    "policy": "Embed immutable legacy market_aliases.csv separately from candidate policy and preserve bytes/schema/order needed for hash.",
+    "disputed_keys_count": 77
+  },
+  "focus_crops": [
+    "Wheat",
+    "Potato",
+    "Onion",
+    "Tomato",
+    "Paddy(Dhan)(Common)",
+    "Rice"
+  ],
+  "focus_crops_notes": "Focus crops exactly Wheat, Potato, Onion, Tomato, Paddy(Dhan)(Common), Rice. Mustard and Basmati not silently added. Missing snapshot row means absent from snapshot, not no trading. Do not equate Paddy(Common)/Rice without explicit identity evidence.",
   "target_specification": {
     "horizon_days": 7,
     "target_window_offsets": [6, 8],
     "selection_policy": "NEAREST_OBSERVED_WITH_EARLIER_TIE_BREAK",
     "exact_t7_sensitivity_required": true,
     "max_target_date_rule": "target_date <= fold_test_end",
-    "train_maturity_rule": "target_date <= train_cutoff (origin t <= train_cutoff - 8 days)"
+    "train_maturity_rule": "target_date <= train_cutoff (origin t <= train_cutoff - 8 days conservative cap)",
+    "response_transformation": {
+      "type": "ADDITIVE_PRICE_CHANGE",
+      "formula": "target_delta = y_target - y_t",
+      "reconstructed_forecast": "y_hat = y_t + target_delta",
+      "non_positive_abstention_reason": "NON_POSITIVE_RECONSTRUCTED_FORECAST",
+      "clipping_policy": "NO_CLIPPING"
+    }
   },
   "temporal_folds": [
     {
@@ -20,7 +49,8 @@
       "test_start": "2025-01-08",
       "test_end": "2025-06-30",
       "embargo_days": 7,
-      "max_train_origin": "2024-12-23"
+      "max_train_origin": "2024-12-23",
+      "regime": "HISTORICAL"
     },
     {
       "fold_id": "F2",
@@ -28,7 +58,8 @@
       "test_start": "2025-07-08",
       "test_end": "2025-10-31",
       "embargo_days": 7,
-      "max_train_origin": "2025-06-22"
+      "max_train_origin": "2025-06-22",
+      "regime": "TRANSITION"
     },
     {
       "fold_id": "F3",
@@ -36,7 +67,8 @@
       "test_start": "2025-12-26",
       "test_end": "2026-03-31",
       "embargo_days": 7,
-      "max_train_origin": "2025-12-10"
+      "max_train_origin": "2025-12-10",
+      "regime": "TRANSITION"
     },
     {
       "fold_id": "F4",
@@ -44,7 +76,8 @@
       "test_start": "2026-04-08",
       "test_end": "2026-09-30",
       "embargo_days": 7,
-      "max_train_origin": "2026-03-23"
+      "max_train_origin": "2026-03-23",
+      "regime": "MODERN"
     }
   ],
   "series_eligibility": {
@@ -97,12 +130,34 @@
     "min_obs_for_std": 2,
     "imputation_policy": "Training-only fitted median imputer for models requiring dense inputs. Native missing value handling for HistGradientBoosting. Zero future or test imputation leakage."
   },
+  "inner_validation": {
+    "splits_per_fold": 2,
+    "split_1": {
+      "name": "inner_split_1",
+      "val_offset_start_days": 119,
+      "val_offset_end_days": 60,
+      "embargo_days": 7
+    },
+    "split_2": {
+      "name": "inner_split_2",
+      "val_offset_start_days": 59,
+      "val_offset_end_days": 0,
+      "embargo_days": 7
+    },
+    "selection_metric": "pooled_inner_val_mae",
+    "deterministic_tie_breaker": "simpler_model_higher_regularization",
+    "fallback_defaults": {
+      "ridge": 1.0,
+      "hist_gradient_boosting": "hgb_depth3"
+    }
+  },
   "missing_data_taxonomy": {
     "NO_ORIGIN": "Series was not observed on candidate calendar origin date t",
     "INELIGIBLE_HISTORY": "Series failed Tier A (N < 60 or coverage < 0.30) or Tier B (N < 120 or coverage < 0.30) training threshold",
     "MISSING_FEATURES": "Origin lacks required feature history (e.g. last_observation_age_days is NaN)",
     "NO_TARGET": "No valid trade observation exists in target evaluation window [t+6, t+8] (evaluation origin skipped)",
     "MODEL_ABSTENTION": "Model abstains from predicting due to uncertainty, out-of-domain features, or non-finite outputs",
+    "NON_POSITIVE_RECONSTRUCTED_FORECAST": "Reconstructed forecast y_hat = y_t + delta is non-positive or non-finite",
     "SERVING_DENIAL": "Serving policy denial: market alias under review, unknown grade, or observation older than 3 calendar days"
   },
   "candidate_models": {
@@ -110,7 +165,7 @@
       "model_class": "sklearn.linear_model.Ridge",
       "role": "Linear regularized baseline on lagged price and calendar features",
       "hyperparameters": {
-        "alpha": [0.01, 0.1, 1.0, 10.0, 100.0]
+        "alpha": [0.1, 1.0, 10.0]
       },
       "preprocessor": "Pipeline([('imputer', SimpleImputer(strategy='median')), ('scaler', StandardScaler())]) fitted strictly on train fold",
       "tuning_protocol": "Inner chronological rolling-origin validation on train fold; zero test fold inspection"
@@ -118,21 +173,51 @@
     "hist_gradient_boosting": {
       "model_class": "sklearn.ensemble.HistGradientBoostingRegressor",
       "role": "Nonlinear tabular tree baseline with native NaN support",
-      "hyperparameters": {
-        "max_iter": 100,
-        "max_depth": [3, 5, null],
-        "learning_rate": [0.05, 0.1],
-        "min_samples_leaf": [10, 20],
-        "random_state": 42
-      },
+      "configs": [
+        {
+          "config_id": "hgb_depth3",
+          "max_iter": 100,
+          "max_depth": 3,
+          "learning_rate": 0.05,
+          "min_samples_leaf": 20,
+          "early_stopping": false,
+          "random_state": 42
+        },
+        {
+          "config_id": "hgb_depth5",
+          "max_iter": 100,
+          "max_depth": 5,
+          "learning_rate": 0.05,
+          "min_samples_leaf": 30,
+          "early_stopping": false,
+          "random_state": 42
+        }
+      ],
       "preprocessor": "None (native NaN support)",
       "tuning_protocol": "Inner chronological rolling-origin validation on train fold; zero test fold inspection"
     },
     "benchmark_baselines_rescored": [
-      "naive_h7",
-      "moving_average_7d",
-      "drift",
-      "seasonal_naive_364d"
+      {
+        "name": "naive",
+        "formula": "y_hat = y(t)",
+        "source": "src.baselines.predict_naive"
+      },
+      {
+        "name": "moving_average_7obs_in_30d",
+        "formula": "Mean of last <=7 observations within [t-30d, t], min 3 observations",
+        "source": "src.baselines.predict_moving_average",
+        "note": "Distinguished from feature rolling 7 calendar days"
+      },
+      {
+        "name": "seasonal_naive_357d",
+        "formula": "Observation nearest to (t + 7 - 364) = (t - 357) within +/-3 days, earlier tie-break",
+        "source": "src.baselines.predict_seasonal_naive"
+      },
+      {
+        "name": "drift",
+        "formula": "y(t) + 0.5 * slope * 7, anchor nearest (t - 14) within +/-3 days",
+        "source": "src.baselines.predict_drift"
+      }
     ]
   },
   "evaluation_metrics": {
@@ -141,18 +226,24 @@
       "RMSE",
       "MeanBias",
       "MedianAE",
-      "MAPE_with_valid_denominator"
+      "MAPE_with_valid_denominator",
+      "pct_within_5pct"
     ],
     "paired_skill": {
       "formula": "1 - (sum(|y - y_hat|) / sum(|y - y_naive|)) on exactly matched non-abstained finite pairs",
-      "confidence_intervals": "Cluster bootstrap at series level (95% CI)"
+      "confidence_intervals": "Cluster bootstrap at series level (1000 resamples, 95% CI, seed 42)"
     },
     "slice_stratification": [
       "Overall Tier A",
       "Overall Tier B",
       "By District (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao)",
-      "By Focus Crop (Potato, Onion, Tomato, Wheat, Rice, Mustard)",
-      "By Volatility Regime (Low, Medium, High)"
+      "By Focus Crop (Wheat, Potato, Onion, Tomato, Paddy(Dhan)(Common), Rice)",
+      "By Regime (HISTORICAL, TRANSITION, MODERN)"
+    ],
+    "sensitivities": [
+      "exact_t7",
+      "disputed_77_keys",
+      "retrospective_gt_2pct_move"
     ],
     "mase_policy": "NOT COMPUTED until official train-only nonseasonal 1-step scaling implementation is verified"
   }

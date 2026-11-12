@@ -247,3 +247,25 @@ Next documentation/prompts/MP-DATA-008.md bundles latest-real-source index and i
   - Targeted tests: `tests/test_forecast_features.py` (9 passed), `tests/test_operational_output.py` (20 passed), `tests/test_live_price_ingestion.py` (39 passed).
   - Full test suite: **268 tests passed in 9.13s** (0 failures across all 20 test files).
 - **Next Step:** Ready for independent review to authorize bounded price-only benchmark execution (Step 7).
+
+
+## Owner progress-count agreement and Step6 review — 2026-11-12 IST
+Owner requires SAME quality but faster single detailed task prompts and remaining-step count at EVERY output review. Persist format CURRENT STEP / ACHIEVED / STILL OPEN / NEXT / MAIN STEPS LEFT + OPTIONAL. Bundle concrete preflight corrections and their executable acceptance gates into the next full milestone where safe; do not create artificial extra main-step numbers or promise flaw-free unverified completion.
+Step6 feature/latest-index foundations accepted for Step7 with preflight corrections. Commit dbdfd8a17b0de6423115cecfbbf5f9d7c1463456 verified remotely. Independent68 targetedfeature/import/output tests passed4.69s; full268executor-reported. Snapshot11720=26accepted+11694quarantined; no synthetic generation/API required. Config currently substitutesMustard forPaddy, proposes ambiguous inputhash/file and mislabels baselineMA7days; next prompt repairs before training. Exact established v2SHA851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31. Details documentation/DATA008_REVIEW.md.
+NEXT documentation/prompts/MP-FC-007.md: first Ridge/HGB price-only benchmark; single explicit-owner-approved CPU Kaggle run conditional on preflight. No training locally/no new syntheticdata/no API dependency. MAIN STEPS LEFT7 (7ML,8uncertainty,9economics,10backend,11UI,12integration/deployment,13prospective/user validation) +2OPTIONAL arrivals/weather. Successful Step7 leaves6. Earlier operational review debts remain integration gates; no claim future field validation can finish before outcomes exist.
+
+
+## [2026-11-12T19:50:00+05:30] Task MP-FC-007: Price-Only ML Benchmarking (Ridge & HistGradientBoosting)
+- **Status:** COMPLETED PREPARATION + PREFLIGHT PASS + ONE AUTHORIZED KAGGLE CPU RUN EXECUTED + DIAGNOSTIC REPAIR VERIFIED
+- **Baseline Commit:** `dbdfd8a17b0de6423115cecfbbf5f9d7c1463456`
+- **Scope & Delivery:**
+  - Implemented modular benchmark engine `src/forecast_benchmark.py` and comprehensive test suite `tests/test_forecast_benchmark.py`.
+  - Repaired `src/forecast_features.py`: accepted reference `status` interface in alias mapping and added finite positive price filtering.
+  - Frozen configuration `experiments/configs/price_forecast_v1.json` and contract `documentation/FORECAST_DATA_FEATURE_CONTRACT.md`: regenerated legacy panel V2 SHA-256 `851e7184...`, 6 focus crops, Ridge ($\alpha \in \{0.1, 1.0, 10.0\}$), HGB (2 configs), 2 inner expanding splits with 7-day embargo and label maturity.
+  - Prepared notebook `experiments/notebooks/mp_fc_007_price_models.ipynb` and metadata `experiments/kaggle/fc007/kernel-metadata.json` (7 embedded base64 payloads, AST validated, byte-equality verified).
+  - Executed ONE authorized private Kaggle CPU run (`theankitchoubey/mp-fc-007-price-models` v1).
+  - Remote Execution Evidence: Decoded payloads confirmed byte-equal; Panel v2 regenerated in 12.2s with confirmed SHA-256 `851e7184...` and row conservation $472,385 = 463,217 + 855 + 2,936 + 5,350 + 27$.
+  - Diagnostic & Local Repair: Kernel halted at Cell 2 line 55 due to reading `manifest_v2.get("input_rows", 0)` instead of `manifest_v2["summary_metrics"]["total_raw_rows"]`. Repaired in `build_fc007_notebook.py`, regenerated notebook, and verified assertion against actual downloaded `processing_manifest_v2.json`.
+  - Zero automatic retry pushes executed per standing rules. Awaiting explicit owner authorization for single bounded rerun.
+- **Unit Test Suite:** **281 tests passed in 9.33s** (0 failures, 0 errors across 21 test files).
+- **Remaining Milestones:** 7 main milestones (Steps 7–13) remain at task start; Step 7 ready for single rerun approval. After Step 7 execution, 6 main steps (8–13) remain + 2 optional experiments.

@@ -1461,3 +1461,57 @@ Configured in `experiments/configs/price_forecast_v1.json`:
   - `tests/test_live_price_ingestion.py`: 39 passed in 4.32s.
 - **Full Test Suite:** **268 passed in 9.13s** (0 failures, 0 errors across 20 test files).
 - **Status:** `IMPLEMENTED + TESTED + IMPORT-VERIFIED + LIVE-UNVERIFIED (KEY_MISSING)`.
+
+
+## Owner progress-count agreement and Step6 review — 2026-11-12 IST
+Owner requires SAME quality but faster single detailed task prompts and remaining-step count at EVERY output review. Persist format CURRENT STEP / ACHIEVED / STILL OPEN / NEXT / MAIN STEPS LEFT + OPTIONAL. Bundle concrete preflight corrections and their executable acceptance gates into the next full milestone where safe; do not create artificial extra main-step numbers or promise flaw-free unverified completion.
+Step6 feature/latest-index foundations accepted for Step7 with preflight corrections. Commit dbdfd8a17b0de6423115cecfbbf5f9d7c1463456 verified remotely. Independent68 targetedfeature/import/output tests passed4.69s; full268executor-reported. Snapshot11720=26accepted+11694quarantined; no synthetic generation/API required. Config currently substitutesMustard forPaddy, proposes ambiguous inputhash/file and mislabels baselineMA7days; next prompt repairs before training. Exact established v2SHA851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31. Details documentation/DATA008_REVIEW.md.
+NEXT documentation/prompts/MP-FC-007.md: first Ridge/HGB price-only benchmark; single explicit-owner-approved CPU Kaggle run conditional on preflight. No training locally/no new syntheticdata/no API dependency. MAIN STEPS LEFT7 (7ML,8uncertainty,9economics,10backend,11UI,12integration/deployment,13prospective/user validation) +2OPTIONAL arrivals/weather. Successful Step7 leaves6. Earlier operational review debts remain integration gates; no claim future field validation can finish before outcomes exist.
+
+
+## 26. Task MP-FC-007 — First Price-Only Machine Learning Benchmarking (Ridge & HistGradientBoosting)
+
+### 26.1 Candidate Model Justification & Architecture
+- **Linear Regularized Baseline (`Ridge`):**
+  L2-regularized linear model on standardized price lags and calendar encodings. Serves as the linear baseline capturing autoregressive lag structures ($P_t, \text{lag}_1, \dots, \text{lag}_{28}$) and cyclic seasonal terms without exploding under collinearity.
+  Pre-processor: `Pipeline([('imputer', SimpleImputer(strategy='median', keep_empty_features=True)), ('scaler', StandardScaler())])` fitted strictly on training partition to eliminate validation/test leakage.
+  Hyperparameter search grid: $\alpha \in \{0.1, 1.0, 10.0\}$.
+- **Nonlinear Tabular Gradient Boosting (`HistGradientBoostingRegressor`):**
+  Histogram-based gradient tree boosting with native missing-value (`NaN`) routing. Irregular agricultural mandi trading produces structured missingness in calendar lags; HGB evaluates optimal split paths for missing features natively without imputer distortion or leakage.
+  Pre-processor: None (native `NaN` routing).
+  Hyperparameter search configurations:
+  - Config 1: `max_iter=100, max_depth=3, learning_rate=0.05, min_samples_leaf=20, early_stopping=False, random_state=42`
+  - Config 2: `max_iter=100, max_depth=5, learning_rate=0.05, min_samples_leaf=30, early_stopping=False, random_state=42`
+
+### 26.2 Target Formulation & Response Choice
+- **Additive Price Change:** Models predict $\Delta = y_{\text{target}} - y_t$.
+- **Reconstructed Forecast:** $\hat{y} = y_t + \hat{\Delta}$.
+- **Abstention Policy:** If $\hat{y} \le 0$ or non-finite, the model abstains with explicit reason `NON_POSITIVE_RECONSTRUCTED_FORECAST`. Zero arbitrary clipping to artificial positive floors.
+
+### 26.3 Chronological Inner Validation Protocol
+For each outer fold $k \in \{F1, F2, F3, F4\}$, two expanding inner chronological splits are prespecified:
+- **Split 1:** Validation window $[T_{\text{train}} - 119\text{d}, T_{\text{train}} - 60\text{d}]$, inner fit cutoff $T_{\text{train}} - 120\text{d}$, 7-day embargo, inner origin cap $t \le T_{\text{train}} - 128\text{d}$, label maturity $\text{target\_date} \le T_{\text{train}} - 120\text{d}$.
+- **Split 2:** Validation window $[T_{\text{train}} - 59\text{d}, T_{\text{train}}]$, inner fit cutoff $T_{\text{train}} - 60\text{d}$, 7-day embargo, inner origin cap $t \le T_{\text{train}} - 68\text{d}$, label maturity $\text{target\_date} \le T_{\text{train}} - 60\text{d}$.
+- **Model Selection:** Configuration selected based on pooled inner validation MAE across both splits on matched available origins. Deterministic tie-breaker: simpler model (higher $\alpha$ for Ridge, depth 3 for HGB).
+
+### 26.4 Rescored Audited Empirical Baselines
+All baselines rescored strictly on the exact common test origins evaluated by the models:
+- `naive`: $y_t$
+- `moving_average_7obs_in_30d`: Mean of last $\le 7$ observations within $[t-30\text{d}, t]$, minimum 3 observations (strictly distinguished from feature rolling 7 calendar days).
+- `seasonal_naive_357d`: Observation nearest to $(t + 7 - 364) = (t - 357\text{d})$ within $\pm 3$ days.
+- `drift`: Damped drift $y(t) + 0.5 \times \text{slope} \times 7$, anchor nearest $t - 14\text{d}$ within $\pm 3$ days.
+
+### 26.5 Paired Naive Skill Score & Series-Cluster Bootstrap
+$$\text{Skill}_m = 1 - \frac{\sum_{j \in S_m} |y_j - \hat{y}_{m,j}|}{\sum_{j \in S_m} |y_j - \hat{y}_{\text{naive},j}|}$$
+Evaluated on strictly non-zero denominators with series-clustered 95% bootstrap confidence intervals (1,000 resamples, seed 42).
+LOW-N flag when $N < 200$ or series $< 10$.
+Conventional MASE preserved as **NOT COMPUTED / NOT VALIDATED** to prevent misleading metric claims.
+
+### 26.6 Remote Kaggle CPU Execution & Diagnostic Gate
+- Authorized Run: Kernel `theankitchoubey/mp-fc-007-price-models` (version 1) executed on Kaggle CPU.
+- Decoded Payload Verification: All 7 payloads verified byte-equal to disk (SHA-256 confirmed).
+- Panel V2 Regeneration: Succeeded in 12.2s. SHA-256 `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` confirmed.
+- Row Conservation Verified: $472,385 = 463,217 + 855 + 2,936 + 5,350 + 27$.
+- Execution Diagnostic: Kernel halted at Cell 2 line 55 due to `manifest_v2.get("input_rows", 0)` returning 0 instead of reading nested `manifest_v2["summary_metrics"]["total_raw_rows"]`.
+- Repair: Resolved dictionary lookup in `build_fc007_notebook.py` and regenerated notebook. Tested row conservation logic locally against actual downloaded `processing_manifest_v2.json` (assertion passed).
+- Standing Rule Compliance: No automatic retry pushed. Halted with full diagnostics and test evidence. Awaiting explicit owner approval for bounded single rerun.

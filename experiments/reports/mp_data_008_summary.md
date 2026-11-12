@@ -52,13 +52,12 @@ $$\text{Discrepancy} = 11,720 - (26 + 11,694 + 0) = 0 \quad (\text{Strictly Bala
 | **Total** | **11,720** | **26** | **11,694** | **100% Accounted** |
 
 ### Focus Crop Coverage (2026-11-11)
+- **Focus Crops Definition:** Exactly Wheat, Potato, Onion, Tomato, Paddy(Dhan)(Common), Rice. (Mustard and Basmati are not focus crops; initial mention corrected).
 - **Potato (4 accepted):** Ghaziabad (Rs. 950/Q), Kanpur(Grain) (Rs. 550/Q), Uttaripura (Rs. 500/Q), Lucknow (Rs. 850/Q).
 - **Onion (1 accepted):** Kanpur(Grain) (Rs. 3000/Q).
 - **Wheat (1 accepted):** Unnao APMC (Rs. 2500/Q).
-- **Rice / Paddy (6 accepted, 4 quarantined):**
-  - Paddy(Common): Kanpur(Grain) (Rs. 2000/Q), Unnao (Rs. 2000/Q, Rs. 2025/Q); Baripaal APMC and Purwa APMC quarantined.
-  - Paddy(Basmati): Ghaziabad (Rs. 2850/Q), Unnao (Rs. 2800/Q, Rs. 2900/Q); Baripaal APMC and Purwa APMC quarantined.
-- **Tomato & Mustard:** 0 observations in target districts on 2026-11-11.
+- **Paddy(Dhan)(Common) (3 accepted, 2 quarantined):** Kanpur(Grain) (Rs. 2000/Q), Unnao (Rs. 2000/Q, Rs. 2025/Q); Baripaal APMC and Purwa APMC quarantined for unknown market review. (Preserved distinct from Rice without equating identities).
+- **Tomato & Rice (Milled):** 0 observations in target districts in the 2026-11-11 snapshot. Missing snapshot rows reflect single-day absence from this specific file, not proof of zero real trading. Extrapolation warning applies.
 
 ---
 
@@ -69,3 +68,4 @@ $$\text{Discrepancy} = 11,720 - (26 + 11,694 + 0) = 0 \quad (\text{Strictly Bala
 - **Total Features:** 21 deterministic price-only and temporal features
 - **Causality Proof:** For any origin date $t$, features observe history strictly dated $\le t$. Future row additions, deletions, or target mutations do not alter computed feature vectors.
 - **Batch / Inference Equivalence:** For any series and origin date, `compute_batch_features(df)` yields identical feature values to `compute_origin_features(history, t, series)`.
+

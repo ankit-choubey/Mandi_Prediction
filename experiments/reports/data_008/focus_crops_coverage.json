@@ -3,6 +3,23 @@
   "generated_date_ist": "2026-11-12",
   "observation_date": "2026-11-11",
   "focus_crops": {
+    "Wheat": {
+      "series_count": 1,
+      "accepted_count": 1,
+      "quarantined_count": 0,
+      "observations": [
+        {
+          "district": "Unnao",
+          "market": "Unnao",
+          "variety": "Dara",
+          "grade": "FAQ",
+          "modal_price": 2500.0,
+          "min_price": 2400.0,
+          "max_price": 2600.0,
+          "status": "ACCEPTED"
+        }
+      ]
+    },
     "Potato": {
       "series_count": 4,
       "accepted_count": 4,
@@ -71,52 +88,29 @@
       "series_count": 0,
       "accepted_count": 0,
       "quarantined_count": 0,
-      "notes": "Tomato was not traded or reported in the 5 target UP districts in the 2026-11-11 snapshot."
+      "notes": "Tomato was absent from the 2026-11-11 snapshot. Missing snapshot row means absent from that single snapshot, not proof of zero real trading."
     },
-    "Wheat": {
-      "series_count": 1,
-      "accepted_count": 1,
-      "quarantined_count": 0,
-      "observations": [
-        {
-          "district": "Unnao",
-          "market": "Unnao",
-          "variety": "Dara",
-          "grade": "FAQ",
-          "modal_price": 2500.0,
-          "min_price": 2400.0,
-          "max_price": 2600.0,
-          "status": "ACCEPTED"
-        }
-      ]
+    "Paddy(Dhan)(Common)": {
+      "series_count": 5,
+      "accepted_count": 3,
+      "quarantined_count": 2,
+      "accepted_markets": [
+        "Kanpur(Grain)",
+        "Unnao (1001)",
+        "Unnao (Common)"
+      ],
+      "quarantined_markets": [
+        "Baripaal APMC",
+        "Purwa APMC"
+      ],
+      "notes": "Paddy(Dhan)(Common) is distinct from Rice and not equated without explicit identity evidence."
     },
     "Rice": {
-      "series_count": 10,
-      "accepted_count": 6,
-      "quarantined_count": 4,
-      "breakdown": {
-        "Paddy(Common)": {
-          "series_count": 5,
-          "accepted_count": 3,
-          "quarantined_count": 2,
-          "accepted_markets": ["Kanpur(Grain)", "Unnao (1001)", "Unnao (Common)"],
-          "quarantined_markets": ["Baripaal APMC", "Purwa APMC"]
-        },
-        "Paddy(Basmati)": {
-          "series_count": 5,
-          "accepted_count": 3,
-          "quarantined_count": 2,
-          "accepted_markets": ["Ghaziabad", "Unnao (Basmati)", "Unnao (Other)"],
-          "quarantined_markets": ["Baripaal APMC", "Purwa APMC"]
-        }
-      }
-    },
-    "Mustard": {
       "series_count": 0,
       "accepted_count": 0,
       "quarantined_count": 0,
-      "notes": "Mustard was not traded or reported in the 5 target UP districts in the 2026-11-11 snapshot."
+      "notes": "Rice (Milled/Common) had 0 observations in target districts in the 2026-11-11 snapshot (separate identity from Paddy). Missing snapshot row means absent from that single snapshot, not proof of zero real trading."
     }
   },
-  "extrapolation_warning": "Snapshot coverage reflects single-day spot trading only (6 accepted focus-crop series). Do not extrapolate full-panel coverage from single-day snapshots."
+  "extrapolation_warning": "Snapshot coverage reflects single-day spot trading only (6 accepted focus-crop series). Missing snapshot row means absent from that single snapshot, not proof of zero real trading. Do not extrapolate full-panel coverage from single-day snapshots."
 }

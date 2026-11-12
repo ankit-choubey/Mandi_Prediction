@@ -324,3 +324,46 @@ class TestForecastFeatureBuilder:
             date(2026, 3, 1): 520.0,  # outside 30-day window!
         }
         assert builder.evaluate_origin_recency(hist_low, t, window_days=30, min_recency_obs=3) is False
+
+    def test_alias_mapping_status_interface(self):
+        # Reference alias files use 'status' column, e.g. status='ACCEPTED'
+        mapping = {
+            ("Ghaziabad", "Ghaziabad APMC"): {
+                "market_canonical": "Ghaziabad",
+                "status": "ACCEPTED",
+            },
+            ("Kanpur", "Kanpur Grain"): {
+                "market_canonical": "Kanpur(Grain)",
+                "action": "MAP_CANONICAL",
+            },
+            ("Lucknow", "Lucknow Sub"): {
+                "market_canonical": "Lucknow",
+                "status": "REJECTED",
+            },
+        }
+        b = ForecastFeatureBuilder(alias_mapping=mapping)
+        s1 = b.normalize_series_identity("Ghaziabad", "Ghaziabad APMC", "Potato", "Other", "FAQ")
+        assert s1.market == "Ghaziabad"
+        s2 = b.normalize_series_identity("Kanpur", "Kanpur Grain", "Potato", "Other", "FAQ")
+        assert s2.market == "Kanpur(Grain)"
+        s3 = b.normalize_series_identity("Lucknow", "Lucknow Sub", "Potato", "Other", "FAQ")
+        assert s3.market == "Lucknow Sub"  # Not mapped because status is REJECTED
+
+    def test_resolve_raw_records_filters_nonpositive_and_nonfinite(self, builder):
+        records = [
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-01", "Modal_Price": 2000.0},
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-02", "Modal_Price": 0.0},  # Zero price
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-03", "Modal_Price": -150.0},  # Negative price
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-04", "Modal_Price": float("nan")},  # NaN
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-05", "Modal_Price": float("inf")},  # Inf
+            {"District": "Kanpur", "Market": "Kanpur", "Commodity": "Wheat", "Variety": "Dara", "Grade": "FAQ", "Arrival_Date": "2024-01-06", "Modal_Price": 2100.0},
+        ]
+        clean_map, counts = builder.resolve_raw_series_records(records)
+        assert len(clean_map) == 1
+        s_key = list(clean_map.keys())[0]
+        history = clean_map[s_key]
+        # Only dates with valid positive finite prices (2024-01-01 and 2024-01-06) should be retained
+        assert set(history.keys()) == {date(2024, 1, 1), date(2024, 1, 6)}
+        assert history[date(2024, 1, 1)] == 2000.0
+        assert history[date(2024, 1, 6)] == 2100.0
+
