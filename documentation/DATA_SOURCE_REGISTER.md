@@ -136,13 +136,12 @@ $$17,720 = 17,028 + 97 + 0 + 595$$
 
 ---
 
-## 5. Agmarknet 2.0 Migration, External Snapshots, and Panel v2 Register
+## 5. External Snapshots, Regime Diagnostics, and Provisional Panel v2 Register
 
-### 5.1 Agmarknet 2.0 Architectural Transition
-* **System Migration Date:** `2025-11-07` (Agmarknet 2.0 national platform go-live).
-* **State API Integration Completion:** `2026-09-29` (Uttar Pradesh 251 APMC mandis completed automated API integration).
-* **Nomenclature Discontinuity:** All reporting mandi terminal names acquired an `" APMC"` suffix (e.g. `Ghaziabad` $\rightarrow$ `Ghaziabad APMC`, `Noida` $\rightarrow$ `Noida APMC`).
-* **Price Representation Shift:** Pre-November 2025 prices were 100% integer quotes; from March 2026 onward, **40.89% of quotes are fractional decimal values** resulting from modern automated weighing scale averaging.
+### 5.1 Regime Shifts and Hypotheses from External Reports
+* **Nomenclature Transition Date in Data:** The first `" APMC"`-named record in the historical raw dataset appears on `2025-11-01`. External government and portal announcements hypothesize this corresponds to the Agmarknet 2.0 national platform rollout (`2025-11-07`).
+* **Fractional Pricing Shift Date in Data:** Non-integer fractional prices appear in $<0.01\%$ of records prior to March 2026, rising to **40.89% of monthly records from 2026-03 to 2026-09**. External technical reports hypothesize this reflects automated electronic weighbridge integrations (such as UP's 251 APMC mandis completing automated API feeds in late September 2026).
+* **Nomenclature Shift:** Reporting mandi terminal names acquired an `" APMC"` suffix (e.g. `Ghaziabad` $\rightarrow$ `Ghaziabad APMC`, `Noida` $\rightarrow$ `Noida APMC`).
 
 ### 5.2 External Snapshot Register
 * **File Identifier:** `data/raw_external/9ef84268-d588-465a-a308-a864a43d0070.csv`
@@ -151,12 +150,14 @@ $$17,720 = 17,028 + 97 + 0 + 595$$
 * **Target District Markets:** Exactly 14 markets belong to the 5 target districts; **14 of 14 (100.0%)** carry the `" APMC"` suffix.
 * **Provenance Adjudication:** Empirical evidence proving that modern feeds mandate automated market canonicalisation (`data/reference/market_aliases.csv`) to maintain backward compatibility with 5-year historical series.
 
-### 5.3 Validated Historical Price Panel v2
+### 5.3 Provisional Historical Price Panel v2
+* **Panel Status:** **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`).
 * **Storage Location:** `experiments/outputs/006/mandi_5year_validated_v2.csv` (gitignored, heavy compute artifact).
 * **Tracked Processing Manifest:** `data/processed/processing_manifest_v2.json` (SHA-256: `c6f7089b94d2deaa7ca75f4ec85319d82d99fb8c1cd1be6c488398277a3518c1`).
 * **Source Raw Files:** 5 files in `5 year dataset/*.csv` (472,385 total rows).
 * **Accepted Clean Records:** **463,217 rows** across 1,167 unique series (+867 net rows over v1).
 * **Rescued Observations:** **+1,722 rows** previously dropped under the `< 20` observation threshold in v1 due to market identity forking.
+* **Transition Overlap Concordance:** 855 exact duplicate rows removed during feed transition alongside unchanged conflicts (2,936) demonstrate that overlapping old and new reporting channels agree on price quotes.
 * **Schema Columns:** `Arrival_Date`, `District`, `Market_Raw`, `Market`, `Commodity`, `Variety`, `Grade`, `Min_Price`, `Max_Price`, `Modal_Price`, `Commodity_Code`, `State`, `series_id`.
-* **Corroboration Concordance:** 99.40% exact modal price agreement on 12,846 matched Agmarknet Excel rows; 100.00% exact agreement on 591 matched CEDA rows.
+* **Corroboration Concordance:** 99.40% exact modal price agreement on 12,846 matched Agmarknet Excel rows (87.14% match rate, +244 matched rows vs v1's 85.5%); 100.00% exact agreement on 591 matched CEDA rows.
 

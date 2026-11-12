@@ -1,0 +1,18 @@
+{
+  "id": "theankitchoubey/mp-fc-006-baselines",
+  "title": "mp-fc-006-baselines",
+  "code_file": "../../notebooks/mp_fc_006_baselines.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "false",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "dataset_sources": [
+    "theankitchoubey/mandi-prediction-audit-003b"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
+

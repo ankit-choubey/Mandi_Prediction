@@ -264,9 +264,12 @@ evaluates unweighted harmonic mean across all three classes. A trivial Always-No
 
 *(Append-only record of formal benchmark evaluations executed on Kaggle.)*
 
-| Evaluation Date | Kaggle Run ID | Model Name | Dataset Version | Horizon | MAE (₹/q) | RMSE (₹/q) | WAPE (%) | MASE | Skill vs. Naive | Directional Acc (%) | 90% Coverage (%) | Decision |
+| Evaluation Date | Kaggle Run ID | Model Name | Dataset Version | Horizon | MAE (₹/q) | RMSE (₹/q) | MAPE (%) | MASE | Skill vs. Naive | Share $\le 5\%$ (%) | Abstain (%) | Decision |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *None* | *Awaiting Run* |
+| 2026-11-12 | `mp-fc-006-baselines` | Naive ($y(t)$) | Panel v2 (Provisional) | $h=7$ | 106.96 | 298.83 | 4.16% | 1.000 | 0.0000 | 76.76% | 0.00% | **BENCHMARK ANCHOR** |
+| 2026-11-12 | `mp-fc-006-baselines` | Moving Average (MA-7) | Panel v2 (Provisional) | $h=7$ | 134.19 | 333.37 | 5.08% | 1.255 | -0.2547 | 70.98% | 0.00% | **BENCHMARK (Lagging)** |
+| 2026-11-12 | `mp-fc-006-baselines` | Seasonal Naive ($t-357$) | Panel v2 (Provisional) | $h=7$ | 774.38 | 1433.76 | 29.45% | 7.240 | -6.3738 | 22.70% | 8.61% | **REJECTED (Annual Drift)** |
+| 2026-11-12 | `mp-fc-006-baselines` | Drift (14d Anchor) | Panel v2 (Provisional) | $h=7$ | 107.32 | 303.67 | 4.29% | 1.003 | -0.0068 | 76.55% | 1.14% | **RETAINED (+0.0695 on >2% move)** |
 
 *(No fabricated results. Rows added strictly upon verification of Kaggle job outputs.)*
 
@@ -579,19 +582,20 @@ Four expanding 60-day folds ending `2026-09-30` with 7-date embargoes:
 
 ---
 
-## 13. Evidence-Based Market Identity, Panel v2, and Regime Diagnostics (Task MP-DATA-006)
+## 13. Evidence-Based Market Identity, Provisional Panel v2, and Regime Diagnostics (Task MP-DATA-006)
 
 * **Execution Date:** 2026-11-12
 * **Execution Environment:** Kaggle CPU Kernel (`theankitchoubey/mp-data-006-panel-v2`, version 3, internet disabled).
 * **Evaluated Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged).
 * **Execution Status:** Complete (`KernelWorkerStatus.COMPLETE`, exit code 0).
 * **Detailed Task Report:** [mp_data_006_summary.md](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/mp_data_006_summary.md).
+* **Panel Status:** Panel v2 is designated **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`).
 
 ### 13.1 Market Inventory & Suffix Prevalence
-Across the 472,385 raw historical records, exactly 42 distinct raw market strings were cataloged across the 5 target districts (Ghaziabad: 8, Jhansi: 15, Kanpur: 9, Lucknow: 4, Unnao: 6). In the recent external snapshot (`9ef84268-...csv`, 2026-11-11), **14 of 14 target district markets (100.0%)** carry the `" APMC"` suffix, confirming that Agmarknet 2.0 systematically renamed reporting mandis.
+Across the 472,385 raw historical records, exactly 42 distinct raw market strings were cataloged across the 5 target districts (Ghaziabad: 8, Jhansi: 15, Kanpur: 9, Lucknow: 4, Unnao: 6). In the recent external snapshot (`9ef84268-...csv`, 2026-11-11), 14 of 14 target district markets (100.0%) carry the `" APMC"` suffix, consistent with the hypothesis from external reports that national platform migration altered reporting nomenclature.
 
 ### 13.2 Evidence Rule Adjudication
-To prevent ungrounded fuzzy merging, market aliases were evaluated under the strict Evidence Rule:
+To prevent ungrounded fuzzy merging, 22 candidate alias pairs (21 APMC variants + 1 cross-phonetic pair) were evaluated under the strict Evidence Rule:
 * **Rule A (Chronological Migration):** Accepted if normalized tokens match and overlap $\le 5$ days.
   * **21 APMC transitions accepted:** 20 standard APMC variants (e.g., `Ghaziabad APMC` $\rightarrow$ `Ghaziabad`, overlap 4d; `Purwa APMC` $\rightarrow$ `Purwa`, overlap 0d) plus `Jhansi Grain APMC` $\rightarrow$ `Jhansi (Grain)` (overlap 0d).
 * **Unmapped / Review Preservation:**
@@ -606,18 +610,20 @@ Pipeline v2 canonicalizes market identity before series-id creation, duplicate f
 * **Low-Observation Dropped Rows (< 20 obs):** 5,350 in v2 vs 7,072 in v1 (**+1,722 rescued rows**)
 * **Final Accepted Clean Records:** **463,217 rows** across 1,167 series (**+867 net clean rows** vs v1's 462,350 rows)
 * **Unique Markets:** Consolidated from 41 in v1 to 21 in v2.
+* **Transition Concordance Evidence:** The presence of 855 exact duplicates alongside unchanged conflicts (2,936) provides empirical evidence that overlapping pre-transition and post-transition feeds agree on price quotes.
 
 ### 13.4 Re-evaluation of Corroboration on Panel v2
-* **Agmarknet Daily Excel Corroboration (14,741 in-window rows):** Matched 12,846 rows (87.14%); **12,769 exact modal price matches (99.40%)**; exactly **77 non-zero price differences (0.60%)**.
+* **Agmarknet Daily Excel Corroboration (14,741 in-window rows):** Matched rows increase from 85.5% (12,602 rows in v1) to 87.14% (12,846 rows in v2), a net gain of +244 matched rows due to canonical market identity unification. **12,769 exact modal price matches (99.40%)**; exactly **77 non-zero price differences (0.60%)**.
 * **CEDA Price Data Corroboration (594 rows, Lucknow Wheat):** Matched 591 rows (99.49%); **591 exact modal price matches (100.00% concordance)**; 3 unmatched rows confirmed quarantined under Strategy 2.
 
-### 13.5 Rejection of Calendar Lag on 77 Differences
-Evaluating all 77 discrepancies across moving calendar shifts $k \in \{-3, -2, -1, 0, 1, 2, 3\}$ days yielded **0 of 77 matches (0.00%)**, demonstrating that the Feb–Mar 2026 discrepancies are not reporting lags or timestamp offsets.
+### 13.5 Date-Shift Analysis of the 77 Differences
+Evaluating all 77 discrepancies across moving calendar shifts $k \in \{-3, -2, -1, 0, 1, 2, 3\}$ days yielded **0 of 77 matches (0.00%)**. The hypothesis of calendar lag or date mismatch is rejected; the underlying cause of the 77 differences remains **UNRESOLVED**.
 
 ### 13.6 Monthly Regime Diagnostics (61 Months: 2021-09 to 2026-09)
+Data-derived monthly breakdown across 61 months (causes hypothesized from external reports):
 * **Historical Regime (2021-09 to 2025-10, 50 mos):** Mean 8,452.4 rows/mo; **0.00% APMC suffix**; **0.00% fractional prices**.
-* **Transition Regime (2025-11 to 2026-02, 4 mos):** Mean 2,249.5 rows/mo; **93.34% APMC suffix**; **4.14% fractional prices**. Marked by Agmarknet 2.0 go-live (`2025-11-07`).
-* **Fractional Modern Regime (2026-03 to 2026-09, 7 mos):** Mean 4,514.4 rows/mo; **100.00% APMC suffix**; **40.89% fractional prices**. Marked by UP 251 mandis integration (`2026-09-29`).
+* **Transition Regime (2025-11 to 2026-02, 4 mos):** First `" APMC"`-named row appears in data on `2025-11-01`. Mean 2,249.5 rows/mo; **93.34% APMC suffix**; **4.14% fractional prices** (external reports hypothesize Agmarknet 2.0 system rollout).
+* **Fractional Modern Regime (2026-03 to 2026-09, 7 mos):** Mean 4,514.4 rows/mo; **100.00% APMC suffix**; **40.89% fractional prices** (external reports hypothesize UP mandi automated API integration).
 
 ### 13.7 Train-Only Eligibility & Cross-Validation on Panel v2
 * **Training Window ($T \le 2025-12-18$):** 492 Tier A series (obs $\ge 60$, cov $\ge 0.30$) and 470 Tier B series (obs $\ge 120$, cov $\ge 0.30$).
@@ -645,6 +651,89 @@ Evaluating all 77 discrepancies across moving calendar shifts $k \in \{-3, -2, -
 | `processing_manifest_v2.json` | 5,136 | N/A | `c6f7089b94d2deaa7ca75f4ec85319d82d99fb8c1cd1be6c488398277a3518c1` |
 | `mandi_5year_validated_v2.csv` | 67,455,377 | 463,218 | `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` |
 | `kernel_execution_manifest.json` | 3,245 | N/A | `d558b34f8286ca3f707f43a0a19001cbe0ce194fa1f9747c04aa60b13ba8a230` |
+
+---
+
+## 14. Provisional-v2 Gates & Baseline Forecasting Scorecard (MP-FC-006)
+
+* **Execution Date:** 2026-11-12
+* **Kaggle Kernel ID:** `theankitchoubey/mp-fc-006-baselines` (v3, CPU, Internet Disabled)
+* **Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged)
+* **Status:** Complete, 100% hash verified.
+
+### 14.1 Integrity Gate & Forensic Gates Summary (Part B1)
+1. **Assertion Gate:** Regenerated Panel v2 and confirmed SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`.
+2. **Alias Transition Forensics:** Evaluated 24 candidate pairs. All 19 standard accepted pairs with overlapping quotes during the 2025-11-01 to 2025-11-05 transition window exhibit **100.00% exact price agreement** across 758 overlapping natural keys. Special evaluation of Kanpur `Baripaal APMC` vs `Varipaal APMC` revealed 52 overlap days, 462 keys, and **95.67% exact price agreement**. `Jhansi Grain APMC` vs `Jhansi (Grain) APMC` showed 10 overlap days, 23 keys, and **100.00% exact price agreement**.
+3. **Excel Unmatched In-Window Rows Reclassification (1,895 rows):**
+   * `low_obs_dropped`: 923 rows (48.71%) — series dropped due to $< 20$ historical observations across 5 years.
+   * `other`: 420 rows (22.16%) — unmapped market naming variations in Excel (e.g., 379 in Kanpur).
+   * `quarantined_strategy2`: 323 rows (17.05%) — dropped due to conflicting/invalid price quotes ($\text{Min} > \text{Max}$ or Modal outside $[\text{Min}, \text{Max}]$).
+   * `absent_from_raw`: 197 rows (10.40%) — quotes present in Excel reports but completely absent from raw historical download CSVs.
+   * `spelling_unmapped`: 32 rows (1.69%) — minor variety/grade naming differences.
+4. **Tier A Training Observations Reconciliation ($T \le 2025-12-18$):**
+   * v1 Tier A: 496 series, 384,887 observations.
+   * v2 Tier A: 492 series, 387,242 observations ($\le 2025-12-18$, net gain of +2,355 rows from pre-migration and post-migration feed merger).
+   * v2 Tier A across full 5-year panel: 492 series, 404,498 observations.
+   * Set transitions: 2 series entered (+571 obs), 6 series left (-1,408 obs), 490 common series (+3,192 obs).
+5. **Fractional Pricing Diagnostics (Post 2026-03):**
+   * First month exceeding 5% fractional quotes: `2026-02` (8.73%).
+   * Post 2026-03 fractional share: **40.89%** (12,923 fractional, 18,678 integer).
+   * Adjacent-day test: 78.22% of fractional quotes have an observation on day $t \pm 1$; **38.83% of those adjacent observations are exact integers**.
+   * Commodity median price ratio (post vs pre 2026-03): Median ratio is **1.0000** (mean: 1.0788), confirming no shift in statutory reporting units.
+6. **Monthly Reporting Depth Diagnostics:**
+   * Active reporting markets remained stable across all 61 months (18 to 20 markets).
+   * Reporting varieties collapsed from ~85 down to ~35-40 in mid-2026, halving multi-variety quotes per market and explaining the drop from ~8.5k to ~4.5k monthly records.
+
+### 14.2 Baseline Evaluation Protocol & Mathematics (Part B2)
+* **Strict As-Of Operational Constraint:** For any origin date $t$, predictions use exclusively observations dated $\le t$.
+* **Target Definition:** Modal price in $[t+6, t+8]$ closest to $t+7$ (tie-break earlier). Target date must be $\le \text{fold\_end}$.
+* **Serving-Time Recency Condition:** Origin is evaluated only if the series has $\ge 3$ observations in $[t-30\text{d}, t]$.
+* **Baseline Models:**
+  $$\hat{y}_{\text{naive}}(t+7) = y(t)$$
+  $$\hat{y}_{\text{ma}}(t+7) = \frac{1}{K} \sum_{k=1}^K y(t_k), \quad K = \min(7, N_{[t-30\text{d}, t]}), \quad \text{abstain if } K < 3$$
+  $$\hat{y}_{\text{snaive}}(t+7) = y(t^*), \quad t^* = \arg\min_{t_s \in [t-360, t-354]} |t_s - (t - 357)|, \quad \text{abstain if none}$$
+  $$\hat{y}_{\text{drift}}(t+7) = y(t) + 0.5 \times \frac{y(t) - y(t_a)}{t - t_a} \times 7, \quad t_a = \arg\min_{t_k \in [t-17, t-11]} |t_k - (t - 14)|, \quad \text{abstain if none}$$
+* **Statistical Metrics:** MAE (Rs/qtl), RMSE, MAPE (%), Median AE, Bias, Share within 5% (%), Abstention rate (%), Skill vs Naive ($1 - \text{MAE} / \text{MAE}_{\text{naive}}$).
+* **Cluster Bootstrap:** 1,000 resamples over unique series clusters with seed 42 for 95% confidence intervals.
+
+### 14.3 Overall Baseline Scorecard Summary (Tier A, 64,776 Origins)
+
+| Model | N Origins | N Series | MAE (Rs/qtl) | 95% CI (MAE) | RMSE | MAPE (%) | Median AE | Bias | $\le 5\%$ (%) | Abstain (%) | Skill vs Naive | 95% CI (Skill) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Naive** | 64,776 | 401 | **106.96** | [96.35, 119.03] | 298.83 | 4.16% | 40.00 | +17.17 | 76.76% | 0.00% | 0.0000 | [0.0000, 0.0000] |
+| **Moving Average** | 64,776 | 401 | 134.19 | [120.73, 149.35] | 333.37 | 5.08% | 50.71 | +26.30 | 70.98% | 0.00% | -0.2547 | [-0.2909, -0.2105] |
+| **Seasonal Naive** | 59,200 | 401 | 774.38 | [661.02, 895.07] | 1433.76 | 29.45% | 375.00 | +351.69 | 22.70% | 8.61% | -6.3738 | [-7.2432, -5.5137] |
+| **Drift** | 64,036 | 401 | 107.32 | [95.82, 119.13] | 303.67 | 4.29% | 42.00 | +7.81 | 76.55% | 1.14% | -0.0068 | [-0.0303, 0.0191] |
+
+### 14.4 Focus Crop Highlights & Sensitivities
+* **Wheat:** Naive MAE is **29.77 Rs/qtl** (95% CI: [24.85, 35.21]); Moving Average MAE is 35.42 Rs/qtl; Seasonal Naive MAE is 152.42 Rs/qtl.
+* **Potato:** Naive MAE is **49.87 Rs/qtl** (95% CI: [43.46, 57.58]); Drift MAE is 52.17 Rs/qtl.
+* **Onion:** Drift outperforms Naive! Drift MAE is **76.86 Rs/qtl** vs Naive 83.89 Rs/qtl (**Skill: +0.0818**, 95% CI: [0.0315, 0.1294]).
+* **Rice:** Moving Average outperforms Naive! MA MAE is **138.71 Rs/qtl** vs Naive 163.54 Rs/qtl (**Skill: +0.1518**, 95% CI: [0.0984, 0.2085]).
+* **Paddy(Dhan)(Common):** Moving Average achieves MAE of **27.51 Rs/qtl** vs Naive 32.67 Rs/qtl (**Skill: +0.1579**, flagged `LOW-N` due to 5 series).
+* **Volatile Origins ($> 2\%$ Target Move, 27,858 origins):** Drift demonstrates significant skill over Naive, reducing MAE from 217.38 to **202.10 Rs/qtl** (**Skill: +0.0695**, 95% CI: [0.0401, 0.0982]).
+* **Excluding 77 Disputed Keys (64,776 origins):** Metrics are identical to full Tier A, proving that the disputed quotes have zero impact on baseline evaluation.
+
+### 14.5 Output Artifacts & Checksums (MP-FC-006)
+
+| Artifact File | Size (Bytes) | Lines | SHA-256 Digest |
+|---|---|---|---|
+| `scorecard_fold_x_tier.csv` | 5,086 | 41 | `ee109061f8e2e30f281ef5ce61d42529e82a365c6f3bba0645b0e047e68cbff9` |
+| `scorecard_fold_x_focus_crop.csv` | 13,308 | 121 | `2b548724e6d3b2d191f7106cac7151b337a256dc9ea964456e4081ab118c7b4d` |
+| `scorecard_sensitivities.csv` | 8,449 | 61 | `20678dce03e771b3ed0589e874b27547539609c310cc981aac4801f430e0a2b3` |
+| `alias_transition_forensics.csv` | 3,731 | 25 | `5e45350e47013a31a1fe61f0dfee859ea1cc956409d0982f5ab52a174373895d` |
+| `excel_unmatched_reclassification_v2.csv` | 2,757 | 85 | `97a54efe60748f24d6b20a2782b7baec7b8a259f256537773266f55be0d0ee18` |
+| `excel_unmatched_summary_v2.json` | 1,062 | N/A | `8d95409e8f9bd8ace3881ee52f08fe644e3e193a8ead894cd2f600707fbcfda8` |
+| `tier_a_reconciliation_v1_vs_v2.json` | 929 | N/A | `bb76c92f85eadc71ab220d2cbe04f6d5c02570687d91b8849797d787e05d3b0b` |
+| `tier_a_series_deltas.csv` | 39,298 | 491 | `96df1275440d2f823754e8d9228f8e192aa29a41f5cb9230da20aff7e70c1248` |
+| `fractional_part_distribution.csv` | 309 | 21 | `2080aebcaf3d3b30767f2123e4c11438182a66f609d0cc1877114a15cdf500fd` |
+| `fractional_pricing_diagnostics.json` | 437 | N/A | `d382b38db6055efc9af7d61a9f2dbe3eb4a2c8ce546bd3956decfe54f57b9429` |
+| `monthly_reporting_depth_diagnostics.csv` | 2,401 | 62 | `57835ad459f401a674230599e62c62fa6f3f0c21812d98ae62ae164ad1acbab2` |
+| `baseline_predictions_sample.csv` | 954,096 | 5,001 | `c3b805a98e63fa7da14eaea14d2a9214f456c0fd367c13db9e93e61e92f9219b` |
+| `mandi_5year_validated_v2.csv` | 67,455,377 | 463,218 | `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` |
+| `processing_manifest_v2.json` | 5,136 | N/A | `c61202b741a31749bca86bd7fb4f59ea82bc6041007626a2d13a6734043d5e60` |
+| `kernel_execution_manifest.json` | 3,115 | N/A | `5e89d18b628ec2c1c984920677536d5ba4b0a7c49b6b9075d55e8869b207559e` |
+
 
 
 

@@ -1,28 +1,29 @@
-# Executive Summary: Evidence-Based Market Identity, Panel v2, and Regime Diagnostics
+# Executive Summary: Evidence-Based Market Identity, Provisional Panel v2, and Regime Diagnostics
 **Task ID:** `MP-DATA-006`  
 **Date:** `2026-11-12`  
 **Execution Environment:** Remote Kaggle CPU Kernel (`theankitchoubey/mp-data-006-panel-v2`, version 3, Internet Disabled)  
 **Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged)  
 **Baseline Git Commit:** `0eb98586ea3cd225438c122058636cc560b1aa94`  
+**Panel Status:** **PROVISIONAL** (SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`)  
 
 ---
 
 ## 1. Executive Summary & Overview
 
-Task `MP-DATA-006` executes an evidence-based market identity canonicalisation framework and constructs **Panel v2** (`mandi_5year_validated_v2.csv` / `processing_manifest_v2.json`) without altering legacy v1 outputs. This directly resolves the structural time-series discontinuity caused by the Agmarknet 2.0 national platform migration (go-live: `2025-11-07`, UP 251 mandis integration complete: `2026-09-29`), where market names acquired an `" APMC"` suffix, causing time-series forking and premature dropping of modern observations under the `< 20` observation threshold.
+Task `MP-DATA-006` executes an evidence-based market identity canonicalisation framework and constructs **Provisional Panel v2** (`mandi_5year_validated_v2.csv` / `processing_manifest_v2.json`) without altering legacy v1 outputs. This addresses the structural time-series discontinuity visible in the data around November 2025 (first `" APMC"`-named row appears `2025-11-01`), hypothesized from external announcements as the Agmarknet 2.0 national platform migration, where market names acquired an `" APMC"` suffix, causing time-series forking and premature dropping of modern observations under the `< 20` observation threshold.
 
 ### Key Empirical Findings:
 1. **Market Inventory & Suffix Prevalence:** Across the 472,385 raw historical records, exactly **42 distinct raw market strings** were cataloged across the 5 target districts (Ghaziabad: 8, Jhansi: 15, Kanpur: 9, Lucknow: 4, Unnao: 6). In the recent external snapshot (`9ef84268-...csv`, 2026-11-11), **14 of 14 target district markets (100.0%)** carry the `" APMC"` suffix.
-2. **Evidence-Based Alias Adjudication:** 21 candidate alias pairs were evaluated under the strict non-fuzzy Evidence Rule:
+2. **Evidence-Based Alias Adjudication:** 22 candidate alias pairs (21 APMC variants + 1 cross-phonetic pair) were evaluated under the strict non-fuzzy Evidence Rule:
    - **20 APMC transitions** were formally **ACCEPTED under Rule A** (chronological migration with $\le 5$ days of overlap).
    - **1 APMC transition** (`Jhansi Grain APMC` $\rightarrow$ `Jhansi (Grain)`) was **ACCEPTED under Rule A** ($\le 5$ days overlap).
    - **1 cross-phonetic pair** (`Baripaal APMC` vs `Varipaal` in Kanpur) was flagged as **`UNMAPPED/REVIEW`** and preserved unmerged due to normalized token mismatch (`'baripaal'` vs `'varipaal'`).
-3. **Panel v2 Disposition & Rescued Rows:** Executing Pipeline v2 with canonicalization running *before* series-id generation, duplicate detection, and low-observation filtering rescued **+1,722 observations** that were discarded as low-observation noise in v1. Deduplicating 855 exact duplicates during the transitional feed overlap yields a net clean panel gain of **+867 observations** (463,217 clean rows in v2 vs 462,350 in v1 across 1,167 consolidated series).
+3. **Panel v2 Disposition & Rescued Rows:** Executing Pipeline v2 with canonicalization running *before* series-id generation, duplicate detection, and low-observation filtering rescued **+1,722 observations** that were discarded as low-observation noise in v1. Deduplicating 855 exact duplicates during the transitional feed overlap yields a net clean panel gain of **+867 observations** (463,217 clean rows in v2 vs 462,350 in v1 across 1,167 consolidated series). The 855 exact duplicates plus unchanged conflicts (2,936) are empirical evidence that overlapping old and new reporting channels agree on price quotes.
 4. **Independent Corroboration:**
-   - **Agmarknet Excel Corroboration:** 12,846 rows matched the panel v2 on natural key, with **12,769 exact modal price matches (99.40%)** and exactly **77 non-zero price differences (0.60%)**.
+   - **Agmarknet Excel Corroboration:** Matched rows increase from 85.5% (12,602 rows in v1) to 87.14% (12,846 rows in v2), a net gain of +244 matched rows due to canonical market identity unification, with **12,769 exact modal price matches (99.40%)** and exactly **77 non-zero price differences (0.60%)**.
    - **CEDA Corroboration:** 591 rows matched panel v2 with **591 exact modal price matches (100.00% concordance)**; exactly 3 unmatched records are accounted for by the pipeline's Strategy 2 quarantine filter.
-5. **Rejection of Calendar Lag on the 77 Differences:** Comprehensive date-alignment testing across $d \pm 3$ calendar days revealed that **0 of 77 discrepancies (0.00%)** match at any lag $k \in \{-3, -2, -1, 0, 1, 2, 3\}$, proving conclusively that the Feb–Mar 2026 discrepancies are not reporting lags or date mismatches.
-6. **Regime Diagnostics & Post-Migration Feasibility:** Regime analysis across 61 monthly buckets reveals that post-migration ($T \ge 2025-11-07$), 40.89% of prices are non-integer decimals (vs 0.00% pre-migration). Canonicalization elevates post-migration training feasibility from **3 series in v1 to 231 Tier A series (and 92 Tier B series)** across 39,417 observations.
+5. **Date-Shift Test on the 77 Differences:** Comprehensive date-alignment testing across $d \pm 3$ calendar days revealed that **0 of 77 discrepancies (0.00%)** match at any lag $k \in \{-3, -2, -1, 0, 1, 2, 3\}$. The cause of the 77 differences remains **UNRESOLVED**.
+6. **Regime Diagnostics & Post-Migration Feasibility:** Regime analysis across 61 monthly buckets reveals that post-migration, 40.89% of prices from 2026-03 to 2026-09 are non-integer decimals (vs 0.00% pre-November 2025). Canonicalization elevates post-migration training feasibility from **3 series in v1 to 231 Tier A series (and 92 Tier B series)** across 39,417 observations.
 
 ---
 
@@ -103,7 +104,7 @@ Across historical months (`2021-09` to `2025-10`), monthly accepted rows are ide
 Cross-verification was re-evaluated between the 5 official Agmarknet daily Excel files (`raw_downloads/*.xlsx`, 14,741 in-window rows $\le 2026-09-30$) and Panel v2 on `[District, Market, Commodity, Variety, Grade, Arrival_Date]`:
 - **In-Window Excel Records:** 14,741
 - **Matched Records in Panel v2:** **12,846 rows (87.14%)**  
-  *(Substantial increase over v1 match rate due to canonical market identity unification)*
+  *(Match rate increases from 85.5% [12,602 rows in v1] to 87.14% [12,846 rows in v2], an increase of +244 rows due to canonical market identity unification)*
 - **Exact Modal Price Matches ($0.00 diff):** **12,769 rows (99.40%)**
 - **Non-Zero Price Differences:** Exactly **77 rows (0.60%)**
 
@@ -132,15 +133,15 @@ To rigorously test whether the 77 discrepancies between Agmarknet Excel reports 
 | **Shift +3 days** | 0 | 0.00% |
 | **Any Match in Window [$d-3$ .. $d+3$]** | **0** | **0.00%** |
 
-> **Definitive Conclusion:** The 77 differences are **not** an artifact of reporting lag, timestamp offset, or weekend date rolling. They represent authentic price evaluation discrepancies between the aggregate Agmarknet daily state portal snapshot and the mandi-level automated terminal feed during the initial Agmarknet 2.0 fractional calculation rollout.
+> **Finding:** Evaluating moving calendar shifts $k \in \{-3, -2, -1, 0, 1, 2, 3\}$ days against panel v2 matched 0 of 77 discrepancies. The cause of the 77 differences remains **UNRESOLVED**.
 
 ---
 
 ## 6. Monthly Regime Diagnostics (2021-09 to 2026-09)
 
-Monthly diagnostics across 61 months demonstrate two structural regime breaks:
-1. **Regime Break 1 (2025-11-07):** Agmarknet 2.0 Go-Live. Instantaneous emergence of `" APMC"` market suffix and drop in reporting volume during mandi system re-keying.
-2. **Regime Break 2 (2026-03-01 to 2026-09-29):** Fractional Decimal Price Implementation and completion of UP's 251 mandi API integrations.
+Monthly diagnostics across 61 months (causes hypothesized from external reports):
+1. **Regime Break 1:** The first `" APMC"`-named row appears in data on `2025-11-01`. External government and portal announcements hypothesize this corresponds to the Agmarknet 2.0 national platform rollout (`2025-11-07`).
+2. **Regime Break 2:** Fractional decimal prices surge from $<0.01\%$ to **40.89%** starting `2026-03-01`. External technical reports hypothesize this reflects automated electronic weighbridge integrations (such as UP's 251 APMC mandis completing automated API feeds in late September 2026).
 
 ### 6.1 Regime Summary Comparison
 | Regime Phase | Time Window | Mean Monthly Observations | APMC Suffix Share | Fractional Price Share | Min/Max Inconsistency Share |
@@ -196,7 +197,3 @@ All artifacts were generated in Kaggle kernel `theankitchoubey/mp-data-006-panel
 | `processing_manifest_v2.json` | 5,136 | JSON | `c6f7089b94d2deaa7ca75f4ec85319d82d99fb8c1cd1be6c488398277a3518c1` |
 | `mandi_5year_validated_v2.csv` | 67,455,377 | 463,218 | `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` |
 | `kernel_execution_manifest.json` | 3,245 | JSON | `d558b34f8286ca3f707f43a0a19001cbe0ce194fa1f9747c04aa60b13ba8a230` |
-
----
-**Report Approved by:** Automated Verification Engine & Pipeline Auditor  
-**Next Permitted Task:** Modeling Setup & Baseline Benchmark Evaluation on Panel v2 (`MP-MODEL-001`).
