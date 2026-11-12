@@ -106,6 +106,8 @@ All metrics are evaluated on joint finite predictions ($\mathtt{valid\_mask} = \
 - **Correction:** Prior text reporting 398 missing anchors is superseded by the exact verified count of 407. All 407 instances abstained due to absence of an anchor observation in $[t-17\text{d}, t-11\text{d}]$.
 - **Paired Naive MAE on Drift-Scored Instances:** Exactly **217.1854 Rs/qtl** (withdrawing the prior unsupported claim of 217.1723).
 - **Skill vs Naive:** $1 - (202.1012 / 217.1854) = 1 - 0.930547 = +0.069453 \approx +0.0695$ (+6.95% skill on volatile moves).
+- **95% Bootstrap CI on Volatile Skill:** **[0.0429, 0.0937]** (verified rerun CI from `scorecard_sensitivities.csv`, superseding legacy FC-006 CI of [0.0432, 0.0950]).
+- **Scorecard Row & Undefined Skill Reconciliation:** The three scorecards comprise exactly $40 + 120 + 80 = 240$ rows. Of these, exactly 224 rows have finite paired skill identities, and exactly 16 focus-crop rows have undefined (NaN) skill due to $N_{\text{eligible\_origins}} = 0$ (F3 Paddy, F4 Onion, F4 Tomato, F4 Paddy across all 4 models; flagged `low_n_flag = True`). Undefined skill reflects empty historical slices and must never be converted to zero.
 
 ---
 
@@ -152,6 +154,9 @@ Under `MP-FC-006R`, Scope B historical excising was extended to cover ALL four b
 | **Overall Drift MAE 95% CI** | [95.8185, 119.1334] | [96.3202, 119.3452] | Joint finite mask (64,036 scored pairs) |
 | **Volatile Subgroup Unscored** | 398 (erroneous) | **407 (exact)** | Arithmetic correction ($27,858 - 27,451 = 407$) |
 | **Volatile Paired Naive MAE** | 217.1723 (unsupported) | **217.1854 (exact)** | Computed directly from prediction pairs |
+| **Volatile Drift Skill 95% CI** | [0.0432, 0.0950] (legacy) | **[0.0429, 0.0937] (rerun)** | Deterministic cluster bootstrap from scorecard |
+| **Overall Drift Skill 95% CI** | [-0.0303, 0.0191] (legacy) | **[-0.0309, 0.0176] (rerun)** | Deterministic cluster bootstrap from scorecard |
+| **Scorecard Rows & Undefined Skill** | 240 rows (unannotated) | **224 finite, 16 undefined** | 16 focus-crop rows have N_elig=0 (F3/F4) |
 | **Scope B Drift Excising** | Not implemented (0 changes) | **8 finite changed, 1 finite $\rightarrow$ NaN** | Full Scope B excising on all baselines |
 | **Scope B Recency Failures** | Not tracked | **2 origins in F3** | Clean recency re-evaluated on clean history |
 

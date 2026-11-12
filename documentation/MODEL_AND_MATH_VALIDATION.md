@@ -978,7 +978,8 @@ Overall Tier A MAE 95% Confidence Intervals from persisted artifacts:
 Volatile Subgroup ($|y(t+7) - y(t)| / y(t) > 0.02$):
 - Eligible origins: $N = 27,858$.
 - Drift scored origins: $N = 27,451$ (1.46% abstention).
-- Drift Skill vs Naive: $+0.0695$ (95% CI: $[0.0432, 0.0950]$).
+- Drift Skill vs Naive: $+0.0695$ (95% CI: $[0.0429, 0.0937]$, correcting legacy $[0.0432, 0.0950]$).
+- Scorecard row reconciliation: 240 total scorecard rows ($40 + 120 + 80$); exactly 224 finite paired skill identities and 16 undefined (NaN) focus-crop rows with $N_{\text{eligible\_origins}} = 0$ (F3 Paddy, F4 Onion, F4 Tomato, F4 Paddy across 4 models). Undefined skill is mathematically preserved, not set to zero.
 
 *(Prior pasted counts 45,958 / 15,390 / 1,791 / 1,637 and unexecuted alternate CIs are officially superseded).*
 
@@ -1072,7 +1073,9 @@ For origins where the target price moves by $>2\%$ relative to origin price ($|y
   *(The prior reverse-engineered claim of 217.1723 is withdrawn and superseded by this verified value).*
 - **Drift Performance on Volatile Moves:**
   - Drift MAE: **202.1012 Rs/qtl** (95% CI: $[182.15, 226.89]$).
-  - Paired Skill: $\text{Skill} = 1 - (202.1012 / 217.1854) = +0.069453 \approx \mathbf{+0.0695}$ (95% CI: $[+0.0432, +0.0950]$).
+  - Paired Skill: $\text{Skill} = 1 - (202.1012 / 217.1854) = +0.069453 \approx \mathbf{+0.0695}$ (95% CI: $[+0.0429, +0.0937]$, superseding legacy reported $[+0.0432, +0.0950]$).
+- **Scorecard Rows & Undefined Skill Verification:** The three scorecard artifacts comprise $40$ (tier) $+ 120$ (focus-crop) $+ 80$ (sensitivities) $= 240$ rows. Exactly 224 rows have finite skill identities. Exactly 16 focus-crop rows have undefined (`NaN`) skill due to empty evaluation slices ($N_{\text{eligible\_origins}} = 0$; Fold F3 Paddy, Fold F4 Onion, Fold F4 Tomato, Fold F4 Paddy across Naive, MA, Seasonal, Drift). These rows are flagged `low_n_flag = True` and must remain undefined rather than coerced to zero.
+- **Overall Drift Skill CI Verification:** Overall Tier A Drift skill vs Naive is $-0.0068$ with 95% bootstrap CI $[-0.0309, +0.0176]$ (superseding legacy reported $[-0.0303, +0.0191]$).
 
 ### 19.5 Scope B Sensitivity Forensic Accounting
 Scope B excising was evaluated across all four models on counterfactual clean history $\mathcal{H}_{\text{clean}}(t)$:
@@ -1094,3 +1097,58 @@ Scope B excising was evaluated across all four models on counterfactual clean hi
 5. **No ML Approval:** Completion of baseline benchmarking does not authorize training machine learning models or live advisory deployments.
 6. **MASE:** Conventional MASE is unimplemented in the baseline scoring engine and is designated **NOT COMPUTED**.
 
+
+
+## Independent FC006R decision — 2026-11-12 IST
+Accept corrected FC006R as a retrospective benchmark for Step 2 only. Remote commit b4861ee6441ae492483157d47ec8c3431d3a3fb1 verified; four embedded modules match; 16 small hashes passed; 224 finite skill identities reconciled, 16 undefined; 23 targeted tests passed in 0.30s. Scope A excludes 18; Scope B excludes 20 total, with actual prediction changes. Full large panel/archive not independently recomputed; 175 full-suite passes executor-reported. Current overall drift skill CI [-0.0309,0.0176] and volatile CI [0.0429,0.0937] supersede legacy CIs in current prose. Detailed evidence/limitations: documentation/FC006R_REVIEW.md. Next: documentation/prompts/MP-DATA-007.md, local identity policy and panel-freeze readiness, no remote run authorized. Panel PROVISIONAL, no ML/live approval.
+
+
+
+## 20. Market Identity Candidate Policy & Freeze Readiness (MP-DATA-007)
+
+**Document Reference:** `MP-DATA-007`
+**Date:** `2026-11-12` (Asia/Kolkata)
+**Execution Environment:** Local Analysis Only (Rules: $\le 10$ MB/file, $\le 50,000$ rows, $\le 30$s compute)
+**Status:** **DATA POLICY PREPARED / PANEL FREEZE PENDING EXECUTION**
+
+### 20.1 Purpose & Execution Boundaries
+1. **Retrospective Benchmark Accepted:** FC006R is accepted as an immutable retrospective reference. Panel v2 hash `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` is maintained as the baseline replication anchor.
+2. **Local Bounded Preparation:** This task performs local forensic reconciliation and prepares a candidate identity policy (`src/market_identity.py`, `data/reference/market_alias_candidates_v21.csv`). Zero remote Kaggle runs were performed, zero datasets uploaded, zero ML models trained, and **no panel freeze is declared without remote execution evidence**.
+
+### 20.2 Market Identity Adjudications
+Based on the 24 evaluated transitions from `alias_transition_forensics.csv`:
+- **19 Standard APMC Migrations:** Early November 2025 transitions (gap $-4\text{d}$ to $-1\text{d}$, overlap $2\text{d}$ to $4\text{d}$) exhibit **100.0% exact modal price match** across all overlapping keys ($N = 5$ to $103$ keys). Confirmed **ACCEPTED** under Candidate Rule A.
+- **Jhansi Grain Variants (Jhansi):** The 59-day gap between `Jhansi Grain APMC` and historical pre-APMC `Jhansi (Grain)` is reconciled via **transitive concordance with `Jhansi (Grain) APMC`** (co-existed 2026-01-01..14 with 23 keys, **100.0% exact price match**). Status: **ACCEPTED** under Candidate Rule B (transitive concordance).
+- **Purwa (Unnao):** Historical `Purwa` ceased 2025-07-31; modern `Purwa APMC` commenced 2026-02-21 (**205-day hiatus**, 0 overlap days, 0 keys). Fails Candidate Rule A ($205\text{d} > 14\text{d}$ limit) and Rule B ($N=0$). Reclassified to **UNMAPPED/REVIEW** in candidate v2.1. Physical market yard identity is plausible, but empirical transition concordance is unverified.
+- **Baripaal APMC vs Varipaal (Kanpur):** Co-existed for 52 calendar days (2026-03-01..04-26) with 462 keys; 442 matched (95.67%), but **20 keys had conflicting prices**, accompanied by normalized base token mismatch (`baripaal` vs `varipaal`). Status: **UNMAPPED/REVIEW**; retained as distinct canonical market `Baripaal APMC` to prevent artificial conflict injection.
+
+### 20.3 Candidate Policy v2.1 Mathematical & Structural Gates
+Implemented pure functions in `src/market_identity.py`:
+- `evaluate_alias_evidence_v21()`:
+  - Enforces `abs(gap_days) <= max_migration_gap_days` (default 14d) and `overlap_days <= max_migration_overlap_days` (default 7d) for Candidate Rule A.
+  - Enforces `min_concordance_keys >= 5` and `min_price_agreement >= 0.95` for Candidate Rule B.
+  - Rejects missing fields, different districts, and normalized token mismatches.
+- `validate_alias_table()`:
+  - Rejects inverted date ranges ($t_{\text{first}} > t_{\text{last}}$).
+  - Rejects conflicting duplicate mappings (same raw market mapped to multiple canonical targets with status ACCEPTED).
+  - Detects cyclic mappings ($A \rightarrow B$ and $B \rightarrow A$).
+- `build_causal_alias_mapping()`:
+  - Filters active aliases strictly by $t_{\text{evidence\_known}} \le T_{\text{cutoff}}$, preventing lookahead bias in historical forecasting folds.
+
+### 20.4 Unmatched Excel Reclassification & Stage Conservation
+The 1,895 unmatched Excel rows from FC006R reconcile exactly across pipeline ingestion stages:
+$$\text{Total} = 923 (\text{low-obs}) + 420 (\text{other}) + 323 (\text{quarantine}) + 197 (\text{absent}) + 32 (\text{spelling}) = 1,895$$
+- `low_obs_dropped` (923): Pipeline filter pruned series with $<20$ full-history observations.
+- `quarantined_strategy2` (323): Multi-modal conflicting price records quarantined; denotes conflicting observations, not invalid rows.
+- `other` (420): Residual matching failures (Kanpur 379, Jhansi 20, Lucknow 19, Ghaziabad 1, Unnao 1) designated **PENDING REMOTE CHECK**.
+
+### 20.5 Causal Sensitivity (<20 Floor vs >=60 Train Eligibility)
+- **Mathematical Invariant:** $N_{\text{full}} \ge N_{\text{train}}$. Since any training-eligible series must satisfy $N_{\text{train}} \ge 60$ prior to cutoff, it automatically satisfies $N_{\text{full}} \ge 60 > 20$. The $<20$ full-history floor cannot prune any series that independently meets the $\ge 60$ training threshold.
+- **As-Of Provenance:** Because APMC names did not exist prior to November 2025, canonicalization cannot add training observations prior to `2025-12-18` (Folds F1, F2, F3).
+
+### 20.6 Prepared Remote Kernel Execution Request
+- Prepared notebook: `experiments/notebooks/mp_data_007_identity_review.ipynb`
+- Metadata: `experiments/kaggle/007/kernel-metadata.json`
+- Invariant Gate 1: Panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` (fail-closed).
+- Expected outputs: `identity_comparison_v2_vs_v21.csv`, `excel_unmatched_reclassification_v21.json`, `manifest_v21.json`.
+- Status: **Awaiting explicit owner approval; zero self-approval.**

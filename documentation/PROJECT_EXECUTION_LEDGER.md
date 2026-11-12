@@ -69,7 +69,7 @@ All fail-closed gates passed:
 2. Exactly 77 unique canonical disputed keys verified and loaded.
 3. Full prediction archive of 64,776 Tier A origin predictions exported in `baseline_predictions_all_folds.csv`.
 4. Shared scorer denominators and paired naive MAE verified on joint finite masks; skill identity `skill = 1 - mae / paired_naive_mae` asserted within numerical tolerance.
-5. Volatile subgroup arithmetic reconciled: 27,858 eligible origins, 27,451 Drift scored, exactly 407 unscored (1.46%), paired naive MAE = 217.1854, Drift paired skill = +0.0695 (95% CI: [0.0432, 0.0950]).
+5. Volatile subgroup arithmetic reconciled: 27,858 eligible origins, 27,451 Drift scored, exactly 407 unscored (1.46%), paired naive MAE = 217.1854, Drift paired skill = +0.0695 (95% CI: [0.0429, 0.0937], superseding legacy reported [0.0432, 0.0950]). Scorecard rows: 240 total (40 tier + 120 crop + 80 sens); 224 finite skill identities, exactly 16 undefined (NaN) focus-crop rows with N_elig=0 (F3/F4). Overall Drift skill CI is [-0.0309, 0.0176].
 6. Scope B excising evaluated on all 4 baselines: 610 origins had history excised; 13 MA finite price changes, 8 Drift finite price changes, 1 Drift finite-to-NaN transition, 2 recency failures after removal.
 
 Panel v2 remains PROVISIONAL. Zero machine learning model training authorized. The next step is independent review of this run, followed by Task 2 `MP-DATA-007` (resolve alias evidence, match unmatched quotes, freeze v2/v2.1).
@@ -80,3 +80,21 @@ Commit 078ab38b5872615f30647f8ef4dba37f06fcb0c3 independently verified on GitHub
 Remaining corrections: 27,858 - 27,451 = 407, not 398; paired-naive MAE 217.1723 is unsupported and should be withdrawn/recomputed from paired predictions; Scope B finite-to-NaN changes need explicit transition counts (current change flags require both finite). documentation/context.md was synced contrary to MP-AUDIT-008; preserve and stop syncing. Exact future run version/runtime is not yet known. Next prompt documentation/prompts/MP-FC-006R.md requires explicit owner approval for one private CPU kernel run, no upload/retry. No Kaggle run performed by reviewer.
 
 Follow-up blocking verification: notebook embedded baselines.py decoded to 24,453 bytes and does NOT match current source (AST differs too). It lacks check_serving_recency, evaluate_series_train_eligibility, extract_target_vectorized and score_series_origin; five existing functions also differ. Reject reported embedded equality. Notebook would fail importing the new helpers. Conditional rerun readiness is withdrawn until Part A rebuild/equality/import smoke checks pass. MP-FC-006R prompt now explicitly requires repair before any authorized push.
+
+
+## Independent FC006R decision — 2026-11-12 IST
+Accept corrected FC006R as a retrospective benchmark for Step 2 only. Remote commit b4861ee6441ae492483157d47ec8c3431d3a3fb1 verified; four embedded modules match; 16 small hashes passed; 224 finite skill identities reconciled, 16 undefined; 23 targeted tests passed in 0.30s. Scope A excludes 18; Scope B excludes 20 total, with actual prediction changes. Full large panel/archive not independently recomputed; 175 full-suite passes executor-reported. Current overall drift skill CI [-0.0309,0.0176] and volatile CI [0.0429,0.0937] supersede legacy CIs in current prose. Detailed evidence/limitations: documentation/FC006R_REVIEW.md. Next: documentation/prompts/MP-DATA-007.md, local identity policy and panel-freeze readiness, no remote run authorized. Panel PROVISIONAL, no ML/live approval.
+
+
+## Task MP-DATA-007 Execution Record — 2026-11-12 IST
+- **Status:** **DATA POLICY PREPARED / PANEL FREEZE PENDING EXECUTION**
+- **Baseline Commit:** `b4861ee6441ae492483157d47ec8c3431d3a3fb1`
+- **Scope & Compliance:** Local preparation only ($\le 10$ MB/file, $\le 50,000$ rows, $\le 30$s compute). Zero Kaggle kernel pushes, zero dataset uploads, zero ML training, and **panel v2 remains PROVISIONAL**.
+- **Market Identity Adjudications:**
+  1. 19 standard APMC migrations: Verified early Nov 2025 migrations, gap -4d to -1d, overlap 2d to 4d, 100.0% modal price match across all keys (5 to 103 keys). ACCEPTED under Candidate Rule A.
+  2. Jhansi Grain variants: 59d gap against pre-APMC name resolved via transitive concordance with `Jhansi (Grain) APMC` (co-existed 2026-01-01..14 with 23 keys, 100.0% exact match). ACCEPTED under Candidate Rule B.
+  3. Purwa (Unnao): 205-day hiatus (2025-07-31 to 2026-02-21) with 0 overlapping days and 0 keys. Fails Candidate Rule A. Reclassified to UNMAPPED/REVIEW in candidate v2.1 (retained separate as `Purwa` vs `Purwa APMC`).
+  4. Baripaal APMC vs Varipaal (Kanpur): Co-existed 52 calendar days with 462 keys, 442 modal matches (95.67%), but 20 keys conflicting. Normalized mismatch (`baripaal` vs `varipaal`). UNMAPPED/REVIEW; retained as distinct canonical market `Baripaal APMC`.
+- **Policy Implementation:** Pure functions `evaluate_alias_evidence_v21()`, `validate_alias_table()`, `build_causal_alias_mapping()`, `apply_market_canonicalization_v21()` added to `src/market_identity.py`. Legacy reproduction paths preserved. Candidate table saved to `data/reference/market_alias_candidates_v21.csv`.
+- **Testing:** 24 unit tests pass in 0.19s across `tests/test_market_identity.py` and `tests/test_identity_policy_v21.py`.
+- **Prepared Remote Kernel:** Authored `experiments/notebooks/mp_data_007_identity_review.ipynb` and metadata `experiments/kaggle/007/kernel-metadata.json`. All 5 code cells AST-parse; 6 embedded payloads match working source bytes exactly; isolated bootstrap smoke test passes. Hard-stop Gate 1 enforces panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`. Awaiting separate owner approval. Zero self-approval.

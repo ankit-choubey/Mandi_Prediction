@@ -13,7 +13,12 @@ from src.market_identity import (
     load_market_aliases,
     build_alias_mapping,
     apply_market_canonicalization,
-    MARKET_ALIAS_COLUMNS
+    evaluate_alias_evidence_v21,
+    validate_alias_table,
+    build_causal_alias_mapping,
+    apply_market_canonicalization_v21,
+    MARKET_ALIAS_COLUMNS,
+    CANDIDATE_ALIAS_COLUMNS_V21
 )
 
 
@@ -204,11 +209,11 @@ class TestMarketCanonicalizationApplication:
             "Modal_Price": [2400, 1100, 1500]
         })
         out_df = apply_market_canonicalization(input_df, sample_alias_df)
-        
+
         # Original preserved in Market_Raw
         assert "Market_Raw" in out_df.columns
         assert out_df["Market_Raw"].tolist() == ["Ghaziabad APMC", "Hapur APMC", "Baripaal APMC"]
-        
+
         # Market column canonicalized for ACCEPTED status
         assert out_df["Market"].tolist() == ["Ghaziabad", "Hapur", "Baripaal APMC"]
 
@@ -231,7 +236,7 @@ class TestMarketCanonicalizationApplication:
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             sample_alias_df.to_csv(f.name, index=False)
             temp_path = f.name
-            
+
         try:
             loaded = load_market_aliases(temp_path)
             assert len(loaded) == 3
@@ -240,3 +245,24 @@ class TestMarketCanonicalizationApplication:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
 
+    def test_legacy_market_aliases_reference_file_integrity(self):
+        """Verifies that the immutable baseline data/reference/market_aliases.csv remains valid."""
+        path = "data/reference/market_aliases.csv"
+        assert os.path.exists(path)
+        loaded = load_market_aliases(path)
+        assert len(loaded) == 43
+        assert list(loaded.columns) == MARKET_ALIAS_COLUMNS
+        is_valid, issues = validate_alias_table(loaded)
+        assert is_valid is True, f"Validation issues in reference table: {issues}"
+
+    def test_v21_canonicalization_backward_compatibility(self, sample_alias_df):
+        """Verifies that apply_market_canonicalization_v21 behaves identically to legacy when as_of_date is None."""
+        input_df = pd.DataFrame({
+            "District": ["Ghaziabad", "Ghaziabad", "Kanpur"],
+            "Market": ["Ghaziabad APMC", "Hapur APMC", "Baripaal APMC"],
+            "Commodity": ["Wheat", "Potato", "Tomato"],
+            "Modal_Price": [2400, 1100, 1500]
+        })
+        legacy_out = apply_market_canonicalization(input_df, sample_alias_df)
+        v21_out = apply_market_canonicalization_v21(input_df, sample_alias_df, as_of_date=None)
+        pd.testing.assert_frame_equal(legacy_out, v21_out)

@@ -1,10 +1,10 @@
 # Data Source Register & Ingestion Evidence
 
-**Repository:** `ankit-choubey/Mandi_Prediction`  
-**Document ID:** `DATA_SOURCE_REGISTER`  
-**Established Under Task:** `MP-DATA-003A`  
-**Last Updated Under Task:** `MP-DATA-003B`  
-**Baseline Git Commit:** `442c6e6cea78025b82c8ca296f8519453afca7d4`  
+**Repository:** `ankit-choubey/Mandi_Prediction`
+**Document ID:** `DATA_SOURCE_REGISTER`
+**Established Under Task:** `MP-DATA-003A`
+**Last Updated Under Task:** `MP-DATA-003B`
+**Baseline Git Commit:** `442c6e6cea78025b82c8ca296f8519453afca7d4`
 
 ---
 
@@ -20,7 +20,7 @@ All datasets stored, processed, or evaluated in this repository are audited agai
 6. **`freshness`:** Calendar lag between the newest observation timestamp and the reference execution date.
 
 > [!IMPORTANT]
-> **Cryptographic Integrity vs. Institutional Origin Authenticity:**  
+> **Cryptographic Integrity vs. Institutional Origin Authenticity:**
 > A SHA-256 cryptographic hash proves strictly that a local byte stream on disk has not suffered corruption, truncation, or silent alteration since hashing. It provides **zero proof** that the payload originated from an authentic government body or reflects genuine transactions. No source is designated "official" or "verified" without documented, external retrieval evidence.
 
 ---
@@ -85,8 +85,24 @@ A rigorous, read-only cross-source comparison was executed across every `(distri
 * **CEDA Ingestion Date Coverage:** `2024-09-01` to `2025-10-30` (384 potato records, 712 wheat records; limited to Lucknow district).
 * **Agmarknet Excel Date Coverage:** `2025-11-07` to `2026-11-06` (16,030 records across all 5 districts: Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao; covering Onion, Potato, Rice, Tomato, Wheat).
 
-**Key Empirical Finding:**  
-There are **ZERO overlapping dates** between CEDA quantity files and Agmarknet Excel reports across all 25 `(district, commodity)` combinations. CEDA records terminate on **2025-10-30**, and Agmarknet Excel records commence on **2025-11-07** (an 8-day non-overlapping gap). Consequently, direct numerical ratio comparisons on identical calendar dates are mathematically impossible due to disjoint observation windows.
+**Key Empirical Finding & Date Arithmetic:**
+There are **ZERO overlapping dates** between CEDA quantity files and Agmarknet Excel reports across all 25 `(district, commodity)` combinations. CEDA records terminate on **2025-10-30**, and Agmarknet Excel records commence on **2025-11-07**:
+* **Endpoint-to-Endpoint Distance:** Exactly **8 calendar days** ($2025\text{-}11\text{-}07 - 2025\text{-}10\text{-}30 = 8\text{ days}$).
+* **Missing Intervening Dates:** Exactly **7 calendar dates** (`2025-10-31`, `2025-11-01`, `2025-11-02`, `2025-11-03`, `2025-11-04`, `2025-11-05`, `2025-11-06`).
+* **Platform Transition vs Data Appearance:** Although bulk Excel exports in the repository begin on `2025-11-07`, the first empirical observation carrying an `' APMC'` suffix in the underlying Agmarknet raw daily portal database appears on **`2025-11-01`**. The exact platform 2.0 go-live day remains unverified by official government gazette; evidence is strictly empirical from database records.
+
+Consequently, direct numerical ratio comparisons on identical calendar dates are mathematically impossible due to disjoint observation windows. Bit-level hash agreement establishes pipeline reproducibility across runs, but does not certify ground-truth authenticity of upstream portal data.
+
+---
+
+### 3.2.1 Unit Provenance & Out-of-Scope Modeling Boundaries
+
+1. **Price Unit Provenance:**
+   Agmarknet Excel reports carry an explicit header declaring `Price Unit: Rs/Quintal`. In contrast, the 5-year historical raw daily portal scraper CSVs (`5 year dataset/`) contain column headers `Modal_Price`, `Min_Price`, `Max_Price` without an explicit unit column; the `Rs/Quintal` denomination in the processed panel is an **inferred unit** based on market convention and price magnitude distributions.
+2. **Arrivals Volume Unit Provenance:**
+   Agmarknet Excel reports explicitly declare `Arrival Unit: Tonnes`. CEDA historical quantity CSVs declare column header `qty` without explicit unit text; while quantities align with metric tonnes, CEDA volume is categorized as **`UNVERIFIED`** in the canonical data schema.
+3. **Release 1 Scope Exclusions:**
+   Synthetic price imputation, post-harvest cold storage loss adjustments (from `crop_storage_parameters.csv`), and IMD gridded weather integration remain strictly **out of scope** for Release 1 price forecasting baselines. Baseline models operate exclusively on verified, observed price histories.
 
 ---
 
@@ -119,11 +135,11 @@ $$17,720 = 17,028 + 97 + 0 + 595$$
 
 ### 3.4 Provenance & Anomaly Observations
 
-1. **Naming Anomaly in Untracked CEDA File:**  
+1. **Naming Anomaly in Untracked CEDA File:**
    The file `data/raw/arrivals/historical/ceda_wheat_lucknow_part1.csv` is named "wheat", but 100% of its 357 records have `cmdty == 'Potato'`. The pipeline correctly standardizes these rows based on internal row content rather than trusting file stems.
-2. **Redundant Column Dropping:**  
+2. **Redundant Column Dropping:**
    CEDA CSVs contain both `state` and `state_name` columns with identical `"Uttar Pradesh"` content. The ingestion engine detects this redundancy and safely drops the duplicate column without raising a false collision.
-3. **Agmarknet Excel Title Rows:**  
+3. **Agmarknet Excel Title Rows:**
    Agmarknet web portal exports place a descriptive report string in row 0 (`Daily Price Arrival Report...`) and actual column headers in row 1. The ingestion engine dynamically detects this structure, realigning column headers and preserving all data rows.
 
 ---
@@ -160,4 +176,3 @@ $$17,720 = 17,028 + 97 + 0 + 595$$
 * **Transition Overlap Concordance:** 855 exact duplicate rows removed during feed transition alongside unchanged conflicts (2,936) demonstrate that overlapping old and new reporting channels agree on price quotes.
 * **Schema Columns:** `Arrival_Date`, `District`, `Market_Raw`, `Market`, `Commodity`, `Variety`, `Grade`, `Min_Price`, `Max_Price`, `Modal_Price`, `Commodity_Code`, `State`, `series_id`.
 * **Corroboration Concordance:** 99.40% exact modal price agreement on 12,846 matched Agmarknet Excel rows (87.14% match rate, +244 matched rows vs v1's 85.5%); 100.00% exact agreement on 591 matched CEDA rows.
-
