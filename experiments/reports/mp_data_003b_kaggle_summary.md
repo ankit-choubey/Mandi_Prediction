@@ -19,6 +19,8 @@ This report documents the first remote execution on Kaggle for Task `MP-DATA-003
 3. **Agmarknet Daily Excel Corroboration:** Cross-verified panel prices against external Agmarknet daily price arrival reports (`raw_downloads/*.xlsx`, 16,030 records), demonstrating 99.39% exact concordance on natural key matches and identifying 1,289 records post-dating the panel cutoff.
 4. **CEDA Price Data Corroboration:** Cross-verified panel prices against external CEDA price data (`ceda price data.csv`, 594 records for Lucknow Wheat), demonstrating 100.00% exact concordance on matched records and proving that the 3 unmatched records were quarantined under pipeline Strategy 2.
 
+> **Provenance Qualification:** Historical price panel provenance is **PARTIALLY CORROBORATED** for the scopes tested only: five focus crops (Wheat, Potato, Onion, Tomato, Rice) across `2025-11-07` to `2026-09-30` from Agmarknet Excel reports, and Lucknow Wheat across `2024-10-30` to `2025-10-30` from CEDA price data. Observations outside these specific temporal and commodity windows remain uncorroborated. The panel must not be characterized as fully authenticated.
+
 ---
 
 ## 2. Row-Level Disposition & Multiset Verification
@@ -69,7 +71,7 @@ Across the 5 districts, 41 distinct markets, and 108 distinct commodities:
 * **Matched Natural Key Rows:** 12,602 rows.
 * **Exact Price Matches:** 12,525 rows (**99.39% concordance**).
 * **Median Price Difference:** ₹0.00.
-* **Discrepancy Distribution:** 77 rows exhibited non-zero differences, primarily driven by extreme price spikes in Ghaziabad Rice and Potato quotes. All 77 rows are captured in `corroboration_diff_sample.csv`.
+* **Discrepancy Distribution:** Exactly 77 rows exhibited non-zero price differences across the matched panel window. Discrepancies by district and crop are: Ghaziabad Potato: 23, Lucknow Rice: 16, Lucknow Wheat: 7, Ghaziabad Onion: 5, Ghaziabad Rice: 5, Ghaziabad Tomato: 4, Kanpur Onion: 3, Jhansi Wheat: 3, Kanpur Rice: 2, Kanpur Wheat: 2, Lucknow Onion: 2, Unnao Wheat: 2, Kanpur Potato: 1, Lucknow Potato: 1, and Lucknow Tomato: 1 (total: 77). All 77 rows are captured in `corroboration_diff_sample.csv`.
 
 #### Commodity-District Concordance Breakdown
 
@@ -109,7 +111,7 @@ Across the 5 districts, 41 distinct markets, and 108 distinct commodities:
   1. `2024-11-07` (Banthara, Wheat, Dara, Modal Price: 2,853): Quarantined under Strategy 2 (6 conflicting rows found on this date in `quarantined_conflicting_records.csv`).
   2. `2025-03-24` (Lucknow, Wheat, Dara, Modal Price: 2,880): Quarantined under Strategy 2 (2 conflicting rows found on this date in `quarantined_conflicting_records.csv`).
   3. `2025-06-27` (Banthara, Wheat, Dara, Modal Price: 2,582): Quarantined under Strategy 2 (2 conflicting rows found on this date in `quarantined_conflicting_records.csv`).
-* **Resolution:** 100% of unmatched CEDA records were proven to have been explicitly quarantined by the pipeline due to conflicting quotes on the same date, fully validating the pipeline's deterministic handling.
+* **Resolution:** Exactly 3 CEDA records did not match the validated panel; for all 3 records, conflicting records on the identical date were identified in `data/quarantine/quarantined_conflicting_records.csv`, demonstrating that the pipeline's Strategy 2 quarantine rule was applied as designed (this confirms rule execution fidelity, not that the quarantine rule itself is optimal or correct).
 
 ---
 

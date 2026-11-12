@@ -397,4 +397,96 @@ Evaluated across 5 districts, 41 markets, and 108 commodities:
 | `excel_corroboration_summary.json` | 7,164 | N/A | `05fefe69f9dd783f18ecd2ef9788aeafab8196127de58107bcb63ed92d67c32e` |
 | `ceda_corroboration_summary.json` | 1,424 | N/A | `5dc430161519139e9e42c2183ecf7d1a3523959666248d9d8992e06601b4e172` |
 
+### 10.6 Execution Environment Discrepancy & Trained Artifact Version Policy
+A comparison of the Kaggle remote environment vs the local development environment reveals differences in OS and package versions:
+
+| Component / Package | Kaggle Remote Kernel (Linux) | Local Environment (macOS Darwin) | Compatibility Status |
+|---|---|---|---|
+| OS / Platform | Linux (x86_64, GCC 13.3.0) | macOS Darwin (arm64) | Differing host OS |
+| Python | 3.13.18 | 3.14.0 | Minor version difference |
+| pandas | 2.3.3 | 2.3.3 | Exact match |
+| numpy | 2.1.3 | 2.2.6 | Minor version difference (C-API / ABI caution) |
+| scikit-learn | 1.6.1 | 1.7.2 | Minor version difference (pickle serialization risk) |
+| scipy | 1.16.3 | 1.16.3 | Exact match |
+| openpyxl | 3.1.5 | 3.1.5 | Exact match |
+
+**Trained Artifact Version Storage Policy:**  
+To prevent silent deserialization failures, numerical drift, or pickle incompatibilities across platforms:
+1. Every trained model artifact (e.g. weights, serialized joblib/pickle models, preprocessor pipelines) MUST persist a companion metadata record (JSON manifest or embedded dictionary) containing:
+   - `python_version` (full `sys.version`)
+   - `platform` (`sys.platform` and architecture)
+   - Exact versions of `numpy`, `scipy`, `scikit-learn`, `pandas`, and other modelling dependencies derived via `importlib.metadata`.
+   - Training commit hash, random seed, dataset checksum, and training timestamp.
+2. Incompatible deserializations must fail fast with an explicit error rather than silently loading drifted estimators.
+
+---
+
+## 11. Target Availability, Eligibility Grids & Corroboration Gaps (MP-DATA-004)
+
+### 11.1 Remote Kernel Execution Audit Record
+* **Task ID:** `MP-DATA-004`
+* **Kernel ID:** [`theankitchoubey/mp-data-004-eligibility-grids`](https://www.kaggle.com/code/theankitchoubey/mp-data-004-eligibility-grids) (Version 2)
+* **Dataset ID:** [`theankitchoubey/mandi-prediction-audit-003b`](https://www.kaggle.com/datasets/theankitchoubey/mandi-prediction-audit-003b) (Version 1, 30 files, 101.32 MB)
+* **Hardware & Runtime:** Kaggle Linux CPU Kernel (2 vCPUs), Internet Disabled, Python 3.13.18, Random Seed: 42
+* **Execution Status:** `KernelWorkerStatus.COMPLETE` (Exit Code 0)
+* **Full Summary Report:** [`experiments/reports/mp_data_004_summary.md`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/mp_data_004_summary.md)
+
+### 11.2 Forward Target Availability
+Evaluated across all 462,350 origin observations in the validated 5-year panel:
+
+| Target Horizon Definition | Qualifying Origins | Overall Share (%) | Monday–Saturday Mean (%) | Sunday Share (%) |
+|---|---|---|---|---|
+| **Exact $T+7$ Observation** | 378,572 | **81.88%** | ~82.6% | 74.59% |
+| **Window $T+6 \dots T+8$ Observation** | 431,003 | **93.22%** | ~93.4% | 91.86% |
+| **Window $T+5 \dots T+9$ Observation** | 443,070 | **95.83%** | ~95.9% | 95.65% |
+| **Next Observation within 10 Days** | 455,831 | **98.59%** | ~98.5% | 99.12% |
+
+*Market Closure Pattern:* Sunday volume is lower (40,508 origins vs ~70,000 on weekdays) due to customary Sunday APMC market closures. Expanding the forecasting target window to $\pm 1$ day ($T+6 \dots T+8$) absorbs weekend closures, raising availability from 81.88% to 93.22%.
+
+### 11.3 Quarantine Adjudication Test (Report Only)
+Evaluated across 329 conflicting groups overlapping Agmarknet Excel and CEDA reference quotes:
+* `last` (last entry in portal): **58.05%** concordance (191 / 329)
+* `max` (highest quote): **52.89%** concordance (174 / 329)
+* `min` (lowest quote): **46.50%** concordance (153 / 329)
+* `first` (first entry in portal): **41.64%** concordance (137 / 329)
+* `median` (median quote): **0.91%** concordance (3 / 329)
+* `mean` (arithmetic mean quote): **0.61%** concordance (2 / 329)
+
+### 11.4 Multi-Dimensional Eligibility Grids (90 Combinations)
+Sample slices from the 90-cell grid across all 1,297 series:
+
+| Min Obs ($N_{obs}$) | Min Coverage ($\text{cov}$) | Max Gap ($\text{gap}_{max}$) | Recency Cutoff | Qualifying Series | Qualifying Observations | Qualifying Series Share (%) |
+|---|---|---|---|---|---|---|
+| **30** | 0.3 | 60 days | 60 days | 192 | 22,641 | 14.80% |
+| **60** | 0.3 | 60 days | 60 days | 183 | 22,206 | 14.11% |
+| **120** | 0.3 | 60 days | 60 days | 79 | 12,704 | 6.09% |
+| **120** | 0.5 | 30 days | 30 days | 74 | 12,056 | 5.71% |
+| **250** | 0.5 | 60 days | 60 days | 2 | 536 | 0.15% |
+| **500** | 0.3 | 60 days | 60 days | 0 | 0 | 0.00% |
+
+*The Inter-Season Gap Phenomenon:* In multi-year agricultural series, requiring $\text{gap}_{max} \le 60$ days eliminates seasonal crops undergoing normal 3–5 month inter-season dormancy. Thresholds should not be chosen globally without accounting for crop seasonality.
+
+### 11.5 Chronological Train/Test Split Feasibility (8-Day Embargo)
+* Training window: `2021-09-01` to `2025-12-18` (85% date threshold minus 8-day embargo).
+* Embargo window: `2025-12-19` to `2025-12-25` (8 days).
+* Test evaluation period (Final 15%): `2025-12-26` to `2026-09-30` (279 calendar days).
+* **Inclusive Tier ($N_{obs} \ge 60, \text{cov} \ge 0.3, \text{gap} \le 60, \text{rec} \le 60$):** 183 qualifying series; **183 (100.0%)** have $\ge 20$ test origins; **183 (100.0%)** have $\ge 50$ test origins (mean test origins: 119.6).
+* **Balanced Tier ($N_{obs} \ge 120, \text{cov} \ge 0.3, \text{gap} \le 60, \text{rec} \le 60$):** 79 qualifying series; **79 (100.0%)** have $\ge 20$ test origins; **79 (100.0%)** have $\ge 50$ test origins (mean test origins: 160.8).
+
+### 11.6 Verified Output Artifacts & Checksums
+
+| Artifact Filename | Size (Bytes) | Line Count | SHA-256 Digest |
+|---|---|---|---|
+| `unmatched_excel_sample.csv` | 161,802 | 2,001 | `5d3e4c96381c299abace06f524a6178da343ab33b18307d1335075009ce5581a` |
+| `unmatched_excel_summary.json` | 4,177 | N/A | `07e38e6c09f523ca28bec04a9a35141cc0d261cde073f50351a139e6294428e7` |
+| `diff_77_analysis.json` | 27,628 | N/A | `ff5e30d5c83b647895aff5a16ca49ddb68cde53f3e794fb4f5e9992e2c4b5de3` |
+| `quarantine_adjudication_summary.json` | 144,747 | N/A | `1f2b75813f83f982e06afe660ab772edc065bdfb5e59d7e4f4733997834803cb` |
+| `target_availability_summary.json` | 10,318 | N/A | `131ed243c1591686a6346d62f099159bbb1c7967d843b6d3b521d1e9d8116099` |
+| `target_availability_breakdown.csv` | 36,816 | 374 | `d3da54ec594875e743d3b5deaed9e7a6afb8176c9b0e73f9bb74f9fd14d3e589` |
+| `eligibility_grids.csv` | 2,539 | 91 | `cb3b6d5a8fa831e9610ec5cd4ec3c7f4e75dfbe9d06df240c6fb938cd2c403d4` |
+| `focus_crops_eligibility.csv` | 25,232 | 580 | `b4a5bb7d63a5d3d2e47687d6cf91c4106799d8f316659fa11ff148766f1d3076` |
+| `chronological_split_feasibility.json` | 1,296 | N/A | `0b213e7b6d67179b90293f07c09d071987338cd823c7e804a229a3bebe6e7366` |
+
+
+
 
