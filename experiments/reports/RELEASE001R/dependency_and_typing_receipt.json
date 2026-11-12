@@ -1,0 +1,30 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:06.902704+00:00",
+  "serving_path_dependencies": {
+    "mode": "PURE_STANDARD_LIBRARY",
+    "external_pip_dependencies": 0,
+    "verified_under_python_dash_s": true,
+    "python_dash_s_output": "READY",
+    "python_dash_s_exit_code": 0
+  },
+  "runtime_environment": {
+    "local_python_version": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "local_sys_version_info": [
+      3,
+      14,
+      0
+    ],
+    "minimum_supported_version": "3.10.0",
+    "dockerfile_base_image": "python:3.11-slim-bullseye",
+    "runtime_typing_compliance": {
+      "economic_model_future_annotations": true,
+      "dataclass_annotations_valid_310_plus": true,
+      "optional_lazy_numpy_handling": true
+    }
+  },
+  "historical_training_runtime_distinction": {
+    "serving_runtime": "Pure standard library Python 3.10-3.14 (zero weights, zero model fitting)",
+    "historical_benchmark_runtime": "Scikit-Learn 1.6 / NumPy / SciPy (used only for generating verified offline scorecards)"
+  }
+}

@@ -585,7 +585,7 @@
       const pct = hgb.rmse_improvement_vs_persistence_pct != null
         ? Number(hgb.rmse_improvement_vs_persistence_pct).toFixed(2)
         : (100 * (naive.rmse - hgb.rmse) / naive.rmse).toFixed(2);
-      elements.bmRmseDesc.textContent = `Achieves lower RMSE (${Number(hgb.rmse).toFixed(2)} vs ${Number(naive.rmse).toFixed(2)} for Naive Persistence, a ${pct}% reduction in quadratic penalty), but persistence remains primary MAE winner.`;
+      elements.bmRmseDesc.textContent = `Achieves lower RMSE (${Number(hgb.rmse).toFixed(2)} vs ${Number(naive.rmse).toFixed(2)} for Naive Persistence, a ${pct}% RMSE reduction), but persistence remains primary MAE winner.`;
     }
 
     // 3. Regime Generalization Gap
@@ -594,16 +594,16 @@
     const f4 = breakdown.F4;
     elements.bmRegimeTitle.textContent = 'Regime Generalization Gap';
     if (f2 && f3 && f4) {
-      elements.bmRegimeDesc.textContent = `Severe undercoverage observed in volatile folds: F2 achieved ${Number(f2.coverage_pct).toFixed(2)}% (${Number(f2.issued_count).toLocaleString()} origins), while F3 (${Number(f3.coverage_pct).toFixed(2)}%, ${Number(f3.issued_count).toLocaleString()} origins) and F4 (${Number(f4.coverage_pct).toFixed(2)}%, ${Number(f4.issued_count).toLocaleString()} origins) fell well below 90% target.`;
+      elements.bmRegimeDesc.textContent = `Severe undercoverage observed in later evaluation folds: F2 achieved ${Number(f2.coverage_pct).toFixed(2)}% (${Number(f2.issued_count).toLocaleString()} origins), while F3 (${Number(f3.coverage_pct).toFixed(2)}%, ${Number(f3.issued_count).toLocaleString()} origins) and F4 (${Number(f4.coverage_pct).toFixed(2)}%, ${Number(f4.issued_count).toLocaleString()} origins) fell well below 90% target.`;
     }
 
     // 4. Fold Cards
     if (elements.bmFoldGrid && (f2 || f3 || f4)) {
       elements.bmFoldGrid.innerHTML = '';
       const folds = [
-        { id: 'F2', label: 'Fold F2 (Calm)', data: f2, border: 'var(--color-brand-primary)' },
-        { id: 'F3', label: 'Fold F3 (Volatile)', data: f3, border: 'var(--color-alert-danger)' },
-        { id: 'F4', label: 'Fold F4 (Crisis)', data: f4, border: 'var(--color-alert-danger)' },
+        { id: 'F2', label: 'Fold F2', data: f2, border: 'var(--color-brand-primary)' },
+        { id: 'F3', label: 'Fold F3', data: f3, border: 'var(--color-alert-danger)' },
+        { id: 'F4', label: 'Fold F4', data: f4, border: 'var(--color-alert-danger)' },
       ];
 
       folds.forEach((f) => {

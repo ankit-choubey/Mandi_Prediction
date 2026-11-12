@@ -38,11 +38,19 @@ CRITICAL SAFEGUARDS:
   4. Explicit error handling for L >= 1, non-positive prices, negative costs, or division-by-zero.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, asdict
 from typing import Optional, Dict, Any, Literal, Union, List, Tuple
 from datetime import date, datetime
 import math
-import numpy as np
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    np = None
+    HAS_NUMPY = False
 
 from src.health_status import (
     RecommendationSafetyGate,
@@ -238,7 +246,7 @@ def calculate_storage_sale_proceeds(
 
 
 def calculate_break_even_future_price(
-    current_price: Union[float, np.ndarray],
+    current_price: Union[float, Any],
     params: EconomicParameters
 ) -> Dict[str, Any]:
     """
@@ -251,10 +259,6 @@ def calculate_break_even_future_price(
 
     Supports both scalar float and numpy array inputs.
     """
-    current_price_arr = np.asarray(current_price)
-    if np.any(current_price_arr <= 0.0):
-        raise ValueError(f"Current price P_T must be positive, got {current_price}")
-
     effective_loss_multiplier = (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction)
     if effective_loss_multiplier <= 0.0:
         raise ZeroDivisionError("Effective quantity retention after loss is zero; break-even is impossible.")
@@ -276,30 +280,37 @@ def calculate_break_even_future_price(
         - params.transaction_cost_now
     )
 
-    numerator = current_price_arr * (1.0 + rate_factor) + total_direct_costs + trans_diff
-    p_break_even = numerator / effective_loss_multiplier
-
-    required_pct_change = ((p_break_even - current_price_arr) / current_price_arr) * 100.0
-
-    if np.isscalar(current_price):
-        return {
-            "break_even_price": float(p_break_even),
-            "required_percentage_increase": float(required_pct_change),
-            "current_price": float(current_price)
-        }
-    else:
+    if HAS_NUMPY and isinstance(current_price, np.ndarray):
+        current_price_arr = np.asarray(current_price)
+        if np.any(current_price_arr <= 0.0):
+            raise ValueError(f"Current price P_T must be positive, got {current_price}")
+        numerator = current_price_arr * (1.0 + rate_factor) + total_direct_costs + trans_diff
+        p_break_even = numerator / effective_loss_multiplier
+        required_pct_change = ((p_break_even - current_price_arr) / current_price_arr) * 100.0
         return {
             "break_even_price": p_break_even,
             "required_percentage_increase": required_pct_change,
             "current_price": current_price_arr
         }
+    else:
+        p_t = float(current_price)
+        if p_t <= 0.0 or not math.isfinite(p_t):
+            raise ValueError(f"Current price P_T must be positive, got {current_price}")
+        numerator = p_t * (1.0 + rate_factor) + total_direct_costs + trans_diff
+        p_break_even = numerator / effective_loss_multiplier
+        required_pct_change = ((p_break_even - p_t) / p_t) * 100.0
+        return {
+            "break_even_price": float(p_break_even),
+            "required_percentage_increase": float(required_pct_change),
+            "current_price": float(p_t)
+        }
 
 
 def calculate_incremental_benefit_per_quintal(
-    current_price: Union[float, np.ndarray],
-    future_price: Union[float, np.ndarray],
+    current_price: Union[float, Any],
+    future_price: Union[float, Any],
     params: EconomicParameters
-) -> Union[float, np.ndarray]:
+) -> Union[float, Any]:
     """
     Calculate the net incremental benefit of storage per initial quintal (Delta_R / Q).
     Canonical formula strictly matching evaluate_sell_vs_store:
@@ -310,13 +321,6 @@ def calculate_incremental_benefit_per_quintal(
 
     Supports both scalar float and numpy array inputs.
     """
-    p_t = np.asarray(current_price)
-    p_th = np.asarray(future_price)
-    if np.any(p_t <= 0.0):
-        raise ValueError(f"Current price P_T must be positive, got {current_price}")
-    if np.any(p_th <= 0.0):
-        raise ValueError(f"Future price P_Th must be positive, got {future_price}")
-
     l_eff = (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction)
     rate_factor = (
         (params.annual_carrying_rate * params.holding_period_days / 365.0)
@@ -332,10 +336,24 @@ def calculate_incremental_benefit_per_quintal(
         - params.transaction_cost_now
     )
 
-    delta_r = l_eff * p_th - p_t * (1.0 + rate_factor) - total_direct_costs - trans_diff
-    if np.isscalar(current_price) and np.isscalar(future_price):
+    if HAS_NUMPY and (isinstance(current_price, np.ndarray) or isinstance(future_price, np.ndarray)):
+        p_t = np.asarray(current_price)
+        p_th = np.asarray(future_price)
+        if np.any(p_t <= 0.0):
+            raise ValueError(f"Current price P_T must be positive, got {current_price}")
+        if np.any(p_th <= 0.0):
+            raise ValueError(f"Future price P_Th must be positive, got {future_price}")
+        delta_r = l_eff * p_th - p_t * (1.0 + rate_factor) - total_direct_costs - trans_diff
+        return delta_r
+    else:
+        p_t = float(current_price)
+        p_th = float(future_price)
+        if p_t <= 0.0 or not math.isfinite(p_t):
+            raise ValueError(f"Current price P_T must be positive, got {current_price}")
+        if p_th <= 0.0 or not math.isfinite(p_th):
+            raise ValueError(f"Future price P_Th must be positive, got {future_price}")
+        delta_r = l_eff * p_th - p_t * (1.0 + rate_factor) - total_direct_costs - trans_diff
         return float(delta_r)
-    return delta_r
 
 
 def evaluate_sell_vs_store(

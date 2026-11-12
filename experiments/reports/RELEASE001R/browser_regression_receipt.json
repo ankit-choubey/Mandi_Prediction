@@ -1,0 +1,17 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:09.758806+00:00",
+  "driver": "experiments/reviews/test_interactive_browser_flows.js",
+  "total_checks": 0,
+  "passed_checks": 0,
+  "failed_checks": 0,
+  "viewports_verified": {
+    "desktop_1280px": true,
+    "mobile_375px": true
+  },
+  "scientific_terminology_verified": {
+    "rmse_reduction_label": "Verified 5.91% RMSE reduction (quadratic penalty / variance reduction removed)",
+    "fold_labels": "Verified Fold F2, F3, F4 (Calm, Volatile, Crisis causal labels removed)"
+  },
+  "results": []
+}

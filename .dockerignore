@@ -1,15 +1,26 @@
-.git
-.gitignore
-.env
-.env.*
-*.pyc
-__pycache__/
-.pytest_cache/
-brain/
-scratch/
-experiments/kaggle/
-experiments/notebooks/
-data/raw/
-research/
-docs/
-*.md
+# APMC Mandi Intelligence System - Docker Build Context Ignore (MP-RELEASE-001R)
+# Minimal allowlist: ignore everything by default, permit only verified serving assets.
+
+*
+
+# Explicit allowlist of runtime directories and files
+!src/
+!src/**
+!data/reference/
+!data/reference/**
+!experiments/reports/FC007_VERIFIED/scorecard_overall.csv
+!experiments/reports/FC008/intervals_overall.csv
+!experiments/reports/FC008/intervals_by_fold.csv
+!experiments/reports/FC008/calibration_envelope_v1.json
+!Dockerfile
+!.dockerignore
+!requirements.txt
+
+# Explicitly ensure sensitive/temporary patterns remain ignored even within allowed folders
+**/.DS_Store
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache
+**/.coverage

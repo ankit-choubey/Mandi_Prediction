@@ -2253,3 +2253,97 @@ All visible research claims in `index.html` were decoupled from static literals 
 - **Step 12 (Integration & Packaging):** **LOCALLY INTEGRATED & CANDIDATE DELIVERED**. Container packaging execution marked `NOT_RUN`; deployment acceptance remains OPEN pending host/container infrastructure decision.
 - **Main Milestones Remaining:** Exactly **2 main milestones** remain (Step 12 deployment acceptance & Step 13 prospective usability).
 - **Optional Ablations Remaining:** Exactly **2 optional ablations** remain (arrivals & localized weather).
+
+
+## Independent release portability and timestamp review — 2026-11-13
+
+## Current independent decision — RELEASE001 review, 2026-11-13 IST
+
+GitHub main and local HEAD verified at `2443367fd30075d8ef5ce2ae482630d9636a93c5`. Read documentation/RELEASE001_INDEPENDENT_REVIEW.md and experiments/reports/RELEASE001_REVIEW/. **Step11 repaired functional research UI accepted; Step12 remains OPEN. MAINLEFT2 (12integration/deployment,13forwardvalidation/usability)+OPTIONAL2arrivals/weather.** This supersedes unconditional packaging-readiness claims, not the measured UI progress.
+
+Independent live browser selected Lucknow/Banthara/Wheat/Dara/FAQ ->2721INR/quintal,observation2026-11-11,serverage2. Price transfer left future/costinputsblank. Explicitfixture+470 passed;7%financing produced436.44;range2600/2650/2700 produced-20/470/960. Correct source/table/narrativeRMSE andfoldcount values nowrender. MobileCSS375 had body/documentwidth375. Browser tabclosed/viewportreset/developmentserverstopped. Original29gates pass. Fullregression tests375passed/10.53s+45backingpassed/4.71s=420passes,18numericalwarningscauseunverified.21producerbrowserchecksare reported; reviewer independentlyreproduced keyflows rather than executing itsCDPrunner.59committedmanifest entriesmatch;13workingpayloadmismatchesfrompreservedpre-existingproducerreceiptrewrites/EOFedits are separate.
+
+Step12CODEBLOCKERS,beyond Dockerinfrastructure: documented python3 src/run_release_service.py --help failsModuleNotFoundsrc; moduleinvocationworks. ActualownedmoduleprocessSIGTERMhangsafter2s (same-threadserver.shutdown); childcleanedup. Stdlib-onlyimport-S failsNumPy;imageinstallsnodeps/claimzeroexternaldepsfalse. Imageomits3benchmarkCSVs;healthcheckcallsunimportedsys(mockHTTP200stillfails). ImageCOPYrequiresignoredsnapshotdir;buildcontextexclusionsmisslarge/raw/fulloutputs. Clean tracked-only releaseintegration suite3passed/3failedbecauseignoredindexrequired. Release manifestmislabelsrawsourceSHA3d3bc...asindexfilehash;actualindexSHA45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4. LoggerlocalISTtimefalselyappendsZ(observed04:32Zvsactual23:02ZpriorUTCday). No Dockerbuild/imagehealth orPython3.11runtimeverified. CurrentlocalDockercontextenginesocketabsent;CLI29.6.1verifiedread-only;noengineactivation/install/pull/build/publicdeploymentperformed.
+
+Minor scientificwording remains forrelease:5.91%isRMSEreduction,notvariance/MSEreduction;removeunsupportedCalm/Volatile/Crisismechanismlabels. Runbookmustnotrequirepersistencetobeatitself/havefittedweights,orusearrivalsvolumeaspricegroundtruth. Freezeforwardmethod/versionbeforeoutcomes,retainactualtarget/issuance/maturity/sourceavailability andabstention rules. No retuning/newmodel/syntheticoperationalfeed required. Commercialquoteevidence0/22localdirectory,notuniversalonlineabsence;forwardperformanceunobserved.
+
+NEXT documentation/prompts/MP-RELEASE-001R.md fixesallcode/nonDockerchecksfirst,thendeliversexactfinalengine/buildauthorizationrequestifstillneeded. No newpublichosting/scheduler/Kaggle/modelwork orhostdependencyinstall implicitlyauthorized. After12actuallyaccepted,MAINLEFT1(step13)+OPTIONAL2. CurrentUIcanbeusedforprofessorresearchprogress through known-good rootlauncher python3 run_service.py --host127.0.0.1 --port8000;productionportability/shutdown/containerstatusnotcertified. Futurefieldoutcomes cannotbemanufacturedtofinishschedule.
+
+Reviewer preservedexistingdirty/untrackedwork and oldevidence;changedonlyreviews/prompts/math/ledger/professorbrief/ignoredbrain,notproductioncodeorGitcommit/push. Neveredit/stage/syncdocumentation/context.md; updatecurrentrecordsperexecutor task. Preservemodelscore/quantileidentity,missinginnertrace/ScopeB andundercoverage limitations.
+
+Runtime/packaging verification is separate from price accuracy. A working-machine420pass does not replace a clean-view3fail result. Hashing a source observation file does not establish the derived index byte identity. A local-time log suffixedZcannot be used as UTCissuance evidence. Keep RMSEversusMSE/variance distinctions explicit before prospective validation.
+
+---
+
+## 38. Step 12 Release Lifecycle, Portability, and Reproducibility Verification (MP-RELEASE-001R)
+
+### 38.1 Purpose & Execution Scope
+Execution of task **MP-RELEASE-001R** to repair and independently verify the release candidate runtime lifecycle, launcher entrypoints, standard-library dependency isolation, container build inputs, deterministic clean-checkout test suite, cryptographic hash distinctions, and true UTC logging, addressing all 9 findings from `documentation/RELEASE001_INDEPENDENT_REVIEW.md`.
+
+---
+
+### 38.2 Resolution of Review Findings
+
+1. **Direct and Module Launcher Equivalence:**
+   - Updated `src/run_release_service.py` with dynamic repository root resolution prior to application imports.
+   - Verified both direct invocation (`python3 src/run_release_service.py --help`) and module invocation (`python3 -m src.run_release_service --help`) exit with code `0` under a sanitized environment with `PYTHONPATH` explicitly removed.
+
+2. **Graceful Shutdown & Socket Rebinding:**
+   - Resolved the shutdown deadlock where `server.shutdown()` was previously invoked on the `serve_forever()` thread.
+   - Refactored `handle_shutdown` in `src/run_release_service.py` to trigger shutdown from an independent daemon thread, allowing `serve_forever()` to unblock on the main thread, execute `server.server_close()`, and terminate cleanly with code `0`.
+   - Verified clean exit within $\sim 0.55$ seconds upon `SIGTERM` and immediate socket rebinding (`SO_REUSEADDR`) on the same ephemeral test port.
+
+3. **Zero-Dependency Serving Verification:**
+   - Added `from __future__ import annotations` and optional lazy loading of `numpy` in `src/economic_model.py`.
+   - Implemented standard-library scalar float mathematics for `calculate_break_even_future_price` and `calculate_incremental_benefit_per_quintal`, while maintaining full backward-compatible array vectorization when NumPy is present.
+   - Verified serving runtime with zero external pip dependencies under `python3 -S -c "from src.api import create_app; app=create_app(); print('READY')"`, returning exit code `0`.
+
+4. **True UTC Logging Parity:**
+   - Configured `logging.Formatter.converter = time.gmtime` in `src/run_release_service.py`.
+   - Replaced naive local timestamps with true UTC ISO 8601 timestamps (`YYYY-MM-DDTHH:MM:SSZ`), verified within $<0.2$ seconds of an aware UTC reference clock (`datetime.now(timezone.utc)`). Local India calendar dates are retained strictly for domain observation reporting.
+
+5. **Loopback Policy Enforcement:**
+   - Enforced host loopback binding policy in `src/run_release_service.py`: non-loopback binding (`0.0.0.0`) is refused with an explicit error and exit code `1` unless the `--allow-container-host` flag is explicitly provided for container runtimes.
+
+6. **Container Packaging Assets & Healthcheck Syntax:**
+   - Repaired Docker healthcheck one-liner in `Dockerfile` to import `sys`: `python3 -c "import urllib.request, sys; sys.exit(0 if getattr(urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3), 'status', None) == 200 else 1)"`. Verified returning code `0` on healthy service and code `1` on unreachable port.
+   - Included small benchmark artifacts (`scorecard_overall.csv`, `intervals_overall.csv`, `intervals_by_fold.csv`, `calibration_envelope_v1.json`) in `Dockerfile`.
+   - Replaced unconditional `COPY data/imported_snapshots/` with read-only mount point creation `/app/data/imported_snapshots`.
+   - Tightened `.dockerignore` minimal allowlist: build context measured at **43 files, 0.944 MB** (well under the 2 MB limit), excluding all raw data, predictions, outputs, and brain directories.
+   - Container execution status honestly recorded as `NOT_RUN (Docker daemon not running locally)`.
+
+7. **Clean Tracked-Only Test Portability:**
+   - Refactored `tests/test_integration_release.py` to use an isolated deterministic fixture factory yielding 30 series (26 ACCEPTED, 4 UNKNOWN_MARKET_REVIEW).
+   - Added public supported operator recovery method `service.reload_index(index_path)`.
+   - Guarded private snapshot test with `@pytest.mark.skipif(not REAL_INDEX_PATH.exists())`.
+   - Tested simulated clean export via `git archive HEAD` in an isolated directory without private snapshots: **9 passed, 1 skipped (0 failures)**.
+
+8. **Cryptographic Identity Hash Disambiguation:**
+   - Separated the index file hash from the composite raw observation hash in distinct named fields:
+     - `index_file_sha256`: `45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4`.
+     - `composite_source_sha256`: `3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11`.
+
+9. **Scientific Terminology & Step 13 Protocols:**
+   - In `src/static/app.js`: updated narrative to specify $5.91\%$ as **RMSE reduction** (removed quadratic penalty / variance reduction phrasing); replaced causal labels with neutral fold IDs (Fold F2, Fold F3, Fold F4).
+   - In `RELEASE_RUNBOOK.md`: recorded Step 13 protocols including freezing model weights/configs, evaluating price forecasts against modal PRICE in INR/q (not arrivals), 6–8 day temporal maturity rules, and immutable shadow logging schema.
+
+---
+
+### 38.3 Comprehensive Verification Results
+
+- **Unit and Integration Test Suite:**
+  - `tests/`: **379 passed**, 18 warnings in 11.07s.
+  - `backing/`: **45 passed** in 5.22s.
+  - **Total: 424 passed, 0 failures, 18 numerical warnings preserved** (+4 tests added to `tests/test_integration_release.py`).
+- **Contract Review Gates:** `experiments/reviews/check_app001a_review_gates.py` $\implies$ **29/29 passed (100%)**.
+- **Browser Interaction & CDP Suite:** `experiments/reviews/test_interactive_browser_flows.js` $\implies$ **21/21 checks passed (100%)**.
+- **Evidence Directory:** `experiments/reports/RELEASE001R/` populated with 9 receipts and a self-excluding `output_manifest.json`.
+
+---
+
+### 38.4 Canonical Milestone Accounting
+
+- **Step 11 (Interface & API Contracts):** **COMPLETED & INDEPENDENTLY VERIFIED**.
+- **Step 12 (Integration & Packaging):** **LOCALLY COMPLETED & CODE-VERIFIED**. Container build and execution marked `NOT_RUN` pending Docker daemon activation approval.
+- **Main Milestones Remaining:** Exactly **2 main milestones** remain (Step 12 deployment acceptance & Step 13 prospective forward validation/usability).
+- **Optional Ablations Remaining:** Exactly **2 optional ablations** remain (arrivals & localized weather).

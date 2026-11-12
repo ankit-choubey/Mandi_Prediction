@@ -1,0 +1,15 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:09.702547+00:00",
+  "clean_checkout_simulation": {
+    "method": "git archive HEAD clean tar export without private untracked/ignored data",
+    "private_snapshot_directory_present": false,
+    "pytest_command": "python3 -m pytest tests/test_integration_release.py -v",
+    "exit_code": 0,
+    "tests_passed": 9,
+    "tests_skipped": 1,
+    "skipped_test": "test_real_snapshot_smoke (correctly skipped when private data is absent)",
+    "tests_failed": 0,
+    "output_snippet": "========================= 9 passed, 1 skipped in 0.99s ========================="
+  }
+}

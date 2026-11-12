@@ -1,0 +1,24 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:10.346258+00:00",
+  "docker_cli_version": "Docker version 29.6.1, build 8900f1d",
+  "docker_daemon_status": "INACTIVE",
+  "docker_daemon_error": "Cannot connect to the Docker daemon at unix:///Users/theankit/.docker/run/docker.sock",
+  "packaging_execution_status": "NOT_RUN",
+  "packaging_status_reason": "Local Docker daemon socket unavailable. Container build and execution deferred until explicit owner engine approval is granted.",
+  "preflight_completed_locally": {
+    "dockerfile_syntax_and_healthcheck_repaired": true,
+    "dockerignore_minimal_allowlist_configured": true,
+    "build_context_size_measured": "0.944 MB (well under 2 MB limit)",
+    "pure_standard_library_serving_verified": true,
+    "graceful_sigterm_shutdown_verified": true,
+    "clean_checkout_tests_passing": true
+  },
+  "draft_unexecuted_container_commands": [
+    "docker build -t apmc-mandi-release:1.0.0-rc1 -f Dockerfile .",
+    "docker run -d --rm -p 127.0.0.1:8000:8000 --name apmc_rc1 apmc-mandi-release:1.0.0-rc1",
+    "docker exec apmc_rc1 python3 -c \"import urllib.request, sys; sys.exit(0 if getattr(urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3), 'status', None) == 200 else 1)\"",
+    "docker stop -t 5 apmc_rc1"
+  ],
+  "remaining_deployment_action": "Request single owner infrastructure authorization to start Docker engine and build container image."
+}

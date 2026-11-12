@@ -1,0 +1,54 @@
+{
+  "manifest_version": "1.0.0",
+  "task_id": "MP-RELEASE-001R",
+  "generated_at_utc": "2026-11-12T23:22:10.347524+00:00",
+  "output_directory": "experiments/reports/RELEASE001R",
+  "file_count": 9,
+  "files": {
+    "browser_regression_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/browser_regression_receipt.json",
+      "size_bytes": 571,
+      "sha256": "0cfbdc6eb3cb816c83fe85146ca755293171f4b5d97460606c2206e989edfd1e"
+    },
+    "clean_checkout_integration_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/clean_checkout_integration_receipt.json",
+      "size_bytes": 637,
+      "sha256": "97b354571952d0ff2fc9815f0afdce5a3f653de50bc33dcb000214a6d0703b01"
+    },
+    "context_and_runtime_inventory.json": {
+      "relative_path": "experiments/reports/RELEASE001R/context_and_runtime_inventory.json",
+      "size_bytes": 4557,
+      "sha256": "91ed961770a5aac4b1c964d3baa278057b82847a804d8583775ac6a8b9f225f4"
+    },
+    "dependency_and_typing_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/dependency_and_typing_receipt.json",
+      "size_bytes": 1092,
+      "sha256": "bf9e507687911babfd486c46c47452210bda12add3f8fab6aaee459434e26a54"
+    },
+    "healthcheck_verification_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/healthcheck_verification_receipt.json",
+      "size_bytes": 966,
+      "sha256": "2fd02bbdf0e218f74f26108b0262060c698d0ad4766635451be07b32fcf8f327"
+    },
+    "launcher_and_lifecycle_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/launcher_and_lifecycle_receipt.json",
+      "size_bytes": 1073,
+      "sha256": "c6da86916c763c0d8555f3369f6dc8fcf60fb788786894564ca918ef44ab8727"
+    },
+    "packaging_readiness_status.json": {
+      "relative_path": "experiments/reports/RELEASE001R/packaging_readiness_status.json",
+      "size_bytes": 1447,
+      "sha256": "dc759869f6a0d80f49b10ba21df64cc51e74fc6eb7899bded8fdca4742250ae9"
+    },
+    "source_and_index_hashes.json": {
+      "relative_path": "experiments/reports/RELEASE001R/source_and_index_hashes.json",
+      "size_bytes": 1950,
+      "sha256": "35be640ea75621a75d0407f3ed43f8971cba53a570f1a69aaf043a7e30bfdb72"
+    },
+    "test_suite_receipt.json": {
+      "relative_path": "experiments/reports/RELEASE001R/test_suite_receipt.json",
+      "size_bytes": 981,
+      "sha256": "57cd6814d4b9cf40489e3b8fa6858635dbd98f976866454aee4ef6a81cf370f0"
+    }
+  }
+}

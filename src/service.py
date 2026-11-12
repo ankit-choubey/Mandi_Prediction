@@ -73,8 +73,11 @@ class MandiMarketService:
         self.start_time = time.time()
         self.start_datetime_utc = datetime.now(timezone.utc)
 
+        env_index_path = os.environ.get("APMC_LATEST_INDEX_PATH")
         self.latest_index_path = Path(latest_index_path) if latest_index_path else (
-            REPO_ROOT / "data" / "imported_snapshots" / "latest_observation_index.json"
+            Path(env_index_path) if env_index_path else (
+                REPO_ROOT / "data" / "imported_snapshots" / "latest_observation_index.json"
+            )
         )
         self.calibration_envelope_path = Path(calibration_envelope_path) if calibration_envelope_path else (
             REPO_ROOT / "experiments" / "reports" / "FC008" / "calibration_envelope_v1.json"
@@ -86,6 +89,16 @@ class MandiMarketService:
         self.series_data: Dict[str, Dict[str, Any]] = {}
 
         self._load_latest_index()
+
+    def reload_index(self, index_path: Optional[Path | str] = None) -> HealthResponseData:
+        """
+        Public supported method for reloading market price index snapshot.
+        Atomically updates internal series dictionary and metadata if the target file is valid.
+        """
+        if index_path:
+            self.latest_index_path = Path(index_path)
+        self._load_latest_index()
+        return self.get_health()
 
     def _load_latest_index(self) -> None:
         """Loads and indexes latest market observations with bounded resource and type guards."""
@@ -513,9 +526,10 @@ class MandiMarketService:
         - FC008/intervals_by_fold.csv
         Exposes exact numbers matching verified records.
         """
-        point_file = REPO_ROOT / "experiments" / "reports" / "FC007_VERIFIED" / "scorecard_overall.csv"
-        interval_file = REPO_ROOT / "experiments" / "reports" / "FC008" / "intervals_overall.csv"
-        fold_file = REPO_ROOT / "experiments" / "reports" / "FC008" / "intervals_by_fold.csv"
+        reports_root = Path(os.environ.get("APMC_REPORTS_ROOT", REPO_ROOT / "experiments" / "reports"))
+        point_file = reports_root / "FC007_VERIFIED" / "scorecard_overall.csv"
+        interval_file = reports_root / "FC008" / "intervals_overall.csv"
+        fold_file = reports_root / "FC008" / "intervals_by_fold.csv"
 
         if not point_file.exists() or not interval_file.exists() or not fold_file.exists():
             return {

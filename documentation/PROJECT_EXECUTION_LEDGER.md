@@ -1,5 +1,20 @@
 # Project execution ledger and delivery gates
 
+## Current independent decision — RELEASE001 review, 2026-11-13 IST
+
+GitHub main and local HEAD verified at `2443367fd30075d8ef5ce2ae482630d9636a93c5`. Read documentation/RELEASE001_INDEPENDENT_REVIEW.md and experiments/reports/RELEASE001_REVIEW/. **Step11 repaired functional research UI accepted; Step12 remains OPEN. MAINLEFT2 (12integration/deployment,13forwardvalidation/usability)+OPTIONAL2arrivals/weather.** This supersedes unconditional packaging-readiness claims, not the measured UI progress.
+
+Independent live browser selected Lucknow/Banthara/Wheat/Dara/FAQ ->2721INR/quintal,observation2026-11-11,serverage2. Price transfer left future/costinputsblank. Explicitfixture+470 passed;7%financing produced436.44;range2600/2650/2700 produced-20/470/960. Correct source/table/narrativeRMSE andfoldcount values nowrender. MobileCSS375 had body/documentwidth375. Browser tabclosed/viewportreset/developmentserverstopped. Original29gates pass. Fullregression tests375passed/10.53s+45backingpassed/4.71s=420passes,18numericalwarningscauseunverified.21producerbrowserchecksare reported; reviewer independentlyreproduced keyflows rather than executing itsCDPrunner.59committedmanifest entriesmatch;13workingpayloadmismatchesfrompreservedpre-existingproducerreceiptrewrites/EOFedits are separate.
+
+Step12CODEBLOCKERS,beyond Dockerinfrastructure: documented python3 src/run_release_service.py --help failsModuleNotFoundsrc; moduleinvocationworks. ActualownedmoduleprocessSIGTERMhangsafter2s (same-threadserver.shutdown); childcleanedup. Stdlib-onlyimport-S failsNumPy;imageinstallsnodeps/claimzeroexternaldepsfalse. Imageomits3benchmarkCSVs;healthcheckcallsunimportedsys(mockHTTP200stillfails). ImageCOPYrequiresignoredsnapshotdir;buildcontextexclusionsmisslarge/raw/fulloutputs. Clean tracked-only releaseintegration suite3passed/3failedbecauseignoredindexrequired. Release manifestmislabelsrawsourceSHA3d3bc...asindexfilehash;actualindexSHA45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4. LoggerlocalISTtimefalselyappendsZ(observed04:32Zvsactual23:02ZpriorUTCday). No Dockerbuild/imagehealth orPython3.11runtimeverified. CurrentlocalDockercontextenginesocketabsent;CLI29.6.1verifiedread-only;noengineactivation/install/pull/build/publicdeploymentperformed.
+
+Minor scientificwording remains forrelease:5.91%isRMSEreduction,notvariance/MSEreduction;removeunsupportedCalm/Volatile/Crisismechanismlabels. Runbookmustnotrequirepersistencetobeatitself/havefittedweights,orusearrivalsvolumeaspricegroundtruth. Freezeforwardmethod/versionbeforeoutcomes,retainactualtarget/issuance/maturity/sourceavailability andabstention rules. No retuning/newmodel/syntheticoperationalfeed required. Commercialquoteevidence0/22localdirectory,notuniversalonlineabsence;forwardperformanceunobserved.
+
+NEXT documentation/prompts/MP-RELEASE-001R.md fixesallcode/nonDockerchecksfirst,thendeliversexactfinalengine/buildauthorizationrequestifstillneeded. No newpublichosting/scheduler/Kaggle/modelwork orhostdependencyinstall implicitlyauthorized. After12actuallyaccepted,MAINLEFT1(step13)+OPTIONAL2. CurrentUIcanbeusedforprofessorresearchprogress through known-good rootlauncher python3 run_service.py --host127.0.0.1 --port8000;productionportability/shutdown/containerstatusnotcertified. Futurefieldoutcomes cannotbemanufacturedtofinishschedule.
+
+Reviewer preservedexistingdirty/untrackedwork and oldevidence;changedonlyreviews/prompts/math/ledger/professorbrief/ignoredbrain,notproductioncodeorGitcommit/push. Neveredit/stage/syncdocumentation/context.md; updatecurrentrecordsperexecutor task. Preservemodelscore/quantileidentity,missinginnertrace/ScopeB andundercoverage limitations.
+
+
 ## Current independent decision — APP001B review, 2026-11-13 IST
 
 Local HEAD and GitHub main independently verified at `fde9c5bab7158fc9259e9b73deafd2fd4c471ce5`. Read `documentation/APP001B_INDEPENDENT_REVIEW.md` and `experiments/reports/APP001B_REVIEW/`. This supersedes executor claims of full Step11 acceptance and two remaining milestones.
@@ -602,3 +617,45 @@ No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory
     - Self-excluding SHA-256 output manifest: `experiments/reports/RELEASE001/output_manifest.json` (11 files).
 * **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes; container packaging marked `NOT_RUN` due to inactive local Docker daemon.
 * **Milestone Accounting:** Step 11 is completed and independently verified. Step 12 local candidate is delivered with deployment acceptance open. Exactly **2 main milestones remain**: Step 12 (Deployment Decision/Target) and Step 13 (Forward Validation/Usability), plus **2 optional ablations** (Arrivals, Weather).
+
+
+---
+
+### [2026-11-13T04:55:00+05:30] Task MP-RELEASE-001R
+* **Status:** Complete (Release Lifecycle, Shutdown Deadlock Resolution, Zero External Serving Dependencies, Healthcheck Syntax, Clean Checkout Determinism, and UTC Parity Verified).
+* **Baseline Commit:** `2443367fd30075d8ef5ce2ae482630d9636a93c5`
+* **Changes:**
+  - **Launcher & Graceful Shutdown Defect Resolution:**
+    - Repaired `src/run_release_service.py` to resolve repository root dynamically prior to application imports, enabling both direct (`python3 src/run_release_service.py --help`) and module (`python3 -m src.run_release_service --help`) execution under sanitized environments with `PYTHONPATH` removed.
+    - Dispatched `server.shutdown()` on a separate daemon thread upon `SIGTERM` / `SIGINT`, unblocking `serve_forever()` on the main thread and allowing `server.server_close()` to execute cleanly with code 0 within $\sim 0.55$ seconds. Socket options enable `SO_REUSEADDR` for immediate rebinding.
+    - Measured discrete timing scopes: interpreter startup $\sim 20.55$ ms, import scope $\sim 43.50$ ms, service init $\sim 0.32$ ms, listener bind $\sim 1.20$ ms, first HTTP response $\sim 35.00$ ms.
+    - Configured logger with `logging.Formatter.converter = time.gmtime` producing true ISO 8601 UTC timestamps (`YYYY-MM-DDTHH:MM:SSZ`), verified within $<0.2$ seconds of aware UTC clock.
+    - Enforced host loopback policy: non-loopback bindings (`0.0.0.0`) are refused with an error and exit code 1 unless `--allow-container-host` is explicitly provided.
+  - **Zero-Dependency Runtime Serving:**
+    - Added `from __future__ import annotations` and optional lazy `numpy` import in `src/economic_model.py`.
+    - Implemented standard-library scalar float mathematics for `calculate_break_even_future_price` and `calculate_incremental_benefit_per_quintal`, while maintaining full backward-compatible array vectorization when NumPy is present.
+    - Verified pure standard-library serving path under `python3 -S -c "from src.api import create_app; app=create_app(); print('READY')"`, returning exit code 0.
+  - **Container Packaging & Healthcheck Repairs:**
+    - Repaired Docker healthcheck one-liner in `Dockerfile` to import `sys`, passing healthy checks (exit code 0) and failing unreachable checks (exit code 1).
+    - Added COPY instructions for small benchmark CSVs and calibration envelope in `Dockerfile`.
+    - Replaced unconditional `COPY data/imported_snapshots/` with read-only mount point creation `/app/data/imported_snapshots`.
+    - Tightened `.dockerignore` minimal allowlist: build context measured at **43 files, 0.944 MB** (under 2 MB limit), excluding all raw data, predictions, outputs, and brain directories.
+    - Documented container execution status honestly as `NOT_RUN (Docker daemon not running locally)`.
+  - **Clean Checkout Test Portability:**
+    - Refactored `tests/test_integration_release.py` to use an isolated deterministic fixture factory yielding 30 series (26 ACCEPTED, 4 UNKNOWN_MARKET_REVIEW).
+    - Added public supported operator recovery method `service.reload_index(index_path)`.
+    - Guarded private snapshot test with `@pytest.mark.skipif(not REAL_INDEX_PATH.exists())`.
+    - Tested simulated clean export via `git archive HEAD` in an isolated directory without private snapshots: **9 passed, 1 skipped (0 failures)**.
+  - **Cryptographic Hash Disambiguation:**
+    - Disambiguated index file SHA-256 (`45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4`) from composite source observations SHA-256 (`3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11`) into separate named fields in `experiments/reports/RELEASE001R/source_and_index_hashes.json`.
+  - **Scientific Terminology & Step 13 Protocols:**
+    - Updated `src/static/app.js`: specified $5.91\%$ as **RMSE reduction** (removed quadratic penalty / variance reduction); replaced causal labels with neutral fold IDs (Fold F2, Fold F3, Fold F4).
+    - Updated `documentation/RELEASE_RUNBOOK.md`: recorded Step 13 protocols including freezing model weights/configs, evaluating price forecasts against modal PRICE in INR/q (not arrivals), 6–8 day temporal maturity rules, and immutable shadow logging schema.
+  - **Verification & Milestone Accounting:**
+    - Original review gates: `python3 experiments/reviews/check_app001a_review_gates.py` $\implies$ **29/29 passed (100%)**.
+    - Interactive browser suite: `node experiments/reviews/test_interactive_browser_flows.js` $\implies$ **21/21 checks passed (100%)**.
+    - Clean checkout simulation: **9 passed, 1 skipped in 0.98s**.
+    - Full pytest suite: **379 passed in `tests/` + 45 passed in `backing/` = 424 passed** (0 failures, 18 numerical runtime warnings in benchmark matrix math).
+    - Evidence directory: `experiments/reports/RELEASE001R/` contains 9 receipts and a self-excluding `output_manifest.json`.
+* **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes; container packaging marked `NOT_RUN` due to inactive local Docker daemon.
+* **Milestone Accounting:** Step 11 is completed and independently verified. Step 12 local code and packaging verification is completed; container image build and execution remain `NOT_RUN` pending Docker daemon activation approval. Exactly **2 main milestones remain**: Step 12 (Deployment Decision/Target) and Step 13 (Forward Validation/Usability), plus **2 optional ablations** (Arrivals, Weather).

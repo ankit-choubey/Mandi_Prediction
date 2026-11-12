@@ -1,0 +1,20 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:08.063611+00:00",
+  "docker_healthcheck_command": "python3 -c \"import urllib.request, sys; sys.exit(0 if getattr(urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3), 'status', None) == 200 else 1)\"",
+  "syntax_verification": {
+    "sys_module_imported": true,
+    "timeout_specified_seconds": 3,
+    "status_code_checked": 200
+  },
+  "execution_tests": {
+    "healthy_service_exit_code": 0,
+    "healthy_service_passed": true,
+    "unreachable_service_exit_code": 1,
+    "unreachable_service_passed": true
+  },
+  "semantics": {
+    "level": "PROCESS_LIVENESS",
+    "distinction": "HTTP 200 confirms the WSGI web process is accepting HTTP connections. System data readiness is inspected separately via response capabilities matrix ('prices', 'benchmarks', 'economics'). Unavailable forecast/advice is an intentional fail-closed research guard, not a process failure."
+  }
+}

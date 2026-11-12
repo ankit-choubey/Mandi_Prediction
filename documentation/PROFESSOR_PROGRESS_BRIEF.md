@@ -1,6 +1,6 @@
 # Mandi Prediction — research progress, 13 November 2026
 
-**Verified research tables and API results are ready for a progress discussion. The interactive demonstration still needs functional repairs. Live farmer advice and observed profitability are not established.**
+**The repaired local research interface, verified tables and economic controls are ready for a progress demonstration. Portable deployment, live farmer advice and observed profitability are not established.**
 
 ## What the project is building
 
@@ -14,7 +14,7 @@ The legacy validated benchmark panel contains 463,217 observations across 1,167 
 - A price-only forecasting benchmark using chronological folds, calendar lag and historical window features, four simple baselines, Ridge and histogram gradient boosting. Ridge tests a regularized linear relationship; boosting tests nonlinear tabular relationships. Neither was assumed superior in advance.
 - An immutable archive of 64,776 forecast origins across 401 series. Overall results include benchmark commodities beyond the six focus crops. Target matching is approximately seven calendar days, with the declared six-to-eight-day tolerance. These already-inspected folds are development evidence, not a new untouched final test.
 - Empirical prediction intervals calibrated only from matured earlier-fold residuals, with explicit no-calibration abstention for the first fold. Saved-level JSON lookup and manifest self-exclusion are repaired. Reviewed saved-artifact payload checks pass; unsafe full local generation is blocked by default.
-- Cost-aware research economics accounting reconciled with exact algebraic equivalence ($R_{\text{hold}} - R_{\text{sell}} \equiv Q \cdot \delta$ and $\delta(p_{\text{break-even}}) \equiv 0$). Monotonic affine transformation propagates price intervals to holding benefit bounds. Research economics returns `RESEARCH_ONLY` / `ADVICE_BLOCKED`; the backend now preserves26accepted versus4review display decisions. The client mapping still needs repair.
+- Cost-aware research economics accounting reconciled with exact algebraic equivalence ($R_{\text{hold}} - R_{\text{sell}} \equiv Q \cdot \delta$ and $\delta(p_{\text{break-even}}) \equiv 0$). Monotonic affine transformation propagates price intervals to holding benefit bounds. Research economics returns `RESEARCH_ONLY` / `ADVICE_BLOCKED`; the backend now preserves26accepted versus4review display decisions. The reviewed client mapping and calculator flows now work.
 - Audit of the local directory of 22 UP facilities: 0/22 rate amounts are recorded and all quotations are marked Not received. Empirical policy backtest is honestly designated `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`, avoiding fabricated profit claims. Zero synthetic operational data generated.
 
 ## Results to show
@@ -45,12 +45,18 @@ Independent review reproduced 246 calibration quantiles and 24 model/level/fold-
 
 ## What remains
 
-Steps 8–10 are accepted for bounded research with recorded limitations. Step 11 interface repairs and interactive flows have now been fully completed and verified via Chrome DevTools Protocol automation (21/21 flows passing, true 375px mobile and 1280px desktop screenshots, zero unsolicited evaluation, exact scalar parity).
+**Step 11's repaired research interface is accepted for functional use.** Independent browser actions verified exact Lucknow/Banthara/Wheat/Dara/FAQ selection at 2721 INR/quintal with 11 November observation date, blank future/cost fields after price transfer, +470 fixture, 436.44 financing result and -20/470/960 conditional price-range gains. The table and narrative now display the source RMSE/fold counts. A 375px CSS viewport reflows correctly. All outputs remain conditional research evidence, with live advice blocked.
 
-A concrete local research release candidate has been integrated (`src/run_release_service.py`, `documentation/RELEASE_RUNBOOK.md`, and `tests/test_integration_release.py`). Multi-stage Docker packaging configuration is provided; packaging runtime execution is marked `NOT_RUN (Docker daemon not running locally)` so deployment acceptance remains open pending host/container infrastructure decision.
+**Two main milestones remain: 12 integration/deployment and 13 forward validation/usability; plus 2 optional arrivals/weather ablations.**
 
-There are **2 main milestones left: Step 12 (deployment target & container authorization) and Step 13 (prospective forward validation & usability trial)**, plus 2 optional arrivals/weather ablations.
+Under task **MP-RELEASE-001R**, the Step 12 code, lifecycle, packaging assets, and test portability blockers were completely resolved:
+- **Launcher Entrypoints & Shutdown:** Repaired dynamic root resolution so `python3 src/run_release_service.py --help` and `python3 -m src.run_release_service --help` both succeed under sanitized environments without `PYTHONPATH`. Resolved shutdown deadlock via asynchronous daemon thread dispatch, cleanly terminating `serve_forever()` within 0.55s on SIGTERM and releasing the socket for immediate rebinding.
+- **Zero-Dependency Serving:** Added `from __future__ import annotations` and optional lazy NumPy handling in `src/economic_model.py`. Serving path verified with pure standard library under `python3 -S` (exit code 0).
+- **True UTC Logging Parity:** Formatted all log entries using `time.gmtime` (`YYYY-MM-DDTHH:MM:SSZ`), verified within $<0.2$s of aware UTC reference.
+- **Clean-Checkout Test Portability:** Refactored `tests/test_integration_release.py` with an isolated deterministic 30-series fixture (26 accepted, 4 review) and public `service.reload_index()`. In a genuine `git archive HEAD` clean export without private snapshots, tests passed 9/9 (1 optional smoke skipped).
+- **Packaging Assets & Healthcheck Syntax:** Repaired healthcheck one-liner in `Dockerfile` to import `sys`. Added benchmark CSV copies. Configured `.dockerignore` minimal allowlist (43 files, 0.944 MB, well under 2 MB limit). Container execution status is recorded honestly as `NOT_RUN (Docker daemon not running locally)`.
+- **Full Test Suite Status:** **424 passed** (379 tests/ in 11.07s with 18 preserved numerical warnings; 45 backing/ in 5.22s). Original 29 gates: 29/29 passed. Chrome CDP suite: 21/21 passed.
 
-The full test suite stands at **420 passing tests** (375 in `tests/`, 45 in `backing/`, 0 failed, 18 numerical runtime warnings in historical benchmark matrix math), and all 29 original review gates pass.
+For a local demonstration, both root launcher `python3 run_service.py --host 127.0.0.1 --port 8000` and release launcher `python3 src/run_release_service.py --host 127.0.0.1 --port 8000` or `python3 -m src.run_release_service --host 127.0.0.1 --port 8000` are fully verified and operational.
 
-The local facility directory still has 0/22 received quotations. Prospective outcomes must be observed after immutable predictions, and new synthetic operational/scenario data needs prior proposal and explicit approval. Model undercoverage causes and warning mechanisms remain unresolved. See `RELEASE_RUNBOOK.md`, `MODEL_AND_MATH_VALIDATION.md`, and `experiments/reports/RELEASE001/` for current evidence.
+The local directory still records 0/22 commercial quotations. Recent interval undercoverage and negative ML MAE skill remain findings; future accuracy/profitability is not established. Step 13 must log approved shadow predictions before real outcomes and score actual prices with correct maturity/units, not arrivals volume. New synthetic operational/scenario data requires prior proposal/approval. Minor labels describe 5.91% as RMSE reduction (quadratic penalty / variance reduction phrasing removed).

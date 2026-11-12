@@ -1,0 +1,39 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:09.758583+00:00",
+  "release_version": "1.0.0-rc1",
+  "reviewed_commit_head": "2443367fd30075d8ef5ce2ae482630d9636a93c5",
+  "index_file_identity": {
+    "file_name": "data/imported_snapshots/latest_observation_index.json",
+    "file_sha256": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+    "verified_matching_review_finding": true
+  },
+  "composite_source_observation_identity": {
+    "source_type": "Agmarknet APMC Modal Prices (Clean daily snapshot 2026-11-11)",
+    "composite_source_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+    "verified_matching_review_finding": true
+  },
+  "distinction_documentation": "The index file SHA-256 (45c9dd75...) is the cryptographic digest of the latest_observation_index.json file itself. The composite source SHA-256 (3d3bc047...) is the cryptographic digest of the raw daily observation import rows. These are distinct identities and are preserved in separate fields.",
+  "shipped_benchmark_artifacts": {
+    "scorecard_overall.csv": {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_overall.csv",
+      "sha256": "30db4efdadb2c65563092be54fa9783001212681b2166d4a96871231319184cb",
+      "size_bytes": 2060
+    },
+    "intervals_overall.csv": {
+      "path": "experiments/reports/FC008/intervals_overall.csv",
+      "sha256": "27df8c9252cbe1265907d790549583d8ebcd7dd02aba7088f907b4db0c08a9b4",
+      "size_bytes": 1341
+    },
+    "intervals_by_fold.csv": {
+      "path": "experiments/reports/FC008/intervals_by_fold.csv",
+      "sha256": "a99afb8d8b309d8949b5abc046d99eef3e459578b081499c3fdd0e8692f202a0",
+      "size_bytes": 3786
+    },
+    "calibration_envelope_v1.json": {
+      "path": "experiments/reports/FC008/calibration_envelope_v1.json",
+      "sha256": "84ba2da323164382208e1b0225c6c241d11c562814849c30c535e5bd4e57411c",
+      "size_bytes": 69856
+    }
+  }
+}

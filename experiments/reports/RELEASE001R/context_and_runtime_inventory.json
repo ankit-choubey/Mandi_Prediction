@@ -1,0 +1,200 @@
+{
+  "task_id": "MP-RELEASE-001R",
+  "timestamp_utc": "2026-11-12T23:22:09.757674+00:00",
+  "docker_build_context": {
+    "policy": "Minimal Allowlist via .dockerignore",
+    "total_files": 43,
+    "total_bytes": 989786,
+    "total_megabytes": 0.944,
+    "under_2mb_limit": true,
+    "explicitly_excluded": [
+      ".env*",
+      "brain/",
+      "scratch/",
+      "data/raw/",
+      "data/imported_snapshots/",
+      "data/processed/",
+      "experiments/kaggle/",
+      "experiments/outputs/",
+      "experiments/notebooks/",
+      "research/",
+      "tests/",
+      "backing/",
+      "documentation/"
+    ],
+    "included_file_manifest": [
+      {
+        "path": ".dockerignore",
+        "size_bytes": 712
+      },
+      {
+        "path": "Dockerfile",
+        "size_bytes": 1800
+      },
+      {
+        "path": "data/reference/canonical_disputed_keys_77.csv",
+        "size_bytes": 10671
+      },
+      {
+        "path": "data/reference/crop_storage_parameters.csv",
+        "size_bytes": 6100
+      },
+      {
+        "path": "data/reference/live_source_contract.json",
+        "size_bytes": 5717
+      },
+      {
+        "path": "data/reference/market_alias_candidates_v21.csv",
+        "size_bytes": 9250
+      },
+      {
+        "path": "data/reference/market_aliases.csv",
+        "size_bytes": 6546
+      },
+      {
+        "path": "data/reference/operational_sources.json",
+        "size_bytes": 10479
+      },
+      {
+        "path": "experiments/reports/FC007_VERIFIED/scorecard_overall.csv",
+        "size_bytes": 2060
+      },
+      {
+        "path": "experiments/reports/FC008/calibration_envelope_v1.json",
+        "size_bytes": 69856
+      },
+      {
+        "path": "experiments/reports/FC008/intervals_by_fold.csv",
+        "size_bytes": 3786
+      },
+      {
+        "path": "experiments/reports/FC008/intervals_overall.csv",
+        "size_bytes": 1341
+      },
+      {
+        "path": "requirements.txt",
+        "size_bytes": 151
+      },
+      {
+        "path": "src/__init__.py",
+        "size_bytes": 54
+      },
+      {
+        "path": "src/api.py",
+        "size_bytes": 25290
+      },
+      {
+        "path": "src/baselines.py",
+        "size_bytes": 44845
+      },
+      {
+        "path": "src/current_data_output.py",
+        "size_bytes": 17635
+      },
+      {
+        "path": "src/data_loader.py",
+        "size_bytes": 5991
+      },
+      {
+        "path": "src/data_pipeline.py",
+        "size_bytes": 39484
+      },
+      {
+        "path": "src/data_validator.py",
+        "size_bytes": 45232
+      },
+      {
+        "path": "src/economic_backtest.py",
+        "size_bytes": 13267
+      },
+      {
+        "path": "src/economic_model.py",
+        "size_bytes": 62895
+      },
+      {
+        "path": "src/evaluate.py",
+        "size_bytes": 11540
+      },
+      {
+        "path": "src/feasibility.py",
+        "size_bytes": 25461
+      },
+      {
+        "path": "src/feature_engineering.py",
+        "size_bytes": 9742
+      },
+      {
+        "path": "src/forecast_benchmark.py",
+        "size_bytes": 40316
+      },
+      {
+        "path": "src/forecast_features.py",
+        "size_bytes": 27871
+      },
+      {
+        "path": "src/forecast_intervals.py",
+        "size_bytes": 61928
+      },
+      {
+        "path": "src/health_status.py",
+        "size_bytes": 33540
+      },
+      {
+        "path": "src/identity_comparison.py",
+        "size_bytes": 35139
+      },
+      {
+        "path": "src/ingest_agmarknet_arrivals.py",
+        "size_bytes": 43053
+      },
+      {
+        "path": "src/intelligence_system.py",
+        "size_bytes": 12035
+      },
+      {
+        "path": "src/live_price_ingestion.py",
+        "size_bytes": 109118
+      },
+      {
+        "path": "src/market_identity.py",
+        "size_bytes": 32138
+      },
+      {
+        "path": "src/models.py",
+        "size_bytes": 3901
+      },
+      {
+        "path": "src/run_release_service.py",
+        "size_bytes": 5150
+      },
+      {
+        "path": "src/score_forecast_archive.py",
+        "size_bytes": 31667
+      },
+      {
+        "path": "src/service.py",
+        "size_bytes": 28745
+      },
+      {
+        "path": "src/service_contracts.py",
+        "size_bytes": 6015
+      },
+      {
+        "path": "src/static/app.js",
+        "size_bytes": 40145
+      },
+      {
+        "path": "src/static/favicon.svg",
+        "size_bytes": 456
+      },
+      {
+        "path": "src/static/index.html",
+        "size_bytes": 33951
+      },
+      {
+        "path": "src/static/styles.css",
+        "size_bytes": 14713
+      }
+    ]
+  }
+}
