@@ -747,3 +747,57 @@ def test_paired_skill_zero_denominator_safety():
 
     metrics = compute_forecast_metrics(y_true=y_true, y_pred=y_pred, y_naive=y_naive)
     assert np.isnan(metrics["skill_vs_naive"])
+
+
+# -----------------------------------------------------------------------------
+# 9. Paired Denominators & Validity Transitions
+# -----------------------------------------------------------------------------
+
+def test_paired_naive_mae_and_skill_tolerance():
+    """Verify paired_naive_mae is exported and skill == 1 - mae / paired_naive_mae within unrounded numerical tolerance."""
+    df_eval = pd.DataFrame({
+        "series_id": ["s1", "s2", "s3", "s4"],
+        "target_price": [2000.0, 2100.0, 2200.0, 2300.0],
+        "pred_model":   [2050.0, 2100.0, 2150.0, 2350.0],
+        "pred_naive":   [2000.0, 2050.0, 2100.0, 2200.0]
+    })
+    res = evaluate_model_slice(df_eval, model_col="pred_model", naive_col="pred_naive")
+
+    assert res["n_scored_origins"] == 4
+    assert res["mae"] == 37.5
+    assert res["paired_naive_mae"] == 62.5
+    assert np.isclose(res["skill_vs_naive"], 1.0 - (res["mae"] / res["paired_naive_mae"]), atol=1e-12)
+
+
+def test_scope_b_validity_transitions_and_abstention_reasons():
+    """Verify that finite-to-NaN, NaN-to-finite, and finite price changed flags work correctly."""
+    fold_info = {"fold": "F1", "train_end": "2024-12-31", "test_start": "2025-01-08", "test_end": "2025-06-30"}
+    series_meta = {"series_id": "test__s1", "district": "Ghaziabad", "market": "Ghaziabad", "commodity": "Wheat", "variety": "Dara", "grade": "FAQ"}
+
+    origin_t = "2025-06-15"
+
+    # Case: Drift anchor is the ONLY observation in the 14d window.
+    # When removed under Scope B, Drift goes from finite -> NaN!
+    dates = [
+        pd.Timestamp("2024-06-23"), # for seasonal
+        pd.Timestamp("2025-05-20"),
+        pd.Timestamp("2025-05-25"),
+        pd.Timestamp("2025-06-01"), # drift anchor (t-14d)
+        pd.Timestamp("2025-06-10"),
+        pd.Timestamp("2025-06-15"), # origin
+        pd.Timestamp("2025-06-22")  # target
+    ]
+    prices = [2000.0] * len(dates)
+    dates_dt = np.array(dates, dtype="datetime64[ns]")
+    dates_str = np.array([d.strftime("%Y-%m-%d") for d in dates])
+    prices_arr = np.array(prices, dtype=float)
+
+    disputed_keys_drift = {("Ghaziabad", "Ghaziabad", "Wheat", "Dara", "FAQ", "2025-06-01")}
+    res = score_series_origin(dates_dt, dates_str, prices_arr, origin_t, fold_info, series_meta, disputed_keys_drift)
+
+    assert res["scope_b_eligible"]
+    assert np.isfinite(res["pred_drift"])
+    assert np.isnan(res["pred_drift_scope_b"])
+    assert res["drift_finite_to_nan"] is True
+    assert res["drift_finite_price_changed"] is False
+    assert res["drift_scope_b_abstain_reason"] == "no_obs_in_14d_window"

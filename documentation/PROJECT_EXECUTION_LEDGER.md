@@ -62,6 +62,21 @@ No artificial all-purpose project score. Data: row conservation, invalid/conflic
 
 ## Current decision
 
-MP-AUDIT-008 local repairs are complete (`LOCAL REPAIRS COMPLETE`). Production scoring helper is unified with the notebook loop; Scope B historical excising covers all four baselines; shared scorer denominators use joint finite masking; self-contained fixtures pass with zero dependency on ignored outputs; embedded notebook source payload matches committed source byte-for-byte; and AST syntax passes 100%.
+MP-FC-006R bounded corrected baseline rerun is complete and verified (`AUDITED BASELINE RERUN COMPLETE & VERIFIED`).
+Kaggle CPU kernel `theankitchoubey/mp-fc-006-baselines` (v4) executed to completion in 149.04 seconds on existing dataset `theankitchoubey/mandi-prediction-audit-003b` (v1).
+All fail-closed gates passed:
+1. Panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` (row conservation: 472,385 raw -> 463,217 accepted).
+2. Exactly 77 unique canonical disputed keys verified and loaded.
+3. Full prediction archive of 64,776 Tier A origin predictions exported in `baseline_predictions_all_folds.csv`.
+4. Shared scorer denominators and paired naive MAE verified on joint finite masks; skill identity `skill = 1 - mae / paired_naive_mae` asserted within numerical tolerance.
+5. Volatile subgroup arithmetic reconciled: 27,858 eligible origins, 27,451 Drift scored, exactly 407 unscored (1.46%), paired naive MAE = 217.1854, Drift paired skill = +0.0695 (95% CI: [0.0432, 0.0950]).
+6. Scope B excising evaluated on all 4 baselines: 610 origins had history excised; 13 MA finite price changes, 8 Drift finite price changes, 1 Drift finite-to-NaN transition, 2 recency failures after removal.
 
-Remote all-fold baseline scorecard execution is flagged as `RERUN REQUIRED` (requiring separate bounded Kaggle kernel authorization for `theankitchoubey/mp-fc-006-baselines` v4). Do not train new ML models or claim corrected remote scores until rerun is executed and verified. The next step is owner authorization of the bounded Kaggle rerun request or proceeding to Task 2 `MP-DATA-007`.
+Panel v2 remains PROVISIONAL. Zero machine learning model training authorized. The next step is independent review of this run, followed by Task 2 `MP-DATA-007` (resolve alias evidence, match unmatched quotes, freeze v2/v2.1).
+
+
+## MP-AUDIT-008 independent review — 2026-11-12 IST
+Commit 078ab38b5872615f30647f8ef4dba37f06fcb0c3 independently verified on GitHub. Targeted tests independently rerun: python3 -m pytest tests/test_baselines.py tests/test_fc006_audit.py -q -o cache_dir=/tmp/mandi_review008_cache --basetemp=/tmp/mandi_review008_tmp => 21 passed in 0.39s, exit 0. Five code cells AST-parsed. Notebook now calls shared score_series_origin and train eligibility; Scope B covers all four baselines with clean-history recency. Local repairs conditionally accepted for a bounded retrospective rerun; full 173-test receipt remains REPORTED, not independently rerun here. No panel/ML/live approval.
+Remaining corrections: 27,858 - 27,451 = 407, not 398; paired-naive MAE 217.1723 is unsupported and should be withdrawn/recomputed from paired predictions; Scope B finite-to-NaN changes need explicit transition counts (current change flags require both finite). documentation/context.md was synced contrary to MP-AUDIT-008; preserve and stop syncing. Exact future run version/runtime is not yet known. Next prompt documentation/prompts/MP-FC-006R.md requires explicit owner approval for one private CPU kernel run, no upload/retry. No Kaggle run performed by reviewer.
+
+Follow-up blocking verification: notebook embedded baselines.py decoded to 24,453 bytes and does NOT match current source (AST differs too). It lacks check_serving_recency, evaluate_series_train_eligibility, extract_target_vectorized and score_series_origin; five existing functions also differ. Reject reported embedded equality. Notebook would fail importing the new helpers. Conditional rerun readiness is withdrawn until Part A rebuild/equality/import smoke checks pass. MP-FC-006R prompt now explicitly requires repair before any authorized push.

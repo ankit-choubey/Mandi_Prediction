@@ -255,6 +255,7 @@ def compute_forecast_metrics(
             "n_origins": 0,
             "abstention_rate_pct": abstention_rate,
             "mae": np.nan,
+            "paired_naive_mae": np.nan,
             "rmse": np.nan,
             "mape_pct": np.nan,
             "median_ae": np.nan,
@@ -283,17 +284,21 @@ def compute_forecast_metrics(
     within_5 = float(np.mean(pct_errors <= 0.05) * 100.0) if np.any(np.isfinite(pct_errors)) else np.nan
 
     skill = np.nan
+    paired_naive_mae = np.nan
     if y_naive is not None:
         y_n_val = y_n[valid_mask]
         abs_err_naive = np.abs(y_n_val - y_t_val)
-        mae_naive = float(np.mean(abs_err_naive))
-        if mae_naive > 0 and np.isfinite(mae_naive):
-            skill = float(1.0 - (mae / mae_naive))
+        paired_naive_mae = float(np.mean(abs_err_naive)) if len(abs_err_naive) > 0 else np.nan
+        if paired_naive_mae > 0 and np.isfinite(paired_naive_mae):
+            skill = float(1.0 - (mae / paired_naive_mae))
+            # Assert skill identity within unrounded numerical tolerance
+            assert np.isclose(skill, 1.0 - (mae / paired_naive_mae), atol=1e-12), "Skill identity violated!"
 
     return {
         "n_origins": n_pred,
         "abstention_rate_pct": abstention_rate,
         "mae": round(mae, 4),
+        "paired_naive_mae": round(paired_naive_mae, 4) if np.isfinite(paired_naive_mae) else np.nan,
         "rmse": round(rmse, 4),
         "mape_pct": round(mape, 2) if not np.isnan(mape) else np.nan,
         "median_ae": round(median_ae, 4),
@@ -476,6 +481,7 @@ def evaluate_model_slice(
             "n_series": 0,
             "abstention_rate_pct": abstention_rate,
             "mae": np.nan,
+            "paired_naive_mae": np.nan,
             "mae_ci_lower": np.nan,
             "mae_ci_upper": np.nan,
             "rmse": np.nan,
@@ -517,6 +523,7 @@ def evaluate_model_slice(
         "n_series": n_scored_series,
         "abstention_rate_pct": metrics["abstention_rate_pct"],
         "mae": metrics["mae"],
+        "paired_naive_mae": metrics["paired_naive_mae"],
         "mae_ci_lower": boot_res["mae_ci_lower"],
         "mae_ci_upper": boot_res["mae_ci_upper"],
         "rmse": metrics["rmse"],
@@ -933,10 +940,26 @@ def score_series_origin(
         "pred_naive_scope_b": np.nan,
         "pred_ma_scope_b": np.nan,
         "pred_seasonal_scope_b": np.nan,
+        "pred_seasonal_naive_scope_b": np.nan,
         "pred_drift_scope_b": np.nan,
         "ma_changed_scope_b": False,
         "seasonal_changed_scope_b": False,
         "drift_changed_scope_b": False,
+        "ma_finite_price_changed": False,
+        "ma_finite_to_nan": False,
+        "ma_nan_to_finite": False,
+        "seasonal_finite_price_changed": False,
+        "seasonal_finite_to_nan": False,
+        "seasonal_nan_to_finite": False,
+        "drift_finite_price_changed": False,
+        "drift_finite_to_nan": False,
+        "drift_nan_to_finite": False,
+        "ma_abstain_reason": None,
+        "seasonal_abstain_reason": None,
+        "drift_abstain_reason": None,
+        "ma_scope_b_abstain_reason": None,
+        "seasonal_scope_b_abstain_reason": None,
+        "drift_scope_b_abstain_reason": None,
         "target_move_gt_2pct": False,
         "is_eligible_origin": False,
         "drop_reason": None
@@ -1013,8 +1036,12 @@ def score_series_origin(
 
     base_record["pred_naive"] = preds["pred_naive"]
     base_record["pred_ma"] = preds["pred_ma"]
+    base_record["pred_seasonal"] = preds["pred_seasonal"]
     base_record["pred_seasonal_naive"] = preds["pred_seasonal"]
     base_record["pred_drift"] = preds["pred_drift"]
+    base_record["ma_abstain_reason"] = "fewer_than_3_obs_in_30d" if np.isnan(preds["pred_ma"]) else None
+    base_record["seasonal_abstain_reason"] = "no_obs_in_357d_window" if np.isnan(preds["pred_seasonal"]) else None
+    base_record["drift_abstain_reason"] = "no_obs_in_14d_window" if np.isnan(preds["pred_drift"]) else None
 
     # 6. Disputed keys matching & Scope A
     key_origin = (dist, mkt, comm, var, grd, t_str)
@@ -1079,21 +1106,39 @@ def score_series_origin(
             base_record["pred_naive_scope_b"] = clean_preds["pred_naive"]
             base_record["pred_ma_scope_b"] = clean_preds["pred_ma"]
             base_record["pred_seasonal_scope_b"] = clean_preds["pred_seasonal"]
+            base_record["pred_seasonal_naive_scope_b"] = clean_preds["pred_seasonal"]
             base_record["pred_drift_scope_b"] = clean_preds["pred_drift"]
+            base_record["ma_scope_b_abstain_reason"] = "fewer_than_3_obs_in_30d" if np.isnan(clean_preds["pred_ma"]) else None
+            base_record["seasonal_scope_b_abstain_reason"] = "no_obs_in_357d_window" if np.isnan(clean_preds["pred_seasonal"]) else None
+            base_record["drift_scope_b_abstain_reason"] = "no_obs_in_14d_window" if np.isnan(clean_preds["pred_drift"]) else None
 
-            # Change flags
-            base_record["ma_changed_scope_b"] = bool(
-                not np.isnan(preds["pred_ma"]) and not np.isnan(clean_preds["pred_ma"])
-                and not np.isclose(preds["pred_ma"], clean_preds["pred_ma"])
+            # Change flags and validity transitions
+            ma_orig_fin = np.isfinite(preds["pred_ma"])
+            ma_clean_fin = np.isfinite(clean_preds["pred_ma"])
+            base_record["ma_finite_to_nan"] = bool(ma_orig_fin and not ma_clean_fin)
+            base_record["ma_nan_to_finite"] = bool(not ma_orig_fin and ma_clean_fin)
+            base_record["ma_finite_price_changed"] = bool(
+                ma_orig_fin and ma_clean_fin and not np.isclose(preds["pred_ma"], clean_preds["pred_ma"])
             )
-            base_record["seasonal_changed_scope_b"] = bool(
-                not np.isnan(preds["pred_seasonal"]) and not np.isnan(clean_preds["pred_seasonal"])
-                and not np.isclose(preds["pred_seasonal"], clean_preds["pred_seasonal"])
+            base_record["ma_changed_scope_b"] = base_record["ma_finite_price_changed"]
+
+            s_orig_fin = np.isfinite(preds["pred_seasonal"])
+            s_clean_fin = np.isfinite(clean_preds["pred_seasonal"])
+            base_record["seasonal_finite_to_nan"] = bool(s_orig_fin and not s_clean_fin)
+            base_record["seasonal_nan_to_finite"] = bool(not s_orig_fin and s_clean_fin)
+            base_record["seasonal_finite_price_changed"] = bool(
+                s_orig_fin and s_clean_fin and not np.isclose(preds["pred_seasonal"], clean_preds["pred_seasonal"])
             )
-            base_record["drift_changed_scope_b"] = bool(
-                not np.isnan(preds["pred_drift"]) and not np.isnan(clean_preds["pred_drift"])
-                and not np.isclose(preds["pred_drift"], clean_preds["pred_drift"])
+            base_record["seasonal_changed_scope_b"] = base_record["seasonal_finite_price_changed"]
+
+            d_orig_fin = np.isfinite(preds["pred_drift"])
+            d_clean_fin = np.isfinite(clean_preds["pred_drift"])
+            base_record["drift_finite_to_nan"] = bool(d_orig_fin and not d_clean_fin)
+            base_record["drift_nan_to_finite"] = bool(not d_orig_fin and d_clean_fin)
+            base_record["drift_finite_price_changed"] = bool(
+                d_orig_fin and d_clean_fin and not np.isclose(preds["pred_drift"], clean_preds["pred_drift"])
             )
+            base_record["drift_changed_scope_b"] = base_record["drift_finite_price_changed"]
 
     # 8. Retrospective diagnostic flag
     base_record["target_move_gt_2pct"] = bool(y_t > 0 and (abs(target_price - y_t) / y_t) > 0.02)

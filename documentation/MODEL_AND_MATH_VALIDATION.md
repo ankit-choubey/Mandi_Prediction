@@ -982,3 +982,115 @@ Volatile Subgroup ($|y(t+7) - y(t)| / y(t) > 0.02$):
 
 *(Prior pasted counts 45,958 / 15,390 / 1,791 / 1,637 and unexecuted alternate CIs are officially superseded).*
 
+
+
+## MP-AUDIT-008 independent review — 2026-11-12 IST
+Commit 078ab38b5872615f30647f8ef4dba37f06fcb0c3 independently verified on GitHub. Targeted tests independently rerun: python3 -m pytest tests/test_baselines.py tests/test_fc006_audit.py -q -o cache_dir=/tmp/mandi_review008_cache --basetemp=/tmp/mandi_review008_tmp => 21 passed in 0.39s, exit 0. Five code cells AST-parsed. Notebook now calls shared score_series_origin and train eligibility; Scope B covers all four baselines with clean-history recency. Local repairs conditionally accepted for a bounded retrospective rerun; full 173-test receipt remains REPORTED, not independently rerun here. No panel/ML/live approval.
+Remaining corrections: 27,858 - 27,451 = 407, not 398; paired-naive MAE 217.1723 is unsupported and should be withdrawn/recomputed from paired predictions; Scope B finite-to-NaN changes need explicit transition counts (current change flags require both finite). documentation/context.md was synced contrary to MP-AUDIT-008; preserve and stop syncing. Exact future run version/runtime is not yet known. Next prompt documentation/prompts/MP-FC-006R.md requires explicit owner approval for one private CPU kernel run, no upload/retry. No Kaggle run performed by reviewer.
+
+Follow-up blocking verification: notebook embedded baselines.py decoded to 24,453 bytes and does NOT match current source (AST differs too). It lacks check_serving_recency, evaluate_series_train_eligibility, extract_target_vectorized and score_series_origin; five existing functions also differ. Reject reported embedded equality. Notebook would fail importing the new helpers. Conditional rerun readiness is withdrawn until Part A rebuild/equality/import smoke checks pass. MP-FC-006R prompt now explicitly requires repair before any authorized push.
+
+
+
+## 19. Bounded Corrected Baseline Rerun Execution Record (MP-FC-006R)
+
+**Document Reference:** `MP-FC-006R`
+**Date:** `2026-11-12` (Asia/Kolkata)
+**Execution Environment:** Kaggle CPU, Internet Off, Private, Single Execution
+**Dataset Input:** Existing private dataset `theankitchoubey/mandi-prediction-audit-003b` (v1)
+**Kernel ID & Version:** `theankitchoubey/mp-fc-006-baselines` (Version 4)
+**Kernel Execution Status:** `KernelWorkerStatus.COMPLETE`
+**Execution Runtime:** 149.04 seconds
+**Audit Baseline Commit:** `078ab38b5872615f30647f8ef4dba37f06fcb0c3`
+**Audit Status:** **AUDITED BASELINE RERUN COMPLETE & VERIFIED**
+
+### 19.1 Preflight Verification & Embedded Payload Repair
+In accordance with Part A preflight gating, the stale embedded source payload was repaired:
+- Rebuilt `src/baselines.py` embedded payload from working source (44,845 bytes, SHA-256: `9cf56e5345235bc593f3bdf62df90e39a56be794edfb5e36fed1b94588c20718`).
+- Byte equality confirmed: 100% byte-for-byte identity between decoded payloads and working tree modules (`src/market_identity.py`, `src/data_pipeline.py`, `src/ingest_agmarknet_arrivals.py`, `src/baselines.py`, `data/reference/market_aliases.csv`, `experiments/outputs/005/diff_77_deep_analysis.csv`).
+- Symbol import verified: All 9 production scoring and eligibility helpers confirmed present and importable.
+- AST syntax parsed: 100% syntax success across all 5 notebook code cells.
+- Isolated bootstrap smoke test: Subprocess test in clean temporary sandbox passed without errors.
+- Full local test suite: 175 tests collected and passed in 4.76s.
+
+### 19.2 Fail-Closed In-Kernel Gate Receipts
+1. **Panel v2 Conservation & SHA-256 Gate:**
+   - Raw 5-year rows: 472,385 $\rightarrow$ Accepted rows: 463,217.
+   - SHA-256: `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` (exact match to master gate).
+2. **Canonical Disputed Keys Audit:**
+   - Exactly 77 unique canonical 6-tuples loaded via accepted alias table. Archived in `canonical_disputed_keys_audit.csv` (SHA-256: `73b77067650601ae9bacf1ce7bddc6eb16aea350a08297628a66df6cbf759fa6`).
+3. **Full Prediction Archive:**
+   - Exported `baseline_predictions_all_folds.csv` (23,655,431 bytes, 64,777 lines, SHA-256: `c44ff42506f6af9e627635c8a80203d1ead30bc5d2a8559fc7a9a17f13af7ff9`).
+   - Retained `baseline_predictions_sample.csv` (1,864,963 bytes, 5,001 lines) for backward compatibility.
+4. **Test Window Observation Accounting:**
+   - Total raw test window observations: 71,626.
+   - Dropped serving recency $<3$: 317.
+   - Dropped missing target in window: 3,624.
+   - Dropped target after fold end: 2,909.
+   - Evaluated Tier A test origins: $71,626 - 317 - 3,624 - 2,909 = 64,776$.
+
+### 19.3 Verified Baseline Scorecard Results (Tier A)
+
+Metrics evaluated on joint finite predictions with ratio-of-means cluster bootstrap 95% confidence intervals (1,000 resamples over unique series, seed 42).
+
+#### Overall Tier A Summary ($N_{\text{origins}} = 64,776$, $N_{\text{series}} = 401$):
+- **Naive Benchmark:**
+  - $N_{\text{scored}} = 64,776$, Abstention: 0.00%.
+  - MAE: **106.9554 Rs/qtl** (95% CI: $[95.4708, 119.0189]$).
+  - Paired Naive MAE: 106.9554 Rs/qtl. Skill vs Naive: 0.0000.
+  - RMSE: 298.8337, MAPE: 4.16%, Median AE: 40.00, Bias: +17.1728, Share $\le 5\%$: 76.76%.
+- **Moving Average (30d window, $\le 7$ obs):**
+  - $N_{\text{scored}} = 64,776$, Abstention: 0.00%.
+  - MAE: **134.1925 Rs/qtl** (95% CI: $[119.6715, 149.9628]$).
+  - Paired Naive MAE: 106.9554 Rs/qtl. Skill vs Naive: **-0.2547** (95% CI: $[-0.2904, -0.2103]$).
+  - RMSE: 333.3659, MAPE: 5.08%, Median AE: 50.71, Bias: +26.3044, Share $\le 5\%$: 70.98%.
+- **Seasonal Naive (357d lag, $\pm 3$d window):**
+  - $N_{\text{scored}} = 59,200$, Abstention: 8.61% (5,576 unscored origins).
+  - MAE: **774.3764 Rs/qtl** (95% CI: $[667.7389, 890.8767]$).
+  - Paired Naive MAE: 105.0167 Rs/qtl. Skill vs Naive: **-6.3738** (95% CI: $[-7.3355, -5.4701]$).
+  - RMSE: 1433.7629, MAPE: 29.45%, Median AE: 375.00, Bias: +351.6901, Share $\le 5\%$: 22.70%.
+- **Damped Drift (14d lag, $\pm 3$d window, factor 0.5):**
+  - $N_{\text{scored}} = 64,036$, Abstention: 1.14% (740 unscored origins).
+  - MAE: **107.3248 Rs/qtl** (95% CI: $[96.3202, 119.3452]$).
+  - Paired Naive MAE: 106.5998 Rs/qtl. Skill vs Naive: **-0.0068** (95% CI: $[-0.0309, +0.0176]$).
+  - RMSE: 303.6659, MAPE: 4.29%, Median AE: 42.00, Bias: +7.8091, Share $\le 5\%$: 76.55%.
+
+#### Tier A Fold Origin Distribution:
+- **Fold F1 (Train $\le$ 2024-12-31):** $N = 37,858$ origins across 359 series. Naive MAE $= 101.59$ (95% CI: $[89.65, 115.40]$).
+- **Fold F2 (Train $\le$ 2025-06-30):** $N = 23,490$ origins across 346 series. Naive MAE $= 106.46$ (95% CI: $[93.67, 120.38]$).
+- **Fold F3 (Train $\le$ 2025-12-18):** $N = 1,413$ origins across 102 series. Naive MAE $= 108.11$ (95% CI: $[85.99, 131.60]$).
+- **Fold F4 (Train $\le$ 2026-03-31):** $N = 2,015$ origins across 37 series. Naive MAE $= 212.84$ (95% CI: $[46.46, 459.71]$).
+- **Sum Conservation:** $37,858 + 23,490 + 1,413 + 2,015 = 64,776$.
+
+### 19.4 Volatile Subgroup & Paired Naive Arithmetic Reconciliation
+For origins where the target price moves by $>2\%$ relative to origin price ($|y(t+7) - y(t)| / y(t) > 0.02$):
+- **Eligible Origins:** $N = 27,858$.
+- **Scored Instances:** Naive: 27,858; MA: 27,858; Seasonal Naive: 25,660; Drift: 27,451.
+- **Drift Unscored Arithmetic:** Exactly $27,858 - 27,451 = 407$ unscored instances ($1.46098\% \approx 1.46\%$).
+  *(The prior figure of 398 is superseded as an arithmetic typo. All 407 abstained due to missing anchor in $[t-17\text{d}, t-11\text{d}]$).*
+- **Exact Paired Naive MAE:** On the 27,451 Drift-scored instances, Naive MAE is exactly **217.1854 Rs/qtl**.
+  *(The prior reverse-engineered claim of 217.1723 is withdrawn and superseded by this verified value).*
+- **Drift Performance on Volatile Moves:**
+  - Drift MAE: **202.1012 Rs/qtl** (95% CI: $[182.15, 226.89]$).
+  - Paired Skill: $\text{Skill} = 1 - (202.1012 / 217.1854) = +0.069453 \approx \mathbf{+0.0695}$ (95% CI: $[+0.0432, +0.0950]$).
+
+### 19.5 Scope B Sensitivity Forensic Accounting
+Scope B excising was evaluated across all four models on counterfactual clean history $\mathcal{H}_{\text{clean}}(t)$:
+- **Scope A Exclusions:** 18 origins excluded (10 disputed origin, 10 disputed target, 2 having both).
+- **Clean Recency Failures:** 2 origins in Fold F3 had $<3$ observations in $[t-30\text{d}, t]$ after excising the disputed observation.
+- **Scope B Eligible Origins:** $64,776 - 18 - 2 = 64,756$.
+- **Historical Observations Excised:** 610 origins had historical values removed (F3: 51, F4: 559).
+- **Prediction Modifications:**
+  - Moving Average: 13 finite price changes (F3: 12, F4: 1).
+  - Damped Drift: 8 finite price changes (F3: 6, F4: 2) and **1 finite-to-NaN transition** in Fold F3 (excised observation was the sole drift anchor).
+  - Seasonal Naive: 0 changes (lag is $t-357$ days in 2025; disputed discrepancies occurred in Feb–Mar 2026).
+- **Scope B Overall MAE:** Naive: 106.90, MA: 134.18, Seasonal: 774.47, Drift: 107.25.
+
+### 19.6 Methodological Decisions & Limitations
+1. **Bootstrap Uncertainty Interpretation:** Confidence intervals on MAE represent cluster-bootstrap estimator sampling distributions over unique series identities; they are **NOT** forecast prediction intervals.
+2. **Deterministic Reproducibility:** Unique series clusters are sorted lexicographically prior to index sampling; seed 42 ensures exact numerical reproducibility across runs.
+3. **Panel Status:** Panel v2 remains **PROVISIONAL**. Market alias evidence and lookahead considerations remain OPEN pending Task 2 (`MP-DATA-007`).
+4. **Data Freshness Safety Gate:** Operational farmer advisory remains blocked by `src/health_status.py` due to 43-day data lag (latest date `2026-09-30`).
+5. **No ML Approval:** Completion of baseline benchmarking does not authorize training machine learning models or live advisory deployments.
+6. **MASE:** Conventional MASE is unimplemented in the baseline scoring engine and is designated **NOT COMPUTED**.
+

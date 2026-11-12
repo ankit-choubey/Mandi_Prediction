@@ -24,7 +24,7 @@ The audit unifies the production scoring path between modular functions and the 
      - **Moving Average:** `[120.7251, 149.3536]`
      - **Seasonal Naive:** `[661.0247, 895.0745]`
      - **Damped Drift:** `[95.8185, 119.1334]`
-   - Clarified volatile subgroup numbers: **27,858 origins** represent eligible instances for the $>2\%$ target move subset; **Drift scores 27,451** of these (with 1.46% abstention / 398 missing anchor instances).
+   - Clarified volatile subgroup numbers: **27,858 origins** represent eligible instances for the $>2\%$ target move subset; **Drift scores 27,451** of these (with 1.46% abstention / exactly 407 unscored instances: $27,858 - 27,451 = 407$, not 398). Unscored instances must not be assumed to be exclusively missing anchors without examining per-instance exclusion reasons.
    - Reconciled series transitions (496 - 6 + 2 = 492; 384,887 + 2,355 = 387,242 rows); clarified that low-coverage entries/exits must not be attributed to alias consolidation without per-series evidence.
    - Formally designated MASE as **NOT COMPUTED** and qualified all causal assertions.
 
@@ -194,3 +194,23 @@ To regenerate the verified baseline scorecards with the corrected scoring engine
   9. `kernel_execution_manifest.json`
 - **Expected Runtime / Budget:** ~90 seconds on Kaggle CPU (within standard quota limits).
 - **Stop Conditions:** Zero local execution of heavy loops. No Kaggle push or execution without explicit owner authorization.
+
+---
+
+## 7. Explicit Arithmetic Corrections, Withdrawn Claims & Documentation Reconciliation
+
+Per prompt `MP-FC-006R` Part A, the following audit findings are formally corrected and reconciled:
+
+1. **Volatile Subgroup Unscored Count Arithmetic Correction:**
+   - Prior text reported 398 missing anchor instances for Drift on the volatile subgroup ($>2\%$ target move).
+   - Exact arithmetic: **27,858 eligible origins** minus **27,451 Drift-scored instances** equals **407 unscored instances** ($27,858 - 27,451 = 407$, representing exactly $1.46098\% \approx 1.46\%$).
+   - The figure 398 was an arithmetic error and is superseded. Furthermore, unscored instances cannot be assumed to be exclusively missing anchors without inspecting origin-level exclusion flags; all reasons are distinguished in the prediction archive.
+
+2. **Withdrawal of Unsupported Paired Naive MAE Claim:**
+   - Any prior assertion of a specific paired naive MAE of 217.1723 on the volatile subgroup (reverse-engineered from rounded skill numbers) is unsupported by persisted scorecards and is formally **WITHDRAWN**.
+   - Under `MP-FC-006R`, exact paired naive MAE is computed directly on joint finite masks across predictions and exported in all scorecards.
+
+3. **Documentation Journal Reconciliation (Workflow Deviation):**
+   - The file `documentation/context.md` is an untracked, unignored duplicate that was previously synced contrary to `MP-AUDIT-008` instructions.
+   - This prior sync is recorded as a workflow deviation.
+   - Per standing rules and `MP-FC-006R`, `documentation/context.md` is preserved without further modification or staging. The sole authoritative local engineering journal is `brain/context.md` (which is git-ignored).
