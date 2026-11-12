@@ -636,5 +636,37 @@ def test_research_economics_serialization_roundtrip():
     reloaded_res = ResearchEconomicResult.from_dict(d_res)
     assert reloaded_res.operational_status == res.operational_status
     assert reloaded_res.advisory_action == res.advisory_action
+    assert reloaded_res.break_even_relation == "INCOMPLETE_PARAMETERS"
+    assert reloaded_res.p_break_even is None and res.p_break_even is None
+
+
+def test_research_economics_serialization_with_params_roundtrip():
+    """Verify serialization roundtrip with complete parameters."""
+    params = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+        transaction_cost_now=10.0,
+        transaction_cost_later=10.0,
+    )
+    req = ResearchEconomicRequest(
+        quantity_quintals=50.0,
+        current_price=2100.0,
+        future_price_point=2250.0,
+        future_price_lower=2180.0,
+        future_price_upper=2320.0,
+        holding_period_days=7,
+        commodity="Wheat",
+        district="Lucknow",
+        market="Lucknow",
+        params=params,
+    )
+    d_req = req.to_dict()
+    reloaded_req = ResearchEconomicRequest.from_dict(d_req)
+    res = evaluate_research_economics(reloaded_req)
+    d_res = res.to_dict()
+    reloaded_res = ResearchEconomicResult.from_dict(d_res)
     assert reloaded_res.break_even_relation == res.break_even_relation
     assert abs(reloaded_res.p_break_even - res.p_break_even) < 1e-9
+    assert abs(reloaded_res.delta_r_point - res.delta_r_point) < 1e-9

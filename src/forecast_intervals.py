@@ -130,44 +130,62 @@ def normalize_nominal_level(level: float | str) -> Tuple[float, str]:
         raise ValueError(f"Unsupported nominal level: {level}. Only 0.90 and 0.95 are supported.")
 
 
-FOLD_VALIDITY_SCOPES = {
-    "F1": {
-        "validity_start": "2025-01-08",
-        "validity_end": "2025-06-24",
-        "calibration_window": None,
-        "max_calibration_target_date": None,
-        "earlier_folds": [],
-        "status": "NO_CALIBRATION",
-        "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+TRUSTED_REGISTRY: Dict[str, Any] = {
+    "source_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+    "config_semantic_sha256": "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2",
+    "supported_models": ["naive", "ridge", "hist_gradient_boosting"],
+    "supported_nominal_levels": [0.90, 0.95],
+    "canonical_folds": ["F1", "F2", "F3", "F4"],
+    "historical_scopes": {
+        "F1": {
+            "validity_start": "2025-01-08",
+            "validity_end": "2025-06-24",
+            "calibration_window": None,
+            "max_calibration_target_date": None,
+            "actual_matured_target_max": None,
+            "earlier_folds": [],
+            "status": "NO_CALIBRATION",
+            "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+        },
+        "F2": {
+            "validity_start": "2025-07-08",
+            "validity_end": "2025-10-25",
+            "calibration_window": ["2025-01-09", "2025-07-07"],
+            "max_calibration_target_date": "2025-07-07",
+            "actual_matured_target_max": "2025-06-30",
+            "earlier_folds": ["F1"],
+            "status": "CALIBRATED",
+            "reason": None,
+        },
+        "F3": {
+            "validity_start": "2025-12-26",
+            "validity_end": "2026-03-25",
+            "calibration_window": ["2025-06-29", "2025-12-25"],
+            "max_calibration_target_date": "2025-12-25",
+            "actual_matured_target_max": "2025-10-31",
+            "earlier_folds": ["F1", "F2"],
+            "status": "CALIBRATED",
+            "reason": None,
+        },
+        "F4": {
+            "validity_start": "2026-04-08",
+            "validity_end": "2026-09-24",
+            "calibration_window": ["2025-10-10", "2026-04-07"],
+            "max_calibration_target_date": "2026-04-07",
+            "actual_matured_target_max": "2026-03-31",
+            "earlier_folds": ["F1", "F2", "F3"],
+            "status": "CALIBRATED",
+            "reason": None,
+        },
     },
-    "F2": {
-        "validity_start": "2025-07-08",
-        "validity_end": "2025-10-25",
-        "calibration_window": ["2025-01-09", "2025-07-07"],
-        "max_calibration_target_date": "2025-07-07",
-        "earlier_folds": ["F1"],
-        "status": "CALIBRATED",
-        "reason": None,
-    },
-    "F3": {
-        "validity_start": "2025-12-26",
-        "validity_end": "2026-03-25",
-        "calibration_window": ["2025-06-29", "2025-12-25"],
-        "max_calibration_target_date": "2025-12-25",
-        "earlier_folds": ["F1", "F2"],
-        "status": "CALIBRATED",
-        "reason": None,
-    },
-    "F4": {
-        "validity_start": "2026-04-08",
-        "validity_end": "2026-09-24",
-        "calibration_window": ["2025-10-10", "2026-04-07"],
-        "max_calibration_target_date": "2026-04-07",
-        "earlier_folds": ["F1", "F2", "F3"],
-        "status": "CALIBRATED",
-        "reason": None,
+    "trusted_code_hashes": {
+        "c6678d9afcaab2375fefe7d038856855a8bbfd93881dc3a964607b65ccc81e31",
+        "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
+        "5df6c039f99f244101e403d6d5257ef518c0cff234674a2b2518e95261bfdca9",
     },
 }
+
+FOLD_VALIDITY_SCOPES = TRUSTED_REGISTRY["historical_scopes"]
 
 
 def build_output_manifest(
@@ -268,9 +286,10 @@ def validate_and_load_calibration_envelope(
     expected_source_sha256: Optional[str] = "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
 ) -> Dict[str, Any]:
     """
-    Loads and validates a calibration envelope artifact.
+    Loads and strictly validates a calibration envelope artifact against the external trusted registry.
     Rejects missing, corrupted, non-finite, negative or unordered quantiles.
-    Enforces research-only policy and source archive identity.
+    Rejects altered code hashes, missing canonical folds, and future/leaked calibration targets.
+    Enforces research-only policy and pinned historical validity scopes.
     """
     if isinstance(path_or_dict, (str, Path)):
         p = Path(path_or_dict)
@@ -283,7 +302,7 @@ def validate_and_load_calibration_envelope(
     else:
         raise TypeError(f"Expected Path, str, or dict, got {type(path_or_dict)}")
 
-    # Top-level schema validations
+    # 1. Top-level schema validations
     if data.get("artifact_type") != "CALIBRATION_ENVELOPE":
         raise ValueError(f"Invalid artifact_type: expected CALIBRATION_ENVELOPE, got {data.get('artifact_type')}")
     if data.get("schema_version") != "1.0.0":
@@ -295,50 +314,117 @@ def validate_and_load_calibration_envelope(
     if data.get("operational_advisory_allowed") is not False:
         raise ValueError("Envelope must not permit live advisory (operational_advisory_allowed must be False)")
 
-    # Verify source archive hash if expected
-    if expected_source_sha256 and data.get("source_archive_sha256") != expected_source_sha256:
+    # 2. Verify source archive hash against external trusted registry
+    expected_source = expected_source_sha256 or TRUSTED_REGISTRY["source_archive_sha256"]
+    if data.get("source_archive_sha256") != expected_source:
         raise ValueError(
-            f"Source archive SHA-256 mismatch: {data.get('source_archive_sha256')} != {expected_source_sha256}"
+            f"Source archive SHA-256 mismatch: {data.get('source_archive_sha256')} != {expected_source}"
         )
 
-    # Quantile checks
+    # 3. Verify semantic config hash against external trusted registry
+    if "config_sha256_semantic" in data:
+        expected_config = TRUSTED_REGISTRY["config_semantic_sha256"]
+        if data.get("config_sha256_semantic") != expected_config:
+            raise ValueError(
+                f"Config semantic SHA-256 mismatch: {data.get('config_sha256_semantic')} != {expected_config}"
+            )
+
+    # 4. Verify code identity against trusted code hashes
+    code_sha = data.get("code_sha256", "")
+    current_code_sha = compute_sha256(Path(__file__).resolve())
+    allowed_hashes = TRUSTED_REGISTRY["trusted_code_hashes"] | {current_code_sha}
+    if not code_sha or code_sha not in allowed_hashes:
+        raise ValueError(f"Untrusted or altered code_sha256: {code_sha}")
+
+    # 5. Canonical folds must all be present in quantiles payload
     quants = data.get("quantiles", {})
     if not quants:
         raise ValueError("Calibration envelope missing quantiles payload.")
+    for req_fold in TRUSTED_REGISTRY["canonical_folds"]:
+        if req_fold not in quants:
+            raise ValueError(f"Missing required canonical fold payload: {req_fold}")
 
+    # 6. Calendar date parsing and maximum calibration target validation
+    fold_scopes = data.get("fold_scopes", {})
+    now_d = datetime.now(timezone.utc).date()
+    for f_id in ["F1", "F2", "F3", "F4"]:
+        if f_id in fold_scopes:
+            f_scope = fold_scopes[f_id]
+            try:
+                v_start = datetime.strptime(str(f_scope["validity_start"])[:10], "%Y-%m-%d").date()
+                v_end = datetime.strptime(str(f_scope["validity_end"])[:10], "%Y-%m-%d").date()
+            except (KeyError, ValueError) as e:
+                raise ValueError(f"Invalid calendar dates in fold {f_id} validity scope: {e}")
+
+            if v_end < v_start:
+                raise ValueError(f"Fold {f_id} validity_end ({v_end}) < validity_start ({v_start})")
+
+            max_target_str = f_scope.get("max_calibration_target_date")
+            if max_target_str:
+                try:
+                    mct = datetime.strptime(str(max_target_str)[:10], "%Y-%m-%d").date()
+                except ValueError as e:
+                    raise ValueError(f"Invalid max_calibration_target_date in {f_id}: {e}")
+
+                if mct > now_d:
+                    raise ValueError(f"Future maximum calibration target date in {f_id}: {mct} > {now_d}")
+                if mct >= v_start:
+                    raise ValueError(
+                        f"Temporal leakage in {f_id}: max calibration target date ({mct}) >= fold start date ({v_start})"
+                    )
+
+    # 7. Strict Quantile checks across all calibrated folds, models and levels
     for fold_id in ["F2", "F3", "F4"]:
         fold_obj = quants.get(fold_id, {})
-        for m_name in data.get("supported_models", list(EVAL_MODELS.keys())):
+        for m_name in TRUSTED_REGISTRY["supported_models"]:
             m_obj = fold_obj.get(m_name, {})
             if m_obj.get("status") != "CALIBRATED":
                 continue
             m_quants = m_obj.get("quantiles", {})
-            # Check 0.90 and 0.95 ordering
-            # Keys might be "0.9" / "0.95" or "0.90" / "0.95"
+
+            # Must have 0.90 and 0.95
             q90_dict = m_quants.get("0.90") or m_quants.get("0.9") or m_quants.get(0.9)
             q95_dict = m_quants.get("0.95") or m_quants.get(0.95)
-            if q90_dict and q95_dict:
-                # Check pooled
-                p90 = q90_dict.get("pooled", {}).get("quantile", float("nan"))
-                p95 = q95_dict.get("pooled", {}).get("quantile", float("nan"))
-                if not (math.isfinite(p90) and p90 >= 0):
-                    raise ValueError(f"Invalid pooled quantile at 0.90 in {fold_id}/{m_name}: {p90}")
-                if not (math.isfinite(p95) and p95 >= 0):
-                    raise ValueError(f"Invalid pooled quantile at 0.95 in {fold_id}/{m_name}: {p95}")
-                if p90 > p95 + 1e-9:
-                    raise ValueError(f"Quantile ordering violation in {fold_id}/{m_name} pooled: q90 ({p90}) > q95 ({p95})")
+            if not q90_dict or not q95_dict:
+                raise ValueError(f"Missing required nominal level quantiles (0.90, 0.95) in {fold_id}/{m_name}")
 
-                # Check commodities
-                c90 = q90_dict.get("by_commodity", {})
-                c95 = q95_dict.get("by_commodity", {})
-                for crop in set(c90.keys()) & set(c95.keys()):
-                    cq90 = c90[crop].get("quantile", float("nan"))
-                    cq95 = c95[crop].get("quantile", float("nan"))
-                    if math.isfinite(cq90) and math.isfinite(cq95):
-                        if cq90 < 0 or cq95 < 0:
-                            raise ValueError(f"Negative crop quantile for {crop} in {fold_id}/{m_name}")
-                        if cq90 > cq95 + 1e-9:
-                            raise ValueError(f"Quantile ordering violation for {crop} in {fold_id}/{m_name}: {cq90} > {cq95}")
+            # Check pooled quantiles
+            p90 = q90_dict.get("pooled", {}).get("quantile", float("nan"))
+            p95 = q95_dict.get("pooled", {}).get("quantile", float("nan"))
+            if type(p90) is bool or not isinstance(p90, (int, float)) or not (math.isfinite(p90) and p90 >= 0):
+                raise ValueError(f"Invalid pooled quantile at 0.90 in {fold_id}/{m_name}: {p90}")
+            if type(p95) is bool or not isinstance(p95, (int, float)) or not (math.isfinite(p95) and p95 >= 0):
+                raise ValueError(f"Invalid pooled quantile at 0.95 in {fold_id}/{m_name}: {p95}")
+            if p90 > p95 + 1e-9:
+                raise ValueError(f"Quantile ordering violation in {fold_id}/{m_name} pooled: q90 ({p90}) > q95 ({p95})")
+
+            # Check duplicate representations consistency if both "0.90" and "0.9" present
+            if "0.90" in m_quants and "0.9" in m_quants:
+                p90_a = m_quants["0.90"].get("pooled", {}).get("quantile")
+                p90_b = m_quants["0.9"].get("pooled", {}).get("quantile")
+                if p90_a is not None and p90_b is not None and abs(p90_a - p90_b) > 1e-7:
+                    raise ValueError(f"Conflicting duplicate level representations in {fold_id}/{m_name}: {p90_a} != {p90_b}")
+
+            # Validate EVERY commodity quantile individually in both 0.90 and 0.95
+            for lvl_name, lvl_dict in [("0.90", q90_dict), ("0.95", q95_dict)]:
+                crop_dict = lvl_dict.get("by_commodity", {})
+                for crop, c_info in crop_dict.items():
+                    cq = c_info.get("quantile")
+                    if cq is None or type(cq) is bool or not isinstance(cq, (int, float)) or not math.isfinite(cq) or cq < 0:
+                        raise ValueError(
+                            f"Corrupt, non-finite or negative quantile for crop '{crop}' at level {lvl_name} in {fold_id}/{m_name}: {cq}"
+                        )
+
+            # Check commodity quantile ordering between 0.90 and 0.95
+            c90 = q90_dict.get("by_commodity", {})
+            c95 = q95_dict.get("by_commodity", {})
+            for crop in set(c90.keys()) & set(c95.keys()):
+                cq90 = c90[crop]["quantile"]
+                cq95 = c95[crop]["quantile"]
+                if cq90 > cq95 + 1e-9:
+                    raise ValueError(f"Quantile ordering violation for {crop} in {fold_id}/{m_name}: {cq90} > {cq95}")
+
+    return data
 
     return data
 
@@ -650,15 +736,32 @@ def predict_interval(
             "advisory_blocked_reason": f"UNSUPPORTED_NOMINAL_LEVEL_{nominal_level}",
         }
 
-    # 6. Resolve envelope or quantiles payload
+    # 6. Resolve envelope or quantiles payload and validate strictly
     active_envelope = envelope
     quants_source = calibration_artifacts
     if isinstance(calibration_artifacts, dict) and calibration_artifacts.get("artifact_type") == "CALIBRATION_ENVELOPE":
         active_envelope = calibration_artifacts
         quants_source = calibration_artifacts.get("quantiles", {})
 
-    # 7. Check fold existence and validity scope
-    if fold_id not in FOLD_VALIDITY_SCOPES and fold_id not in quants_source:
+    if active_envelope is not None:
+        try:
+            validate_and_load_calibration_envelope(active_envelope)
+        except Exception as e:
+            return {
+                "status": "INVALID_CALIBRATION_ENVELOPE",
+                "lower": float("nan"),
+                "upper": float("nan"),
+                "width": float("nan"),
+                "quantile": float("nan"),
+                "group_type": "NONE",
+                "nominal_level": norm_level_float,
+                "nominal_level_str": norm_level_str,
+                "operational_advisory_allowed": False,
+                "advisory_blocked_reason": f"ENVELOPE_VALIDATION_FAILED: {str(e)}",
+            }
+
+    # 7. Check fold existence and validity scope using PINNED historical scopes
+    if fold_id not in TRUSTED_REGISTRY["historical_scopes"]:
         return {
             "status": "UNKNOWN_FOLD",
             "lower": float("nan"),
@@ -672,25 +775,39 @@ def predict_interval(
             "advisory_blocked_reason": f"UNKNOWN_FOLD_{fold_id}",
         }
 
+    pinned_scope = TRUSTED_REGISTRY["historical_scopes"][fold_id]
     if origin_date:
-        scope = (active_envelope.get("fold_scopes", {}) if active_envelope else {}).get(fold_id) or FOLD_VALIDITY_SCOPES.get(fold_id)
-        if scope and scope.get("validity_start") and scope.get("validity_end"):
-            v_start = scope["validity_start"]
-            v_end = scope["validity_end"]
-            od_str = str(origin_date)[:10]
-            if not (v_start <= od_str <= v_end):
-                return {
-                    "status": "ORIGIN_DATE_OUTSIDE_VALIDITY_SCOPE",
-                    "lower": float("nan"),
-                    "upper": float("nan"),
-                    "width": float("nan"),
-                    "quantile": float("nan"),
-                    "group_type": "NONE",
-                    "nominal_level": norm_level_float,
-                    "nominal_level_str": norm_level_str,
-                    "operational_advisory_allowed": False,
-                    "advisory_blocked_reason": f"ORIGIN_{od_str}_OUTSIDE_{fold_id}_SCOPE_{v_start}_TO_{v_end}",
-                }
+        try:
+            od = datetime.strptime(str(origin_date)[:10], "%Y-%m-%d").date()
+            v_start = datetime.strptime(str(pinned_scope["validity_start"])[:10], "%Y-%m-%d").date()
+            v_end = datetime.strptime(str(pinned_scope["validity_end"])[:10], "%Y-%m-%d").date()
+        except ValueError as e:
+            return {
+                "status": "INVALID_ORIGIN_DATE_FORMAT",
+                "lower": float("nan"),
+                "upper": float("nan"),
+                "width": float("nan"),
+                "quantile": float("nan"),
+                "group_type": "NONE",
+                "nominal_level": norm_level_float,
+                "nominal_level_str": norm_level_str,
+                "operational_advisory_allowed": False,
+                "advisory_blocked_reason": f"INVALID_DATE_FORMAT: {str(e)}",
+            }
+
+        if not (v_start <= od <= v_end):
+            return {
+                "status": "ORIGIN_DATE_OUTSIDE_VALIDITY_SCOPE",
+                "lower": float("nan"),
+                "upper": float("nan"),
+                "width": float("nan"),
+                "quantile": float("nan"),
+                "group_type": "NONE",
+                "nominal_level": norm_level_float,
+                "nominal_level_str": norm_level_str,
+                "operational_advisory_allowed": False,
+                "advisory_blocked_reason": f"ORIGIN_{od}_OUTSIDE_{fold_id}_SCOPE_{v_start}_TO_{v_end}",
+            }
 
     fold_cal = quants_source.get(fold_id, {}).get(model_name)
     if not fold_cal or fold_cal.get("status") != "CALIBRATED":
@@ -743,14 +860,29 @@ def predict_interval(
     crop_info = level_dict.get("by_commodity", {}).get(commodity)
     q = float("nan")
     g_type = "NONE"
-    if crop_info and math.isfinite(crop_info.get("quantile", float("nan"))):
-        q = crop_info["quantile"]
+    if crop_info is not None:
+        cq = crop_info.get("quantile")
+        if cq is None or type(cq) is bool or not isinstance(cq, (int, float)) or not math.isfinite(cq) or cq < 0:
+            return {
+                "status": "NO_CALIBRATION",
+                "reason": f"CORRUPT_COMMODITY_QUANTILE_FOR_{commodity}",
+                "lower": float("nan"),
+                "upper": float("nan"),
+                "width": float("nan"),
+                "quantile": float("nan"),
+                "group_type": "NO_CALIBRATION",
+                "nominal_level": norm_level_float,
+                "nominal_level_str": norm_level_str,
+                "operational_advisory_allowed": False,
+                "advisory_blocked_reason": f"CORRUPT_QUANTILE_{commodity}",
+            }
+        q = cq
         g_type = "EXACT_COMMODITY"
     else:
-        # Fallback to pooled
+        # Legitimate absence -> Fallback to pooled
         pooled_info = level_dict.get("pooled", {})
         cand_q = pooled_info.get("quantile", float("nan"))
-        if math.isfinite(cand_q):
+        if math.isfinite(cand_q) and cand_q >= 0:
             q = cand_q
             g_type = "POOLED_FALLBACK"
 
@@ -924,6 +1056,31 @@ def evaluate_interval_slice(
     }
 
 
+def check_resource_watchdogs(
+    t_start: float,
+    max_duration_seconds: float,
+    stage_name: str,
+    max_rss_mb: float = 512.0,
+) -> float:
+    """
+    Enforces incremental runtime and peak RSS memory constraints.
+    Raises TimeoutError if elapsed > max_duration_seconds.
+    Raises MemoryError if peak RSS > max_rss_mb.
+    """
+    elapsed = time.time() - t_start
+    if elapsed > max_duration_seconds:
+        raise TimeoutError(
+            f"Pipeline exceeded total timeout limit ({max_duration_seconds:.1f}s) at {stage_name}: "
+            f"elapsed {elapsed:.2f}s"
+        )
+    rss = get_peak_rss_mb()
+    if rss > max_rss_mb:
+        raise MemoryError(
+            f"Peak RSS ({rss:.2f} MB) exceeded limit ({max_rss_mb:.1f} MB) at {stage_name}"
+        )
+    return rss
+
+
 def execute_interval_pipeline(
     predictions_path: Path,
     output_reports_dir: Path,
@@ -931,16 +1088,24 @@ def execute_interval_pipeline(
     config_path: Path,
     max_duration_seconds: float = 600.0,
     stage_timeout_seconds: float = 30.0,
+    max_rss_mb: float = 512.0,
 ) -> Dict[str, Any]:
     """
     Executes the complete chronological prediction interval calibration and evaluation pipeline.
+    Enforces incremental runtime, row, file size, and peak RSS memory watchdogs.
     """
     t_start = time.time()
+    check_resource_watchdogs(t_start, max_duration_seconds, "Pre-flight initialization", max_rss_mb)
+
     output_reports_dir.mkdir(parents=True, exist_ok=True)
     output_predictions_dir.mkdir(parents=True, exist_ok=True)
 
     # Stage 1: Load and Validate Config & Archive
     t0_stage = time.time()
+    file_bytes = os.path.getsize(predictions_path)
+    if not str(predictions_path).endswith(".gz") and file_bytes > 50 * 1024 * 1024:
+        raise ValueError(f"File size ({file_bytes} bytes) exceeds approved 50 MB limit!")
+
     with open(config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
     config_sha256 = compute_sha256(config_path)
@@ -964,6 +1129,7 @@ def execute_interval_pipeline(
     d_stage1 = time.time() - t0_stage
     if d_stage1 > stage_timeout_seconds:
         raise TimeoutError(f"Stage 1 exceeded timeout: {d_stage1:.1f}s")
+    check_resource_watchdogs(t_start, max_duration_seconds, "Post-Stage 1 Load", max_rss_mb)
     print(f"Loaded {total_master_rows:,} rows in {d_stage1:.2f}s. Archive verified.")
 
     # Stage 2: Determine Fold Test Start Dates

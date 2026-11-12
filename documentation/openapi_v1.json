@@ -1,0 +1,499 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "APMC Mandi Intelligence System API",
+    "version": "1.0.0",
+    "description": "High-integrity, dataset-first API serving authenticated APMC market observations, audited benchmark scorecards, and gated research economics under strict India date policy (Asia/Kolkata)."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Local Development Server (Loopback Only)"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health and Capability Readiness",
+        "description": "Inspects running process status, uptime, server time (UTC and Asia/Kolkata), and capability readiness matrix.",
+        "responses": {
+          "200": {
+            "description": "Service health status and capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
+    "/api/v1/catalog": {
+      "get": {
+        "summary": "Market Catalog",
+        "description": "Lists supported districts, exact APMC markets, focus crops, varieties, grades, and inventory series.",
+        "responses": {
+          "200": {
+            "description": "Market catalog inventory",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
+    "/api/v1/prices/latest": {
+      "get": {
+        "summary": "Latest Price Observations",
+        "description": "Queries latest imported trade observations with dynamically recomputed age (Asia/Kolkata policy), preserving FILE_IMPORT provenance.",
+        "parameters": [
+          {
+            "name": "commodity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Target commodity name (e.g. 'Wheat', 'Potato', 'Rice')"
+          },
+          {
+            "name": "district",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Target district (e.g. 'Lucknow', 'Kanpur')"
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Target APMC market (canonical or raw name)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching latest price observation records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "503": {
+            "description": "Index file unavailable or degraded"
+          }
+        }
+      }
+    },
+    "/api/v1/prices/history": {
+      "get": {
+        "summary": "Price History (Bounded)",
+        "description": "Returns historical time-series for configured snapshot; fails honest UNAVAILABLE rather than performing raw panel local scans.",
+        "parameters": [
+          {
+            "name": "district",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "market",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commodity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical records or honest UNAVAILABLE status"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
+    "/api/v1/models/benchmark": {
+      "get": {
+        "summary": "Model Benchmark Scorecards",
+        "description": "Returns verified baseline and model comparison metrics, denominators, and limitations.",
+        "responses": {
+          "200": {
+            "description": "Model benchmark scorecards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
+    "/api/v1/forecast": {
+      "post": {
+        "summary": "Forecast Request",
+        "description": "Returns explicit FORECAST_UNAVAILABLE with reason metadata. Does not deserialize unapproved weights or fit models on request.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForecastRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Forecast result envelope (UNAVAILABLE status)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "413": {
+            "description": "Request payload too large (> 1 MB)"
+          }
+        }
+      }
+    },
+    "/api/v1/economics/evaluate": {
+      "post": {
+        "summary": "Research Economics Evaluation",
+        "description": "Evaluates sell-versus-store economic trade-offs with affine uncertainty propagation and strict parameter verification.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EconomicRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Economic evaluation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "413": {
+            "description": "Request payload too large (> 1 MB)"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ServiceEnvelope": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "request_id",
+          "as_of_utc",
+          "status"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "request_id": {
+            "type": "string",
+            "example": "d4e2a6d7-83fa-4d1a-a02b-a0d3df858cb1"
+          },
+          "as_of_utc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "PARTIAL",
+              "UNAVAILABLE",
+              "ERROR"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "error": {
+            "$ref": "#/components/schemas/ServiceError"
+          }
+        }
+      },
+      "ServiceError": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "INVALID_ECONOMIC_PARAMETERS"
+          },
+          "message": {
+            "type": "string",
+            "example": "Holding period h must be positive"
+          },
+          "details": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      },
+      "ForecastRequest": {
+        "type": "object",
+        "required": [
+          "district",
+          "market",
+          "commodity"
+        ],
+        "properties": {
+          "district": {
+            "type": "string",
+            "example": "Lucknow"
+          },
+          "market": {
+            "type": "string",
+            "example": "Lucknow"
+          },
+          "commodity": {
+            "type": "string",
+            "example": "Wheat"
+          },
+          "variety": {
+            "type": "string",
+            "default": "Common"
+          },
+          "grade": {
+            "type": "string",
+            "default": "FAQ"
+          },
+          "horizon_days": {
+            "type": "integer",
+            "default": 7
+          }
+        }
+      },
+      "EconomicRequest": {
+        "type": "object",
+        "required": [
+          "quantity_quintals",
+          "current_price"
+        ],
+        "properties": {
+          "quantity_quintals": {
+            "type": "number",
+            "minimum": 0.0001,
+            "example": 10.0
+          },
+          "current_price": {
+            "type": "number",
+            "minimum": 0.01,
+            "example": 2000.0
+          },
+          "future_price_point": {
+            "type": "number",
+            "nullable": true,
+            "example": 2200.0
+          },
+          "future_price_lower": {
+            "type": "number",
+            "nullable": true,
+            "example": 2150.0
+          },
+          "future_price_upper": {
+            "type": "number",
+            "nullable": true,
+            "example": 2280.0
+          },
+          "holding_period_days": {
+            "type": "integer",
+            "default": 7
+          },
+          "commodity": {
+            "type": "string",
+            "example": "Wheat"
+          },
+          "origin_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "target_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "params": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "storage_cost_per_quintal": {
+                "type": "number",
+                "minimum": 0.0
+              },
+              "handling_cost_per_quintal": {
+                "type": "number",
+                "minimum": 0.0
+              },
+              "incremental_transport_cost": {
+                "type": "number",
+                "minimum": 0.0
+              },
+              "quantity_loss_fraction": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 0.999
+              },
+              "quality_discount_fraction": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 0.999
+              },
+              "annual_carrying_rate": {
+                "type": "number",
+                "minimum": 0.0
+              },
+              "holding_period_days": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "carrying_cost_type": {
+                "type": "string",
+                "enum": [
+                  "opportunity",
+                  "financing",
+                  "none"
+                ]
+              },
+              "transaction_cost_now": {
+                "type": "number",
+                "minimum": 0.0
+              },
+              "transaction_cost_later": {
+                "type": "number",
+                "minimum": 0.0
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Validation or malformed request error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ServiceEnvelope"
+            }
+          }
+        }
+      },
+      "MethodNotAllowed": {
+        "description": "HTTP method not permitted on endpoint",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ServiceEnvelope"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/v1/health",
+    "http_status": 200,
+    "envelope_status": "SUCCESS",
+    "has_error": false,
+    "cold_start_latency_ms": 0.484,
+    "response_size_bytes": 1846
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/catalog",
+    "http_status": 200,
+    "envelope_status": "SUCCESS",
+    "has_error": false,
+    "cold_start_latency_ms": 2.117,
+    "response_size_bytes": 9192
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/prices/latest?commodity=Wheat",
+    "http_status": 200,
+    "envelope_status": "SUCCESS",
+    "has_error": false,
+    "cold_start_latency_ms": 0.349,
+    "response_size_bytes": 1122
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/prices/history",
+    "http_status": 200,
+    "envelope_status": "UNAVAILABLE",
+    "has_error": false,
+    "cold_start_latency_ms": 0.233,
+    "response_size_bytes": 497
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/models/benchmark",
+    "http_status": 200,
+    "envelope_status": "SUCCESS",
+    "has_error": false,
+    "cold_start_latency_ms": 0.212,
+    "response_size_bytes": 2092
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/forecast",
+    "http_status": 200,
+    "envelope_status": "UNAVAILABLE",
+    "has_error": false,
+    "cold_start_latency_ms": 0.23,
+    "response_size_bytes": 627
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 200,
+    "envelope_status": "SUCCESS",
+    "has_error": false,
+    "cold_start_latency_ms": 0.246,
+    "response_size_bytes": 1731
+  }
+]

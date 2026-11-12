@@ -3,7 +3,7 @@
   "timestamp_utc": "2026-11-12T18:57:38.770723+00:00",
   "predictions_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
   "config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298",
-  "code_sha256": "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
+  "code_sha256": "c6678d9afcaab2375fefe7d038856855a8bbfd93881dc3a964607b65ccc81e31",
   "total_source_rows": 64776,
   "total_evaluated_rows_f2_f4": 26918,
   "models_evaluated": [
@@ -40,14 +40,5 @@
     "memory_and_runtime_limits_strictly_observed"
   ],
   "limitations": "Chronological empirical calibration without exchangeability guarantee. Regime shifts and market volatility produce lower coverage during crisis folds (F3/F4). Reported intervals reflect empirical behavior under retrospective availability.",
-  "status": "GATE_B_INTERVALS_EVALUATED_SUCCESS",
-  "config_sha256_byte": "e7798e51e319685ebc705c383b113ecb3f6771169ae8528512c0657774858117",
-  "config_sha256_semantic": "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2",
-  "historical_receipt_config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298",
-  "config_semantic_equivalence": true,
-  "measured_peak_rss_mb": 23.66,
-  "hypotheses_status": {
-    "crisis_volatility_cause": "UNVERIFIED_HYPOTHESIS",
-    "buffer_reuse_cause": "UNVERIFIED_HYPOTHESIS"
-  }
+  "status": "GATE_B_INTERVALS_EVALUATED_SUCCESS"
 }

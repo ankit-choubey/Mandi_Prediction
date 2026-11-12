@@ -1,0 +1,37 @@
+{
+  "task_id": "MP-APP-001A-MIGRATION",
+  "migration_type": "PROVENANCE_RESTORATION_AND_CORRECTION",
+  "timestamp_utc": "2026-11-12T20:15:00.000000+00:00",
+  "historical_receipt_preserved": {
+    "file_path": "experiments/reports/FC008/interval_evaluation_receipt_original_8d4ed57.json",
+    "sha256": "a4e45f28869f46304b6eb770bacd0fef4021a01ee4a14647551049625ba9f2ca",
+    "original_timestamp_utc": "2026-11-12T18:57:38.770723+00:00",
+    "original_code_sha256": "c6678d9afcaab2375fefe7d038856855a8bbfd93881dc3a964607b65ccc81e31",
+    "predictions_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+    "config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298"
+  },
+  "config_identities": {
+    "current_config_path": "experiments/configs/interval_calibration_v1.json",
+    "config_byte_sha256": "e7798e51e319685ebc705c383b113ecb3f6771169ae8528512c0657774858117",
+    "config_semantic_sha256": "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2",
+    "historical_receipt_config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298",
+    "semantic_equivalence_verified": true,
+    "semantic_equivalence_explanation": "Canonical JSON serialization of current config matches historical semantic content; byte difference is solely due to JSON key ordering and indentation formatting."
+  },
+  "resource_measurement_clarification": {
+    "metadata_refresh_measured_peak_rss_mb": 23.66,
+    "operation_measured": "Small calibration metadata inspection and hash check",
+    "historical_full_pipeline_memory_status": "UNVERIFIED_HISTORICAL_CLAIM",
+    "clarification": "The peak RSS of 23.66 MB was measured during a lightweight metadata refresh and cannot establish historical full-pipeline memory use. The historical full-pipeline claim is marked unverified rather than falsely certified."
+  },
+  "watchdog_enforcement": {
+    "max_duration_seconds_enforced": true,
+    "max_duration_limit": 600.0,
+    "max_rss_limit_mb": 512.0,
+    "max_rss_watchdog_enforced": true,
+    "streaming_row_limit": 70000,
+    "decoded_csv_byte_limit_mb": 50.0,
+    "watchdog_implementation": "Incremental checks via check_resource_watchdogs() at pre-flight and stage transitions."
+  },
+  "status": "MIGRATION_RECEIPT_ISSUED"
+}

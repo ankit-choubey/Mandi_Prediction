@@ -1,82 +1,105 @@
 {
-  "task_id": "MP-ECON-001",
+  "task_id": "MP-APP-001A-GATE-A3",
   "canonical_accounting_formulas": {
     "R_sell": "Q * (p0 - tn)",
     "R_hold": "Q * ((1-L)*((1-d)*pH - tl) - c - p0*f)",
     "delta_per_initial_quintal": "(1-L)*(1-d)*pH - p0*(1+f) - c - (1-L)*tl + tn",
     "Delta_R": "Q * delta_per_initial_quintal",
-    "p_break_even": "(p0*(1+f) + c + (1-L)*tl - tn) / ((1-L)*(1-d))"
+    "p_break_even": "(p0*(1+f) + c + (1-L)*tl - tn) / ((1-L)*(1-d))",
+    "carrying_factor_f": "i * h / 365.0"
   },
-  "algebraic_invariants_checked": [
-    "abs(R_hold - R_sell - Delta_R) < 1e-7 (tested on 1000 randomized cases, max diff 0.0)",
-    "abs(delta(p_break_even)) < 1e-7 (tested on 1000 randomized cases, max diff 0.0)",
-    "d(delta)/d(pH) = (1-L)*(1-d) > 0 (affine monotonicity guaranteed for 0 <= L < 1, 0 <= d < 1)",
-    "Q scaling: delta_per_quintal is strictly invariant to Q (Delta_R scales linearly with Q)"
-  ],
-  "hand_computed_fixtures": [
+  "fixture_reconciliations": [
     {
-      "fixture_name": "Fixture 1 (Mandatory - Storing Better)",
-      "inputs": {
-        "Q": 10.0,
-        "p0": 2500.0,
-        "pH": 2650.0,
-        "L": 0.02,
-        "d": 0.0,
-        "c": 50.0,
-        "f": 0.0,
-        "tn": 0.0,
-        "tl": 0.0
-      },
-      "results": {
-        "r_sell": 25000.0,
-        "r_hold": 25470.0,
-        "delta_r": 470.0,
-        "p_be": 2602.04
-      },
-      "verified_reconciliation": true
+      "fixture_id": "FIX-01",
+      "actual_r_sell": 25000.0,
+      "actual_r_hold": 25470.0,
+      "actual_delta_r": 470.0,
+      "actual_p_be": 2602.0408163265306,
+      "algebraic_accounting_diff": 0.0,
+      "break_even_relation": "ENTIRELY_ABOVE_BREAK_EVEN"
     },
     {
-      "fixture_name": "Fixture 2 (Mandatory - Selling Better)",
-      "inputs": {
-        "Q": 10.0,
-        "p0": 2500.0,
-        "pH": 2650.0,
-        "L": 0.02,
-        "d": 0.0,
-        "c": 120.0,
-        "f": 0.0,
-        "tn": 0.0,
-        "tl": 0.0
-      },
-      "results": {
-        "r_sell": 25000.0,
-        "r_hold": 24770.0,
-        "delta_r": -230.0,
-        "p_be": 2673.47
-      },
-      "verified_reconciliation": true
+      "fixture_id": "FIX-02",
+      "actual_r_sell": 25000.0,
+      "actual_r_hold": 24770.0,
+      "actual_delta_r": -230.0,
+      "actual_p_be": 2673.469387755102,
+      "algebraic_accounting_diff": 0.0,
+      "break_even_relation": "ENTIRELY_BELOW_BREAK_EVEN"
     },
     {
-      "fixture_name": "Fixture 3 (All Parameters Nonzero: Carrying, Quality, Transactions, Transport)",
-      "inputs": {
-        "Q": 50.0,
-        "p0": 2000.0,
-        "pH": 2200.0,
-        "L": 0.02,
-        "d": 0.01,
-        "c": 50.0,
-        "f": 0.001342,
-        "tn": 15.0,
-        "tl": 15.0
-      },
-      "results": {
-        "r_sell": 99250.0,
-        "r_hold": 103352.75,
-        "delta_r": 4102.75,
-        "p_be": 2115.42
-      },
-      "verified_reconciliation": true
+      "fixture_id": "FIX-03",
+      "actual_r_sell": 99250.0,
+      "actual_r_hold": 103352.75342465752,
+      "actual_delta_r": 4102.753424657535,
+      "actual_p_be": 2115.4245841134293,
+      "algebraic_accounting_diff": 1.1823431123048067e-11,
+      "break_even_relation": "STRADDLES_BREAK_EVEN"
+    },
+    {
+      "fixture_id": "FIX-04",
+      "actual_r_sell": 39700.0,
+      "actual_r_hold": 39699.99999999999,
+      "actual_delta_r": -3.623767952376511e-12,
+      "actual_p_be": 2115.4245841134293,
+      "algebraic_accounting_diff": 3.652189661806915e-12,
+      "break_even_relation": "STRADDLES_BREAK_EVEN"
+    },
+    {
+      "fixture_id": "FIX-05",
+      "actual_r_sell": 1985.0,
+      "actual_r_hold": 2115.5650684931506,
+      "actual_delta_r": 130.56506849315048,
+      "actual_p_be": 2115.4245841134293,
+      "algebraic_accounting_diff": 1.7053025658242404e-13,
+      "break_even_relation": "ENTIRELY_ABOVE_BREAK_EVEN"
     }
   ],
-  "reconciliation_status": "100_PERCENT_RECONCILED"
+  "independent_decimal_verification": [
+    {
+      "fixture_id": "FIX-01",
+      "diff_r_sell_vs_decimal": 0.0,
+      "diff_r_hold_vs_decimal": 0.0,
+      "diff_delta_r_vs_decimal": 0.0,
+      "diff_p_be_vs_decimal": 1.224489795918e-14,
+      "decimal_precision": 30,
+      "verified_within_tolerance": true
+    },
+    {
+      "fixture_id": "FIX-02",
+      "diff_r_sell_vs_decimal": 0.0,
+      "diff_r_hold_vs_decimal": 0.0,
+      "diff_delta_r_vs_decimal": 0.0,
+      "diff_p_be_vs_decimal": 4.081632653061e-14,
+      "decimal_precision": 30,
+      "verified_within_tolerance": true
+    },
+    {
+      "fixture_id": "FIX-03",
+      "diff_r_sell_vs_decimal": 0.0,
+      "diff_r_hold_vs_decimal": 1.4246575342466e-11,
+      "diff_delta_r_vs_decimal": 7.53424657534e-13,
+      "diff_p_be_vs_decimal": 2.1460368290113e-13,
+      "decimal_precision": 30,
+      "verified_within_tolerance": true
+    },
+    {
+      "fixture_id": "FIX-04",
+      "diff_r_sell_vs_decimal": 0.0,
+      "diff_r_hold_vs_decimal": 5.8358301369864e-12,
+      "diff_delta_r_vs_decimal": 5.40401910637089e-13,
+      "diff_p_be_vs_decimal": 2.1460368290113e-13,
+      "decimal_precision": 30,
+      "verified_within_tolerance": true
+    },
+    {
+      "fixture_id": "FIX-05",
+      "diff_r_sell_vs_decimal": 0.0,
+      "diff_r_hold_vs_decimal": 8.493150684932e-14,
+      "diff_delta_r_vs_decimal": 2.0493150684932e-13,
+      "diff_p_be_vs_decimal": 2.1460368290113e-13,
+      "decimal_precision": 30,
+      "verified_within_tolerance": true
+    }
+  ]
 }

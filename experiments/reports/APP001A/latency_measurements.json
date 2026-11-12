@@ -1,0 +1,26 @@
+{
+  "health": {
+    "sample_size": 50,
+    "min_ms": 0.165,
+    "median_ms": 0.196,
+    "mean_ms": 0.197,
+    "p95_ms": 0.221,
+    "max_ms": 0.227
+  },
+  "latest_prices": {
+    "sample_size": 50,
+    "min_ms": 0.198,
+    "median_ms": 0.215,
+    "mean_ms": 0.219,
+    "p95_ms": 0.247,
+    "max_ms": 0.297
+  },
+  "economics_evaluate": {
+    "sample_size": 50,
+    "min_ms": 0.168,
+    "median_ms": 0.203,
+    "mean_ms": 0.204,
+    "p95_ms": 0.24,
+    "max_ms": 0.262
+  }
+}

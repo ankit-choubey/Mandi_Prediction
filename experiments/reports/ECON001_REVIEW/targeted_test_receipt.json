@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_economic_model.py",
+    "tests/test_economic_backtest.py",
+    "tests/test_forecast_intervals.py",
+    "tests/test_score_forecast_archive.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 11.875045165999836,
+  "stdout": "........................................................                 [100%]\n56 passed in 11.48s\n",
+  "stderr": ""
+}

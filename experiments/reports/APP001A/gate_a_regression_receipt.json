@@ -1,0 +1,63 @@
+{
+  "task_id": "MP-APP-001A-GATE-A",
+  "timestamp_utc": "2026-11-12T20:25:00.000000+00:00",
+  "reproduced_defects_and_fixes": [
+    {
+      "defect_id": "DEFECT-A1-1",
+      "summary": "Missing Economic Parameters Auto-Selection",
+      "reproduced_behavior": "ResearchEconomicRequest with params=None previously auto-selected Central scenario and returned holding gain 155.31506849315065.",
+      "fixed_behavior": "evaluate_research_economics now returns None for r_hold_point_net, delta_r_point, and p_break_even; break_even_relation is INCOMPLETE_PARAMETERS; missing_cost_inputs lists all 9 unsupplied cost fields.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA1EconomicContracts::test_missing_params_returns_incomplete_holding_and_gain_fields",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A1-2",
+      "summary": "Horizon Inconsistency Reconciliation",
+      "reproduced_behavior": "Request horizon (30d), parameter horizon (7d), and origin-to-target date window (7d) were accepted despite contradiction.",
+      "fixed_behavior": "Strict reconciliation enforced across request.holding_period_days, params.holding_period_days, and calendar difference (target_date - origin_date).days. Mismatches raise ValueError.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA1EconomicContracts::test_horizon_mismatch_rejected",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A1-3",
+      "summary": "Finite-Domain and Type Validation in Economic Contracts",
+      "reproduced_behavior": "Negative transaction costs, invalid carrying modes, NaN/Inf costs, and booleans were accepted.",
+      "fixed_behavior": "_validate_numeric enforces finite numbers, valid bounds, and explicitly disallows booleans. Carrying cost type must be in (opportunity, financing, none).",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA1EconomicContracts::test_numeric_domain_and_type_validations",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A2-1",
+      "summary": "Permissive Artifact Validation",
+      "reproduced_behavior": "Altered code hash, missing F2 payload, future maximum calibration target (2099), and NaN Wheat quantile were accepted.",
+      "fixed_behavior": "validate_and_load_calibration_envelope enforces external TRUSTED_REGISTRY pinning code hashes, canonical folds, calendar date maturity, and individually verifies every commodity quantile for finiteness and non-negativity.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA2ArtifactValidation",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A2-2",
+      "summary": "Envelope Tampering vs Pinned Historical Scope",
+      "reproduced_behavior": "Changing envelope F2 scope to Nov 2026 allowed predict_interval to return SUCCESS for 2026-11-13 origin.",
+      "fixed_behavior": "predict_interval validates against independently pinned historical scopes in TRUSTED_REGISTRY; tampered envelope scopes are ignored.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA2ArtifactValidation::test_envelope_scope_cannot_override_pinned_historical_scope",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A2-3",
+      "summary": "Corrupt Commodity Quantile Handling",
+      "reproduced_behavior": "Corrupt or NaN crop quantile silently fell back to pooled.",
+      "fixed_behavior": "predict_interval fails closed with status NO_CALIBRATION and reason CORRUPT_COMMODITY_QUANTILE on corrupt crop quantile. Pooled fallback is permitted only for legitimate uncalibrated crops.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA2ArtifactValidation::test_corrupt_crop_quantile_does_not_silently_fallback_to_pooled",
+      "status": "VERIFIED_REPAIRED"
+    },
+    {
+      "defect_id": "DEFECT-A3-1",
+      "summary": "Resource Watchdog Enforcement",
+      "reproduced_behavior": "max_duration_seconds was unused and peak RSS was never compared against 512 MB.",
+      "fixed_behavior": "check_resource_watchdogs enforces incremental runtime (600s total) and peak RSS (512 MB) at pre-flight and stage transitions.",
+      "verification_test": "tests/test_gate_a_contracts.py::TestGateA2ArtifactValidation::test_resource_watchdogs_enforce_timeout_and_rss",
+      "status": "VERIFIED_REPAIRED"
+    }
+  ],
+  "status": "ALL_GATE_A_DEFECTS_RESOLVED"
+}

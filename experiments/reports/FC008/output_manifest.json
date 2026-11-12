@@ -18,8 +18,22 @@
       "filename": "interval_evaluation_receipt.json",
       "relpath": "experiments/reports/FC008/interval_evaluation_receipt.json",
       "path": "experiments/reports/FC008/interval_evaluation_receipt.json",
-      "size_bytes": 1941,
-      "sha256": "63be05cf6922e3b63730e28ec09995c82bfb27814fc6f1939d14b68945c1922e"
+      "size_bytes": 1439,
+      "sha256": "a4e45f28869f46304b6eb770bacd0fef4021a01ee4a14647551049625ba9f2ca"
+    },
+    {
+      "filename": "interval_evaluation_receipt_migration.json",
+      "relpath": "experiments/reports/FC008/interval_evaluation_receipt_migration.json",
+      "path": "experiments/reports/FC008/interval_evaluation_receipt_migration.json",
+      "size_bytes": 2299,
+      "sha256": "20fd3c12aebc8ec2433041cfbb68bb6c42a0f9227184426d2aa22b58bf6ec1ff"
+    },
+    {
+      "filename": "interval_evaluation_receipt_original_8d4ed57.json",
+      "relpath": "experiments/reports/FC008/interval_evaluation_receipt_original_8d4ed57.json",
+      "path": "experiments/reports/FC008/interval_evaluation_receipt_original_8d4ed57.json",
+      "size_bytes": 1439,
+      "sha256": "a4e45f28869f46304b6eb770bacd0fef4021a01ee4a14647551049625ba9f2ca"
     },
     {
       "filename": "intervals_by_crop.csv",

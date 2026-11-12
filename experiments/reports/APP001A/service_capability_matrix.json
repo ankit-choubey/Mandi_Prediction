@@ -1,0 +1,59 @@
+{
+  "process_status": "HEALTHY",
+  "uptime_seconds": 0.0,
+  "server_time_utc": "2026-11-12T20:16:27.118894+00:00",
+  "server_time_ist": "2026-11-13T01:46:27.118895+05:30",
+  "date_policy_timezone": "Asia/Kolkata (UTC+05:30)",
+  "capabilities": {
+    "prices": {
+      "available": true,
+      "status": "AVAILABLE",
+      "reason": null,
+      "metadata": {
+        "total_series": 30,
+        "index_version": "1.0.0",
+        "generated_at_utc": "2026-11-12T13:40:23.620822+00:00",
+        "source_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11"
+      }
+    },
+    "history": {
+      "available": false,
+      "status": "UNAVAILABLE_RESTRICTED",
+      "reason": "Full panel local scans restricted; historical time-series queries require configured snapshots.",
+      "metadata": null
+    },
+    "benchmarks": {
+      "available": true,
+      "status": "AVAILABLE",
+      "reason": null,
+      "metadata": {
+        "primary_model": "naive_persistence",
+        "verified_mae": 106.96,
+        "hgb_rmse_improvement_pct": 5.91,
+        "nominal_coverage_90_pct": 89.95,
+        "f3_f4_undercoverage_disclosed": true
+      }
+    },
+    "forecast": {
+      "available": false,
+      "status": "UNAVAILABLE",
+      "reason": "NO_APPROVED_SERVING_MODEL_ARTIFACT: Retrospective temporal fold models (F1-F4) cannot be served as current operational forecasts without approved prospective validation.",
+      "metadata": null
+    },
+    "economics": {
+      "available": true,
+      "status": "RESEARCH_ONLY",
+      "reason": "Calculations conditional on user-entered parameters; commercial cost feeds unverified.",
+      "metadata": {
+        "gating_policy": "FAIL_CLOSED_BLOCKED",
+        "mode": "RESEARCH_AND_USER_ENTERED_ONLY"
+      }
+    },
+    "active_advice": {
+      "available": false,
+      "status": "BLOCKED",
+      "reason": "Advisory action is strictly blocked pending approved prospective validation and live market verification.",
+      "metadata": null
+    }
+  }
+}

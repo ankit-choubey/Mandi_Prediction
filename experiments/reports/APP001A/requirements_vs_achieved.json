@@ -1,0 +1,47 @@
+{
+  "task_id": "MP-APP-001A",
+  "timestamp_utc": "2026-11-12T20:25:00.000000+00:00",
+  "gate_a_status": "PASSED",
+  "gate_b_status": "PASSED",
+  "requirements": [
+    {
+      "gate": "Gate A1",
+      "requirement": "Enforce missing-input, numeric and horizon contracts",
+      "status": "ACHIEVED",
+      "evidence": "evaluate_research_economics returns incomplete status on missing params; horizon strictly reconciled; booleans, non-finites and invalid ranges rejected."
+    },
+    {
+      "gate": "Gate A2",
+      "requirement": "Make artifact validation real via external trusted registry and pinned historical scopes",
+      "status": "ACHIEVED",
+      "evidence": "TRUSTED_REGISTRY pins source archive, semantic config, canonical folds, and historical scopes. Altered code hashes, future targets, and NaN quantiles rejected."
+    },
+    {
+      "gate": "Gate A3",
+      "requirement": "Correct fixture table reports, resource claims and run history provenance",
+      "status": "ACHIEVED",
+      "evidence": "fixture_verification_table.csv recomputed with FIX-05 (2115.57 / 130.57); historical 8d4ed57 receipt preserved; migration receipt issued; incremental watchdogs enforced."
+    },
+    {
+      "gate": "Gate B",
+      "requirement": "Deliver Step 10 dataset-first service layer and WSGI HTTP contract",
+      "status": "ACHIEVED",
+      "evidence": "src/service_contracts.py, src/service.py, src/api.py, run_service.py implemented and verified via unit tests and real loopback HTTP smoke test; OpenAPI JSON and documentation contract delivered."
+    }
+  ],
+  "milestone_accounting": {
+    "prior_milestone_count": 6,
+    "independent_acceptance_of_a_and_b": "Achieved",
+    "remaining_main_milestones": 3,
+    "remaining_milestones_breakdown": [
+      "Step 11: User-Facing Interface & Presentation",
+      "Step 12: Production Integration & Deployment",
+      "Step 13: Prospective Shadow Validation & Usability"
+    ],
+    "optional_ablations_remaining": [
+      "Arrivals feature ablation",
+      "Weather feature ablation"
+    ],
+    "evidence_debt_disclosed": "Local commercial storage facility directory has 0/22 rate quotations; empirical commercial holding profitability remains unverified."
+  }
+}

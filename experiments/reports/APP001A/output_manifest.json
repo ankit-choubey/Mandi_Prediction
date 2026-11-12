@@ -1,0 +1,54 @@
+{
+  "manifest": [
+    {
+      "filename": "api_smoke_results.json",
+      "relpath": "experiments/reports/APP001A/api_smoke_results.json",
+      "path": "experiments/reports/APP001A/api_smoke_results.json",
+      "size_bytes": 1535,
+      "sha256": "a500c018e463ac0b8a2fe11e3a015086c58f6616ea0922559dfa851215236a40"
+    },
+    {
+      "filename": "artifact_migration_receipt.json",
+      "relpath": "experiments/reports/APP001A/artifact_migration_receipt.json",
+      "path": "experiments/reports/APP001A/artifact_migration_receipt.json",
+      "size_bytes": 2298,
+      "sha256": "52bc58ae3302db219e875c34f40707069ea486e50daaf62233ab3b2d38200078"
+    },
+    {
+      "filename": "fixture_reconciliation_table.csv",
+      "relpath": "experiments/reports/APP001A/fixture_reconciliation_table.csv",
+      "path": "experiments/reports/APP001A/fixture_reconciliation_table.csv",
+      "size_bytes": 1302,
+      "sha256": "1847a8f655f88ba227693677b8eb7bef8037662c53e7a773b88cfc295388ea5f"
+    },
+    {
+      "filename": "gate_a_regression_receipt.json",
+      "relpath": "experiments/reports/APP001A/gate_a_regression_receipt.json",
+      "path": "experiments/reports/APP001A/gate_a_regression_receipt.json",
+      "size_bytes": 4453,
+      "sha256": "11d6c8809f76e661d32a7dd509464640bb98ce840760d9d15523253fc4b2c614"
+    },
+    {
+      "filename": "latency_measurements.json",
+      "relpath": "experiments/reports/APP001A/latency_measurements.json",
+      "path": "experiments/reports/APP001A/latency_measurements.json",
+      "size_bytes": 470,
+      "sha256": "2ed81460c3b1a0cc4bb2f7e1e53409d06c64f8495603586c550b30d04b6595d0"
+    },
+    {
+      "filename": "requirements_vs_achieved.json",
+      "relpath": "experiments/reports/APP001A/requirements_vs_achieved.json",
+      "path": "experiments/reports/APP001A/requirements_vs_achieved.json",
+      "size_bytes": 2215,
+      "sha256": "e6b5372fc5377958a2215c59736c857545a935d0d454f3e88edc0641de976f6f"
+    },
+    {
+      "filename": "service_capability_matrix.json",
+      "relpath": "experiments/reports/APP001A/service_capability_matrix.json",
+      "path": "experiments/reports/APP001A/service_capability_matrix.json",
+      "size_bytes": 2004,
+      "sha256": "75b909efc5b855eb63b02033ab5d27045e49f781d457b4cc2dfb1297e9bbbe8a"
+    }
+  ],
+  "source_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970"
+}

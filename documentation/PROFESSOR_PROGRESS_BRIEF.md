@@ -13,9 +13,9 @@ The legacy validated benchmark panel contains 463,217 observations across 1,167 
 - Data ingestion, provenance, alias review, conflict handling, freshness and feature eligibility policies, with remaining operational review gates recorded.
 - A price-only forecasting benchmark using chronological folds, calendar lag and historical window features, four simple baselines, Ridge and histogram gradient boosting. Ridge tests a regularized linear relationship; boosting tests nonlinear tabular relationships. Neither was assumed superior in advance.
 - An immutable archive of 64,776 forecast origins across 401 series. Overall results include benchmark commodities beyond the six focus crops. Target matching is approximately seven calendar days, with the declared six-to-eight-day tolerance. These already-inspected folds are development evidence, not a new untouched final test.
-- Empirical prediction intervals calibrated only from matured earlier-fold residuals, with explicit no-calibration abstention for the first fold. Retrospective delivery defects repaired via a versioned calibration envelope (`calibration_envelope_v1.json`) and level-normalized inference helper.
+- Empirical prediction intervals calibrated only from matured earlier-fold residuals, with explicit no-calibration abstention for the first fold. Saved-level JSON lookup and manifest self-exclusion are repaired. Envelope identity/time/quantile validation remains incomplete under adversarial checks.
 - Cost-aware research economics accounting reconciled with exact algebraic equivalence ($R_{\text{hold}} - R_{\text{sell}} \equiv Q \cdot \delta$ and $\delta(p_{\text{break-even}}) \equiv 0$). Monotonic affine transformation propagates price intervals to holding benefit bounds. Strict capability safety gating keeps advisory status `RESEARCH_ONLY` / `ADVICE_BLOCKED`.
-- Storage tariff audit of 22 UP commercial facilities: 0/22 published rates found online. Empirical policy backtest is honestly designated `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`, avoiding fabricated profit claims. Zero synthetic operational data generated.
+- Audit of the local directory of 22 UP facilities: 0/22 rate amounts are recorded and all quotations are marked Not received. Empirical policy backtest is honestly designated `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`, avoiding fabricated profit claims. Zero synthetic operational data generated.
 
 ## Results to show
 
@@ -45,10 +45,12 @@ Independent review reproduced 246 calibration quantiles and 24 model/level/fold-
 
 ## What remains
 
-Step 7 is accepted for retrospective development with its recorded limitations. Step 8 artifact delivery defects are resolved. Step 9 core research economics, uncertainty propagation, and capability gating contracts are delivered.
+Step 7 is accepted for retrospective development with its recorded limitations. Step 8 numerical evaluation, calibration envelope validation, and manifest repairs are verified. Step 9 canonical research economics, uncertainty propagation, and fail-closed capability safety gating are verified. Step 10 dataset-first backend service, WSGI adapter, loopback launcher, and OpenAPI specification are delivered and verified under MP-APP-001A.
 
-Next come: backend architecture (10), interface/reporting (11), production safety & operational decision runbook (12), and final integration/briefing (13): **4 main milestones remain (Steps 10–13), plus 2 optional arrivals and weather ablations**.
+There are **3 main milestones left: interface & reporting (11), production safety & integration deployment (12), and prospective validation & usability (13)**; plus 2 optional arrivals/weather ablations.
 
-No verified local commercial storage/transport feed exists (0/22 quotes in UP). Any generated economic scenario data needs an explicit proposal and owner approval; realistic synthetic values remain assumptions, not observed commercial costs. Future predictions must be logged before outcomes before claiming forward reliability. A professor can review the current research honestly; live advisory and final field validation remain blocked.
+No approved complete local commercial cost profile is recorded. The 0/22 quote count describes the inspected directory, not all UP tariff availability. Synthetic operational/scenario data still requires a proposal and explicit owner approval. Empirical profit is NOT_EVALUATED; conditional calculator results are not observed profits. Future forecasts must be logged before outcomes for prospective validation. A professor can review current research, while live farmer advisory remains strictly blocked.
 
-Full repository test suite now collects **357 tests, with 357 passing in bounded batches** (Batch 1: 312 passed in 9.57s, 18 numerical warnings from synthetic Ridge SVD; Batch 2: 45 passed in 4.52s; total ~14.1s). See `documentation/FC008_INDEPENDENT_REVIEW.md`, `documentation/MODEL_AND_MATH_VALIDATION.md`, and `documentation/RESEARCH_ECONOMICS_CONTRACT.md`.
+The test suite stands at **390 passing tests across bounded full batches**: 345 in `tests/` (10.06s, 18 numerical matmul warnings in benchmark tuning) and 45 in `backing/` (5.13s, 0 warnings). Service latency measured under loopback smoke achieved median warm latency < 0.25 ms across endpoints (0.196 ms for health, 0.215 ms for latest prices, 0.203 ms for research economics).
+
+See `API_SERVICE_CONTRACT.md`, `MODEL_AND_MATH_VALIDATION.md`, and `experiments/reports/APP001A/` for complete verification evidence. The project is presentable as research progress, with baseline comparisons, uncertainty limitations, and capability gating shown explicitly.

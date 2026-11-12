@@ -54,6 +54,44 @@ from src.health_status import (
 )
 
 
+def _validate_numeric(
+    val: Any,
+    field_name: str,
+    *,
+    min_val: Optional[float] = None,
+    max_val: Optional[float] = None,
+    strictly_positive: bool = False,
+    strictly_less_than_max: bool = False,
+    integer_only: bool = False,
+) -> None:
+    """
+    Validates that a field is numeric, not a boolean, finite, and within valid domain bounds.
+    Does not rely on assert or Literal annotations.
+    """
+    if type(val) is bool or isinstance(val, bool):
+        raise ValueError(f"Field '{field_name}' cannot be a boolean: {val}")
+    if integer_only:
+        if not isinstance(val, int):
+            raise ValueError(f"Field '{field_name}' must be an integer, got {type(val).__name__}: {val}")
+    else:
+        if not isinstance(val, (int, float)):
+            raise ValueError(f"Field '{field_name}' must be numeric (int or float), got {type(val).__name__}: {val}")
+    if math.isnan(val) or math.isinf(val):
+        raise ValueError(f"Field '{field_name}' must be finite, got {val}")
+    if strictly_positive and val <= 0:
+        raise ValueError(f"Field '{field_name}' must be strictly positive (> 0), got {val}")
+    if min_val is not None:
+        if val < min_val:
+            raise ValueError(f"Field '{field_name}' cannot be less than {min_val}, got {val}")
+    if max_val is not None:
+        if strictly_less_than_max:
+            if val >= max_val:
+                raise ValueError(f"Field '{field_name}' must be strictly less than {max_val}, got {val}")
+        else:
+            if val > max_val:
+                raise ValueError(f"Field '{field_name}' cannot exceed {max_val}, got {val}")
+
+
 @dataclass(frozen=True)
 class EconomicParameters:
     """
@@ -73,31 +111,26 @@ class EconomicParameters:
     scenario_name: str = "custom"
 
     def __post_init__(self):
-        if self.holding_period_days <= 0:
-            raise ValueError(f"Holding period h must be positive, got {self.holding_period_days}")
+        _validate_numeric(self.holding_period_days, "holding_period_days", integer_only=True, strictly_positive=True)
+        _validate_numeric(self.quantity_loss_fraction, "quantity_loss_fraction")
         if not (0.0 <= self.quantity_loss_fraction < 1.0):
-            raise ValueError(
-                f"Loss fraction L must be in [0, 1), got {self.quantity_loss_fraction}"
-            )
+            raise ValueError(f"Loss fraction L must be in [0, 1), got {self.quantity_loss_fraction}")
+        _validate_numeric(self.quality_discount_fraction, "quality_discount_fraction")
         if not (0.0 <= self.quality_discount_fraction < 1.0):
-            raise ValueError(
-                f"Quality discount d_q must be in [0, 1), got {self.quality_discount_fraction}"
-            )
+            raise ValueError(f"Quality discount d_q must be in [0, 1), got {self.quality_discount_fraction}")
+        _validate_numeric(self.storage_cost_per_quintal, "storage_cost_per_quintal")
         if self.storage_cost_per_quintal < 0.0:
+            raise ValueError(f"Storage cost c_s must be non-negative, got {self.storage_cost_per_quintal}")
+        _validate_numeric(self.handling_cost_per_quintal, "handling_cost_per_quintal", min_val=0.0)
+        _validate_numeric(self.incremental_transport_cost, "incremental_transport_cost", min_val=0.0)
+        _validate_numeric(self.transaction_cost_now, "transaction_cost_now", min_val=0.0)
+        _validate_numeric(self.transaction_cost_later, "transaction_cost_later", min_val=0.0)
+        _validate_numeric(self.annual_carrying_rate, "annual_carrying_rate", min_val=0.0)
+
+        if self.carrying_cost_type not in ('opportunity', 'financing', 'none'):
             raise ValueError(
-                f"Storage cost c_s must be non-negative, got {self.storage_cost_per_quintal}"
-            )
-        if self.annual_carrying_rate < 0.0:
-            raise ValueError(
-                f"Annual rate i must be non-negative, got {self.annual_carrying_rate}"
-            )
-        if self.handling_cost_per_quintal < 0.0:
-            raise ValueError(
-                f"Handling cost must be non-negative, got {self.handling_cost_per_quintal}"
-            )
-        if self.incremental_transport_cost < 0.0:
-            raise ValueError(
-                f"Incremental transport cost must be non-negative, got {self.incremental_transport_cost}"
+                f"Invalid carrying_cost_type: '{self.carrying_cost_type}'. "
+                "Must be one of 'opportunity', 'financing', or 'none'."
             )
 
     @property
@@ -119,15 +152,17 @@ def calculate_immediate_sale_proceeds(
       transaction_cost: Q * transaction_cost_per_quintal
       net_proceeds: gross_proceeds - transaction_cost
     """
+    _validate_numeric(quantity_quintals, "quantity_quintals")
+    _validate_numeric(current_price, "current_price")
+    _validate_numeric(transaction_cost_per_quintal, "transaction_cost_per_quintal", min_val=0.0)
+
     if quantity_quintals <= 0.0:
         raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
     if current_price <= 0.0:
         raise ValueError(f"Current price P_T must be positive, got {current_price}")
-    if transaction_cost_per_quintal < 0.0:
-        raise ValueError(f"Transaction cost cannot be negative, got {transaction_cost_per_quintal}")
 
-    gross = quantity_quintals * current_price
-    trans = quantity_quintals * transaction_cost_per_quintal
+    gross = float(quantity_quintals) * float(current_price)
+    trans = float(quantity_quintals) * float(transaction_cost_per_quintal)
     net = gross - trans
     return {
         "gross_proceeds": gross,
@@ -150,6 +185,10 @@ def calculate_storage_sale_proceeds(
     and strictly represents EITHER financing interest OR opportunity cost of cash,
     never both simultaneously (Safeguard A & B).
     """
+    _validate_numeric(quantity_quintals, "quantity_quintals")
+    _validate_numeric(current_price, "current_price")
+    _validate_numeric(future_price, "future_price")
+
     if quantity_quintals <= 0.0:
         raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
     if current_price <= 0.0:
@@ -692,12 +731,9 @@ def calculate_canonical_accounting(
       |R_hold - R_sell - Delta_R| < 1e-7
       |delta(p_break_even)| < 1e-7
     """
-    if quantity_quintals <= 0.0:
-        raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
-    if current_price <= 0.0:
-        raise ValueError(f"Current price p0 must be positive, got {current_price}")
-    if future_price < 0.0:
-        raise ValueError(f"Future price pH cannot be negative, got {future_price}")
+    _validate_numeric(quantity_quintals, "quantity_quintals", strictly_positive=True)
+    _validate_numeric(current_price, "current_price", strictly_positive=True)
+    _validate_numeric(future_price, "future_price", min_val=0.0)
 
     q = float(quantity_quintals)
     p0 = float(current_price)
@@ -726,13 +762,15 @@ def calculate_canonical_accounting(
     p_break_even = (p0 * (1.0 + f) + c + (1.0 - l) * tl - tn) / retention
     required_pct_change = ((p_break_even - p0) / p0) * 100.0
 
-    # Strict algebraic reconciliation check
+    # Strict algebraic reconciliation check (scale-aware tolerance <= 1e-7)
     diff_accounting = abs(r_hold - r_sell - delta_r)
-    assert diff_accounting < 1e-7, f"Algebraic reconciliation violation: |R_hold - R_sell - Delta_R| = {diff_accounting}"
+    if diff_accounting >= 1e-7:
+        raise ValueError(f"Algebraic reconciliation violation: |R_hold - R_sell - Delta_R| = {diff_accounting}")
 
     # Break-even zero check
     delta_at_be = (1.0 - l) * (1.0 - d) * p_break_even - p0 * (1.0 + f) - c - (1.0 - l) * tl + tn
-    assert abs(delta_at_be) < 1e-7, f"Break-even zero violation: delta(p_be) = {delta_at_be}"
+    if abs(delta_at_be) >= 1e-7:
+        raise ValueError(f"Break-even zero violation: delta(p_be) = {delta_at_be}")
 
     return {
         "quantity_quintals": q,
@@ -776,6 +814,57 @@ class ResearchEconomicRequest:
     provenance_map: Optional[Dict[str, InputProvenance]] = None
     is_reporting_normalization: bool = False
     units: str = "INR/quintal"
+
+    def __post_init__(self):
+        _validate_numeric(self.quantity_quintals, "quantity_quintals", strictly_positive=True)
+        _validate_numeric(self.current_price, "current_price", strictly_positive=True)
+        _validate_numeric(self.holding_period_days, "holding_period_days", integer_only=True, strictly_positive=True)
+
+        if self.units not in ("INR/quintal", "INR/q", "₹/quintal", "Rs/quintal"):
+            raise ValueError(f"Unsupported units: '{self.units}'. Must be INR/quintal equivalent.")
+
+        if self.future_price_point is not None:
+            _validate_numeric(self.future_price_point, "future_price_point", min_val=0.0)
+        if self.future_price_lower is not None:
+            _validate_numeric(self.future_price_lower, "future_price_lower", min_val=0.0)
+        if self.future_price_upper is not None:
+            _validate_numeric(self.future_price_upper, "future_price_upper", min_val=0.0)
+
+        # Ordering check
+        if self.future_price_lower is not None and self.future_price_upper is not None:
+            if self.future_price_lower > self.future_price_upper:
+                raise ValueError(
+                    f"future_price_lower ({self.future_price_lower}) cannot exceed future_price_upper ({self.future_price_upper})"
+                )
+            if self.future_price_point is not None:
+                if not (self.future_price_lower <= self.future_price_point <= self.future_price_upper):
+                    raise ValueError(
+                        f"future_price_point ({self.future_price_point}) must be within [lower ({self.future_price_lower}), upper ({self.future_price_upper})]"
+                    )
+
+        # Horizon reconciliation
+        if self.params is not None:
+            if self.params.holding_period_days != self.holding_period_days:
+                raise ValueError(
+                    f"Horizon mismatch: request holding_period_days ({self.holding_period_days}) != "
+                    f"params.holding_period_days ({self.params.holding_period_days})"
+                )
+
+        if self.origin_date and self.target_date:
+            try:
+                od = datetime.strptime(str(self.origin_date)[:10], "%Y-%m-%d").date()
+                td = datetime.strptime(str(self.target_date)[:10], "%Y-%m-%d").date()
+            except ValueError as e:
+                raise ValueError(f"Invalid origin_date or target_date format (%Y-%m-%d required): {e}")
+
+            calendar_diff = (td - od).days
+            if calendar_diff <= 0:
+                raise ValueError(f"target_date ({td}) must be strictly after origin_date ({od})")
+            if calendar_diff != self.holding_period_days:
+                raise ValueError(
+                    f"Horizon mismatch: calendar difference (target {td} - origin {od}) = {calendar_diff} days "
+                    f"does not match declared holding_period_days ({self.holding_period_days})"
+                )
 
     def to_dict(self) -> Dict[str, Any]:
         params_dict = None
@@ -854,7 +943,7 @@ class ResearchEconomicResult:
     Contains affine-propagated lower/point/upper bounds, break-even relations,
     and fail-closed advisory gating.
     """
-    r_sell_net: float
+    r_sell_net: Optional[float]
     r_hold_point_net: Optional[float]
     r_hold_lower_net: Optional[float]
     r_hold_upper_net: Optional[float]
@@ -864,8 +953,8 @@ class ResearchEconomicResult:
     delta_per_quintal_point: Optional[float]
     delta_per_quintal_lower: Optional[float]
     delta_per_quintal_upper: Optional[float]
-    p_break_even: float
-    required_pct_change_break_even: float
+    p_break_even: Optional[float]
+    required_pct_change_break_even: Optional[float]
     break_even_relation: Literal[
         "ENTIRELY_ABOVE_BREAK_EVEN",
         "STRADDLES_BREAK_EVEN",
@@ -874,6 +963,7 @@ class ResearchEconomicResult:
         "POINT_ONLY_BELOW_BREAK_EVEN",
         "UNDEFINED_BREAK_EVEN",
         "NO_FUTURE_PRICE",
+        "INCOMPLETE_PARAMETERS",
     ]
     operational_status: Literal["RESEARCH_ONLY", "ADVICE_BLOCKED", "SIMULATION_ONLY"]
     advisory_action: Literal["BLOCKED"]
@@ -928,17 +1018,90 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
     - Break-even relation is purely descriptive and cannot bypass advisory gating.
     - Advisory status is strictly RESEARCH_ONLY / ADVICE_BLOCKED under unverified commercial costs.
     """
-    # 1. Parameter Validation
-    if request.quantity_quintals <= 0:
-        raise ValueError(f"Quantity must be positive, got {request.quantity_quintals}")
-    if request.current_price <= 0:
-        raise ValueError(f"Current price must be positive, got {request.current_price}")
-    if request.units not in ("INR/quintal", "INR/q", "₹/quintal", "Rs/quintal"):
-        raise ValueError(f"Unsupported units: {request.units}")
-
-    params = request.params or get_default_scenarios()["Central"]
     q = float(request.quantity_quintals)
     p0 = float(request.current_price)
+
+    # Missing parameters contract: when params is omitted, return incomplete holding/gain fields
+    if request.params is None:
+        missing_costs = [
+            "storage_cost_per_quintal",
+            "handling_cost_per_quintal",
+            "incremental_transport_cost",
+            "quantity_loss_fraction",
+            "quality_discount_fraction",
+            "annual_carrying_rate",
+            "carrying_cost_type",
+            "transaction_cost_now",
+            "transaction_cost_later",
+        ]
+        gate_reasons = [
+            "MISSING_ECONOMIC_PARAMETERS",
+            "NO_PARAMETERS_SUPPLIED_HOLDING_FIELDS_UNAVAILABLE",
+            "UNVERIFIED_COMMERCIAL_COST_FEED",
+            "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE",
+        ]
+        prov_summary = {"status": "NO_PARAMETERS_SUPPLIED"}
+        if request.provenance_map:
+            prov_summary["client_provenance"] = {
+                k: (v.status if hasattr(v, "status") else str(v))
+                for k, v in request.provenance_map.items()
+            }
+
+        disclaimer = (
+            "RESEARCH ONLY. Missing economic cost parameters prevent calculation of storage proceeds "
+            "and incremental return. Advisory action is strictly blocked pending approved prospective validation."
+        )
+
+        return ResearchEconomicResult(
+            r_sell_net=q * p0,
+            r_hold_point_net=None,
+            r_hold_lower_net=None,
+            r_hold_upper_net=None,
+            delta_r_point=None,
+            delta_r_lower=None,
+            delta_r_upper=None,
+            delta_per_quintal_point=None,
+            delta_per_quintal_lower=None,
+            delta_per_quintal_upper=None,
+            p_break_even=None,
+            required_pct_change_break_even=None,
+            break_even_relation="INCOMPLETE_PARAMETERS",
+            operational_status="RESEARCH_ONLY",
+            advisory_action="BLOCKED",
+            advisory_permitted=False,
+            gate_reasons=gate_reasons,
+            quantity_quintals=q,
+            is_reporting_normalization=request.is_reporting_normalization,
+            params_used={},
+            provenance_summary=prov_summary,
+            missing_cost_inputs=missing_costs,
+            disclaimer=disclaimer,
+        )
+
+    params = request.params
+
+    # Provenance binding validation: if provenance_map is provided, verify amounts match params
+    if request.provenance_map:
+        param_mapping = {
+            "storage_cost": (params.storage_cost_per_quintal, "storage_cost_per_quintal"),
+            "handling_cost": (params.handling_cost_per_quintal, "handling_cost_per_quintal"),
+            "incremental_transport": (params.incremental_transport_cost, "incremental_transport_cost"),
+            "quantity_loss": (params.quantity_loss_fraction, "quantity_loss_fraction"),
+            "quality_discount": (params.quality_discount_fraction, "quality_discount_fraction"),
+            "annual_carrying_rate": (params.annual_carrying_rate, "annual_carrying_rate"),
+            "transaction_cost_now": (params.transaction_cost_now, "transaction_cost_now"),
+            "transaction_cost_later": (params.transaction_cost_later, "transaction_cost_later"),
+        }
+        for prov_k, (param_val, field_name) in param_mapping.items():
+            if prov_k in request.provenance_map:
+                prov_item = request.provenance_map[prov_k]
+                prov_val = prov_item.value if hasattr(prov_item, "value") else (prov_item.get("value") if isinstance(prov_item, dict) else None)
+                if prov_val is not None and isinstance(prov_val, (int, float)) and not isinstance(prov_val, bool):
+                    if abs(float(prov_val) - float(param_val)) > 1e-6:
+                        raise ValueError(
+                            f"Provenance value mismatch for '{prov_k}': provenance record declares {prov_val}, "
+                            f"but params.{field_name} is {param_val}"
+                        )
 
     # 2. Immediate Sale Accounting
     r_sell = q * (p0 - params.transaction_cost_now)
@@ -954,11 +1117,15 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
 
     # Affine Monotonicity Check
     if has_lower and has_upper:
-        assert request.future_price_lower <= request.future_price_upper + 1e-6, "Lower bound exceeds upper bound!"
-        assert acct_lower["delta_per_quintal"] <= acct_upper["delta_per_quintal"] + 1e-6, "Affine monotonicity violation!"
+        if request.future_price_lower > request.future_price_upper + 1e-6:
+            raise ValueError(f"Lower bound ({request.future_price_lower}) exceeds upper bound ({request.future_price_upper})")
+        if acct_lower["delta_per_quintal"] > acct_upper["delta_per_quintal"] + 1e-6:
+            raise ValueError("Affine monotonicity violation: delta_lower > delta_upper")
     if has_lower and has_point and has_upper:
-        assert acct_lower["delta_per_quintal"] <= acct_point["delta_per_quintal"] + 1e-6, "Affine monotonicity violation (lower vs point)!"
-        assert acct_point["delta_per_quintal"] <= acct_upper["delta_per_quintal"] + 1e-6, "Affine monotonicity violation (point vs upper)!"
+        if acct_lower["delta_per_quintal"] > acct_point["delta_per_quintal"] + 1e-6:
+            raise ValueError("Affine monotonicity violation: delta_lower > delta_point")
+        if acct_point["delta_per_quintal"] > acct_upper["delta_per_quintal"] + 1e-6:
+            raise ValueError("Affine monotonicity violation: delta_point > delta_upper")
 
     # Break-even threshold
     p_be = (acct_point or acct_lower or acct_upper or calculate_canonical_accounting(q, p0, p0, params))["p_break_even"]
@@ -986,7 +1153,6 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
     prov_summary = {}
     gate_reasons = []
 
-    # Check cost provenance map
     expected_cost_keys = ["storage_cost", "quantity_loss", "annual_rate", "handling_cost", "transaction_costs"]
     if request.provenance_map:
         for k in expected_cost_keys:
@@ -1000,8 +1166,8 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             else:
                 prov_summary[k] = rec.status
     else:
-        missing_costs = ["NO_PROVENANCE_MAP_SUPPLIED_DEFAULT_ASSUMPTIONS_USED"]
-        prov_summary = {"status": "UNVERIFIED_DEFAULT_PARAMETERS"}
+        missing_costs = ["NO_PROVENANCE_MAP_SUPPLIED_USER_OR_DEFAULT_PARAMETERS"]
+        prov_summary = {"status": "UNVERIFIED_PARAMETERS"}
 
     gate_reasons.append("RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE")
     gate_reasons.append("POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE")
@@ -1046,6 +1212,7 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             "quality_discount_fraction": params.quality_discount_fraction,
             "annual_carrying_rate": params.annual_carrying_rate,
             "holding_period_days": params.holding_period_days,
+            "carrying_cost_type": params.carrying_cost_type,
             "transaction_cost_now": params.transaction_cost_now,
             "transaction_cost_later": params.transaction_cost_later,
             "scenario_name": params.scenario_name,

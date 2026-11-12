@@ -1788,3 +1788,126 @@ Verified across 1,000 randomized test trials: $|R_{\text{hold}} - R_{\text{sell}
     - Step 12: Production Safety Gating & Operational Decision Runbook
     - Step 13: Final End-to-End System Integration & Professor Briefing
   - **2 optional ablations** remain (Arrivals Ablation and Weather Ablation).
+
+
+## 31. Independent economics and artifact review — authoritative correction
+
+## Current independent decision — MP-ECON-001 review, 2026-11-13 IST
+
+Local HEAD and GitHub main independently verified at `d0ff42e475375a8de487b8c05d697da27f06adb6`. This decision supersedes unconditional Step8/9 completion, PASS claims and changed roadmap titles in the executor entry below. See `documentation/ECON001_INDEPENDENT_REVIEW.md` and `experiments/reports/ECON001_REVIEW/`.
+
+Accepted:246 saved-level JSON roundtrips;25/25 manifest payload hashes, self-exclusion and deterministic reconstruction; unchanged historical calibration quantiles; canonical +470/-230 INR hand cases;1,000 independent isolated algebra cases (max accounting error6.984919309616089e-10, break-even residual1.1759482276829658e-12); research advice remains blocked;0/22 rate amounts in the local quotation directory. That directory does not prove tariffs are unavailable throughout UP. No synthetic operational data, real-data model fit or new Kaggle run was performed by the reviewer.
+
+Full regression verification:312 tests/ passed in20.20s with18 matmul numerical warnings;45 backing/ passed in5.11s without warnings;357 passed across bounded full batches. Additional focused suite56 passed in11.48s. These results do not cover the newly reproduced adversarial failures. Ill-conditioned SVD and platform buffer reuse causes remain UNVERIFIED.
+
+OPEN DELIVERY GATES: missing params silently select Central defaults and produce155.31506849315065 INR gain for Q1/current2000/future2200; inconsistent30-day request/7-day parameters/7-day dated horizon accepted; negative transaction cost/invalid carrying mode/NaN cost accepted; provenance units/values/time basis not bound to used inputs. Calibration loader accepts wrong code identity, missing F2, future calibration target and NaN crop quantile; altered scope+2099 target still allows November2026 inference. FIX05 report gain129.30 does not reconcile with displayed-input130.566; rate precision/original annual rate+horizon missing in other rows. Old interval receipt's code/RSS were modified while retaining old timestamp; issue separate migration provenance. Duration limit unused and RSS measured but not bounded; no proof of historical full-run RAM compliance.
+
+Step7 remains accepted retrospective research with missing inner tuning trace and ScopeB pending. Step8 numeric experiment/level+manifest repairs verified; complete Step8 and Step9 delivery remain open. MAINLEFT6: finish8,finish9,10backend,11interface,12integration/deployment,13forward validation+usability. OPTIONAL2: arrivals/weather ablations. Executor section30.6 mistakenly renamed Step10 as model training and Step13 as professor briefing; those scope changes are rejected. No new training task or automatic randomized-trial prerequisite is introduced.
+
+NEXT `documentation/prompts/MP-APP-001A.md`: concrete reproduced-failure regression gates plus complete dataset-first service/HTTP backend in one task. If8/9 repairs and10 independently accepted, MAINLEFT3 (11–13)+OPTIONAL2. Cost observations and genuine future outcomes remain evidence gates. Professor progress discussion remains appropriate with these limitations; complete backend-ready economics/live advice not established. Preserve all existing dirty/untracked work. No reviewer commit/push. Update math/ledger/ignoredbrain each task; never sync/edit documentation/context.md. User wants fast complete prompts, required/observed/delta/denominator/limitation comparison every step, and clear remaining counts without changing methods to force scores.
+
+The original canonical roadmap remains10 backend,11 interface,12 integration/deployment,13 prospective validation/usability. Section30.6 task renamings are superseded. Mathematical identities were independently checked; fixture/report and validation defects remain release blockers.
+
+
+## 32. Contract defect resolution and dataset-first service delivery — MP-APP-001A (2026-11-13 IST)
+
+### 32.1 Gate A1: Resolution of missing-input, numeric and horizon contracts
+1. **Missing Parameters Fail-Closed Contract:**
+   - In `evaluate_research_economics()`, requests with `params=None` no longer auto-select the Central scenario or compute arbitrary holding proceeds.
+   - For `ResearchEconomicRequest(quantity_quintals=1, current_price=2000, future_price_point=2200)` with `params=None`:
+     - Holding proceeds (`r_hold_point_net`, `r_hold_lower_net`, `r_hold_upper_net`) are returned as `None`.
+     - Holding gain (`delta_r_point`, `delta_r_lower`, `delta_r_upper`) and per-quintal gains are returned as `None`.
+     - Break-even price and percentage change are returned as `None`.
+     - `break_even_relation = "INCOMPLETE_PARAMETERS"`.
+     - `missing_cost_inputs` lists all 9 unsupplied economic parameter names (`storage_cost_per_quintal`, `handling_cost_per_quintal`, `incremental_transport_cost`, `quantity_loss_fraction`, `quality_discount_fraction`, `annual_carrying_rate`, `carrying_cost_type`, `transaction_cost_now`, `transaction_cost_later`).
+     - Gating reasons: `["MISSING_ECONOMIC_PARAMETERS", "NO_PARAMETERS_SUPPLIED_HOLDING_FIELDS_UNAVAILABLE", "UNVERIFIED_COMMERCIAL_COST_FEED", "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE"]`.
+     - Operational status remains `RESEARCH_ONLY`, advisory action remains `BLOCKED`, `advisory_permitted = False`.
+2. **Horizon Reconciliation Across Declared, Parameter, and Calendar Dates:**
+   - Strict reconciliation enforced across `request.holding_period_days`, `params.holding_period_days`, and calendar difference `(target_date - origin_date).days`.
+   - A request declaring 30 days with a 7-day parameter set or a 7-day origin/target window is rejected with `ValueError: Horizon mismatch`.
+   - Inverted or zero-day calendar windows (`target_date <= origin_date`) are rejected with `ValueError`.
+3. **Finite-Domain and Type Validation Across All Fields:**
+   - `_validate_numeric` helper enforces finite numbers across all cost, rate, quantity, and price fields.
+   - Explicit rejection of booleans as numeric inputs (`if type(val) is bool or isinstance(val, bool): raise ValueError(...)`).
+   - Domain bounds enforced:
+     - `storage_cost_per_quintal >= 0.0`, `handling_cost_per_quintal >= 0.0`, `incremental_transport_cost >= 0.0`.
+     - `transaction_cost_now >= 0.0`, `transaction_cost_later >= 0.0` (negative later transaction cost rejected).
+     - `annual_carrying_rate >= 0.0`.
+     - `0.0 <= quantity_loss_fraction < 1.0`, `0.0 <= quality_discount_fraction < 1.0`.
+     - `holding_period_days > 0` (strictly positive integer).
+     - `carrying_cost_type in ('opportunity', 'financing', 'none')` (invalid mode rejected at runtime).
+     - `quantity_quintals > 0.0`, `current_price > 0.0`, `future_price >= 0.0`.
+     - Bounds ordering: `future_price_lower <= future_price_point <= future_price_upper` strictly verified.
+     - Units validated: must be in `("INR/quintal", "INR/q", "₹/quintal", "Rs/quintal")`.
+   - Assert statements replaced with executable `if ...: raise ValueError(...)` ensuring validation is retained under optimized Python (`-O`).
+4. **Provenance Binding Verification:**
+   - When `provenance_map` is supplied, declared numeric values are verified against actual parameter values within $10^{-6}$. Inconsistencies raise `ValueError`.
+
+### 32.2 Gate A2: External trusted registry, pinned historical scopes, and corrupt quantile rejection
+1. **External Trusted Registry (`TRUSTED_REGISTRY`):**
+   - Expected identities pinned outside the supplied calibration envelope:
+     - `source_archive_sha256`: `a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970`
+     - `config_semantic_sha256`: `7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2`
+     - `supported_models`: `["naive", "ridge", "hist_gradient_boosting"]`
+     - `supported_nominal_levels`: `[0.90, 0.95]`
+     - `canonical_folds`: `["F1", "F2", "F3", "F4"]`
+     - `historical_scopes`: F1–F4 pinned validity start/end, calibration windows, earlier folds, and max observed targets.
+     - `trusted_code_hashes`: pinned historical and current code hashes.
+2. **Rejection of Corrupted or Tampered Envelopes:**
+   - Altered code hash rejected with `ValueError: Untrusted or altered code_sha256`.
+   - Missing canonical fold payload (e.g. missing F2) rejected with `ValueError: Missing required canonical fold payload`.
+   - Future maximum calibration target dates (e.g. 2099-01-01) or targets violating fold start dates rejected with `ValueError: Future maximum calibration target date`.
+   - Every commodity quantile individually checked for finiteness and non-negativity. NaN Wheat quantile rejected with `ValueError: Corrupt, non-finite or negative quantile for crop 'Wheat'`.
+3. **Pinned Historical Scopes and Fail-Closed Inference:**
+   - In `predict_interval()`, `origin_date` is checked against `TRUSTED_REGISTRY["historical_scopes"]`. A caller modifying `envelope["fold_scopes"]` cannot override historical validity dates. Origin `2026-11-13` in F2 returns `ORIGIN_DATE_OUTSIDE_VALIDITY_SCOPE`.
+   - If a requested commodity has a corrupt or NaN quantile in the calibration artifact, `predict_interval()` returns `status="NO_CALIBRATION"` with `reason="CORRUPT_COMMODITY_QUANTILE"`; silent fallback to pooled is prohibited.
+
+### 32.3 Gate A3: Fixture reports, resource watchdogs, and historical run provenance
+1. **Full-Precision Fixture Table Regeneration:**
+   - `experiments/reports/ECON001/fixture_verification_table.csv` recomputed from actual function outputs with full precision:
+     - FIX-05: holding proceeds `2115.57 INR` / gain `130.57 INR` (exact unrounded: `2115.5651` / `130.5651`), correcting legacy truncated display (`2114.30` / `129.30`).
+     - FIX-03 and FIX-04 now preserve original annual rate (`0.07`), holding days (`7`), and rate factor (`0.00134247`).
+     - All 5 fixtures reconciled against independent 30-digit Decimal arithmetic within $10^{-7}$.
+2. **Historical Run Provenance Restoration:**
+   - Original receipt preserved: `experiments/reports/FC008/interval_evaluation_receipt_original_8d4ed57.json` retains code hash `c6678d9a...` and original timestamp `2026-11-12T18:57:38.770723+00:00`.
+   - Active receipt `interval_evaluation_receipt.json` restored to match historical identity.
+   - Migration receipt issued: `experiments/reports/FC008/interval_evaluation_receipt_migration.json` documenting the migration and clarifying that peak RSS of 23.66 MB was measured during a lightweight metadata refresh, whereas historical full-pipeline memory remains an unverified claim.
+3. **Incremental Resource Watchdog Enforcement:**
+   - Implemented `check_resource_watchdogs()` in `src/forecast_intervals.py` checking `time.time() - t_start <= max_duration_seconds` (600s) and `get_peak_rss_mb() <= max_rss_mb` (512 MB) before file loading and at every stage transition.
+   - File size bounds checked before reading: $\le 50$ MB decoded CSV, $\le 70,000$ rows.
+
+### 32.4 Gate B: Step 10 Dataset-First Service and HTTP Contract Delivery
+1. **Modular Architecture:**
+   - `src/service_contracts.py`: Dataclasses, Enums, stable error models, and `dumps_strict_json(allow_nan=False)`.
+   - `src/service.py`: `MandiMarketService` managing storage index queries, freshness calculation under Asia/Kolkata date policy, benchmark reporting, forecast unavailability, and research economics.
+   - `src/api.py`: Pure standard-library WSGI application (`wsgiref.simple_server`), handling routing, query parameters, request size limits ($\le 1$ MB), and structured JSON envelopes.
+   - `run_service.py`: Development-only server launcher enforcing loopback binding (`127.0.0.1:8000`).
+2. **Versioned HTTP Endpoints:**
+   - `GET /api/v1/health`: Process status, uptime, server time (UTC and IST), and capability readiness matrix.
+   - `GET /api/v1/catalog`: 30 indexed series across 5 districts (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao) and focus crops. Preserves Rice vs Paddy distinctly.
+   - `GET /api/v1/prices/latest`: Queries all matching exact series, recomputing `age_days` dynamically from server date (`2026-11-13`). Preserves null min/max and `FILE_IMPORT` mode.
+   - `GET /api/v1/prices/history`: Returns honest `HISTORY_UNAVAILABLE` rather than performing ad-hoc local raw panel scans.
+   - `GET /api/v1/models/benchmark`: Discloses audited scorecards: Persistence MAE 106.96 beats HGB 109.75 and Ridge 110.32; HGB RMSE improvement +5.91%; F3/F4 undercoverage 75.94% / 72.26%.
+   - `POST /api/v1/forecast`: Returns explicit `FORECAST_UNAVAILABLE` with reason metadata.
+   - `POST /api/v1/economics/evaluate`: Executes strict research economics evaluation with advisory action `BLOCKED`.
+3. **OpenAPI Specification and Documentation:**
+   - Delivered machine-readable `documentation/openapi_v1.json` (OpenAPI 3.0.3).
+   - Delivered full human-readable markdown contract `documentation/API_SERVICE_CONTRACT.md`.
+4. **Execution Verification and Evidence:**
+   - Test suite: **345 passed in `tests/`** + **45 passed in `backing/`** = **390 passing tests, 0 failures, 18 runtime warnings** (benchmark tuning ill-conditioned matmul).
+   - Real loopback HTTP smoke test executed over `127.0.0.1` ephemeral socket (clean shutdown in `finally`).
+   - Measured warm HTTP latencies (50 iterations):
+     - `/health`: median 0.196 ms, p95 0.221 ms, max 0.227 ms.
+     - `/prices/latest`: median 0.215 ms, p95 0.247 ms, max 0.297 ms.
+     - `/economics/evaluate`: median 0.203 ms, p95 0.240 ms, max 0.262 ms.
+
+### 32.5 Milestone Accounting and Roadmap
+- Independent acceptance of Gate A (contract defects resolved) and Gate B (Step 10 backend delivered) reduces the milestone count:
+  - **3 main milestones remaining:**
+    - Step 11: User-Facing Interface & Presentation
+    - Step 12: Production Integration & Deployment
+    - Step 13: Prospective Shadow Validation & Usability
+  - **2 optional ablations remaining:**
+    - Arrivals feature ablation
+    - Weather feature ablation
+- **Evidence Debt:** Local commercial facility directory records 0/22 quotations received; empirical commercial holding profitability remains unverified. Prospective validation remains a release gate.

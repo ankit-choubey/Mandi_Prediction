@@ -18,15 +18,15 @@
       "filename": "equation_reconciliation_receipt.json",
       "relpath": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
       "path": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
-      "size_bytes": 2259,
-      "sha256": "f0e44f27758f43cd7286ca29c0060b49b3eb0ba70224333d3e108acb8e1ca04a"
+      "size_bytes": 3463,
+      "sha256": "348e4bb148f44b717cb3ef76c9e9413b04f6761632de6269e41448a224ffec8d"
     },
     {
       "filename": "fixture_verification_table.csv",
       "relpath": "experiments/reports/ECON001/fixture_verification_table.csv",
       "path": "experiments/reports/ECON001/fixture_verification_table.csv",
-      "size_bytes": 1236,
-      "sha256": "44d47c8e4a217a64f225b3626d0d44ac50ff81e8532f27a68ab4ca07481bc4b5"
+      "size_bytes": 1302,
+      "sha256": "1847a8f655f88ba227693677b8eb7bef8037662c53e7a773b88cfc295388ea5f"
     },
     {
       "filename": "missing_input_audit.json",

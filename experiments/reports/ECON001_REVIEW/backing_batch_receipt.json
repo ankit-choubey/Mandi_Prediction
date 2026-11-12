@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+    "-m",
+    "pytest",
+    "-q",
+    "backing/"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 5.606030750000173,
+  "stdout": ".............................................                            [100%]\n45 passed in 5.11s\n",
+  "stderr": ""
+}

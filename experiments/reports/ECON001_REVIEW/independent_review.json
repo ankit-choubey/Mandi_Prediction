@@ -1,0 +1,422 @@
+{
+  "reviewed_head": "d0ff42e475375a8de487b8c05d697da27f06adb6",
+  "date": "2026-11-13",
+  "probes": {
+    "envelope_wrong_code_hash": {
+      "accepted": true,
+      "result": true
+    },
+    "envelope_missing_fold": {
+      "accepted": true,
+      "result": true
+    },
+    "envelope_future_calibration_target": {
+      "accepted": true,
+      "result": true
+    },
+    "envelope_nan_commodity_quantile": {
+      "accepted": true,
+      "result": true
+    },
+    "interval_future_calibration_scope": {
+      "accepted": true,
+      "result": {
+        "status": "SUCCESS",
+        "lower": 1922.2074468085107,
+        "upper": 2077.7925531914893,
+        "width": 155.58510638297867,
+        "half_width": 77.79255319148936,
+        "quantile": 0.03889627659574468,
+        "group_type": "EXACT_COMMODITY",
+        "nominal_level": 0.9,
+        "nominal_level_str": "0.90",
+        "operational_advisory_allowed": false,
+        "advisory_blocked_reason": "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVISORY"
+      }
+    },
+    "economics_missing_params": {
+      "accepted": true,
+      "result": {
+        "r_sell_net": 2000.0,
+        "r_hold_point_net": 2155.3150684931506,
+        "r_hold_lower_net": null,
+        "r_hold_upper_net": null,
+        "delta_r_point": 155.31506849315065,
+        "delta_r_lower": null,
+        "delta_r_upper": null,
+        "delta_per_quintal_point": 155.31506849315065,
+        "delta_per_quintal_lower": null,
+        "delta_per_quintal_upper": null,
+        "p_break_even": 2043.116092431161,
+        "required_pct_change_break_even": 2.1558046215580475,
+        "break_even_relation": "POINT_ONLY_ABOVE_BREAK_EVEN",
+        "operational_status": "RESEARCH_ONLY",
+        "advisory_action": "BLOCKED",
+        "advisory_permitted": false,
+        "gate_reasons": [
+          "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE",
+          "POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE",
+          "UNVERIFIED_COMMERCIAL_COST_FEED"
+        ],
+        "quantity_quintals": 1.0,
+        "is_reporting_normalization": false,
+        "params_used": {
+          "storage_cost_per_quintal": 20.0,
+          "handling_cost_per_quintal": 0.0,
+          "incremental_transport_cost": 0.0,
+          "direct_cost_c": 20.0,
+          "quantity_loss_fraction": 0.01,
+          "quality_discount_fraction": 0.0,
+          "annual_carrying_rate": 0.07,
+          "holding_period_days": 7,
+          "transaction_cost_now": 0.0,
+          "transaction_cost_later": 0.0,
+          "scenario_name": "Central"
+        },
+        "provenance_summary": {
+          "status": "UNVERIFIED_DEFAULT_PARAMETERS"
+        },
+        "missing_cost_inputs": [
+          "NO_PROVENANCE_MAP_SUPPLIED_DEFAULT_ASSUMPTIONS_USED"
+        ],
+        "disclaimer": "RESEARCH ONLY. Mathematical calculations are conditional on declared parameters. Interval coverage does not cover uncertain storage costs or physical shrinkage. Advisory action is strictly blocked pending approved prospective validation."
+      }
+    },
+    "economics_horizon_mismatch": {
+      "accepted": true,
+      "result": {
+        "r_sell_net": 2000.0,
+        "r_hold_point_net": 2200.0,
+        "r_hold_lower_net": null,
+        "r_hold_upper_net": null,
+        "delta_r_point": 200.0,
+        "delta_r_lower": null,
+        "delta_r_upper": null,
+        "delta_per_quintal_point": 200.0,
+        "delta_per_quintal_lower": null,
+        "delta_per_quintal_upper": null,
+        "p_break_even": 2000.0,
+        "required_pct_change_break_even": 0.0,
+        "break_even_relation": "POINT_ONLY_ABOVE_BREAK_EVEN",
+        "operational_status": "RESEARCH_ONLY",
+        "advisory_action": "BLOCKED",
+        "advisory_permitted": false,
+        "gate_reasons": [
+          "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE",
+          "POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE",
+          "UNVERIFIED_COMMERCIAL_COST_FEED"
+        ],
+        "quantity_quintals": 1.0,
+        "is_reporting_normalization": false,
+        "params_used": {
+          "storage_cost_per_quintal": 0.0,
+          "handling_cost_per_quintal": 0.0,
+          "incremental_transport_cost": 0.0,
+          "direct_cost_c": 0.0,
+          "quantity_loss_fraction": 0.0,
+          "quality_discount_fraction": 0.0,
+          "annual_carrying_rate": 0.0,
+          "holding_period_days": 7,
+          "transaction_cost_now": 0.0,
+          "transaction_cost_later": 0.0,
+          "scenario_name": "custom"
+        },
+        "provenance_summary": {
+          "status": "UNVERIFIED_DEFAULT_PARAMETERS"
+        },
+        "missing_cost_inputs": [
+          "NO_PROVENANCE_MAP_SUPPLIED_DEFAULT_ASSUMPTIONS_USED"
+        ],
+        "disclaimer": "RESEARCH ONLY. Mathematical calculations are conditional on declared parameters. Interval coverage does not cover uncertain storage costs or physical shrinkage. Advisory action is strictly blocked pending approved prospective validation."
+      }
+    },
+    "parameters_invalid_carrying_type": {
+      "accepted": true,
+      "result": {
+        "quantity_quintals": 1.0,
+        "current_price": 2000.0,
+        "future_price": 2200.0,
+        "loss_fraction": 0.0,
+        "quality_discount": 0.0,
+        "direct_cost_c": 0.0,
+        "trans_cost_now_tn": 0.0,
+        "trans_cost_later_tl": 0.0,
+        "carrying_rate_factor_f": 0.0,
+        "r_sell": 2000.0,
+        "r_hold": 2200.0,
+        "delta_per_quintal": 200.0,
+        "delta_r": 200.0,
+        "p_break_even": 2000.0,
+        "required_pct_change": 0.0
+      }
+    },
+    "parameters_negative_transaction_cost": {
+      "accepted": true,
+      "result": {
+        "quantity_quintals": 1.0,
+        "current_price": 2000.0,
+        "future_price": 2200.0,
+        "loss_fraction": 0.0,
+        "quality_discount": 0.0,
+        "direct_cost_c": 0.0,
+        "trans_cost_now_tn": 0.0,
+        "trans_cost_later_tl": -10.0,
+        "carrying_rate_factor_f": 0.0,
+        "r_sell": 2000.0,
+        "r_hold": 2210.0,
+        "delta_per_quintal": 210.0,
+        "delta_r": 210.0,
+        "p_break_even": 1990.0,
+        "required_pct_change": -0.5
+      }
+    },
+    "parameters_nonfinite_direct_cost": {
+      "accepted": true,
+      "result": {
+        "constructed": true
+      }
+    }
+  },
+  "saved_numeric_level_roundtrip_cases_passed": 246,
+  "manifest_checks": [
+    {
+      "path": "experiments/reports/FC007_VERIFIED/master_scorecards_all.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/reconciliation_assertion_receipt.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_crops.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_districts.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_folds.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_overall.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_regimes.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_sensitivities.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/scorecard_tiers.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC007_VERIFIED/slice_key_inventory.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/calibration_envelope_v1.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/calibration_quantiles.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/interval_evaluation_receipt.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_crop.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_district.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_fold.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_regime.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_overall.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/FC008/master_intervals_scorecards.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/capability_gate_matrix.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/cost_provenance_inventory.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/fixture_verification_table.csv",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/missing_input_audit.json",
+      "hash_matches": true,
+      "self_included": false
+    },
+    {
+      "path": "experiments/reports/ECON001/requirement_vs_achieved.json",
+      "hash_matches": true,
+      "self_included": false
+    }
+  ],
+  "manifest_generation_idempotent": true,
+  "artifact_hashes": {
+    "src/forecast_intervals.py": "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
+    "experiments/reports/FC008/calibration_envelope_v1.json": "84ba2da323164382208e1b0225c6c241d11c562814849c30c535e5bd4e57411c"
+  },
+  "envelope_code_hash_matches_current": true,
+  "receipt_code_hash_matches_current": true,
+  "independent_displayed_fixture_accounting": [
+    {
+      "fixture": "FIX-01",
+      "reference_hold_from_displayed_inputs": "25470.00000",
+      "reported_hold": "25470.0",
+      "reference_gain": "470.00000",
+      "reported_gain": "470.0",
+      "reference_break_even": "2602.040816326530612244897959",
+      "note": "Displayed rate_f is rounded for FIX-03/04/05; original annual rate/horizon omitted from CSV. FIX-05 discrepancy exceeds that rounding effect."
+    },
+    {
+      "fixture": "FIX-02",
+      "reference_hold_from_displayed_inputs": "24770.00000",
+      "reported_hold": "24770.0",
+      "reference_gain": "-230.00000",
+      "reported_gain": "-230.0",
+      "reference_break_even": "2673.469387755102040816326531",
+      "note": "Displayed rate_f is rounded for FIX-03/04/05; original annual rate/horizon omitted from CSV. FIX-05 discrepancy exceeds that rounding effect."
+    },
+    {
+      "fixture": "FIX-03",
+      "reference_hold_from_displayed_inputs": "103352.80000000",
+      "reported_hold": "103352.75",
+      "reference_gain": "4102.80000000",
+      "reported_gain": "4102.75",
+      "reference_break_even": "2115.423623995052566481137910",
+      "note": "Displayed rate_f is rounded for FIX-03/04/05; original annual rate/horizon omitted from CSV. FIX-05 discrepancy exceeds that rounding effect."
+    },
+    {
+      "fixture": "FIX-04",
+      "reference_hold_from_displayed_inputs": "39700.01862793600",
+      "reported_hold": "39700.0",
+      "reference_gain": "0.01862793600",
+      "reported_gain": "0.0",
+      "reference_break_even": "2115.423623995052566481137910",
+      "note": "Displayed rate_f is rounded for FIX-03/04/05; original annual rate/horizon omitted from CSV. FIX-05 discrepancy exceeds that rounding effect."
+    },
+    {
+      "fixture": "FIX-05",
+      "reference_hold_from_displayed_inputs": "2115.56600000",
+      "reported_hold": "2114.3",
+      "reference_gain": "130.56600000",
+      "reported_gain": "129.3",
+      "reference_break_even": "2115.423623995052566481137910",
+      "note": "Displayed rate_f is rounded for FIX-03/04/05; original annual rate/horizon omitted from CSV. FIX-05 discrepancy exceeds that rounding effect."
+    }
+  ],
+  "canonical_checks": [
+    {
+      "cost": 50.0,
+      "actual_gain": 470.0,
+      "expected_gain": 470.0
+    },
+    {
+      "cost": 120.0,
+      "actual_gain": -230.0,
+      "expected_gain": -230.0
+    }
+  ],
+  "local_quote_audit": {
+    "directory_rows": 22,
+    "nonempty_rate_amount": 0,
+    "quotation_not_received": 22,
+    "scope": "Only this local directory; not proof of universal tariff unavailability."
+  },
+  "elapsed_seconds_excluding_imports": 0.010510207999686827,
+  "independent_algebra_trials": {
+    "isolated_existing_fixture_style_cases": 1000,
+    "seed": 42,
+    "max_accounting_reconciliation_abs_error": 6.984919309616089e-10,
+    "max_break_even_abs_error": 1.1759482276829658e-12,
+    "operational_data_generated": false
+  },
+  "tests": {
+    "targeted_passed": 56,
+    "targeted_pytest_seconds": 11.48,
+    "tests_directory_passed": 312,
+    "tests_directory_pytest_seconds": 20.2,
+    "numerical_warnings": 18,
+    "backing_directory_passed": 45,
+    "backing_directory_pytest_seconds": 5.11,
+    "full_bounded_batches_passed_total": 357,
+    "warning_cause": "UNVERIFIED",
+    "receipts": [
+      "targeted_test_receipt.json",
+      "tests_batch_receipt.json",
+      "backing_batch_receipt.json"
+    ]
+  },
+  "provenance_findings": {
+    "old_interval_receipt_timestamp_retained": true,
+    "original_run_code_sha256": "c6678d9afcaab2375fefe7d038856855a8bbfd93881dc3a964607b65ccc81e31",
+    "new_receipt_code_sha256": "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
+    "rss_added_to_original_timestamped_receipt_mb": 23.66,
+    "historical_calibration_quantile_bytes_unchanged": true,
+    "historical_full_run_memory_compliance": "NOT_VERIFIED"
+  },
+  "decision": {
+    "step_8": "PARTIAL_REPAIRS_VERIFIED_FULL_GATE_OPEN",
+    "step_9": "CORE_ACCOUNTING_VERIFIED_CONTRACT_GATE_OPEN",
+    "main_milestones_left": 6,
+    "optional_ablations": [
+      "arrivals",
+      "weather"
+    ],
+    "next_prompt": "documentation/prompts/MP-APP-001A.md"
+  }
+}

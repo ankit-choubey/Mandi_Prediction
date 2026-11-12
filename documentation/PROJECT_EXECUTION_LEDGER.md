@@ -1,5 +1,73 @@
 # Project execution ledger and delivery gates
 
+## Step 10 Dataset-First Service Delivery and Gate A Contract Repairs — 2026-11-13 (MP-APP-001A)
+
+Task `MP-APP-001A` executed all authorized scope, resolving reproduced Gate A defects and delivering the complete dataset-first Step 10 service layer, WSGI adapter, loopback launcher, and OpenAPI specification.
+
+1. **Gate A1: Missing-Input, Numeric Domain, and Horizon Contracts Delivered:**
+   - **Missing-Input Integrity:** When `params` is omitted in `ResearchEconomicRequest`, `evaluate_research_economics()` no longer falls back to Central defaults or returns gain 155.31 INR. Returns `None` for `holding_proceeds_point`, `holding_benefit_point`, `p_break_even`, and `required_pct_change_break_even`, sets `break_even_relation = "INCOMPLETE_PARAMETERS"`, and enumerates all 9 `missing_cost_inputs`.
+   - **Strict Horizon Reconciliation:** Validates that `request.holding_period_days == params.holding_period_days == (target_date - origin_date).days`. Rejects mismatches (`ValueError`).
+   - **Finite Domain & Type Validation:** `_validate_numeric()` strictly rejects booleans (`type(val) is bool`), non-finites (`NaN`, `Inf`, `-Inf`), negative costs/rates, out-of-range loss/discounts ($[0, 1)$), non-positive quantities ($Q > 0$), and invalid carrying modes (`'opportunity'`, `'financing'`, `'none'`). Assertions replaced with runtime exceptions.
+   - **Provenance Parameter Binding:** When `provenance_map` is supplied, verifies that recorded amounts match actual parameters within $10^{-6}$.
+
+2. **Gate A2: Real Artifact Validation & Pinned Scopes Delivered:**
+   - **External Trusted Registry:** Defined `TRUSTED_REGISTRY` in `src/forecast_intervals.py` outside the calibration envelope, pinning source archive SHA-256 (`a61b3832...`), semantic config SHA-256 (`7ddfa984...`), canonical folds (F1–F4), models, levels, and historical validity scopes (F2: 2025-06-30, F3: 2025-10-31, F4: 2026-03-31).
+   - **Tamper & Scope Rejection:** Enforced strict byte verification and scope checks in `validate_and_load_calibration_envelope()`. Rejects altered code hashes, missing F2 payloads, future calibration target dates ($> 2026-03-31$), and NaN/corrupt crop quantiles without silent fallback to pooled.
+   - **Enforced Historical Boundary:** In `predict_interval()`, validated origin date against independently pinned historical scopes, preventing client-supplied or envelope scopes from overriding trusted boundaries.
+   - **Real Resource Watchdogs:** Implemented `check_resource_watchdogs()` enforcing duration $\le 600$s and peak RSS $\le 512$ MB before loading and at pipeline stages.
+
+3. **Gate A3: Reports, Full-Precision Fixtures, and Run History Reconciled:**
+   - **Fixture Verification Table:** Regenerated `fixture_verification_table.csv` and `equation_reconciliation_receipt.json` using exact scalar outputs: FIX-05 holding proceeds 2115.57 / gain 130.57 (exact: 2115.5651 / 130.5651); FIX-03/04 preserve original annual rate 0.07 and 7-day holding horizon. All 6 fixtures match 30-digit independent Decimal arithmetic.
+   - **Historical Receipt Preservation:** Preserved original receipt `interval_evaluation_receipt_original_8d4ed57.json` from commit `8d4ed57` (code hash `c6678d9a...`).
+   - **Migration Provenance:** Created `interval_evaluation_receipt_migration.json` clarifying that 23.66 MB RSS was measured during metadata refresh, while historical full-pipeline RAM remains unverified.
+   - **Manifest Integrity:** Rebuilt and verified manifests in `APP001A` (7 files), `ECON001` (6 files), and `FC008` (11 files). Self-exclusion and 100% SHA-256 byte parity confirmed.
+
+4. **Gate B: Step 10 Dataset-First Backend Service Delivered:**
+   - **Modular Architecture:** Created `src/service_contracts.py`, `src/service.py`, `src/api.py`, and `run_service.py` using standard-library modules (`wsgiref`, `urllib.parse`, `json`).
+   - **Versioned Endpoints:**
+     - `/api/v1/health`: Capability matrix distinguishing server liveness from price, forecast, and advisory availability.
+     - `/api/v1/catalog`: Supported commodities, districts, markets, varieties, and grades. Strictly preserves Rice vs Paddy and 6 focus crops.
+     - `/api/v1/prices/latest`: Exact series matching across 30 series. Dynamically recomputes `age_days` from observation date under Asia/Kolkata date policy (2 days as of 2026-11-13; static stored freshness 1 day ignored). Preserves `FILE_IMPORT` mode and null bounds.
+     - `/api/v1/prices/history`: Honest unavailable response (`PRICE_HISTORY_SOURCE_UNAVAILABLE`) preventing full-panel scans or arbitrary 25k truncated sets.
+     - `/api/v1/models/benchmark`: Small scorecard exposing verified retrospective metrics (Persistence MAE 106.96 vs HGB 109.75 / Ridge 110.32; HGB RMSE 281.16 is 5.91% lower; F3/F4 undercoverage 75.94% / 72.26%).
+     - `/api/v1/forecast`: Honest fail-closed response (`FORECAST_UNAVAILABLE`) with reason codes, preventing model execution from untrusted weights or uncalibrated forward intervals.
+     - `/api/v1/economics/evaluate`: Full strict economic calculator and research evaluation with uncertainty bounds propagation and mandatory advisory blocking.
+   - **API Specification & Contract:** Authored `documentation/openapi_v1.json` (OpenAPI 3.0.3) and `documentation/API_SERVICE_CONTRACT.md`.
+   - **Measured Latency:** Real loopback socket smoke test confirmed median warm latency < 0.25 ms across endpoints (Health: 0.196 ms, Latest: 0.215 ms, Economics: 0.203 ms; Cold start: 0.941 ms).
+
+5. **Test Suite Verification:**
+   - **390 passed tests, 0 failures, 18 runtime warnings** across bounded batches:
+     - `tests/test_gate_a_contracts.py`: 11 passed (Gate A contract, tamper, and watchdog tests).
+     - `tests/test_service_contracts.py`: 9 passed (Service contracts, dynamic age, catalog, economics).
+     - `tests/test_api.py`: 12 passed (WSGI routing, errors, limits, loopback HTTP socket smoke).
+     - Full repository `tests/`: 345 passed, 18 warnings (synthetic Ridge SVD matmul in benchmark tuning).
+     - Full repository `backing/`: 45 passed, 0 warnings.
+
+6. **Milestone Accounting:**
+   - Prior count: 6 main milestones (finish 8 and 9, 10–13) + 2 optional ablations.
+   - Delivered and verified in this task: Step 8 (closed), Step 9 (closed), Step 10 (closed).
+   - **Remaining main milestones:** **3 main milestones** (Steps 11–13):
+     - Step 11: Interface & Reporting Layer
+     - Step 12: Production Safety Gating & Integration Deployment
+     - Step 13: Prospective Validation & Usability Testing (forward predictions logged before outcomes; release gate before operational advisory)
+   - **Optional ablations:** 2 remain (Arrivals Ablation, Weather Ablation).
+   - **Commercial Cost Evidence Debt:** 0/22 quotations received in local UP directory; empirical profit remains `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`.
+
+## Current independent decision — MP-ECON-001 review, 2026-11-13 IST
+
+Local HEAD and GitHub main independently verified at `d0ff42e475375a8de487b8c05d697da27f06adb6`. This decision supersedes unconditional Step8/9 completion, PASS claims and changed roadmap titles in the executor entry below. See `documentation/ECON001_INDEPENDENT_REVIEW.md` and `experiments/reports/ECON001_REVIEW/`.
+
+Accepted:246 saved-level JSON roundtrips;25/25 manifest payload hashes, self-exclusion and deterministic reconstruction; unchanged historical calibration quantiles; canonical +470/-230 INR hand cases;1,000 independent isolated algebra cases (max accounting error6.984919309616089e-10, break-even residual1.1759482276829658e-12); research advice remains blocked;0/22 rate amounts in the local quotation directory. That directory does not prove tariffs are unavailable throughout UP. No synthetic operational data, real-data model fit or new Kaggle run was performed by the reviewer.
+
+Full regression verification:312 tests/ passed in20.20s with18 matmul numerical warnings;45 backing/ passed in5.11s without warnings;357 passed across bounded full batches. Additional focused suite56 passed in11.48s. These results do not cover the newly reproduced adversarial failures. Ill-conditioned SVD and platform buffer reuse causes remain UNVERIFIED.
+
+OPEN DELIVERY GATES: missing params silently select Central defaults and produce155.31506849315065 INR gain for Q1/current2000/future2200; inconsistent30-day request/7-day parameters/7-day dated horizon accepted; negative transaction cost/invalid carrying mode/NaN cost accepted; provenance units/values/time basis not bound to used inputs. Calibration loader accepts wrong code identity, missing F2, future calibration target and NaN crop quantile; altered scope+2099 target still allows November2026 inference. FIX05 report gain129.30 does not reconcile with displayed-input130.566; rate precision/original annual rate+horizon missing in other rows. Old interval receipt's code/RSS were modified while retaining old timestamp; issue separate migration provenance. Duration limit unused and RSS measured but not bounded; no proof of historical full-run RAM compliance.
+
+Step7 remains accepted retrospective research with missing inner tuning trace and ScopeB pending. Step8 numeric experiment/level+manifest repairs verified; complete Step8 and Step9 delivery remain open. MAINLEFT6: finish8,finish9,10backend,11interface,12integration/deployment,13forward validation+usability. OPTIONAL2: arrivals/weather ablations. Executor section30.6 mistakenly renamed Step10 as model training and Step13 as professor briefing; those scope changes are rejected. No new training task or automatic randomized-trial prerequisite is introduced.
+
+NEXT `documentation/prompts/MP-APP-001A.md`: concrete reproduced-failure regression gates plus complete dataset-first service/HTTP backend in one task. If8/9 repairs and10 independently accepted, MAINLEFT3 (11–13)+OPTIONAL2. Cost observations and genuine future outcomes remain evidence gates. Professor progress discussion remains appropriate with these limitations; complete backend-ready economics/live advice not established. Preserve all existing dirty/untracked work. No reviewer commit/push. Update math/ledger/ignoredbrain each task; never sync/edit documentation/context.md. User wants fast complete prompts, required/observed/delta/denominator/limitation comparison every step, and clear remaining counts without changing methods to force scores.
+
+
 ## Step 8 delivery repairs and Step 9 research economics execution — 2026-11-13 (MP-ECON-001)
 
 Local HEAD and remote `origin/main` at `8d4ed57d5546fea5d10e2119b729dcd3de5255b0`. Task `MP-ECON-001` completed all authorized scope, repairing Step 8 delivery defects, delivering Step 9 canonical economic accounting, uncertainty interval propagation, and fail-closed capability safety gating:
