@@ -1,7 +1,7 @@
 {
-  "id": "theankitchoubey/mp-data-004-eligibility-grids",
-  "title": "MP-DATA-004 Eligibility Grids",
-  "code_file": "../notebooks/mp_data_004_eligibility.ipynb",
+  "id": "theankitchoubey/mp-data-003b-price-profile",
+  "title": "MP-DATA-003B Price Profile",
+  "code_file": "../../notebooks/mp_data_003b_price_profile.ipynb",
   "language": "python",
   "kernel_type": "notebook",
   "is_private": "true",
@@ -15,3 +15,4 @@
   "kernel_sources": [],
   "model_sources": []
 }
+

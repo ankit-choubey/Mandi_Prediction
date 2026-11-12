@@ -181,3 +181,4 @@ A 90-cell parameter grid was evaluated across all 1,297 series over four axes:
 | `focus_crops_eligibility.csv` | 25,232 | 580 | `b4a5bb7d63a5d3d2e47687d6cf91c4106799d8f316659fa11ff148766f1d3076` |
 | `chronological_split_feasibility.json` | 1,296 | N/A | `0b213e7b6d67179b90293f07c09d071987338cd823c7e804a229a3bebe6e7366` |
 | `kernel_execution_manifest.json` | 1,777 | N/A | Checksum manifest generated at runtime |
+

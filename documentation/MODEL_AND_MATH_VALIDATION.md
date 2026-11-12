@@ -398,6 +398,8 @@ Evaluated across 5 districts, 41 markets, and 108 commodities:
 | `ceda_corroboration_summary.json` | 1,424 | N/A | `5dc430161519139e9e42c2183ecf7d1a3523959666248d9d8992e06601b4e172` |
 
 ### 10.6 Execution Environment Discrepancy & Trained Artifact Version Policy
+*Full Specification & Compatibility Record:* [`experiments/kaggle/ENVIRONMENT.md`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/kaggle/ENVIRONMENT.md)
+
 A comparison of the Kaggle remote environment vs the local development environment reveals differences in OS and package versions:
 
 | Component / Package | Kaggle Remote Kernel (Linux) | Local Environment (macOS Darwin) | Compatibility Status |
@@ -466,10 +468,14 @@ Sample slices from the 90-cell grid across all 1,297 series:
 
 *The Inter-Season Gap Phenomenon:* In multi-year agricultural series, requiring $\text{gap}_{max} \le 60$ days eliminates seasonal crops undergoing normal 3–5 month inter-season dormancy. Thresholds should not be chosen globally without accounting for crop seasonality.
 
-### 11.5 Chronological Train/Test Split Feasibility (8-Day Embargo)
-* Training window: `2021-09-01` to `2025-12-18` (85% date threshold minus 8-day embargo).
-* Embargo window: `2025-12-19` to `2025-12-25` (8 days).
-* Test evaluation period (Final 15%): `2025-12-26` to `2026-09-30` (279 calendar days).
+### 11.5 Chronological Train/Test Split Feasibility (7-Date Embargo for h = 7)
+* **Embargo Formalization ($h = 7$):**
+  $$T_{train\_end} = T_{test\_start} - (h + 1) = T_{test\_start} - 8$$
+  $$\text{Excluded Origin Dates} = [T_{train\_end} + 1, \dots, T_{test\_start} - 1] = [\text{2025-12-19}, \dots, \text{2025-12-25}] \quad (\text{exactly } 7 \text{ origin dates})$$
+  This strict 7-date exclusion ensures that the final forecast origin evaluated in training ($T_{train\_end} = \text{2025-12-18}$) has target date $T_{train\_end} + 7 = \text{2025-12-25} < T_{test\_start}$, eliminating target label leakage into test evaluation origins commencing on $T_{test\_start} = \text{2025-12-26}$.
+* **Training window:** `2021-09-01` to `2025-12-18` (85% date threshold minus 8 calendar days).
+* **Embargo window:** `2025-12-19` to `2025-12-25` (exactly 7 excluded origin dates).
+* **Test evaluation period (Final 15%):** `2025-12-26` to `2026-09-30` (279 calendar days).
 * **Inclusive Tier ($N_{obs} \ge 60, \text{cov} \ge 0.3, \text{gap} \le 60, \text{rec} \le 60$):** 183 qualifying series; **183 (100.0%)** have $\ge 20$ test origins; **183 (100.0%)** have $\ge 50$ test origins (mean test origins: 119.6).
 * **Balanced Tier ($N_{obs} \ge 120, \text{cov} \ge 0.3, \text{gap} \le 60, \text{rec} \le 60$):** 79 qualifying series; **79 (100.0%)** have $\ge 20$ test origins; **79 (100.0%)** have $\ge 50$ test origins (mean test origins: 160.8).
 
@@ -486,6 +492,91 @@ Sample slices from the 90-cell grid across all 1,297 series:
 | `eligibility_grids.csv` | 2,539 | 91 | `cb3b6d5a8fa831e9610ec5cd4ec3c7f4e75dfbe9d06df240c6fb938cd2c403d4` |
 | `focus_crops_eligibility.csv` | 25,232 | 580 | `b4a5bb7d63a5d3d2e47687d6cf91c4106799d8f316659fa11ff148766f1d3076` |
 | `chronological_split_feasibility.json` | 1,296 | N/A | `0b213e7b6d67179b90293f07c09d071987338cd823c7e804a229a3bebe6e7366` |
+
+---
+
+## 12. Remote Execution Scorecard: Price Discrepancies, Anomaly Scan, Train-Only Eligibility, and Rolling Origins (MP-DATA-005)
+
+* **Execution Date:** 2026-11-12
+* **Execution Environment:** Kaggle CPU Kernel (`theankitchoubey/mp-data-005-quality`, internet disabled). See [ENVIRONMENT.md](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/kaggle/ENVIRONMENT.md) for pinned library versions.
+* **Evaluated Dataset:** `theankitchoubey/mandi-prediction-audit-003b` (v1 private, unchanged).
+* **Execution Status:** Complete (`KernelWorkerStatus.COMPLETE`, exit code 0, 32.2s runtime).
+* **Detailed Task Report:** [mp_data_005_summary.md](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/mp_data_005_summary.md).
+
+### 12.1 Deep Dive into the 77 Price Differences
+
+Natural-key inner join between 5 official Agmarknet Excel files (`raw_downloads/*.xlsx`, 2,525 rows) and the validated panel (`data/processed/mandi_5year_validated.csv`, 462,350 rows) matched 1,939 records.
+* **Exact modal price match rate ($0.00 difference):** 96.03% (1,862 / 1,939 rows).
+* **Non-zero price difference count:** Exactly **77 rows** (3.97%).
+* **Ratio distribution ($\text{Modal}_{\text{Excel}} / \text{Modal}_{\text{Panel}}$):** Min 0.2632, P10 0.9284, P25 0.9839, Median 1.0128, P75 1.1454, P90 1.5627, Max 2.5492, Mean 1.1386.
+* **Constant factor candidate test:** Candidate multipliers ($0.001, 0.01, 0.1, 0.5, 2.0, 10.0, 100.0, 1000.0$) matched **exactly 0 rows** (0.00% within 1% tolerance).
+* **Units:** Both source Excel and validated panel specify standard **₹/Quintal** (and arrival quantities in Tonnes).
+* **Decimals:** 100% of Excel quotes (77/77) have non-zero decimal fractions; 58.44% of panel quotes (45/77) have non-zero decimal fractions.
+
+### 12.2 Cluster Scope Analysis (2026-02-15 to 2026-04-07)
+
+* **Total Excel records in window:** 2,098 rows.
+* **Matched in validated panel:** 1,579 rows (75.26% match rate).
+* **Exact price match rate:** 95.12% (1,502 exact matches).
+* **Discrepancy peak:** 30 discrepancies in the week of 2026-02-23 (exact match drops to 73.45%) and 23 discrepancies in the week of 2026-03-23 (exact match 93.39%). All other weeks exhibit $\ge 97.0\%$ exact agreement.
+
+### 12.3 Panel-Wide Anomaly Scan (462,350 Rows)
+
+A full non-destructive diagnostic scan across all 462,350 validated panel rows revealed:
+* **Day-over-day price jumps ($<0.5$ or $>2.0$):** 1,677 rows (0.36%).
+* **Fractional (non-integer) prices:** 13,061 rows (2.82%).
+* **Outside $3\times$ series median:** 1,468 rows (0.32%).
+* **Min/Max internal inconsistency ($\text{Min} > \text{Max}$ or $\text{Modal} \notin [\text{Min}, \text{Max}]$):** **0 rows (0.00%)**.
+* **Any anomaly flag:** 14,845 rows (3.21%).
+* **March 2026 Anomaly Spike:** Historical anomaly rates averaged $<0.8\%$ (0.00% in Jan 2026). In March 2026, the anomaly rate surged to **41.03%** (1,686 flagged rows out of 4,109 total obs), driven by 1,649 non-integer fractional prices and 49 extreme day-over-day jumps, persisting at 40–45% through September 2026.
+
+### 12.4 Train-Only Eligibility ($T \le 2025-12-18$)
+
+Evaluated across the 1,570-day training window (439,077 observations, 921 series):
+* **As-Is Tier A ($N_{\text{obs, train}} \ge 60, \text{cov} \ge 0.30$):** 496 series across 20 markets (384,887 observations).
+* **As-Is Tier B ($N_{\text{obs, train}} \ge 120, \text{cov} \ge 0.30$):** 473 series across 20 markets (383,037 observations).
+* **Canonical Tier A (market trailing ` APMC` normalized):** 495 series across 20 markets (385,821 observations).
+* **Canonical Tier B (market trailing ` APMC` normalized):** 472 series across 20 markets (383,971 observations).
+
+### 12.5 Serving-Time Rule & Forward Availability
+
+* **Market Naming Discontinuity:** In late 2025/2026, Agmarknet raw data appended ` APMC` to market names. Because `Market` is in `series_cols`, non-APMC series ceased after Nov 2025, and APMC series only had up to 43 observations in training.
+* **Serving Rule Feasibility:**
+  * Under as-is `series_id`: 0 test origins match Tier A in 2026.
+  * Under canonical `series_id_canonical`: 4,418 test origins evaluated ($T \ge 2025-12-26$); **99.00% (4,374 / 4,418) pass the 14-day serving recency requirement** ($[T-14, T)$ has an observation).
+* **Unweighted Series-Level Forward Availability (Canonical Tier A, 495 series):**
+  * Exact $T+7$ presence: Median **86.75%**, Mean 83.19% (Min 41.58%, Max 96.89%).
+  * Near-horizon $T \in [6, 8]$ presence: Median **96.02%**, Mean 94.21% (Min 65.62%, Max 99.73%).
+
+### 12.6 Rolling-Origin Cross-Validation Feasibility (4 Expanding Folds)
+
+Four expanding 60-day folds ending `2026-09-30` with 7-date embargoes:
+* **Fold 1 (Test: 2026-02-03..2026-04-03, Train: 2021-09-01..2026-01-26, Embargo: 7 dates):** Overlaps Feb–Mar discrepancy in test window. 22 canonical Tier A series have $\ge 20$ origins.
+* **Fold 2 (Test: 2026-04-04..2026-06-02, Train: 2021-09-01..2026-03-27, Embargo: 7 dates):** Overlaps discrepancy in training window. 18 canonical Tier A series have $\ge 20$ origins.
+* **Fold 3 (Test: 2026-06-03..2026-08-01, Train: 2021-09-01..2026-05-26, Embargo: 7 dates):** Overlaps discrepancy in training window. 16 canonical Tier A series have $\ge 20$ origins.
+* **Fold 4 (Test: 2026-08-02..2026-09-30, Train: 2021-09-01..2026-07-25, Embargo: 7 dates):** Overlaps discrepancy in training window. 15 canonical Tier A series have $\ge 20$ origins.
+
+### 12.7 Discrepancy Resolution Determination
+
+* **Conclusion:** The Feb–Mar 2026 price discrepancy is **(d) an unresolved data-entry / post-aggregation revision anomaly** accompanied by **(b) format and naming shifts** (sudden emergence of fractional prices and market suffix renaming), and is **definitively NOT (a) a unit conversion error**.
+
+### 12.8 Output Artifacts & Checksums
+
+| Artifact File | Size (Bytes) | Lines | SHA-256 Digest |
+|---|---|---|---|
+| `diff_77_deep_analysis.csv` | 10,087 | 78 | `93341b3c3b4b4f7571b67b467025f86a53cc439cf198a6bd36ee18097975b5c1` |
+| `diff_77_deep_analysis.json` | 38,364 | N/A | `e323a5bb6d9ad19f530b258557204dca808a8145172a638e95346360c771a3b4` |
+| `feb_mar_cluster_weekly.csv` | 402 | 10 | `9d983e9d1d6b593a4d11d89673ee8bed2f738b3985c818a9a6d63d0e11e56686` |
+| `feb_mar_cluster_summary.json` | 3,159 | N/A | `fd771157403c5e20989951619947a20464d210edb4f738a2694baff4296557b9` |
+| `monthly_anomaly_distribution.csv` | 1,977 | 62 | `660e793534e3ae0d476a88e0e930896c7b0989d6b9fc4f0e190511d49e025899` |
+| `panel_anomalies_sample.csv` | 277,485 | 2,001 | `b60f28d2b482b0f31c3ebaf5cffc623285df4199e0915581e80b3e9cab7c9a85` |
+| `anomaly_scan_summary.json` | 704 | N/A | `053841504142492f1093686701ea666cc3686a5e0243b20c14782ace324cafb3` |
+| `train_eligibility_tiers.csv` | 135,881 | 922 | `c407311b210c29c8cd71d8d3740f0b9b78ca0cd9965e2e98cce0c2d52cfe753a` |
+| `focus_crops_train_eligibility.csv` | 6,367 | 161 | `2df773a912ea3e9ed2738260430fda34fd7210b9c880248131b98f8dc4a9e7a3` |
+| `serving_rule_feasibility.json` | 1,023 | N/A | `b9f149c5de57be5023240f3a504f17d7b43d0af3df350bc401888ae25e839b35` |
+| `series_level_availability_summary.json` | 999 | N/A | `c1484fe3da9377448261e081829219c84fd4591fbca0ed68a0bd70d809dc6829` |
+| `rolling_origin_feasibility.json` | 2,619 | N/A | `dddab43dbb193adc2c9fa668964376e1800520e3a2b07007d132f251ac2358fc` |
+
 
 
 
