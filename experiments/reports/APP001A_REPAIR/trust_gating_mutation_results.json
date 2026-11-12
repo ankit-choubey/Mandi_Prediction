@@ -1,0 +1,43 @@
+[
+  {
+    "test": "altered_pooled_quantile_rejected",
+    "expected_failure": true,
+    "rejected": true,
+    "error": "ValueError: Quantiles payload SHA-256 mismatch: bfe51a84e9c6ab1ba0af840173af19868f1bccdf74db478a171cf3c9229e7697 != 1f7e235d1340118fce77b407ed7379f065fc93ce589ce6d67532a019bfcaf004. Altered or unverified calibration quantiles payload rejected."
+  },
+  {
+    "test": "missing_semantic_config_rejected",
+    "expected_failure": true,
+    "rejected": true,
+    "error": "ValueError: Missing required config_sha256_semantic in calibration envelope"
+  },
+  {
+    "test": "missing_f2_naive_model_rejected",
+    "expected_failure": true,
+    "rejected": true,
+    "error": "ValueError: Missing required model payload 'naive' in fold F2"
+  },
+  {
+    "test": "empty_series_index_not_ready",
+    "prices_available": false,
+    "prices_status": "DEGRADED",
+    "passed": true
+  },
+  {
+    "test": "missing_index_path_not_leaked",
+    "path_leaked": false,
+    "reason": "Market price index file not found",
+    "passed": true
+  },
+  {
+    "test": "future_row_cannot_enable_advice",
+    "active_advice_permitted": false,
+    "passed": true
+  },
+  {
+    "test": "missing_grade_preserves_unknown",
+    "grade": "UNKNOWN",
+    "status": "UNKNOWN",
+    "passed": true
+  }
+]

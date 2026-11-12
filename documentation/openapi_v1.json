@@ -230,6 +230,9 @@
           },
           "413": {
             "description": "Request payload too large (> 1 MB)"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
           }
         }
       }
@@ -267,6 +270,9 @@
           },
           "413": {
             "description": "Request payload too large (> 1 MB)"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMediaType"
           }
         }
       }
@@ -486,6 +492,16 @@
       },
       "MethodNotAllowed": {
         "description": "HTTP method not permitted on endpoint",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ServiceEnvelope"
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Unsupported media type header (must be application/json)",
         "content": {
           "application/json": {
             "schema": {

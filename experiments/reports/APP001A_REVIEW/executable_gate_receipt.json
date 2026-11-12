@@ -1,0 +1,191 @@
+{
+  "method": "Independent executable contract assertions, not a project score",
+  "checks": [
+    {
+      "name": "benchmark:naive:mae",
+      "passed": true,
+      "actual": 106.95536973570458,
+      "expected": 106.95536973570458
+    },
+    {
+      "name": "benchmark:naive:rmse",
+      "passed": true,
+      "actual": 298.83366418131106,
+      "expected": 298.83366418131106
+    },
+    {
+      "name": "benchmark:naive:coverage_90_pct",
+      "passed": true,
+      "actual": 89.9547,
+      "expected": 89.9547
+    },
+    {
+      "name": "benchmark:naive:coverage_95_pct",
+      "passed": true,
+      "actual": 94.3829,
+      "expected": 94.3829
+    },
+    {
+      "name": "benchmark:naive:skill",
+      "passed": true,
+      "actual": 0.0,
+      "expected": 0.0
+    },
+    {
+      "name": "benchmark:hist_gradient_boosting:mae",
+      "passed": true,
+      "actual": 109.74892588082822,
+      "expected": 109.74892588082822
+    },
+    {
+      "name": "benchmark:hist_gradient_boosting:rmse",
+      "passed": true,
+      "actual": 281.15814294332023,
+      "expected": 281.15814294332023
+    },
+    {
+      "name": "benchmark:hist_gradient_boosting:coverage_90_pct",
+      "passed": true,
+      "actual": 89.9955,
+      "expected": 89.9955
+    },
+    {
+      "name": "benchmark:hist_gradient_boosting:coverage_95_pct",
+      "passed": true,
+      "actual": 94.3978,
+      "expected": 94.3978
+    },
+    {
+      "name": "benchmark:hist_gradient_boosting:skill",
+      "passed": true,
+      "actual": -2.6118895685431687,
+      "expected": -2.6118895685431687
+    },
+    {
+      "name": "benchmark:ridge:mae",
+      "passed": true,
+      "actual": 110.32472167417697,
+      "expected": 110.32472167417697
+    },
+    {
+      "name": "benchmark:ridge:rmse",
+      "passed": true,
+      "actual": 288.56442281012414,
+      "expected": 288.56442281012414
+    },
+    {
+      "name": "benchmark:ridge:coverage_90_pct",
+      "passed": true,
+      "actual": 89.9955,
+      "expected": 89.9955
+    },
+    {
+      "name": "benchmark:ridge:coverage_95_pct",
+      "passed": true,
+      "actual": 94.4312,
+      "expected": 94.4312
+    },
+    {
+      "name": "benchmark:ridge:skill",
+      "passed": true,
+      "actual": -3.1502410274475423,
+      "expected": -3.1502410274475423
+    },
+    {
+      "name": "benchmark:naive:F2_coverage",
+      "passed": true,
+      "actual": 92.3159,
+      "expected": 92.3159
+    },
+    {
+      "name": "economics:omitted:gain",
+      "passed": true,
+      "actual": {
+        "status": 200,
+        "gain": null
+      },
+      "expected": "null without complete costs"
+    },
+    {
+      "name": "economics:omitted:net_sale",
+      "passed": true,
+      "actual": null,
+      "expected": "net unknown when transaction cost omitted; gross may be separate"
+    },
+    {
+      "name": "economics:partial:gain",
+      "passed": true,
+      "actual": {
+        "status": 200,
+        "gain": null
+      },
+      "expected": "null without complete costs"
+    },
+    {
+      "name": "economics:partial:net_sale",
+      "passed": true,
+      "actual": null,
+      "expected": "net unknown when transaction cost omitted; gross may be separate"
+    },
+    {
+      "name": "economics:complete:valid_control",
+      "passed": true,
+      "actual": {
+        "status": 200,
+        "gain": 470.0,
+        "advisory": false
+      },
+      "expected": "valid full inputs -> gain470, blocked advice"
+    },
+    {
+      "name": "http:missing_required",
+      "passed": true,
+      "actual": 400,
+      "expected": "documented 4xx"
+    },
+    {
+      "name": "http:content_type",
+      "passed": true,
+      "actual": 415,
+      "expected": "documented 4xx"
+    },
+    {
+      "name": "http:negative_horizon",
+      "passed": true,
+      "actual": 400,
+      "expected": "documented 4xx"
+    },
+    {
+      "name": "http:invalid_json_number",
+      "passed": true,
+      "actual": 400,
+      "expected": "documented 4xx"
+    },
+    {
+      "name": "artifact:positive_quantile",
+      "passed": true,
+      "actual": true,
+      "expected": "altered payload rejected"
+    },
+    {
+      "name": "artifact:missing_model",
+      "passed": true,
+      "actual": true,
+      "expected": "altered payload rejected"
+    },
+    {
+      "name": "artifact:missing_config",
+      "passed": true,
+      "actual": true,
+      "expected": "altered payload rejected"
+    },
+    {
+      "name": "index:shape",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    }
+  ],
+  "passed": 29,
+  "total": 29
+}

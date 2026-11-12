@@ -1,0 +1,75 @@
+# MP-APP-001A-R — complete backend integrity against executable review gates
+
+Read the owner rules, applicable AGENTS, `documentation/APP001A_INDEPENDENT_REVIEW.md`, `experiments/reports/APP001A_REVIEW/independent_review.json`, original MP-APP-001A prompt, API/economic/feature contracts, mathematical record, ledger and ignored `brain/context.md`. Reviewed HEAD/GitHub main: `5a3f5c4b34e84ea95fd4b4b47f387a5735aff5e4`. Verify actual HEAD/main/status and inspect relevant changes if advanced. Preserve all existing dirty/untracked files, including EOF edits. This is completion of existing Steps8–10, not a new numbered milestone or retraining task.
+
+Current count6 main:finish8,9,10,then11–13; optional2 arrivals/weather. After independent acceptance,3 later main milestones remain. Do not begin UI/deployment or change milestone names in this task. Keep the verified historical work and five corrected accounting fixture rows.
+
+No new dependency installs, raw full-panel reads, real-data fits/tuning, Kaggle jobs/uploads, remote price API calls, scheduler changes, public serving, synthetic operational/scenario datasets or full historical pipeline execution. Use existing small artifacts and standard-library runtime. Ordinary local bounds remain10MB/file,50,000rows,30s/operation. The existing source-prediction exception remains restricted to scoring/calibration audits, not new backtests or arbitrary serving extraction. Isolated fixtures and complete user-entered arithmetic are allowed. No GPU is needed.
+
+## 1. Run the supplied acceptance checks first
+
+Execute exactly:
+
+    python3 experiments/reviews/check_app001a_review_gates.py
+
+It currently exits1 with21 unmet checks out of29. Inspect the generated receipt. The script invokes production service/WSGI functions, compares benchmark results to source CSVs, tests missing/partial economics, validates malformed requests and altered artifacts, checks invalid index readiness, and includes a complete +470 INR positive-control request. It is not a substitute implementation or a project score.
+
+Fix production code and add meaningful regression coverage. Do not edit the script to weaken expectations, alter verified source scores, skip tests or hide the failures. Preserve existing public result fields used by the script; adding correct nullability/gross/source metadata is allowed and must be documented. If a genuine necessary schema migration affects an assertion, document the old/new mapping and preserve equivalent semantics and checks. A passing report alone is not completion: final script must exit0 and every named gate must pass.
+
+## 2. Replace hard-coded benchmark numbers with verified data
+
+`MandiMarketService.get_benchmark_scorecards()` contains wrong literals, including persistence/HGB/Ridge RMSE187.72/176.62/178.61. Verified values are298.8336641813/281.1581429433/288.5644228101. Other wrong fields include95% coverage, HGB/Ridge coverage, Ridge skill and F2 coverage. Read the verified small FC007_VERIFIED and FC008 CSVs through a bounded loader, validate their manifest/source identity and expose values from the records. Do not replace wrong constants with another hand-maintained number list.
+
+Separate point-metric scope (64,776origins,401series,F1–F4 for the complete models) from interval scope (26,918issued origins,365series,F2–F4). Seasonal/drift comparisons, if exposed, retain their own scored and paired counts. Include units, target6–8day tolerance, folds, source/artifact identities and exact denominators per metric group. Derive skill and RMSE improvement from matching source metrics. Present rounded values only at the display boundary; keep raw precision in machine data. API health/benchmark readiness depends on real validated report availability, not a constant True.
+
+Preserve the negative finding: persistence wins primary MAE; HGB improves RMSE but loses MAE. Recent interval undercoverage is observed; crisis/volatility mechanisms remain hypotheses. Test every exposed numeric field and fold summary against source records, including nominal levels, widths/counts if exposed. Corrupt/missing reports must produce a benchmark-unavailable capability, not stale literal fallbacks. Update OpenAPI and contract examples from actual response capture.
+
+## 3. Complete strict cost presence and provenance
+
+Omitted params is repaired, but a nonempty partial object still fills missing components with zero. Track field presence at the strict request boundary before constructing the legacy dataclass. Require explicit storage, handling, incremental transport, immediate/later transaction costs, physical loss, quality markdown, annual carrying rate/mode and holding period for complete holding comparisons; explicit zero is valid. Missing one or several components must return incomplete status with null dependent gains/break-even/proceeds, or a documented validation4xx. Do not auto-fill costs or select a profile.
+
+When immediate transaction cost is missing, `r_sell_net` is unknown, notQ*price. If useful, add separately labelled `r_sell_gross=Q*price`. Allow immediate net calculation when its inputs are known even if holding costs are incomplete; do not erase valid independent quantities. Preserve positive-control arithmetic and both hand cases. Separate pure complete USER_ENTERED calculator inputs from any observed/research source claims. A typed object created inside legacy tests may still be used for mathematical unit checks; that must not bypass JSON field-presence validation in the public endpoint.
+
+Validate provenance value, finite type, units, initial/remaining quantity basis, period, market/crop applicability and declared horizon against actual inputs. Reject NaN/string/bool provenance values that evade numeric comparisons, unsupported statuses and unit mismatches. Client `OBSERVED` labels do not authenticate observations; only server-resolved trusted records can establish verified lineage. Unverified complete user inputs remain non-actionable conditional arithmetic. Do not generate cost tables, feeds or scenarios. Empirical performance remains NOT_EVALUATED_NO_APPROVED_COST_PROFILE.
+
+## 4. Fix index trust and capability derivation
+
+Validate byte/row/schema/type/identity/date/price/unit/provenance shape of the configured bounded index before declaring readiness. `series: []`, missing schema/proof and malformed records cannot mean available verified prices. Preserve unknown grade/status/verification; never default toFAQ,ACCEPTED or import-verifiedTrue. Missing modal price must not become0. Missing price bounds remain null. Review records retain review state and cannot increase capabilities.
+
+Derive allowed capabilities server-side from the validated record and shared trust policy. Do not forward arbitrary `active_advice_permitted`, forecast or economics booleans from an index record. Active advice stays false unconditionally under the current research policy, including future-dated or corrupted test rows. Recompute age/freshness at request time, reject invalid/future observation dates as appropriate, preserve FILE_IMPORT and source hashes, and expose reasons without internal filesystem paths. Source errors must not trigger old raw-data fallback. Enforce server-controlled paths only.
+
+Keep the six canonical focus crops in the catalog. Put the documented Paddy spelling alias in a separate alias mapping; do not count it as a seventh crop or merge Rice/Paddy. Preserve variety/grade identities; add documented exact filters or explicitly reject unsupported query fields instead of ignoring them. Use stable bounded pagination where a response can grow. A missing history/serving artifact may remain an honest unavailable capability; do not invent data to activate it.
+
+## 5. Enforce HTTP/OpenAPI intake contracts
+
+Empty economics currently becomes500/KeyError; text/plain and NaN JSON are accepted, and negative forecast horizons pass. Validate required fields, body root, supported media type, finite JSON numbers at parse time (including NaN/Infinity in otherwise ignored fields), exact numeric types/ranges, dates, request/body byte limits, content length and horizon before constructing requests. Reject unsupported/duplicate/contradictory query/body fields according to one documented policy. Invalid client input gets stable4xx JSON, not an internal exception. Test unsupported units, booleans, partial dates, horizon mismatches, malformed JSON and oversized requests.
+
+Output NaN-to-null conversion is not input validation. Null legitimately means unavailable; it must carry the correct capability/reason. Make OpenAPI, HTTP statuses, error objects, response fields and actual implementation agree. Valid unavailable history/forecast requests may follow the documented200+UNAVAILABLE policy; invalid requests still require4xx. Provide machine-readable reason codes and source versions. No internal path/credential/traceback leakage.
+
+## 6. Pin actual calibration payloads and finish watchdog semantics
+
+The loader still accepts a finite pooled quantile changed10%, a missing F2 naive model and missing semantic-config identity. Verify expected artifact payload bytes/digest from an external trusted registry/manifest before accepting metadata, then validate all required folds/models/levels/counts/ranks/units/dates and quantiles. Do not trust a payload because its source/code header strings match. Missing model/config keys cannot silently skip checks. Corrupt present commodities are not legitimate pooled fallback. Preserve the original historical quantiles and semantic research protocol; no recalibration or test-selected width changes.
+
+The standalone loader's dict path must have the same strict trust boundary as file input; use explicitly trusted expected digest/config in controlled unit tests rather than a default bypass. Keep internal pure quantile construction distinct from externally validated inference. Current old artifact remains research-only. Historical scope and actual target maturity cannot be expanded by caller metadata.
+
+Watchdogs currently run only before work and after source loading. Count decoded compressed bytes and rows while reading, enforce time/RSS during calibration/generation/writing and before allocating larger structures, and avoid unbounded expanded-row lists. Save atomic checkpoints on limits. Test with controlled clocks/resource probes and tiny streams; do not run the full pipeline to test a guard. If an unsafe full local rerun path cannot meet its existing authorization, explicitly block that path and report it unsupported, rather than certify enforcement or silently changing the budget. Preserve original receipt bytes and use separate dated migration receipts; never claim metadata-refresh RSS measured a historical full job.
+
+## 7. Execute, measure and report the actual corrected path
+
+Run the supplied gate script after changes; all29 checks must pass, including the valid +470 input control. Add the additional trust/provenance/date/schema/byte-limit regressions documented in APP001A_INDEPENDENT_REVIEW.md. Generate all responses through production handlers and compare every served benchmark field with verified source data. Reconcile every accounting fixture to independent full-precision Decimal calculations; report five fixture rows unless another actual isolated case is added and documented.
+
+Make required CI tests self-contained: current API/service tests assume an ignored local index with30 rows. Inject isolated fixtures for normal tests, use an injected clock and trusted test registry where needed, and keep an optional real-snapshot smoke separate. Do not temporarily rename/delete the owner's index. A clean-checkout-style run must work with no local raw/index/secret files and no credentials. Unit fixtures are not operational synthetic datasets.
+
+Run targeted checks then the full suite once in bounded batches with actual subprocess timeouts. The reviewer observed344 tests passes plus one local-port permission failure; that test passed when loopback binding was allowed, and backing45 passed. Separate environment failures from application failures; preserve warnings rather than asserting an SVD root cause or suppressing them. No real-data fitting. For a loopback smoke use a permitted ephemeral127.0.0.1 port, actual GET benchmark and POST missing/partial/complete economic bodies; assert response numbers and statuses, then shut down. Do not fabricate test receipts if binding is unavailable.
+
+Record first request separately from full process startup, sample counts and actual latency distributions. The pasted p95/max/cold figures differed from saved artifacts; generate all prose from the actual measurement receipt. Use supported markets from the catalog, not the unsupported Agra example. No invented SLA or submillisecond-cold-start claim. Performance improvements must preserve correctness, populations and unavailable states.
+
+Save small evidence under `experiments/reports/APP001A_REPAIR/`: executable gate receipt, source-to-response numeric parity, complete/missing/partial request examples, trust/gating and artifact mutation results, watchdog tests, fixture reconciliation, clean-checkout tests, actual HTTP smoke, timing, full tests and a self-excluding output manifest. Verify committed and working byte identities separately where pre-existing EOF edits exist. Rebuild manifests last; do not stage an unrelated EOF edit just to make a report hash match.
+
+## Records and scoped push
+
+Update mathematical validation with exact required/observed/delta/counts and limitations; ledger with actual status/counts; API/OpenAPI/economic contracts with corrected schemas; professor brief with verified facts; review resolution evidence; and ONLY ignored `brain/context.md`. Never edit/stage/sync `documentation/context.md`. Canonical milestones stay10backend,11interface,12integration/deployment,13forward validation/usability. No training milestone, professor-briefing substitution, random-trial requirement or synthetic feed authorization is introduced.
+
+Allowed changes are narrow service/API/economic/artifact-reader/watchdog fixes and meaningful related tests, small contract/registry/report changes, the independent gate script and named review/prompts/docs. Preserve unrelated notebook/raw/source edits and untracked research. Inspect the exact staged allowlist, whitespace and secret-safe diff; run final checks; normal scoped commit/push per standing rules, never broad staging/force. Suggested message: `fix(api): enforce source parity and complete backend input contracts [MP-APP-001A-R]`. Verify full resulting SHA on GitHub.
+
+Return CURRENT STEP / ACHIEVED / REQUIRED VS OBSERVED / OPEN / PROFESSOR READINESS / NEXT / MAIN STEPS LEFT / OPTIONAL LEFT, with executed gate exit codes, every remaining failure, scorecard lineage, precise tests/warnings/resource scopes, captured valid/error/unavailable HTTP examples and exact remote SHA. No ALL_PASSED or step decrement if any required gate fails. If independently accepted,3 later main milestones11–13 plus2 optional remain. Stop before UI; its next prompt follows acceptance.

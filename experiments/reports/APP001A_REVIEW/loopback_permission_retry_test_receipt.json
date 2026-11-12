@@ -1,0 +1,7 @@
+{
+  "command": "python3 -m pytest -q tests/test_api.py::TestRealLoopbackHttpSmoke::test_real_loopback_get_and_post_smoke",
+  "exit_code": 0,
+  "passed": 1,
+  "pytest_seconds": 0.55,
+  "scope": "Local-only HTTP smoke after initial environment permission denial; server shut down by test."
+}

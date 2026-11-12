@@ -8,6 +8,7 @@ scorecard reporting, forecast gating, and research economics.
 from __future__ import annotations
 
 from datetime import datetime, date, timezone, timedelta
+import csv
 import json
 import math
 import os
@@ -35,16 +36,21 @@ from src.economic_model import (
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Official Focus Crops & Districts per master specification
+# Official Six Focus Crops per master specification
 DECLARED_FOCUS_CROPS = [
     "Wheat",
     "Potato",
     "Onion",
     "Tomato",
     "Paddy(Common)",
-    "Paddy(Dhan)(Common)",
     "Rice",
 ]
+
+# Documented spelling aliases mapping to canonical focus crops
+PADDY_SPELLING_ALIASES = {
+    "Paddy(Dhan)(Common)": "Paddy(Common)",
+    "Dhan": "Paddy(Common)",
+}
 
 # Asia/Kolkata timezone offset (UTC+05:30)
 IST_TZ = timezone(timedelta(hours=5, minutes=30))
@@ -85,25 +91,75 @@ class MandiMarketService:
         """Loads and indexes latest market observations without swallowing errors."""
         if not self.latest_index_path.exists():
             self.index_loaded = False
-            self.index_error = f"Index file not found: {self.latest_index_path}"
+            self.index_error = "Market price index file not found"
             return
 
         try:
             with open(self.latest_index_path, "r", encoding="utf-8") as f:
                 payload = json.load(f)
 
+            if not isinstance(payload, dict):
+                self.index_loaded = False
+                self.index_error = "Market price index root must be an object"
+                return
+
+            raw_series = payload.get("series")
+            if raw_series is None:
+                self.index_loaded = False
+                self.index_error = "Market price index missing 'series' key"
+                return
+
+            if isinstance(raw_series, list):
+                if len(raw_series) == 0:
+                    self.index_loaded = False
+                    self.index_error = "Market price index contains no series records"
+                    return
+                s_map = {}
+                for idx, item in enumerate(raw_series):
+                    if not isinstance(item, dict):
+                        continue
+                    sid = item.get("series_id") or f"series_{idx}"
+                    s_map[sid] = item
+                candidates = s_map
+            elif isinstance(raw_series, dict):
+                if len(raw_series) == 0:
+                    self.index_loaded = False
+                    self.index_error = "Market price index contains no series records"
+                    return
+                candidates = raw_series
+            else:
+                self.index_loaded = False
+                self.index_error = "Market price index series must be an object or list"
+                return
+
+            valid_series = {}
+            for sid, rec in candidates.items():
+                if not isinstance(rec, dict):
+                    continue
+                mp = rec.get("modal_price")
+                if mp is None or type(mp) is bool or not isinstance(mp, (int, float)) or not math.isfinite(float(mp)) or float(mp) <= 0:
+                    continue
+                if not rec.get("district") or not rec.get("commodity"):
+                    continue
+                valid_series[sid] = rec
+
+            if not valid_series:
+                self.index_loaded = False
+                self.index_error = "Market price index contains no valid series records"
+                return
+
+            self.series_data = valid_series
             self.index_metadata = {
                 "index_version": payload.get("index_version", "1.0.0"),
                 "generated_at_utc": payload.get("generated_at_utc"),
-                "total_series_indexed": payload.get("total_series_indexed", 0),
+                "total_series_indexed": len(self.series_data),
                 "composite_source_sha256": payload.get("composite_source_sha256"),
             }
-            self.series_data = payload.get("series", {})
             self.index_loaded = True
             self.index_error = None
         except Exception as e:
             self.index_loaded = False
-            self.index_error = f"Failed to parse index JSON: {str(e)}"
+            self.index_error = f"Failed to parse index JSON: {type(e).__name__}"
             self.series_data = {}
 
     def get_server_date_ist(self) -> date:
@@ -148,17 +204,25 @@ class MandiMarketService:
         )
 
         # 3. Model Benchmark capability
-        capabilities["benchmarks"] = ServiceCapability(
-            available=True,
-            status="AVAILABLE",
-            metadata={
-                "primary_model": "naive_persistence",
-                "verified_mae": 106.96,
-                "hgb_rmse_improvement_pct": 5.91,
-                "nominal_coverage_90_pct": 89.95,
-                "f3_f4_undercoverage_disclosed": True,
-            },
-        )
+        bm_cards = self.get_benchmark_scorecards()
+        if bm_cards.get("status") == "AVAILABLE":
+            capabilities["benchmarks"] = ServiceCapability(
+                available=True,
+                status="AVAILABLE",
+                metadata={
+                    "primary_model": "naive_persistence",
+                    "verified_mae": 106.955,
+                    "hgb_rmse_improvement_pct": 5.915,
+                    "nominal_coverage_90_pct": 89.955,
+                    "f3_f4_undercoverage_disclosed": True,
+                },
+            )
+        else:
+            capabilities["benchmarks"] = ServiceCapability(
+                available=False,
+                status="UNAVAILABLE",
+                reason=bm_cards.get("message", "Benchmark reports unavailable"),
+            )
 
         # 4. Forecast capability
         capabilities["forecast"] = ServiceCapability(
@@ -241,10 +305,10 @@ class MandiMarketService:
                 "market": m_can,
                 "commodity": comm,
                 "variety": s_rec.get("variety", "Common"),
-                "grade": s_rec.get("grade", "FAQ"),
+                "grade": s_rec.get("grade", "UNKNOWN"),
                 "latest_observation_date": obs_date_str,
                 "age_days": age_days,
-                "status": s_rec.get("status", "ACCEPTED"),
+                "status": s_rec.get("status", "UNKNOWN"),
             })
 
         return CatalogData(
@@ -254,6 +318,7 @@ class MandiMarketService:
             markets=sorted(markets, key=lambda x: (x["district"], x["market_canonical"])),
             commodities=sorted(list(commodities)),
             series_inventory=inventory,
+            commodity_aliases=PADDY_SPELLING_ALIASES,
         )
 
     def get_latest_prices(
@@ -317,7 +382,7 @@ class MandiMarketService:
                 market_raw=s_rec.get("market_raw", "Unknown"),
                 commodity=s_rec.get("commodity", "Unknown"),
                 variety=s_rec.get("variety", "Common"),
-                grade=s_rec.get("grade", "FAQ"),
+                grade=s_rec.get("grade", "UNKNOWN"),
                 observation_date=obs_str,
                 age_days=age_days,
                 modal_price=float(s_rec.get("modal_price", 0.0)),
@@ -325,19 +390,19 @@ class MandiMarketService:
                 max_price=max_price_clean,
                 price_unit=s_rec.get("price_unit", "Rs./Quintal"),
                 market_alias_status=s_rec.get("market_alias_status", "UNKNOWN"),
-                status=s_rec.get("status", "ACCEPTED"),
+                status=s_rec.get("status", "UNKNOWN"),
                 status_reason=s_rec.get("status_reason", ""),
                 data_mode="FILE_IMPORT",
                 import_timestamp_utc=s_rec.get("import_timestamp_utc", ""),
                 is_live_verified=False,  # FILE_IMPORT never masquerades as live-verified
-                is_import_verified=bool(s_rec.get("is_import_verified", True)),
+                is_import_verified=bool(s_rec.get("is_import_verified", False)),
                 source_file_hashes=src_hashes,
-                capabilities=s_rec.get("capabilities", {
+                capabilities={
                     "price_display_permitted": True,
                     "forecast_eligible": False,
                     "economics_eligible": False,
-                    "active_advice_permitted": False,
-                }),
+                    "active_advice_permitted": False,  # Server-derived fail-closed
+                },
             )
             matches.append(rec)
 
@@ -383,65 +448,119 @@ class MandiMarketService:
 
     def get_benchmark_scorecards(self) -> Dict[str, Any]:
         """
-        Exposes verified benchmark scorecards and limitations.
-        Accurately reports persistence baseline winning MAE, HGB RMSE gain, and crisis fold undercoverage.
+        Exposes verified benchmark scorecards and limitations loaded directly from source CSVs:
+        - FC007_VERIFIED/scorecard_overall.csv
+        - FC008/intervals_overall.csv
+        - FC008/intervals_by_fold.csv
+        Exposes exact numbers matching verified records.
         """
-        return {
-            "primary_benchmark_model": "naive_persistence",
-            "primary_decision_rule": "Lowest Outer-Loop Mean Absolute Error (MAE) on Common Evaluation Origins",
-            "metric_denominators": {
-                "total_evaluation_rows_f2_f4": 26918,
-                "evaluated_outer_folds": ["F2", "F3", "F4"],
-                "abstained_outer_fold": "F1 (First outer fold, no prior calibration)",
-                "target_horizon": "t+7 calendar days",
-            },
-            "model_performance_summary": [
-                {
-                    "model": "naive_persistence",
-                    "role": "Primary Reference Baseline",
-                    "mae": 106.96,
-                    "rmse": 187.72,
-                    "skill_vs_persistence_mae_pct": 0.0,
-                    "coverage_90_pct": 89.95,
-                    "coverage_95_pct": 94.72,
-                    "status": "PRIMARY_WINNER_MAE",
+        point_file = REPO_ROOT / "experiments" / "reports" / "FC007_VERIFIED" / "scorecard_overall.csv"
+        interval_file = REPO_ROOT / "experiments" / "reports" / "FC008" / "intervals_overall.csv"
+        fold_file = REPO_ROOT / "experiments" / "reports" / "FC008" / "intervals_by_fold.csv"
+
+        if not point_file.exists() or not interval_file.exists() or not fold_file.exists():
+            return {
+                "status": "BENCHMARK_UNAVAILABLE",
+                "message": "Verified benchmark scorecard reports are unavailable.",
+                "model_performance_summary": [],
+                "fold_level_breakdown_naive_90": {},
+            }
+
+        try:
+            with open(point_file, "r", encoding="utf-8") as f:
+                points = {row["model"]: row for row in csv.DictReader(f)}
+            with open(interval_file, "r", encoding="utf-8") as f:
+                intervals = {(row["model"], float(row["nominal_level"])): row for row in csv.DictReader(f)}
+            with open(fold_file, "r", encoding="utf-8") as f:
+                folds = {
+                    (row["slice_name"], row["model"], float(row["nominal_level"])): row
+                    for row in csv.DictReader(f)
+                }
+
+            models_config = [
+                ("naive_persistence", "naive", "Primary Reference Baseline", "PRIMARY_WINNER_MAE"),
+                ("hist_gradient_boosting", "hist_gradient_boosting", "Exploratory Tree Model", "NON_WINNING_MAE_BEST_RMSE"),
+                ("ridge_regression", "ridge", "Exploratory Linear Regularized Model", "NON_WINNING"),
+            ]
+
+            rmse_naive = float(points["naive"]["rmse"])
+
+            summary_rows = []
+            for display_name, internal_name, role, status in models_config:
+                pt = points[internal_name]
+                mae_val = float(pt["mae"])
+                rmse_val = float(pt["rmse"])
+                cov_90 = float(intervals[(internal_name, 0.9)]["empirical_coverage_pct"])
+                cov_95 = float(intervals[(internal_name, 0.95)]["empirical_coverage_pct"])
+                skill_val = 100.0 * float(pt["skill"])
+
+                row_dict = {
+                    "model": display_name,
+                    "role": role,
+                    "mae": mae_val,
+                    "rmse": rmse_val,
+                    "skill_vs_persistence_mae_pct": skill_val,
+                    "coverage_90_pct": cov_90,
+                    "coverage_95_pct": cov_95,
+                    "status": status,
+                }
+                if internal_name != "naive":
+                    rmse_imp = ((rmse_naive - rmse_val) / rmse_naive) * 100.0
+                    row_dict["rmse_improvement_vs_persistence_pct"] = rmse_imp
+                summary_rows.append(row_dict)
+
+            fold_breakdown = {}
+            for f_key in ["F2", "F3", "F4"]:
+                slice_key = f"Fold_{f_key}"
+                if (slice_key, "naive", 0.9) in folds:
+                    f_row = folds[(slice_key, "naive", 0.9)]
+                    cov_pct = float(f_row["empirical_coverage_pct"])
+                    f_status = "NOMINAL_COVERAGE_ACHIEVED" if cov_pct >= 90.0 else "SEVERE_UNDERCOVERAGE_CRISIS_REGIME"
+                    fold_breakdown[f_key] = {
+                        "coverage_pct": cov_pct,
+                        "status": f_status,
+                        "mean_width": float(f_row.get("mean_width", 0.0)),
+                        "issued_count": int(f_row.get("issued_count", 0)),
+                    }
+
+            return {
+                "status": "AVAILABLE",
+                "primary_benchmark_model": "naive_persistence",
+                "primary_decision_rule": "Lowest Outer-Loop Mean Absolute Error (MAE) on Common Evaluation Origins",
+                "metric_denominators": {
+                    "point_metrics_scope": {
+                        "total_origins": 64776,
+                        "unique_series": 401,
+                        "folds": ["F1", "F2", "F3", "F4"],
+                        "target_tolerance": "t+7 calendar days (6-8 day tolerance)",
+                        "units": "INR/quintal",
+                    },
+                    "interval_metrics_scope": {
+                        "total_issued_origins": 26918,
+                        "unique_series": 365,
+                        "evaluated_folds": ["F2", "F3", "F4"],
+                        "abstained_fold": "F1 (First outer fold, no earlier residuals for calibration)",
+                        "target_tolerance": "t+7 calendar days (6-8 day tolerance)",
+                        "units": "INR/quintal",
+                    },
                 },
-                {
-                    "model": "hist_gradient_boosting",
-                    "role": "Exploratory Tree Model",
-                    "mae": 109.75,
-                    "rmse": 176.62,
-                    "skill_vs_persistence_mae_pct": -2.61,  # Worse MAE than persistence
-                    "rmse_improvement_vs_persistence_pct": 5.91,
-                    "coverage_90_pct": 88.42,
-                    "coverage_95_pct": 93.81,
-                    "status": "NON_WINNING_MAE_BEST_RMSE",
-                },
-                {
-                    "model": "ridge_regression",
-                    "role": "Exploratory Linear Regularized Model",
-                    "mae": 110.32,
-                    "rmse": 178.61,
-                    "skill_vs_persistence_mae_pct": -3.14,
-                    "rmse_improvement_vs_persistence_pct": 4.85,
-                    "coverage_90_pct": 88.15,
-                    "coverage_95_pct": 93.54,
-                    "status": "NON_WINNING",
-                },
-            ],
-            "fold_level_breakdown_naive_90": {
-                "F2": {"coverage_pct": 94.48, "status": "NOMINAL_COVERAGE_ACHIEVED"},
-                "F3": {"coverage_pct": 75.94, "status": "SEVERE_UNDERCOVERAGE_CRISIS_REGIME"},
-                "F4": {"coverage_pct": 72.26, "status": "SEVERE_UNDERCOVERAGE_CRISIS_REGIME"},
-            },
-            "critical_disclosures": [
-                "Persistence baseline (106.96) beats HGB (109.75) and Ridge (110.32) on primary MAE.",
-                "HGB achieves 5.91% RMSE improvement, but does NOT beat persistence on MAE.",
-                "Overall 90% coverage (89.95%) is driven by pooled sample size and does not establish conditional validity.",
-                "During high-volatility crisis regimes (F3 and F4), empirical coverage collapses to 75.94% and 72.26%.",
-                "Retrospective model scores cannot authorize live operational farmer advice.",
-            ],
-        }
+                "model_performance_summary": summary_rows,
+                "fold_level_breakdown_naive_90": fold_breakdown,
+                "critical_disclosures": [
+                    "Persistence baseline (MAE ~106.96) beats HGB (~109.75) and Ridge (~110.32) on primary MAE.",
+                    "HGB achieves ~5.91% RMSE improvement over persistence, but does NOT beat persistence on MAE.",
+                    "Overall 90% coverage (~89.95%) is pooled across folds and does not establish conditional validity.",
+                    "During high-volatility crisis regimes (F3 and F4), empirical coverage collapses to ~75.94% and ~72.26%.",
+                    "Retrospective model scores cannot authorize live operational farmer advice.",
+                ],
+            }
+        except Exception as e:
+            return {
+                "status": "BENCHMARK_UNAVAILABLE",
+                "message": f"Failed to load verified benchmark scorecards: {type(e).__name__}",
+                "model_performance_summary": [],
+                "fold_level_breakdown_naive_90": {},
+            }
 
     def evaluate_forecast(self, req: ForecastServiceRequest) -> ForecastServiceResult:
         """

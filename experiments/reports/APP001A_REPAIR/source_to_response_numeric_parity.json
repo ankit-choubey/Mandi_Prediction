@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED_NUMERIC_PARITY",
+  "total_comparisons": 11,
+  "all_exact_match": true,
+  "comparisons": [
+    {
+      "metric": "naive_rmse",
+      "source_csv": "FC007_VERIFIED/scorecard_overall.csv",
+      "source_raw": 298.83366418131106,
+      "api_value": 298.83366418131106,
+      "parity_exact": true
+    },
+    {
+      "metric": "hgb_rmse",
+      "source_csv": "FC007_VERIFIED/scorecard_overall.csv",
+      "source_raw": 281.15814294332023,
+      "api_value": 281.15814294332023,
+      "parity_exact": true
+    },
+    {
+      "metric": "ridge_rmse",
+      "source_csv": "FC007_VERIFIED/scorecard_overall.csv",
+      "source_raw": 288.56442281012414,
+      "api_value": 288.56442281012414,
+      "parity_exact": true
+    },
+    {
+      "metric": "naive_coverage_90_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 89.9547,
+      "api_value": 89.9547,
+      "parity_exact": true
+    },
+    {
+      "metric": "naive_coverage_95_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 94.3829,
+      "api_value": 94.3829,
+      "parity_exact": true
+    },
+    {
+      "metric": "hgb_coverage_90_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 89.9955,
+      "api_value": 89.9955,
+      "parity_exact": true
+    },
+    {
+      "metric": "hgb_coverage_95_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 94.3978,
+      "api_value": 94.3978,
+      "parity_exact": true
+    },
+    {
+      "metric": "ridge_coverage_90_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 89.9955,
+      "api_value": 89.9955,
+      "parity_exact": true
+    },
+    {
+      "metric": "ridge_coverage_95_pct",
+      "source_csv": "FC008/intervals_overall.csv",
+      "source_raw": 94.4312,
+      "api_value": 94.4312,
+      "parity_exact": true
+    },
+    {
+      "metric": "ridge_skill_pct",
+      "source_csv": "FC007_VERIFIED/scorecard_overall.csv",
+      "source_raw": -3.1502410274475423,
+      "api_value": -3.1502410274475423,
+      "parity_exact": true
+    },
+    {
+      "metric": "f2_naive_coverage_90_pct",
+      "source_csv": "FC008/intervals_by_fold.csv",
+      "source_raw": 92.3159,
+      "api_value": 92.3159,
+      "parity_exact": true
+    }
+  ],
+  "evaluation_scopes": {
+    "point_metrics_scope": {
+      "total_origins": 64776,
+      "unique_series": 401,
+      "folds": [
+        "F1",
+        "F2",
+        "F3",
+        "F4"
+      ],
+      "target_tolerance": "t+7 calendar days (6-8 day tolerance)",
+      "units": "INR/quintal"
+    },
+    "interval_metrics_scope": {
+      "total_issued_origins": 26918,
+      "unique_series": 365,
+      "evaluated_folds": [
+        "F2",
+        "F3",
+        "F4"
+      ],
+      "abstained_fold": "F1 (First outer fold, no earlier residuals for calibration)",
+      "target_tolerance": "t+7 calendar days (6-8 day tolerance)",
+      "units": "INR/quintal"
+    }
+  }
+}

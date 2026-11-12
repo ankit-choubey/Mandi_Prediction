@@ -59,8 +59,44 @@ class TestMandiMarketService:
     """Verifies service business logic, data isolation, and dynamic calculations."""
 
     @pytest.fixture
-    def service(self):
-        return MandiMarketService()
+    def service(self, tmp_path):
+        from pathlib import Path
+        default_p = Path("data/imported_snapshots/latest_observation_index.json")
+        if default_p.exists():
+            return MandiMarketService(latest_index_path=default_p)
+
+        # Self-contained fixture for clean checkout
+        sample_series = {}
+        districts = ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"]
+        commodities = ["Wheat", "Potato", "Rice", "Paddy(Common)", "Tomato", "Onion"]
+        for d in districts:
+            for c in commodities:
+                sid = f"{c}_{d}_mkt_Common_FAQ"
+                sample_series[sid] = {
+                    "district": d,
+                    "market_canonical": f"{d} Mandi",
+                    "market_raw": f"{d} Mandi",
+                    "commodity": c,
+                    "variety": "Common",
+                    "grade": "FAQ",
+                    "latest_observation_date": "2026-11-11",
+                    "modal_price": 2000.0,
+                    "min_price": 1900.0,
+                    "max_price": 2100.0,
+                    "price_unit": "Rs./Quintal",
+                    "market_alias_status": "ACCEPTED",
+                    "status": "ACCEPTED",
+                    "is_import_verified": True,
+                }
+        p = tmp_path / "latest_observation_index.json"
+        p.write_text(json.dumps({
+            "index_version": "1.0.0",
+            "generated_at_utc": "2026-11-11T18:00:00Z",
+            "total_series_indexed": len(sample_series),
+            "composite_source_sha256": "clean_checkout_fixture_hash",
+            "series": sample_series,
+        }))
+        return MandiMarketService(latest_index_path=p)
 
     def test_health_endpoint_capability_matrix(self, service):
         health = service.get_health()
@@ -148,18 +184,18 @@ class TestMandiMarketService:
         summary = {m["model"]: m for m in bench["model_performance_summary"]}
 
         # Persistence beats HGB on MAE
-        assert summary["naive_persistence"]["mae"] == 106.96
-        assert summary["hist_gradient_boosting"]["mae"] == 109.75
-        assert summary["ridge_regression"]["mae"] == 110.32
+        assert round(summary["naive_persistence"]["mae"], 2) == 106.96
+        assert round(summary["hist_gradient_boosting"]["mae"], 2) == 109.75
+        assert round(summary["ridge_regression"]["mae"], 2) == 110.32
         assert summary["naive_persistence"]["mae"] < summary["hist_gradient_boosting"]["mae"]
 
         # HGB improves RMSE
-        assert summary["hist_gradient_boosting"]["rmse_improvement_vs_persistence_pct"] == 5.91
+        assert round(summary["hist_gradient_boosting"]["rmse_improvement_vs_persistence_pct"], 2) == 5.91
 
         # Crisis fold undercoverage
         f3_f4 = bench["fold_level_breakdown_naive_90"]
-        assert f3_f4["F3"]["coverage_pct"] == 75.94
-        assert f3_f4["F4"]["coverage_pct"] == 72.26
+        assert round(f3_f4["F3"]["coverage_pct"], 2) == 75.94
+        assert round(f3_f4["F4"]["coverage_pct"], 2) == 72.26
 
     def test_forecast_endpoint_unavailable_fail_closed(self, service):
         req = ForecastServiceRequest(
@@ -190,9 +226,15 @@ class TestMandiMarketService:
             "future_price_upper": 2300.0,
             "params": {
                 "storage_cost_per_quintal": 20.0,
+                "handling_cost_per_quintal": 0.0,
+                "incremental_transport_cost": 0.0,
                 "quantity_loss_fraction": 0.01,
+                "quality_discount_fraction": 0.0,
                 "annual_carrying_rate": 0.07,
                 "holding_period_days": 7,
+                "carrying_cost_type": "opportunity",
+                "transaction_cost_now": 0.0,
+                "transaction_cost_later": 0.0,
             },
         })
         assert complete_res["break_even_relation"] in ("ENTIRELY_ABOVE_BREAK_EVEN", "STRADDLES_BREAK_EVEN")

@@ -63,8 +63,9 @@ class TestGateA1EconomicContracts:
         assert "MISSING_ECONOMIC_PARAMETERS" in res.gate_reasons
         assert "NO_PARAMETERS_SUPPLIED_HOLDING_FIELDS_UNAVAILABLE" in res.gate_reasons
 
-        # Spot proceeds without parameters should simply be Q * p0
-        assert res.r_sell_net == 2000.0
+        # Net proceeds without transaction cost is unknown (None); gross proceeds is Q * p0
+        assert res.r_sell_net is None
+        assert res.r_sell_gross == 2000.0
 
     def test_horizon_mismatch_rejected(self):
         """
@@ -208,6 +209,23 @@ class TestGateA1EconomicContracts:
         with pytest.raises(ValueError, match="Provenance value mismatch for 'storage_cost'"):
             evaluate_research_economics(req)
 
+    def test_partial_cost_object_omits_fields_and_returns_incomplete(self):
+        """Reviewer defect: Storage-only parameter input must leave net proceeds and gains None."""
+        req = ResearchEconomicRequest.from_dict({
+            "quantity_quintals": 1.0,
+            "current_price": 2000.0,
+            "future_price_point": 2200.0,
+            "params": {"storage_cost_per_quintal": 50.0},
+        })
+        res = evaluate_research_economics(req)
+        assert res.break_even_relation == "INCOMPLETE_PARAMETERS"
+        assert res.delta_r_point is None
+        assert res.r_hold_point_net is None
+        assert res.r_sell_net is None
+        assert res.r_sell_gross == 2000.0
+        assert "storage_cost_per_quintal" not in res.missing_cost_inputs
+        assert "quantity_loss_fraction" in res.missing_cost_inputs
+
 
 class TestGateA2ArtifactValidation:
     """Verifies all Gate A2 artifact validation, pinned scopes, and watchdog constraints."""
@@ -341,3 +359,88 @@ class TestGateA2ArtifactValidation:
                 stage_name="Test Stage Memory",
                 max_rss_mb=0.01,
             )
+
+    def test_altered_pooled_quantile_rejected(self, base_envelope):
+        """Altered pooled quantile must fail validation via payload SHA-256 verification."""
+        import copy
+        from src.forecast_intervals import validate_and_load_calibration_envelope
+        bad_env = copy.deepcopy(base_envelope)
+        bad_env["quantiles"]["F2"]["naive"]["quantiles"]["0.9"]["pooled"]["quantile"] *= 1.10
+        with pytest.raises(ValueError, match="Quantiles payload SHA-256 mismatch"):
+            validate_and_load_calibration_envelope(bad_env)
+
+    def test_missing_semantic_config_rejected(self, base_envelope):
+        """Missing semantic config hash must be rejected."""
+        import copy
+        from src.forecast_intervals import validate_and_load_calibration_envelope
+        bad_env = copy.deepcopy(base_envelope)
+        del bad_env["config_sha256_semantic"]
+        with pytest.raises(ValueError, match="Missing required config_sha256_semantic"):
+            validate_and_load_calibration_envelope(bad_env)
+
+
+class TestGateA3ServiceTrust:
+    """Verifies service capability derivation and index trust constraints."""
+
+    def test_service_empty_series_index_not_ready(self, tmp_path):
+        import json
+        from src.service import MandiMarketService
+        bad_index = tmp_path / "empty_series.json"
+        bad_index.write_text(json.dumps({
+            "index_version": "1.0.0",
+            "series": []
+        }))
+        svc = MandiMarketService(latest_index_path=bad_index)
+        assert svc.get_health().capabilities["prices"].available is False
+
+    def test_service_missing_index_path_not_leaked(self):
+        from pathlib import Path
+        from src.service import MandiMarketService
+        svc = MandiMarketService(latest_index_path=Path("/tmp/nonexistent/subfolder/index.json"))
+        err_msg = svc.get_health().capabilities["prices"].reason
+        assert "/tmp/nonexistent" not in err_msg
+        assert "Market price index file not found" in err_msg
+
+    def test_service_future_index_row_cannot_enable_advice(self, tmp_path):
+        import json
+        from src.service import MandiMarketService
+        future_index = tmp_path / "future_index.json"
+        future_index.write_text(json.dumps({
+            "index_version": "1.0.0",
+            "series": {
+                "Wheat_Lucknow": {
+                    "district": "Lucknow",
+                    "market_canonical": "Lucknow Mandi",
+                    "commodity": "Wheat",
+                    "latest_observation_date": "2099-01-01",
+                    "modal_price": 2500.0,
+                    "active_advice_permitted": True,
+                }
+            }
+        }))
+        svc = MandiMarketService(latest_index_path=future_index)
+        records = svc.get_latest_prices()
+        assert len(records) == 1
+        assert records[0].capabilities["active_advice_permitted"] is False
+
+    def test_service_missing_grade_preserves_unknown(self, tmp_path):
+        import json
+        from src.service import MandiMarketService
+        idx = tmp_path / "unknown_grade.json"
+        idx.write_text(json.dumps({
+            "index_version": "1.0.0",
+            "series": {
+                "Wheat_Lucknow": {
+                    "district": "Lucknow",
+                    "market_canonical": "Lucknow Mandi",
+                    "commodity": "Wheat",
+                    "latest_observation_date": "2026-11-10",
+                    "modal_price": 2000.0,
+                }
+            }
+        }))
+        svc = MandiMarketService(latest_index_path=idx)
+        records = svc.get_latest_prices()
+        assert len(records) == 1
+        assert records[0].grade == "UNKNOWN"
+        assert records[0].status == "UNKNOWN"

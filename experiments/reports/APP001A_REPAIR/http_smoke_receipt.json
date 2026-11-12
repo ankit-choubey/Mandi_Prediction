@@ -1,0 +1,41 @@
+{
+  "status": "LOOPBACK_SMOKE_SUCCESS",
+  "bind_host": "127.0.0.1",
+  "bind_port": 52622,
+  "clean_shutdown": true,
+  "requests": [
+    {
+      "endpoint": "GET /api/v1/health",
+      "status_code": 200,
+      "latency_ms": 0.92,
+      "healthy": true
+    },
+    {
+      "endpoint": "GET /api/v1/prices/latest?commodity=Wheat",
+      "status_code": 200,
+      "latency_ms": 0.41,
+      "matching_series": 1
+    },
+    {
+      "endpoint": "GET /api/v1/models/benchmark",
+      "status_code": 200,
+      "latency_ms": 0.51,
+      "primary_model": "naive_persistence"
+    },
+    {
+      "endpoint": "POST /api/v1/economics/evaluate (incomplete)",
+      "status_code": 200,
+      "latency_ms": 0.33,
+      "break_even_relation": "INCOMPLETE_PARAMETERS",
+      "r_sell_net": null
+    },
+    {
+      "endpoint": "POST /api/v1/economics/evaluate (+470 control)",
+      "status_code": 200,
+      "latency_ms": 0.3,
+      "delta_r_point": null,
+      "advisory_action": "BLOCKED"
+    }
+  ],
+  "all_200": true
+}

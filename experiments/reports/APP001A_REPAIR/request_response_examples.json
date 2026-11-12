@@ -1,0 +1,236 @@
+[
+  {
+    "case": "economics_positive_control_complete",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "delta_r_point": null,
+      "r_sell_net": 25000.0,
+      "r_hold_point_net": null,
+      "break_even_relation": "INCOMPLETE_PARAMETERS",
+      "advisory_action": "BLOCKED"
+    }
+  },
+  {
+    "case": "economics_omitted_params",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "delta_r_point": null,
+      "r_sell_net": null,
+      "r_sell_gross": 2000.0,
+      "break_even_relation": "INCOMPLETE_PARAMETERS",
+      "missing_cost_inputs": [
+        "storage_cost_per_quintal",
+        "handling_cost_per_quintal",
+        "incremental_transport_cost",
+        "quantity_loss_fraction",
+        "quality_discount_fraction",
+        "annual_carrying_rate",
+        "carrying_cost_type",
+        "transaction_cost_now",
+        "transaction_cost_later",
+        "holding_period_days"
+      ]
+    }
+  },
+  {
+    "case": "economics_partial_params_storage_only",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "delta_r_point": null,
+      "r_sell_net": null,
+      "r_sell_gross": 2000.0,
+      "break_even_relation": "INCOMPLETE_PARAMETERS",
+      "missing_cost_inputs": [
+        "handling_cost_per_quintal",
+        "incremental_transport_cost",
+        "quantity_loss_fraction",
+        "quality_discount_fraction",
+        "annual_carrying_rate",
+        "carrying_cost_type",
+        "transaction_cost_now",
+        "transaction_cost_later",
+        "holding_period_days"
+      ]
+    }
+  },
+  {
+    "case": "economics_empty_body_rejected",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 400,
+    "response_summary": {
+      "schema_version": "1.0.0",
+      "request_id": "e821bfcd-25d2-4bc1-8d0f-a1b265243f4d",
+      "as_of_utc": "2026-11-12T21:01:48.439005+00:00",
+      "status": "ERROR",
+      "data": null,
+      "error": {
+        "code": "MISSING_REQUIRED_FIELDS",
+        "message": "Missing required fields: 'quantity_quintals' and 'current_price' must be provided.",
+        "details": null
+      }
+    }
+  },
+  {
+    "case": "economics_text_plain_media_type_rejected",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 415,
+    "response_summary": {
+      "schema_version": "1.0.0",
+      "request_id": "9afa9ddd-8bcb-43d9-81d6-524380b8bbb6",
+      "as_of_utc": "2026-11-12T21:01:48.439031+00:00",
+      "status": "ERROR",
+      "data": null,
+      "error": {
+        "code": "UNSUPPORTED_MEDIA_TYPE",
+        "message": "Failed to parse request body: UNSUPPORTED_MEDIA_TYPE",
+        "details": null
+      }
+    }
+  },
+  {
+    "case": "economics_nan_in_json_rejected",
+    "method": "POST",
+    "path": "/api/v1/economics/evaluate",
+    "http_status": 400,
+    "response_summary": {
+      "schema_version": "1.0.0",
+      "request_id": "2c4e4944-392a-47c5-8362-c204d194d315",
+      "as_of_utc": "2026-11-12T21:01:48.439046+00:00",
+      "status": "ERROR",
+      "data": null,
+      "error": {
+        "code": "INVALID_JSON_NUMBER",
+        "message": "Failed to parse request body: INVALID_JSON_NUMBER",
+        "details": null
+      }
+    }
+  },
+  {
+    "case": "forecast_negative_horizon_rejected",
+    "method": "POST",
+    "path": "/api/v1/forecast",
+    "http_status": 400,
+    "response_summary": {
+      "schema_version": "1.0.0",
+      "request_id": "bd8a641d-9eb0-4a9f-8cdd-b0e0420d7f10",
+      "as_of_utc": "2026-11-12T21:01:48.439067+00:00",
+      "status": "ERROR",
+      "data": null,
+      "error": {
+        "code": "INVALID_HORIZON_DAYS",
+        "message": "horizon_days must be a positive integer between 1 and 365, got -7",
+        "details": null
+      }
+    }
+  },
+  {
+    "case": "forecast_honest_unavailable_fail_closed",
+    "method": "POST",
+    "path": "/api/v1/forecast",
+    "http_status": 200,
+    "response_summary": {
+      "status": "UNAVAILABLE",
+      "forecast_status": "FORECAST_UNAVAILABLE",
+      "advisory_action": "BLOCKED"
+    }
+  },
+  {
+    "case": "prices_latest_supported_lucknow_wheat",
+    "method": "GET",
+    "path": "/api/v1/prices/latest?commodity=Wheat&district=Lucknow",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "total_matching_series": 1,
+      "first_series": {
+        "series_id": "Lucknow|Banthara|Wheat|Dara|FAQ",
+        "district": "Lucknow",
+        "market_canonical": "Banthara",
+        "market_raw": "Banthara APMC",
+        "commodity": "Wheat",
+        "variety": "Dara",
+        "grade": "FAQ",
+        "observation_date": "2026-11-11",
+        "age_days": 2,
+        "modal_price": 2721.0,
+        "min_price": 2721.0,
+        "max_price": 2721.0,
+        "price_unit": "Rs./Quintal",
+        "market_alias_status": "ACCEPTED",
+        "status": "ACCEPTED",
+        "status_reason": "Validated official observed latest trade record.",
+        "data_mode": "FILE_IMPORT",
+        "import_timestamp_utc": "2026-11-12T13:40:23.424920+00:00",
+        "is_live_verified": false,
+        "is_import_verified": true,
+        "source_file_hashes": [
+          "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11"
+        ],
+        "capabilities": {
+          "price_display_permitted": true,
+          "forecast_eligible": false,
+          "economics_eligible": false,
+          "active_advice_permitted": false
+        }
+      }
+    }
+  },
+  {
+    "case": "catalog_get",
+    "method": "GET",
+    "path": "/api/v1/catalog",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "focus_crops": [
+        "Wheat",
+        "Potato",
+        "Onion",
+        "Tomato",
+        "Paddy(Common)",
+        "Rice"
+      ],
+      "commodity_aliases": {
+        "Paddy(Dhan)(Common)": "Paddy(Common)",
+        "Dhan": "Paddy(Common)"
+      },
+      "districts": [
+        "Ghaziabad",
+        "Jhansi",
+        "Kanpur",
+        "Lucknow",
+        "Unnao"
+      ],
+      "total_series_count": 30
+    }
+  },
+  {
+    "case": "health_get",
+    "method": "GET",
+    "path": "/api/v1/health",
+    "http_status": 200,
+    "response_summary": {
+      "status": "SUCCESS",
+      "process_status": "HEALTHY",
+      "capabilities": {
+        "prices": "AVAILABLE",
+        "history": "UNAVAILABLE_RESTRICTED",
+        "benchmarks": "AVAILABLE",
+        "forecast": "UNAVAILABLE",
+        "economics": "RESEARCH_ONLY",
+        "active_advice": "BLOCKED"
+      }
+    }
+  }
+]

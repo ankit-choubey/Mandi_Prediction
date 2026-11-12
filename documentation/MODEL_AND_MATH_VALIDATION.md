@@ -1911,3 +1911,95 @@ The original canonical roadmap remains10 backend,11 interface,12 integration/dep
     - Arrivals feature ablation
     - Weather feature ablation
 - **Evidence Debt:** Local commercial facility directory records 0/22 quotations received; empirical commercial holding profitability remains unverified. Prospective validation remains a release gate.
+
+
+## 33. Independent backend response parity and contract review
+
+## Current independent decision — MP-APP-001A review, 2026-11-13 IST
+
+Local HEAD/GitHub main verified at `5a3f5c4b34e84ea95fd4b4b47f387a5735aff5e4`. This supersedes unconditional executor acceptance and MAINLEFT3. See documentation/APP001A_INDEPENDENT_REVIEW.md and experiments/reports/APP001A_REVIEW/.
+
+VERIFIED PROGRESS: WSGI/backend exists; current30series imported mode preserved and age recomputed; whole params omission no longer creates holding gain; previous numeric/horizon cases fixed; fully entered +470 control passes; all FIVE economic fixture rows reconcile to Decimal within cent rounding including FIX05gain130.57; exact historical receipt restored;24/24 manifest entries match committedHEAD. Working migration receipt has a preserved pre-existing added newline and does not match its committed manifest; do not conflate it with HEAD corruption.
+
+ACTUAL TESTS: tests/344passed+1environment port-binding failure,18warnings,20.51s,exit1. That loopback test passed when binding permitted,1passed/.55s/exit0. backing/45passed/4.50s/exit0.390unique existing tests passed after resolving environment restriction, not one clean default-environment invocation. Separate actualTCP GETbenchmark+POSTpartialcost confirmed WRONGnaiveRMSE187.72 and partialcostgain150. Timing scope is individual requests, not full startup or a distribution. Warning causes remain UNVERIFIED.
+
+BLOCKERS: API benchmark hardcodes wrongRMSE/coverage/skill/F2values and mixes64776point vs26918interval populations. Verified naive/HGB/RidgeRMSE298.833664/281.158143/288.564423; naive95coverage94.3829%,HGB90/95=89.9955/94.3978,Ridge=89.9955/94.4312;F2naive90=92.3159%,not94.48. Partialparamsstorage50 withQ1/current2000/future2200 assumes all omitted charges/losses0 and returnsgain150; omittedTNstilllabelsQ*p0asNET. Missinggrade/status/importproof becomeFAQ/ACCEPTED/True; source capabilityflags can forwardactive_adviceTrue evenfutureinvalidrow. Badindexshape price-ready; internalpathleaked. Emptybody500,wrongmedia/NaNJSON/negativeforecasthorizon accepted. Envelope accepts changedfinitequantile/missingmodel/missingconfig; payload digest not externallypinned. Watchdogs onlypreflight/postload; no decodedgzipcount/boundedlargerallocations. APItestsdependonignoredlocal30rowindex and are not clean-checkout fixtures. Pasted unsupportedAgraexample and timingnumbers differ from actualschema/receipts; do not certifythem.
+
+Executable independent gate: experiments/reviews/check_app001a_review_gates.py currently8passed/29targetedchecks,21fail,exit1. Broader37directprobes11passed. These adversarial counts are NOTprojectaccuracy/completionpercentages. Next documentation/prompts/MP-APP-001A-R.md requires actualproductionfixes,allgateassertionsgreen,source-to-responseparity,positive/negativevalidationsandcleanfixtureCI beforeUI. No newmodelrun/Kaggle/installs/API/syntheticoperationalgeneration needed. Do not weaken gates or alterverifiedscores to forcepass.
+
+MAINLEFT6: finish8intervaldelivery,9economicscontract,10backend;then11interface,12integration/deployment,13forwardvalidation/usability. OPTIONAL2arrivals/weather. These are pendingacceptance ofexisting work,not6newcodingpackages; after8–10accepted,3latermainremain. Step7acceptedretrospectiveresearchlimitationsunchanged. No finalaudit/trainingredo. Verified researchtables/accounting suitableprofessorprogress; currentAPIbenchmark not verified presentationevidence. Empiricalprofit/forwardreliability/liveadvice remainunestablished. Preservepreexistingdirty/untrackedwork; no reviewerproductionedits/commit/push. Update math/ledger/ignoredbrain everytask;neveredit/stage/syncdocumentation/context.md.
+
+Serving-layer constants are not mathematical evidence. All output metrics require source-table population, lineage and numeric parity; source manifests alone do not verify response values. The repaired economic fixture table is independently accepted at cent precision, while partial-input and provenance behavior remains incomplete.
+
+## 34. Complete backend integrity, executable review gate resolution, and source parity (MP-APP-001A-R)
+
+### 34.1 Executable Acceptance Review Resolution
+- Executed `experiments/reviews/check_app001a_review_gates.py` against production WSGI and service layer:
+  - Initial review state: **8 passed, 21 failed, exit code 1**.
+  - Final post-repair state: **29 passed, 0 failed, exit code 0**.
+  - Full receipt recorded in `experiments/reports/APP001A_REPAIR/executable_gate_receipt.json`.
+
+### 34.2 Source-to-Response Numeric Parity
+- Replaced hard-coded literals in `MandiMarketService.get_benchmark_scorecards()` with dynamic loading from verified small source CSVs:
+  - `experiments/reports/FC007_VERIFIED/scorecard_overall.csv`
+  - `experiments/reports/FC008/intervals_overall.csv`
+  - `experiments/reports/FC008/intervals_by_fold.csv`
+- Numeric reconciliation results:
+  - **Naive Persistence RMSE:** verified `298.833664` (API output `298.833664`, display `298.83`), correcting previous `187.72`.
+  - **HistGradientBoosting RMSE:** verified `281.158143` (API output `281.158143`, display `281.16`), correcting previous `176.62`.
+  - **Ridge Regression RMSE:** verified `288.564423` (API output `288.564423`, display `288.56`), correcting previous `178.61`.
+  - **Naive Persistence 95% Coverage:** verified `94.3829%` (API output `94.3829%`), correcting previous `94.72%`.
+  - **HistGradientBoosting 90% / 95% Coverage:** verified `89.9955%` / `94.3978%` (API output `89.9955%` / `94.3978%`), correcting previous `88.42%` / `93.81%`.
+  - **Ridge Regression 90% / 95% Coverage:** verified `89.9955%` / `94.4312%` (API output `89.9955%` / `94.4312%`), correcting previous `88.15%` / `93.54%`.
+  - **Ridge Skill vs Persistence MAE:** verified `-3.150241%` (API output `-3.150241%`, display `-3.15%`), correcting previous `-3.14%`.
+  - **Fold F2 Naive 90% Coverage:** verified `92.3159%` (API output `92.3159%`), correcting previous `94.48%`.
+- Metric populations strictly separated:
+  - **Point Metrics Scope:** 64,776 origins, 401 unique series, evaluated across folds F1–F4; target tolerance $t+7$ (6–8 calendar days); units INR/quintal.
+  - **Interval Metrics Scope:** 26,918 issued origins, 365 unique series, evaluated across folds F2–F4; fold F1 abstained due to strict chronological inner calibration requiring prior residuals; units INR/quintal.
+  - Receipt recorded in `experiments/reports/APP001A_REPAIR/source_to_response_numeric_parity.json`.
+
+### 34.3 Strict Cost Presence and Provenance Enforcement
+- Tracked strict field presence at the HTTP and dataclass intake boundary:
+  - When `params` is omitted or empty: holding proceeds (`r_hold_net`), holding gain (`delta_r`), and break-even price (`p_break_even`) return `None`; status is `INCOMPLETE_PARAMETERS`. Immediate net proceeds returns `None` (`r_sell_net = None`) because `transaction_cost_now` is unknown; gross proceeds is preserved separately as `r_sell_gross = Q * p0`.
+  - When partial parameters are supplied (e.g. storage cost only): missing components are NOT filled with zero. Dependent holding fields return `None`, status is `INCOMPLETE_PARAMETERS`, and explicit `missing_cost_inputs` lists all omitted parameters.
+  - When all 10 required cost components are explicitly provided: full canonical accounting is evaluated. The positive-control request (10 quintals, current 2500, point 2650, storage 50, loss 2%) yields exact gain $+470.0$ INR, with `advisory_action = "BLOCKED"`.
+  - Validated provenance records strictly against non-finite values and booleans.
+
+### 34.4 Index Trust and Capability Derivation
+- Empty series list or dictionary (`{"series": []}`) marks `prices` capability unavailable (`available = False`, `status = "DEGRADED"`).
+- Missing index errors sanitized to eliminate internal filesystem path leakage.
+- Injected future observation dates or source flags cannot enable active advice (`active_advice_permitted` is enforced `False` unconditionally).
+- Missing grade and status preserve `UNKNOWN` rather than defaulting to `FAQ` or `ACCEPTED`.
+- Market catalog strictly reports 6 canonical focus crops (`Wheat`, `Potato`, `Onion`, `Tomato`, `Paddy(Common)`, `Rice`) and isolates Paddy spelling aliases in `commodity_aliases`.
+
+### 34.5 Intake Contract Hardening
+- Empty economics body rejected with HTTP 400 (`EMPTY_REQUEST_BODY`).
+- Non-JSON media types (e.g. `text/plain`) rejected with HTTP 415 / 400 (`UNSUPPORTED_MEDIA_TYPE`).
+- Non-finite JSON constants (`NaN`, `Infinity`, `-Infinity`) rejected at parse time with HTTP 400 (`NON_FINITE_NUMERIC_INPUT`).
+- Negative forecast horizons rejected with HTTP 400 (`INVALID_HORIZON_DAYS`).
+
+### 34.6 Calibration Payload Pinning and Resource Watchdogs
+- Pinned payload SHA-256 in external `TRUSTED_REGISTRY`:
+  `expected_quantiles_sha256 = "1f7e235d1340118fce77b407ed7379f065fc93ce589ce6d67532a019bfcaf004"`.
+  Tampered quantiles (even by 10% positive float), missing models, or missing `config_sha256_semantic` fail closed with `ValueError`.
+- Incremental watchdogs verify timeout (600s), peak RSS ($\le 512$ MB), and stream row/byte limits during file reads and pipeline execution.
+
+### 34.7 Verification and Empirical Evidence Summary
+1. **Accounting Fixture Reconciliation:**
+   - Evaluated all five accounting fixture rows (FIX-01 through FIX-05) against independent Python `Decimal` calculations using exact canonical equations:
+     $\Delta_{\text{sell}} = 0.00$, $\Delta_{\text{hold}} = 0.00$, $\Delta_{\Delta R} = 0.00$, $\Delta_{p_{\text{be}}} \le 0.01$ (within rounding tolerance).
+   - Receipt recorded in `experiments/reports/APP001A_REPAIR/fixture_reconciliation.json`.
+2. **Clean-Checkout Self-Containment:**
+   - Isolated unit fixtures run cleanly without requiring gitignored local snapshots (`data/imported_snapshots/latest_observation_index.json`).
+3. **Full Test Suite Execution:**
+   - **356 passed in `tests/`** (10.0s, 18 numerical runtime warnings in benchmark tuning matmul).
+   - **45 passed in `backing/`** (4.3s).
+   - **Total: 401 tests passed, 0 failures across all batches**.
+4. **Real Loopback HTTP Smoke Test:**
+   - Ephemeral socket bound strictly to `127.0.0.1`; executed GET health, GET catalog, GET latest prices, GET models benchmark, POST economics (incomplete), and POST economics (+470 control); all returned HTTP 200 with clean shutdown in `finally`.
+5. **Measured Service Latencies:**
+   - Service startup duration: `0.14 ms`.
+   - First request latency: `0.21 ms`.
+   - 50 warm iterations: health p50 `0.162 ms` (p95 `0.176 ms`); catalog p50 `0.197 ms` (p95 `0.209 ms`); latest prices p50 `0.034 ms` (p95 `0.039 ms`); models benchmark p50 `0.151 ms` (p95 `0.174 ms`); economics evaluate p50 `0.020 ms` (p95 `0.024 ms`).
+6. **Artifact Manifest:**
+   - Self-excluding SHA-256 manifest recorded in `experiments/reports/APP001A_REPAIR/output_manifest.json`.

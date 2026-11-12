@@ -1,0 +1,17 @@
+{
+  "status": "ALL_TESTS_PASSED",
+  "batches": {
+    "tests_dir": {
+      "exit_code": 0,
+      "duration_seconds": 10.37,
+      "summary_line": "356 passed, 18 warnings in 9.99s"
+    },
+    "backing_dir": {
+      "exit_code": 0,
+      "duration_seconds": 4.7,
+      "summary_line": "45 passed in 4.34s"
+    }
+  },
+  "combined_exit_code": 0,
+  "total_duration_seconds": 15.07
+}

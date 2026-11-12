@@ -1,0 +1,18 @@
+{
+  "status": "WATCHDOGS_VERIFIED",
+  "tests": [
+    {
+      "watchdog": "timeout_watchdog",
+      "triggered": true,
+      "error": "Pipeline exceeded total timeout limit (10.0s) at Timeout Test: elapsed 100.00s",
+      "passed": true
+    },
+    {
+      "watchdog": "rss_memory_watchdog",
+      "triggered": true,
+      "error": "Peak RSS (42.77 MB) exceeded limit (0.0 MB) at Memory Test",
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

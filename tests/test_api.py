@@ -25,6 +25,7 @@ def call_wsgi_app(
     path: str,
     query_string: str = "",
     body: Optional[bytes] = None,
+    content_type: str = "application/json",
 ) -> Tuple[int, Dict[str, str], Dict[str, Any]]:
     """Helper to invoke WSGI application directly without a socket."""
     body_bytes = body or b""
@@ -33,6 +34,7 @@ def call_wsgi_app(
         "PATH_INFO": path,
         "QUERY_STRING": query_string,
         "CONTENT_LENGTH": str(len(body_bytes)),
+        "CONTENT_TYPE": content_type,
         "wsgi.input": io.BytesIO(body_bytes),
         "SERVER_NAME": "localhost",
         "SERVER_PORT": "80",
@@ -57,8 +59,43 @@ class TestWsgiApiEndpoints:
     """Verifies WSGI routing, serialization, error codes, and request validation."""
 
     @pytest.fixture
-    def app(self):
-        service = MandiMarketService()
+    def app(self, tmp_path):
+        from pathlib import Path
+        default_p = Path("data/imported_snapshots/latest_observation_index.json")
+        if default_p.exists():
+            service = MandiMarketService(latest_index_path=default_p)
+        else:
+            sample_series = {}
+            districts = ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"]
+            commodities = ["Wheat", "Potato", "Rice", "Paddy(Common)", "Tomato", "Onion"]
+            for d in districts:
+                for c in commodities:
+                    sid = f"{c}_{d}_mkt_Common_FAQ"
+                    sample_series[sid] = {
+                        "district": d,
+                        "market_canonical": f"{d} Mandi",
+                        "market_raw": f"{d} Mandi",
+                        "commodity": c,
+                        "variety": "Common",
+                        "grade": "FAQ",
+                        "latest_observation_date": "2026-11-11",
+                        "modal_price": 2000.0,
+                        "min_price": 1900.0,
+                        "max_price": 2100.0,
+                        "price_unit": "Rs./Quintal",
+                        "market_alias_status": "ACCEPTED",
+                        "status": "ACCEPTED",
+                        "is_import_verified": True,
+                    }
+            p = tmp_path / "latest_observation_index.json"
+            p.write_text(json.dumps({
+                "index_version": "1.0.0",
+                "generated_at_utc": "2026-11-11T18:00:00Z",
+                "total_series_indexed": len(sample_series),
+                "composite_source_sha256": "clean_checkout_fixture_hash",
+                "series": sample_series,
+            }))
+            service = MandiMarketService(latest_index_path=p)
         return create_app(service)
 
     def test_health_endpoint_get(self, app):
@@ -155,6 +192,50 @@ class TestWsgiApiEndpoints:
         assert status == 400
         assert body["error"]["code"] == "INVALID_ECONOMIC_PARAMETERS"
 
+    def test_text_plain_content_type_rejected(self, app):
+        status, _, body = call_wsgi_app(
+            app,
+            "POST",
+            "/api/v1/economics/evaluate",
+            body=b"quantity_quintals=1",
+            content_type="text/plain",
+        )
+        assert status in (400, 415)
+        assert body["status"] == "ERROR"
+
+    def test_nan_in_json_body_rejected(self, app):
+        status, _, body = call_wsgi_app(
+            app,
+            "POST",
+            "/api/v1/economics/evaluate",
+            body=b'{"quantity_quintals": NaN, "current_price": 2000.0}',
+            content_type="application/json",
+        )
+        assert status == 400
+        assert body["status"] == "ERROR"
+
+    def test_negative_horizon_rejected(self, app):
+        status, _, body = call_wsgi_app(
+            app,
+            "POST",
+            "/api/v1/forecast",
+            body=b'{"district": "Lucknow", "market": "Lucknow", "commodity": "Wheat", "horizon_days": -1}',
+            content_type="application/json",
+        )
+        assert status == 400
+        assert body["status"] == "ERROR"
+
+    def test_empty_economics_body_rejected(self, app):
+        status, _, body = call_wsgi_app(
+            app,
+            "POST",
+            "/api/v1/economics/evaluate",
+            body=b"",
+            content_type="application/json",
+        )
+        assert status == 400
+        assert body["status"] == "ERROR"
+
 
 class TestRealLoopbackHttpSmoke:
     """
@@ -163,8 +244,42 @@ class TestRealLoopbackHttpSmoke:
     Executes actual TCP requests over http.client and shuts down cleanly in finally block.
     """
 
-    def test_real_loopback_get_and_post_smoke(self):
-        service = MandiMarketService()
+    def test_real_loopback_get_and_post_smoke(self, tmp_path):
+        default_p = Path("data/imported_snapshots/latest_observation_index.json")
+        if default_p.exists():
+            service = MandiMarketService(latest_index_path=default_p)
+        else:
+            sample_series = {}
+            districts = ["Ghaziabad", "Jhansi", "Kanpur", "Lucknow", "Unnao"]
+            commodities = ["Wheat", "Potato", "Rice", "Paddy(Common)", "Tomato", "Onion"]
+            for d in districts:
+                for c in commodities:
+                    sid = f"{c}_{d}_mkt_Common_FAQ"
+                    sample_series[sid] = {
+                        "district": d,
+                        "market_canonical": f"{d} Mandi",
+                        "market_raw": f"{d} Mandi",
+                        "commodity": c,
+                        "variety": "Common",
+                        "grade": "FAQ",
+                        "latest_observation_date": "2026-11-11",
+                        "modal_price": 2000.0,
+                        "min_price": 1900.0,
+                        "max_price": 2100.0,
+                        "price_unit": "Rs./Quintal",
+                        "market_alias_status": "ACCEPTED",
+                        "status": "ACCEPTED",
+                        "is_import_verified": True,
+                    }
+            p = tmp_path / "latest_observation_index.json"
+            p.write_text(json.dumps({
+                "index_version": "1.0.0",
+                "generated_at_utc": "2026-11-11T18:00:00Z",
+                "total_series_indexed": len(sample_series),
+                "composite_source_sha256": "clean_checkout_fixture_hash",
+                "series": sample_series,
+            }))
+            service = MandiMarketService(latest_index_path=p)
         app = create_app(service)
 
         # Bind to 127.0.0.1 on ephemeral port (port 0 selects free port)

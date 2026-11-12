@@ -1,0 +1,8 @@
+{
+  "command": "python3 experiments/reviews/check_app001a_review_gates.py",
+  "exit_code": 0,
+  "passed": 29,
+  "total": 29,
+  "failures": [],
+  "status": "ALL_GATES_PASSED"
+}

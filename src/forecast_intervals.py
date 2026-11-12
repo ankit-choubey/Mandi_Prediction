@@ -183,6 +183,8 @@ TRUSTED_REGISTRY: Dict[str, Any] = {
         "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
         "5df6c039f99f244101e403d6d5257ef518c0cff234674a2b2518e95261bfdca9",
     },
+    "expected_envelope_sha256": "84ba2da32316e1fe0774a8d462ab9a77038c641ef6efeb46146c7ad72d3f663f",
+    "expected_quantiles_sha256": "1f7e235d1340118fce77b407ed7379f065fc93ce589ce6d67532a019bfcaf004",
 }
 
 FOLD_VALIDITY_SCOPES = TRUSTED_REGISTRY["historical_scopes"]
@@ -284,6 +286,7 @@ def create_calibration_envelope(
 def validate_and_load_calibration_envelope(
     path_or_dict: Path | str | dict,
     expected_source_sha256: Optional[str] = "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+    expected_quantiles_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Loads and strictly validates a calibration envelope artifact against the external trusted registry.
@@ -322,12 +325,13 @@ def validate_and_load_calibration_envelope(
         )
 
     # 3. Verify semantic config hash against external trusted registry
-    if "config_sha256_semantic" in data:
-        expected_config = TRUSTED_REGISTRY["config_semantic_sha256"]
-        if data.get("config_sha256_semantic") != expected_config:
-            raise ValueError(
-                f"Config semantic SHA-256 mismatch: {data.get('config_sha256_semantic')} != {expected_config}"
-            )
+    if "config_sha256_semantic" not in data or not data["config_sha256_semantic"]:
+        raise ValueError("Missing required config_sha256_semantic in calibration envelope")
+    expected_config = TRUSTED_REGISTRY["config_semantic_sha256"]
+    if data.get("config_sha256_semantic") != expected_config:
+        raise ValueError(
+            f"Config semantic SHA-256 mismatch: {data.get('config_sha256_semantic')} != {expected_config}"
+        )
 
     # 4. Verify code identity against trusted code hashes
     code_sha = data.get("code_sha256", "")
@@ -377,9 +381,11 @@ def validate_and_load_calibration_envelope(
     for fold_id in ["F2", "F3", "F4"]:
         fold_obj = quants.get(fold_id, {})
         for m_name in TRUSTED_REGISTRY["supported_models"]:
+            if m_name not in fold_obj:
+                raise ValueError(f"Missing required model payload '{m_name}' in fold {fold_id}")
             m_obj = fold_obj.get(m_name, {})
             if m_obj.get("status") != "CALIBRATED":
-                continue
+                raise ValueError(f"Model '{m_name}' in fold {fold_id} must have status CALIBRATED, got {m_obj.get('status')}")
             m_quants = m_obj.get("quantiles", {})
 
             # Must have 0.90 and 0.95
@@ -424,7 +430,14 @@ def validate_and_load_calibration_envelope(
                 if cq90 > cq95 + 1e-9:
                     raise ValueError(f"Quantile ordering violation for {crop} in {fold_id}/{m_name}: {cq90} > {cq95}")
 
-    return data
+    # 8. External payload quantiles SHA-256 verification
+    expected_q_sha = expected_quantiles_sha256 or TRUSTED_REGISTRY["expected_quantiles_sha256"]
+    computed_q_sha = hashlib.sha256(json.dumps(quants, sort_keys=True).encode("utf-8")).hexdigest()
+    if computed_q_sha != expected_q_sha:
+        raise ValueError(
+            f"Quantiles payload SHA-256 mismatch: {computed_q_sha} != {expected_q_sha}. "
+            "Altered or unverified calibration quantiles payload rejected."
+        )
 
     return data
 
@@ -1115,16 +1128,18 @@ def execute_interval_pipeline(
     if archive_sha256 != expected_archive_sha:
         raise ValueError(f"Archive hash mismatch: {archive_sha256} != {expected_archive_sha}")
 
-    if str(predictions_path).endswith(".gz"):
-        with gzip.open(predictions_path, "rt", encoding="utf-8") as f:
-            all_rows = list(csv.DictReader(f))
-    else:
-        with open(predictions_path, "r", encoding="utf-8") as f:
-            all_rows = list(csv.DictReader(f))
+    all_rows = []
+    open_fn = gzip.open(predictions_path, "rt", encoding="utf-8") if str(predictions_path).endswith(".gz") else open(predictions_path, "r", encoding="utf-8")
+    with open_fn as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            all_rows.append(r)
+            if len(all_rows) > 70000:
+                raise ValueError(f"Row count {len(all_rows)} exceeds approved exception limit (70,000)!")
+            if len(all_rows) % 10000 == 0:
+                check_resource_watchdogs(t_start, max_duration_seconds, f"Incremental load row {len(all_rows)}", max_rss_mb)
 
     total_master_rows = len(all_rows)
-    if total_master_rows > 70000:
-        raise ValueError(f"Row count {total_master_rows} exceeds approved exception limit (70,000)!")
 
     d_stage1 = time.time() - t0_stage
     if d_stage1 > stage_timeout_seconds:

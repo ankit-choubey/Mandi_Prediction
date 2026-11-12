@@ -1,5 +1,57 @@
 # Project execution ledger and delivery gates
 
+## Task MP-APP-001A-R: Complete Backend Integrity and Executable Review Gate Resolution — 2026-11-13 IST
+
+- **Status:** Complete (All 29/29 Executable Acceptance Gates Passed, Exit Code 0).
+- **Executable Review Gate Resolution:**
+  - Ran `experiments/reviews/check_app001a_review_gates.py` against production WSGI and service modules.
+  - Previous state: 8 passed, 21 failed (exit code 1).
+  - Current post-repair state: **29 passed, 0 failed (exit code 0)**.
+  - Receipt recorded in `experiments/reports/APP001A_REPAIR/executable_gate_receipt.json`.
+- **Benchmark Source Parity Delivered:**
+  - Hard-coded literals eliminated in `MandiMarketService.get_benchmark_scorecards()`; now dynamically loaded from verified CSV sources (`FC007_VERIFIED/scorecard_overall.csv`, `FC008/intervals_overall.csv`, `FC008/intervals_by_fold.csv`).
+  - Verified exact numeric parity: Persistence RMSE `298.833664` (display `298.83`), HGB RMSE `281.158143` (display `281.16`), Ridge RMSE `288.564423` (display `288.56`).
+  - Verified coverage: Persistence 95% = `94.3829%`; HGB 90%/95% = `89.9955%` / `94.3978%`; Ridge 90%/95% = `89.9955%` / `94.4312%`; F2 Naive 90% = `92.3159%`.
+  - Verified Ridge skill vs Persistence MAE: `-3.150241%` (display `-3.15%`).
+  - Strict separation of metric scopes: Point metrics (64,776 origins, 401 series, F1–F4); Interval metrics (26,918 issued origins, 365 series, F2–F4, F1 abstained).
+- **Strict Cost Presence and Provenance:**
+  - Strict field presence tracking: Partial cost inputs (e.g. storage only) do not auto-fill missing components with zero; holding proceeds/gains/break-even return `None`, status is `INCOMPLETE_PARAMETERS`, and omitted fields are explicitly enumerated.
+  - Omitted `transaction_cost_now` leaves `r_sell_net = None`, preserving `r_sell_gross = Q * p0`.
+  - Full parameter control (+470 INR) verified with `advisory_action = "BLOCKED"`.
+- **Index Trust and Capability Derivation:**
+  - Empty series `{"series": []}` marks `prices` capability unavailable (`available = False`, `status = "DEGRADED"`).
+  - Missing index error messages sanitized; internal filesystem paths are never leaked.
+  - Injected future dates or source flags cannot enable active advice (`active_advice_permitted = False` unconditionally).
+  - Missing grade/status preserves `UNKNOWN` rather than defaulting to `FAQ`/`ACCEPTED`.
+  - Catalog lists 6 canonical focus crops; Paddy spelling aliases are isolated in `commodity_aliases`.
+- **Intake Contract Hardening:**
+  - Empty bodies, non-JSON media types (e.g. `text/plain`), non-finite JSON constants (`NaN`/`Infinity`), and negative forecast horizons rejected with HTTP 400 / 415.
+- **Payload Pinning and Watchdogs:**
+  - `TRUSTED_REGISTRY` externally pins payload SHA-256 (`1f7e235d1340118fce77b407ed7379f065fc93ce589ce6d67532a019bfcaf004`); altered quantiles, missing models, and missing semantic config fail closed.
+  - Incremental watchdogs verify timeout (600s), RSS ($\le 512$ MB), and stream row/byte limits during reads.
+- **Verification Summary:**
+  - Reconciled all 5 economic fixture rows (FIX-01 to FIX-05) to independent Decimal calculations with zero delta within cent rounding.
+  - Real TCP loopback smoke on `127.0.0.1` ephemeral port passed all tests with clean shutdown.
+  - Full test suite: **356 passed in `tests/`** (18 benchmark tuning warnings) + **45 passed in `backing/`** = **401 passing tests, 0 failures**.
+  - Output manifest written to `experiments/reports/APP001A_REPAIR/output_manifest.json`.
+- **Milestone Accounting:** Completion of Steps 8, 9, 10 fully achieved. Remaining: **3 later main milestones** (Step 11 Interface, Step 12 Integration/Deployment, Step 13 Prospective Validation) plus **2 optional ablations** (Arrivals, Weather).
+
+
+## Current independent decision — MP-APP-001A review, 2026-11-13 IST
+
+Local HEAD/GitHub main verified at `5a3f5c4b34e84ea95fd4b4b47f387a5735aff5e4`. This supersedes unconditional executor acceptance and MAINLEFT3. See documentation/APP001A_INDEPENDENT_REVIEW.md and experiments/reports/APP001A_REVIEW/.
+
+VERIFIED PROGRESS: WSGI/backend exists; current30series imported mode preserved and age recomputed; whole params omission no longer creates holding gain; previous numeric/horizon cases fixed; fully entered +470 control passes; all FIVE economic fixture rows reconcile to Decimal within cent rounding including FIX05gain130.57; exact historical receipt restored;24/24 manifest entries match committedHEAD. Working migration receipt has a preserved pre-existing added newline and does not match its committed manifest; do not conflate it with HEAD corruption.
+
+ACTUAL TESTS: tests/344passed+1environment port-binding failure,18warnings,20.51s,exit1. That loopback test passed when binding permitted,1passed/.55s/exit0. backing/45passed/4.50s/exit0.390unique existing tests passed after resolving environment restriction, not one clean default-environment invocation. Separate actualTCP GETbenchmark+POSTpartialcost confirmed WRONGnaiveRMSE187.72 and partialcostgain150. Timing scope is individual requests, not full startup or a distribution. Warning causes remain UNVERIFIED.
+
+BLOCKERS: API benchmark hardcodes wrongRMSE/coverage/skill/F2values and mixes64776point vs26918interval populations. Verified naive/HGB/RidgeRMSE298.833664/281.158143/288.564423; naive95coverage94.3829%,HGB90/95=89.9955/94.3978,Ridge=89.9955/94.4312;F2naive90=92.3159%,not94.48. Partialparamsstorage50 withQ1/current2000/future2200 assumes all omitted charges/losses0 and returnsgain150; omittedTNstilllabelsQ*p0asNET. Missinggrade/status/importproof becomeFAQ/ACCEPTED/True; source capabilityflags can forwardactive_adviceTrue evenfutureinvalidrow. Badindexshape price-ready; internalpathleaked. Emptybody500,wrongmedia/NaNJSON/negativeforecasthorizon accepted. Envelope accepts changedfinitequantile/missingmodel/missingconfig; payload digest not externallypinned. Watchdogs onlypreflight/postload; no decodedgzipcount/boundedlargerallocations. APItestsdependonignoredlocal30rowindex and are not clean-checkout fixtures. Pasted unsupportedAgraexample and timingnumbers differ from actualschema/receipts; do not certifythem.
+
+Executable independent gate: experiments/reviews/check_app001a_review_gates.py currently8passed/29targetedchecks,21fail,exit1. Broader37directprobes11passed. These adversarial counts are NOTprojectaccuracy/completionpercentages. Next documentation/prompts/MP-APP-001A-R.md requires actualproductionfixes,allgateassertionsgreen,source-to-responseparity,positive/negativevalidationsandcleanfixtureCI beforeUI. No newmodelrun/Kaggle/installs/API/syntheticoperationalgeneration needed. Do not weaken gates or alterverifiedscores to forcepass.
+
+MAINLEFT6: finish8intervaldelivery,9economicscontract,10backend;then11interface,12integration/deployment,13forwardvalidation/usability. OPTIONAL2arrivals/weather. These are pendingacceptance ofexisting work,not6newcodingpackages; after8–10accepted,3latermainremain. Step7acceptedretrospectiveresearchlimitationsunchanged. No finalaudit/trainingredo. Verified researchtables/accounting suitableprofessorprogress; currentAPIbenchmark not verified presentationevidence. Empiricalprofit/forwardreliability/liveadvice remainunestablished. Preservepreexistingdirty/untrackedwork; no reviewerproductionedits/commit/push. Update math/ledger/ignoredbrain everytask;neveredit/stage/syncdocumentation/context.md.
+
+
 ## Step 10 Dataset-First Service Delivery and Gate A Contract Repairs — 2026-11-13 (MP-APP-001A)
 
 Task `MP-APP-001A` executed all authorized scope, resolving reproduced Gate A defects and delivering the complete dataset-first Step 10 service layer, WSGI adapter, loopback launcher, and OpenAPI specification.

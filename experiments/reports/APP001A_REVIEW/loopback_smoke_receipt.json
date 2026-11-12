@@ -1,0 +1,7 @@
+{
+  "method": "Actual loopback TCP requests to production WSGI app, ephemeral port, no public exposure",
+  "requests": [],
+  "status": "HTTP_SMOKE_BLOCKED",
+  "error_type": "PermissionError",
+  "error": "[Errno 1] Operation not permitted"
+}

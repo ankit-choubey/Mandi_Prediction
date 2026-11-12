@@ -175,6 +175,7 @@ class CatalogData:
     markets: List[Dict[str, str]]
     commodities: List[str]
     series_inventory: List[Dict[str, Any]]
+    commodity_aliases: Optional[Dict[str, str]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

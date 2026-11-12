@@ -47,12 +47,13 @@ When `status` is `"ERROR"` or `"UNAVAILABLE"`, the `error` object provides stabl
 
 ### HTTP Status Code Mapping:
 - `200 OK`: Request succeeded. Note: Unavailable capabilities (such as `/api/v1/forecast`) return HTTP 200 with envelope `status: "UNAVAILABLE"` and explicit reason codes to allow predictable client handling.
-- `400 Bad Request`: Validation failure, non-finite domain error, invalid pagination parameter, or malformed JSON.
+- `400 Bad Request`: Validation failure, non-finite domain error (including NaN/Infinity constants in JSON body), negative forecast horizon, omitted required request fields, or malformed JSON.
 - `404 Not Found`: Unknown endpoint route.
 - `405 Method Not Allowed`: HTTP verb mismatch (e.g. POST on a GET-only route).
 - `413 Payload Too Large`: Request body exceeds maximum allowed limit (1 MB).
+- `415 Unsupported Media Type`: Non-JSON request body submitted (e.g. `text/plain` on POST endpoints).
 - `500 Internal Server Error`: Unhandled server exception. Secret-safe: stack traces and internal paths are never exposed.
-- `503 Service Unavailable`: Underlyling storage index or snapshot is missing or unreadable.
+- `503 Service Unavailable`: Underlying storage index or snapshot is missing or unreadable.
 
 ---
 
@@ -106,18 +107,20 @@ The service strictly adheres to the official **India Date Policy**:
 ### 4.5 Model Benchmark Information
 - **Route:** `GET /api/v1/models/benchmark`
 - **Verified Facts Disclosed:**
-  - Naive persistence baseline MAE `106.96` beats HistGradientBoosting (`109.75`) and Ridge (`110.32`).
-  - HistGradientBoosting improves RMSE by `5.91%` (`176.62` vs `187.72`) but does not win primary MAE.
-  - Overall 90% empirical coverage is `89.95%`, but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
+  - Naive persistence baseline MAE `106.96` (verified `106.955369`) beats HistGradientBoosting (`109.75`) and Ridge (`110.32`).
+  - HistGradientBoosting improves RMSE by `5.91%` (`281.158` vs `298.834` INR/quintal) but does not win primary MAE.
+  - Overall 90% empirical coverage is `89.95%` (`89.9547%`), but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
+  - Denominators are strictly separated: point metrics cover 64,776 origins across 401 series in F1–F4; interval evaluation covers 26,918 issued origins across 365 series in F2–F4 (F1 abstained due to strict chronological inner calibration requiring prior residuals).
 
 ### 4.6 Forecast Gating
 - **Route:** `POST /api/v1/forecast`
 - **Request Body:** `{"district": "Lucknow", "market": "Lucknow", "commodity": "Wheat", "horizon_days": 7}`
-- **Behavior:** Returns `status: "UNAVAILABLE"`, `forecast_status: "FORECAST_UNAVAILABLE"`, and `advisory_action: "BLOCKED"`. Does not deserialize incompatible model weights or train on request.
+- **Behavior:** Returns `status: "UNAVAILABLE"`, `forecast_status: "FORECAST_UNAVAILABLE"`, and `advisory_action: "BLOCKED"`. Negative or non-integer `horizon_days` is rejected with HTTP 400. Does not deserialize incompatible model weights or train on request.
 
 ### 4.7 Research Economics Evaluation
 - **Route:** `POST /api/v1/economics/evaluate`
 - **Request Body:** `ResearchEconomicRequest` payload (quantity, spot price, optional interval bounds, holding period, and optional `params`).
 - **Behaviors:**
-  - If `params` is omitted: Returns incomplete holding proceeds (`r_hold = null`, `gain = null`, `p_break_even = null`), `break_even_relation: "INCOMPLETE_PARAMETERS"`, and explicit `missing_cost_inputs`.
-  - If `params` is provided: Evaluates canonical accounting, enforces horizon reconciliation, verifies provenance consistency, checks affine bounds ($p_{\text{lower}} \le p_{\text{point}} \le p_{\text{upper}}$), and enforces advisory action `BLOCKED`.
+  - If `params` is omitted or empty: Returns incomplete holding proceeds (`r_hold = null`, `gain = null`, `p_break_even = null`), `break_even_relation: "INCOMPLETE_PARAMETERS"`, `r_sell_net = null` (immediate transaction fee unknown), `r_sell_gross = Q * p0`, and explicit `missing_cost_inputs`.
+  - If partial cost object is provided: Requires all 10 explicit cost components for holding comparison; missing fields produce `INCOMPLETE_PARAMETERS` with null dependent proceeds/gains rather than auto-filling with zero.
+  - If complete parameters are provided: Evaluates canonical accounting, enforces horizon reconciliation, verifies provenance consistency, checks affine bounds ($p_{\text{lower}} \le p_{\text{point}} \le p_{\text{upper}}$), and enforces advisory action `BLOCKED`.

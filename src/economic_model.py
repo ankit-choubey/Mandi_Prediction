@@ -814,6 +814,7 @@ class ResearchEconomicRequest:
     provenance_map: Optional[Dict[str, InputProvenance]] = None
     is_reporting_normalization: bool = False
     units: str = "INR/quintal"
+    missing_cost_inputs: Optional[List[str]] = None
 
     def __post_init__(self):
         _validate_numeric(self.quantity_quintals, "quantity_quintals", strictly_positive=True)
@@ -908,9 +909,38 @@ class ResearchEconomicRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ResearchEconomicRequest:
+        if "quantity_quintals" not in d or "current_price" not in d:
+            raise ValueError("Required fields 'quantity_quintals' and 'current_price' must be provided.")
+
+        required_economic_fields = [
+            "storage_cost_per_quintal",
+            "handling_cost_per_quintal",
+            "incremental_transport_cost",
+            "quantity_loss_fraction",
+            "quality_discount_fraction",
+            "annual_carrying_rate",
+            "carrying_cost_type",
+            "transaction_cost_now",
+            "transaction_cost_later",
+            "holding_period_days",
+        ]
+
         params_obj = None
-        if d.get("params"):
-            params_obj = EconomicParameters(**d["params"])
+        missing_costs: Optional[List[str]] = None
+
+        if "params" not in d or d.get("params") is None:
+            params_obj = None
+            missing_costs = list(required_economic_fields)
+        elif isinstance(d["params"], dict):
+            p_dict = dict(d["params"])
+            if "quantity_loss_fraction" not in p_dict and "physical_loss_fraction" in p_dict:
+                p_dict["quantity_loss_fraction"] = p_dict["physical_loss_fraction"]
+            if "holding_period_days" not in p_dict and "holding_period_days" in d:
+                p_dict["holding_period_days"] = d["holding_period_days"]
+            missing_costs = [f for f in required_economic_fields if f not in p_dict]
+            filtered_args = {k: v for k, v in p_dict.items() if k in EconomicParameters.__annotations__}
+            params_obj = EconomicParameters(**filtered_args)
+
         prov_obj = None
         if d.get("provenance_map"):
             prov_obj = {k: InputProvenance.from_dict(v) if isinstance(v, dict) else v for k, v in d["provenance_map"].items()}
@@ -933,6 +963,7 @@ class ResearchEconomicRequest:
             provenance_map=prov_obj,
             is_reporting_normalization=d.get("is_reporting_normalization", False),
             units=d.get("units", "INR/quintal"),
+            missing_cost_inputs=missing_costs,
         )
 
 
@@ -975,9 +1006,11 @@ class ResearchEconomicResult:
     provenance_summary: Dict[str, Any]
     missing_cost_inputs: List[str]
     disclaimer: str
+    r_sell_gross: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
+            "r_sell_gross": self.r_sell_gross,
             "r_sell_net": self.r_sell_net,
             "r_hold_point_net": self.r_hold_point_net,
             "r_hold_lower_net": self.r_hold_lower_net,
@@ -1020,6 +1053,7 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
     """
     q = float(request.quantity_quintals)
     p0 = float(request.current_price)
+    r_sell_gross = q * p0
 
     # Missing parameters contract: when params is omitted, return incomplete holding/gain fields
     if request.params is None:
@@ -1033,6 +1067,7 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             "carrying_cost_type",
             "transaction_cost_now",
             "transaction_cost_later",
+            "holding_period_days",
         ]
         gate_reasons = [
             "MISSING_ECONOMIC_PARAMETERS",
@@ -1053,7 +1088,8 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
         )
 
         return ResearchEconomicResult(
-            r_sell_net=q * p0,
+            r_sell_gross=r_sell_gross,
+            r_sell_net=None,  # Net sale requires transaction_cost_now
             r_hold_point_net=None,
             r_hold_lower_net=None,
             r_hold_upper_net=None,
@@ -1078,6 +1114,57 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             disclaimer=disclaimer,
         )
 
+    # Incomplete / partial parameters contract
+    if request.missing_cost_inputs is not None and len(request.missing_cost_inputs) > 0:
+        gate_reasons = [
+            "PARTIAL_ECONOMIC_PARAMETERS",
+            "INCOMPLETE_PARAMETERS_HOLDING_FIELDS_UNAVAILABLE",
+            "UNVERIFIED_COMMERCIAL_COST_FEED",
+            "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE",
+        ]
+        prov_summary = {"status": "PARTIAL_PARAMETERS_SUPPLIED"}
+        if request.provenance_map:
+            prov_summary["client_provenance"] = {
+                k: (v.status if hasattr(v, "status") else str(v))
+                for k, v in request.provenance_map.items()
+            }
+
+        disclaimer = (
+            "RESEARCH ONLY. Incomplete economic cost parameters prevent calculation of storage proceeds "
+            "and incremental return. Advisory action is strictly blocked pending approved prospective validation."
+        )
+
+        r_sell_net = None
+        if "transaction_cost_now" not in request.missing_cost_inputs:
+            r_sell_net = q * (p0 - request.params.transaction_cost_now)
+
+        return ResearchEconomicResult(
+            r_sell_gross=r_sell_gross,
+            r_sell_net=r_sell_net,
+            r_hold_point_net=None,
+            r_hold_lower_net=None,
+            r_hold_upper_net=None,
+            delta_r_point=None,
+            delta_r_lower=None,
+            delta_r_upper=None,
+            delta_per_quintal_point=None,
+            delta_per_quintal_lower=None,
+            delta_per_quintal_upper=None,
+            p_break_even=None,
+            required_pct_change_break_even=None,
+            break_even_relation="INCOMPLETE_PARAMETERS",
+            operational_status="RESEARCH_ONLY",
+            advisory_action="BLOCKED",
+            advisory_permitted=False,
+            gate_reasons=gate_reasons,
+            quantity_quintals=q,
+            is_reporting_normalization=request.is_reporting_normalization,
+            params_used=request.params.to_dict() if hasattr(request.params, "to_dict") else {},
+            provenance_summary=prov_summary,
+            missing_cost_inputs=request.missing_cost_inputs,
+            disclaimer=disclaimer,
+        )
+
     params = request.params
 
     # Provenance binding validation: if provenance_map is provided, verify amounts match params
@@ -1096,7 +1183,9 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             if prov_k in request.provenance_map:
                 prov_item = request.provenance_map[prov_k]
                 prov_val = prov_item.value if hasattr(prov_item, "value") else (prov_item.get("value") if isinstance(prov_item, dict) else None)
-                if prov_val is not None and isinstance(prov_val, (int, float)) and not isinstance(prov_val, bool):
+                if prov_val is not None:
+                    if type(prov_val) is bool or not isinstance(prov_val, (int, float)) or not math.isfinite(float(prov_val)):
+                        raise ValueError(f"Invalid non-finite or boolean provenance value for '{prov_k}': {prov_val}")
                     if abs(float(prov_val) - float(param_val)) > 1e-6:
                         raise ValueError(
                             f"Provenance value mismatch for '{prov_k}': provenance record declares {prov_val}, "
@@ -1220,4 +1309,5 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
         provenance_summary=prov_summary,
         missing_cost_inputs=missing_costs,
         disclaimer=disclaimer,
+        r_sell_gross=r_sell_gross,
     )

@@ -1,0 +1,509 @@
+{
+  "reviewed_head": "5a3f5c4b34e84ea95fd4b4b47f387a5735aff5e4",
+  "checks": [
+    {
+      "name": "real_index_series",
+      "passed": true,
+      "actual": 30,
+      "expected": 30
+    },
+    {
+      "name": "real_index_file_import",
+      "passed": true,
+      "actual": [
+        "FILE_IMPORT"
+      ],
+      "expected": "FILE_IMPORT and live_verified false"
+    },
+    {
+      "name": "dynamic_age",
+      "passed": true,
+      "actual": [
+        2,
+        2,
+        2
+      ],
+      "expected": "server-day minus actual observation date"
+    },
+    {
+      "name": "benchmark_naive_mae",
+      "passed": true,
+      "actual": 106.96,
+      "expected": 106.95536973570458
+    },
+    {
+      "name": "benchmark_naive_rmse",
+      "passed": false,
+      "actual": 187.72,
+      "expected": 298.83366418131106
+    },
+    {
+      "name": "benchmark_naive_coverage_90_pct",
+      "passed": true,
+      "actual": 89.95,
+      "expected": 89.9547
+    },
+    {
+      "name": "benchmark_naive_coverage_95_pct",
+      "passed": false,
+      "actual": 94.72,
+      "expected": 94.3829
+    },
+    {
+      "name": "benchmark_naive_skill",
+      "passed": true,
+      "actual": 0.0,
+      "expected": 0.0
+    },
+    {
+      "name": "benchmark_hist_gradient_boosting_mae",
+      "passed": true,
+      "actual": 109.75,
+      "expected": 109.74892588082822
+    },
+    {
+      "name": "benchmark_hist_gradient_boosting_rmse",
+      "passed": false,
+      "actual": 176.62,
+      "expected": 281.15814294332023
+    },
+    {
+      "name": "benchmark_hist_gradient_boosting_coverage_90_pct",
+      "passed": false,
+      "actual": 88.42,
+      "expected": 89.9955
+    },
+    {
+      "name": "benchmark_hist_gradient_boosting_coverage_95_pct",
+      "passed": false,
+      "actual": 93.81,
+      "expected": 94.3978
+    },
+    {
+      "name": "benchmark_hist_gradient_boosting_skill",
+      "passed": true,
+      "actual": -2.61,
+      "expected": -2.6118895685431687
+    },
+    {
+      "name": "benchmark_ridge_mae",
+      "passed": true,
+      "actual": 110.32,
+      "expected": 110.32472167417697
+    },
+    {
+      "name": "benchmark_ridge_rmse",
+      "passed": false,
+      "actual": 178.61,
+      "expected": 288.56442281012414
+    },
+    {
+      "name": "benchmark_ridge_coverage_90_pct",
+      "passed": false,
+      "actual": 88.15,
+      "expected": 89.9955
+    },
+    {
+      "name": "benchmark_ridge_coverage_95_pct",
+      "passed": false,
+      "actual": 93.54,
+      "expected": 94.4312
+    },
+    {
+      "name": "benchmark_ridge_skill",
+      "passed": false,
+      "actual": -3.14,
+      "expected": -3.1502410274475423
+    },
+    {
+      "name": "economics_no_params_no_invented_gain",
+      "passed": true,
+      "actual": {
+        "http": 200,
+        "gain": null,
+        "params": {}
+      },
+      "expected": "null gain until all required costs explicitly supplied"
+    },
+    {
+      "name": "economics_no_params_no_assumed_net_sale",
+      "passed": false,
+      "actual": 2000.0,
+      "expected": "net sale is unknown when immediate transaction cost omitted; gross may be separate"
+    },
+    {
+      "name": "economics_partial_params_no_invented_gain",
+      "passed": false,
+      "actual": {
+        "http": 200,
+        "gain": 150.0,
+        "params": {
+          "storage_cost_per_quintal": 50.0,
+          "handling_cost_per_quintal": 0.0,
+          "incremental_transport_cost": 0.0,
+          "direct_cost_c": 50.0,
+          "quantity_loss_fraction": 0.0,
+          "quality_discount_fraction": 0.0,
+          "annual_carrying_rate": 0.0,
+          "holding_period_days": 7,
+          "carrying_cost_type": "opportunity",
+          "transaction_cost_now": 0.0,
+          "transaction_cost_later": 0.0,
+          "scenario_name": "custom"
+        }
+      },
+      "expected": "null gain until all required costs explicitly supplied"
+    },
+    {
+      "name": "economics_partial_params_no_assumed_net_sale",
+      "passed": false,
+      "actual": 2000.0,
+      "expected": "net sale is unknown when immediate transaction cost omitted; gross may be separate"
+    },
+    {
+      "name": "http_empty_economics_validation",
+      "passed": false,
+      "actual": {
+        "http": 500,
+        "status": "ERROR",
+        "error": {
+          "code": "INTERNAL_ERROR",
+          "message": "An unexpected internal error occurred: KeyError",
+          "details": null
+        }
+      },
+      "expected": "documented 4xx validation error"
+    },
+    {
+      "name": "http_wrong_content_type_validation",
+      "passed": false,
+      "actual": {
+        "http": 200,
+        "status": "SUCCESS",
+        "error": null
+      },
+      "expected": "documented 4xx validation error"
+    },
+    {
+      "name": "http_nonstandard_nan_json_validation",
+      "passed": false,
+      "actual": {
+        "http": 200,
+        "status": "UNAVAILABLE",
+        "error": null
+      },
+      "expected": "documented 4xx validation error"
+    },
+    {
+      "name": "http_negative_forecast_horizon_validation",
+      "passed": false,
+      "actual": {
+        "http": 200,
+        "status": "UNAVAILABLE",
+        "error": null
+      },
+      "expected": "documented 4xx validation error"
+    },
+    {
+      "name": "missing_grade_not_fabricated",
+      "passed": false,
+      "actual": "FAQ",
+      "expected": "unknown/missing, not an invented grade"
+    },
+    {
+      "name": "missing_status_not_accepted",
+      "passed": false,
+      "actual": "ACCEPTED",
+      "expected": "UNKNOWN or unavailable"
+    },
+    {
+      "name": "missing_import_proof_not_verified",
+      "passed": false,
+      "actual": true,
+      "expected": false
+    },
+    {
+      "name": "future_or_untrusted_row_no_advice_escalation",
+      "passed": false,
+      "actual": {
+        "price_display_permitted": true,
+        "active_advice_permitted": true,
+        "forecast_eligible": true,
+        "economics_eligible": true
+      },
+      "expected": "server-derived false advice flag; no trusting row claims"
+    },
+    {
+      "name": "bad_index_schema_not_ready",
+      "passed": false,
+      "actual": {
+        "available": true,
+        "status": "AVAILABLE",
+        "reason": null,
+        "metadata": {
+          "total_series": 0,
+          "index_version": "1.0.0",
+          "generated_at_utc": null,
+          "source_sha256": null
+        }
+      },
+      "expected": "invalid schema -> unavailable"
+    },
+    {
+      "name": "missing_index_no_path_leak",
+      "passed": false,
+      "actual": {
+        "code": "PRICE_INDEX_UNAVAILABLE",
+        "message": "Index file not found: /var/folders/cj/y9vrjbxx3pdcdynmzf952w3w0000gn/T/tmpcs6jyv02/private/missing.json",
+        "details": null
+      },
+      "expected": "external response omits internal configured path"
+    },
+    {
+      "name": "envelope_positive_quantile_tamper_rejected",
+      "passed": false,
+      "actual": "ACCEPTED",
+      "expected": "reject altered/missing artifact payload before inference"
+    },
+    {
+      "name": "envelope_missing_model_rejected",
+      "passed": false,
+      "actual": "ACCEPTED",
+      "expected": "reject altered/missing artifact payload before inference"
+    },
+    {
+      "name": "envelope_missing_semantic_config_rejected",
+      "passed": false,
+      "actual": "ACCEPTED",
+      "expected": "reject altered/missing artifact payload before inference"
+    },
+    {
+      "name": "original_receipt_restored",
+      "passed": true,
+      "actual": "bytes compared",
+      "expected": "exact original bytes"
+    },
+    {
+      "name": "benchmark_naive_F2_coverage",
+      "passed": false,
+      "actual": 94.48,
+      "expected": 92.3159
+    }
+  ],
+  "benchmark_denominators_returned": {
+    "total_evaluation_rows_f2_f4": 26918,
+    "evaluated_outer_folds": [
+      "F2",
+      "F3",
+      "F4"
+    ],
+    "abstained_outer_fold": "F1 (First outer fold, no prior calibration)",
+    "target_horizon": "t+7 calendar days"
+  },
+  "manifest_checks": [
+    {
+      "path": "experiments/reports/APP001A/api_smoke_results.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/artifact_migration_receipt.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/fixture_reconciliation_table.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/gate_a_regression_receipt.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/latency_measurements.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/requirements_vs_achieved.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/APP001A/service_capability_matrix.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/capability_gate_matrix.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/cost_provenance_inventory.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/fixture_verification_table.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/missing_input_audit.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/ECON001/requirement_vs_achieved.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/calibration_envelope_v1.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/calibration_quantiles.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/interval_evaluation_receipt.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/interval_evaluation_receipt_migration.json",
+      "working_hash_matches": false,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/interval_evaluation_receipt_original_8d4ed57.json",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_crop.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_district.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_fold.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_by_regime.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/intervals_overall.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    },
+    {
+      "path": "experiments/reports/FC008/master_intervals_scorecards.csv",
+      "working_hash_matches": true,
+      "committed_hash_matches": true
+    }
+  ],
+  "fixture_checks": [
+    {
+      "id": "FIX-01",
+      "reported_gain": "470.0",
+      "reference_gain": "470.00000",
+      "gain_matches_cent": true,
+      "holding_matches_cent": true
+    },
+    {
+      "id": "FIX-02",
+      "reported_gain": "-230.0",
+      "reference_gain": "-230.00000",
+      "gain_matches_cent": true,
+      "holding_matches_cent": true
+    },
+    {
+      "id": "FIX-03",
+      "reported_gain": "4102.75",
+      "reference_gain": "4102.7534246575342465753424657534246576",
+      "gain_matches_cent": true,
+      "holding_matches_cent": true
+    },
+    {
+      "id": "FIX-04",
+      "reported_gain": "0.0",
+      "reference_gain": "-0.00000220098630136986301369863013698",
+      "gain_matches_cent": true,
+      "holding_matches_cent": true
+    },
+    {
+      "id": "FIX-05",
+      "reported_gain": "130.57",
+      "reference_gain": "130.565068493150684931506849315068493151",
+      "gain_matches_cent": true,
+      "holding_matches_cent": true
+    }
+  ],
+  "passed_checks": 11,
+  "total_checks": 37,
+  "method": "Direct production WSGI invocation and independent scorecard/Decimal comparisons; isolated mutated test fixtures only; no real model fit or synthetic operational data.",
+  "existing_test_evidence": {
+    "tests_directory": {
+      "passed": 344,
+      "environment_permission_failure": 1,
+      "warnings": 18,
+      "pytest_seconds": 20.51,
+      "initial_exit_code": 1
+    },
+    "loopback_retry": {
+      "passed": 1,
+      "pytest_seconds": 0.55,
+      "exit_code": 0,
+      "execution": "approved local-only port binding"
+    },
+    "backing_directory": {
+      "passed": 45,
+      "pytest_seconds": 4.5,
+      "exit_code": 0
+    },
+    "unique_existing_tests_passed": 390,
+    "separate_acceptance_gate_script": "experiments/reviews/check_app001a_review_gates.py",
+    "acceptance_script_exit_code": 1
+  },
+  "acceptance_decision": "CHANGES_REQUIRED_STEPS_8_9_10_DELIVERY_GATES_OPEN",
+  "next_task": "documentation/prompts/MP-APP-001A-R.md",
+  "main_milestones_left": 6,
+  "optional_ablations": [
+    "arrivals",
+    "weather"
+  ],
+  "loopback_followup": {
+    "initial_permission_denial_receipt": "loopback_smoke_receipt.json",
+    "permitted_actual_TCP_receipt": "loopback_retry_receipt.json",
+    "confirmed_benchmark_naive_rmse": 187.72,
+    "confirmed_partial_cost_gain": 150.0
+  },
+  "executable_gate": {
+    "path": "experiments/reviews/check_app001a_review_gates.py",
+    "passed": 8,
+    "total": 29,
+    "failed": 21,
+    "exit_code": 1,
+    "scope": "Selected regression requirements; not project accuracy"
+  }
+}

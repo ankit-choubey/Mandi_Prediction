@@ -1,0 +1,147 @@
+{
+  "status": "HTTP_SMOKE_COMPLETED_WITH_PERMITTED_LOOPBACK_BINDING",
+  "method": "Actual loopback TCP requests; separate rerun after initial permission denial; server stopped afterward. Timings are two individual requests, not a benchmark distribution or full cold start.",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/models/benchmark",
+      "http_status": 200,
+      "elapsed_ms": 0.4620830004569143,
+      "response": {
+        "schema_version": "1.0.0",
+        "request_id": "7b338585-44f4-471e-b060-19a5b41708ba",
+        "as_of_utc": "2026-11-12T20:37:40.356116+00:00",
+        "status": "SUCCESS",
+        "data": {
+          "primary_benchmark_model": "naive_persistence",
+          "primary_decision_rule": "Lowest Outer-Loop Mean Absolute Error (MAE) on Common Evaluation Origins",
+          "metric_denominators": {
+            "total_evaluation_rows_f2_f4": 26918,
+            "evaluated_outer_folds": [
+              "F2",
+              "F3",
+              "F4"
+            ],
+            "abstained_outer_fold": "F1 (First outer fold, no prior calibration)",
+            "target_horizon": "t+7 calendar days"
+          },
+          "model_performance_summary": [
+            {
+              "model": "naive_persistence",
+              "role": "Primary Reference Baseline",
+              "mae": 106.96,
+              "rmse": 187.72,
+              "skill_vs_persistence_mae_pct": 0.0,
+              "coverage_90_pct": 89.95,
+              "coverage_95_pct": 94.72,
+              "status": "PRIMARY_WINNER_MAE"
+            },
+            {
+              "model": "hist_gradient_boosting",
+              "role": "Exploratory Tree Model",
+              "mae": 109.75,
+              "rmse": 176.62,
+              "skill_vs_persistence_mae_pct": -2.61,
+              "rmse_improvement_vs_persistence_pct": 5.91,
+              "coverage_90_pct": 88.42,
+              "coverage_95_pct": 93.81,
+              "status": "NON_WINNING_MAE_BEST_RMSE"
+            },
+            {
+              "model": "ridge_regression",
+              "role": "Exploratory Linear Regularized Model",
+              "mae": 110.32,
+              "rmse": 178.61,
+              "skill_vs_persistence_mae_pct": -3.14,
+              "rmse_improvement_vs_persistence_pct": 4.85,
+              "coverage_90_pct": 88.15,
+              "coverage_95_pct": 93.54,
+              "status": "NON_WINNING"
+            }
+          ],
+          "fold_level_breakdown_naive_90": {
+            "F2": {
+              "coverage_pct": 94.48,
+              "status": "NOMINAL_COVERAGE_ACHIEVED"
+            },
+            "F3": {
+              "coverage_pct": 75.94,
+              "status": "SEVERE_UNDERCOVERAGE_CRISIS_REGIME"
+            },
+            "F4": {
+              "coverage_pct": 72.26,
+              "status": "SEVERE_UNDERCOVERAGE_CRISIS_REGIME"
+            }
+          },
+          "critical_disclosures": [
+            "Persistence baseline (106.96) beats HGB (109.75) and Ridge (110.32) on primary MAE.",
+            "HGB achieves 5.91% RMSE improvement, but does NOT beat persistence on MAE.",
+            "Overall 90% coverage (89.95%) is driven by pooled sample size and does not establish conditional validity.",
+            "During high-volatility crisis regimes (F3 and F4), empirical coverage collapses to 75.94% and 72.26%.",
+            "Retrospective model scores cannot authorize live operational farmer advice."
+          ]
+        },
+        "error": null
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/economics/evaluate",
+      "http_status": 200,
+      "elapsed_ms": 0.3121249992545927,
+      "response": {
+        "schema_version": "1.0.0",
+        "request_id": "9f6d38d2-149f-4eed-ad3b-450d7dc07afe",
+        "as_of_utc": "2026-11-12T20:37:40.356470+00:00",
+        "status": "SUCCESS",
+        "data": {
+          "r_sell_net": 2000.0,
+          "r_hold_point_net": 2150.0,
+          "r_hold_lower_net": null,
+          "r_hold_upper_net": null,
+          "delta_r_point": 150.0,
+          "delta_r_lower": null,
+          "delta_r_upper": null,
+          "delta_per_quintal_point": 150.0,
+          "delta_per_quintal_lower": null,
+          "delta_per_quintal_upper": null,
+          "p_break_even": 2050.0,
+          "required_pct_change_break_even": 2.5,
+          "break_even_relation": "POINT_ONLY_ABOVE_BREAK_EVEN",
+          "operational_status": "RESEARCH_ONLY",
+          "advisory_action": "BLOCKED",
+          "advisory_permitted": false,
+          "gate_reasons": [
+            "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE",
+            "POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE",
+            "UNVERIFIED_COMMERCIAL_COST_FEED"
+          ],
+          "quantity_quintals": 1.0,
+          "is_reporting_normalization": false,
+          "params_used": {
+            "storage_cost_per_quintal": 50,
+            "handling_cost_per_quintal": 0.0,
+            "incremental_transport_cost": 0.0,
+            "direct_cost_c": 50.0,
+            "quantity_loss_fraction": 0.0,
+            "quality_discount_fraction": 0.0,
+            "annual_carrying_rate": 0.0,
+            "holding_period_days": 7,
+            "carrying_cost_type": "opportunity",
+            "transaction_cost_now": 0.0,
+            "transaction_cost_later": 0.0,
+            "scenario_name": "custom"
+          },
+          "provenance_summary": {
+            "status": "UNVERIFIED_PARAMETERS"
+          },
+          "missing_cost_inputs": [
+            "NO_PROVENANCE_MAP_SUPPLIED_USER_OR_DEFAULT_PARAMETERS"
+          ],
+          "disclaimer": "RESEARCH ONLY. Mathematical calculations are conditional on declared parameters. Interval coverage does not cover uncertain storage costs or physical shrinkage. Advisory action is strictly blocked pending approved prospective validation."
+        },
+        "error": null
+      }
+    }
+  ]
+}

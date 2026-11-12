@@ -1,0 +1,43 @@
+{
+  "status": "MEASUREMENTS_CAPTURED",
+  "startup_ms": 0.14,
+  "first_request_ms": 0.21,
+  "warm_iterations_per_endpoint": 50,
+  "endpoints": {
+    "GET /api/v1/health": {
+      "iterations": 50,
+      "p50_ms": 0.162,
+      "p95_ms": 0.176,
+      "max_ms": 0.188,
+      "mean_ms": 0.163
+    },
+    "GET /api/v1/catalog": {
+      "iterations": 50,
+      "p50_ms": 0.197,
+      "p95_ms": 0.209,
+      "max_ms": 0.257,
+      "mean_ms": 0.2
+    },
+    "GET /api/v1/prices/latest": {
+      "iterations": 50,
+      "p50_ms": 0.034,
+      "p95_ms": 0.039,
+      "max_ms": 0.055,
+      "mean_ms": 0.035
+    },
+    "GET /api/v1/models/benchmark": {
+      "iterations": 50,
+      "p50_ms": 0.151,
+      "p95_ms": 0.174,
+      "max_ms": 0.209,
+      "mean_ms": 0.155
+    },
+    "POST /api/v1/economics/evaluate": {
+      "iterations": 50,
+      "p50_ms": 0.02,
+      "p95_ms": 0.024,
+      "max_ms": 0.038,
+      "mean_ms": 0.021
+    }
+  }
+}

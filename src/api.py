@@ -111,6 +111,10 @@ class MandiApiApp:
         if content_length > MAX_BODY_BYTES:
             return None, "PAYLOAD_TOO_LARGE"
 
+        content_type = environ.get("CONTENT_TYPE", "")
+        if content_type and not content_type.lower().startswith("application/json"):
+            return None, "UNSUPPORTED_MEDIA_TYPE"
+
         if content_length <= 0:
             return {}, None
 
@@ -119,11 +123,19 @@ class MandiApiApp:
             return {}, None
 
         raw_bytes = body_stream.read(content_length)
+
+        def _reject_constant(c):
+            raise ValueError(f"Constant '{c}' is not valid JSON number")
+
         try:
-            parsed = json.loads(raw_bytes.decode("utf-8"))
+            parsed = json.loads(raw_bytes.decode("utf-8"), parse_constant=_reject_constant)
             if not isinstance(parsed, dict):
                 return None, "JSON_ROOT_MUST_BE_OBJECT"
             return parsed, None
+        except ValueError as ve:
+            if "Constant" in str(ve) or "not valid JSON" in str(ve):
+                return None, "INVALID_JSON_NUMBER"
+            return None, f"INVALID_JSON: {str(ve)}"
         except Exception as e:
             return None, f"INVALID_JSON: {str(e)}"
 
@@ -331,7 +343,9 @@ class MandiApiApp:
 
         body, err = self._read_json_body(environ)
         if err:
-            status_code = "413 Payload Too Large" if err == "PAYLOAD_TOO_LARGE" else "400 Bad Request"
+            status_code = "415 Unsupported Media Type" if err == "UNSUPPORTED_MEDIA_TYPE" else (
+                "413 Payload Too Large" if err == "PAYLOAD_TOO_LARGE" else "400 Bad Request"
+            )
             return self._send_json(
                 start_response,
                 status_code=status_code,
@@ -361,13 +375,30 @@ class MandiApiApp:
                 ),
             )
 
+        # Validate horizon_days
+        horizon_days = body.get("horizon_days", 7)
+        if type(horizon_days) is bool or not isinstance(horizon_days, int) or horizon_days <= 0 or horizon_days > 365:
+            return self._send_json(
+                start_response,
+                status_code="400 Bad Request",
+                payload=ServiceEnvelope(
+                    request_id=request_id,
+                    as_of_utc=as_of_utc,
+                    status=ServiceStatus.ERROR.value,
+                    error=ServiceError(
+                        code="INVALID_HORIZON_DAYS",
+                        message=f"horizon_days must be a positive integer between 1 and 365, got {horizon_days}",
+                    ),
+                ),
+            )
+
         req_obj = ForecastServiceRequest(
             district=body["district"],
             market=body["market"],
             commodity=body["commodity"],
             variety=body.get("variety", "Common"),
             grade=body.get("grade", "FAQ"),
-            horizon_days=body.get("horizon_days", 7),
+            horizon_days=horizon_days,
         )
         res = self.service.evaluate_forecast(req_obj)
         return self._send_json(
@@ -394,7 +425,9 @@ class MandiApiApp:
 
         body, err = self._read_json_body(environ)
         if err:
-            status_code = "413 Payload Too Large" if err == "PAYLOAD_TOO_LARGE" else "400 Bad Request"
+            status_code = "415 Unsupported Media Type" if err == "UNSUPPORTED_MEDIA_TYPE" else (
+                "413 Payload Too Large" if err == "PAYLOAD_TOO_LARGE" else "400 Bad Request"
+            )
             return self._send_json(
                 start_response,
                 status_code=status_code,
@@ -403,6 +436,22 @@ class MandiApiApp:
                     as_of_utc=as_of_utc,
                     status=ServiceStatus.ERROR.value,
                     error=ServiceError(code=err, message=f"Failed to parse request body: {err}"),
+                ),
+            )
+
+        # Validate required fields: quantity_quintals, current_price
+        if not body or "quantity_quintals" not in body or "current_price" not in body:
+            return self._send_json(
+                start_response,
+                status_code="400 Bad Request",
+                payload=ServiceEnvelope(
+                    request_id=request_id,
+                    as_of_utc=as_of_utc,
+                    status=ServiceStatus.ERROR.value,
+                    error=ServiceError(
+                        code="MISSING_REQUIRED_FIELDS",
+                        message="Missing required fields: 'quantity_quintals' and 'current_price' must be provided.",
+                    ),
                 ),
             )
 

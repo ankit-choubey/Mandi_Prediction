@@ -1,0 +1,122 @@
+{
+  "status": "ALL_FIXTURES_RECONCILED",
+  "total_fixtures": 5,
+  "all_passed": true,
+  "fixtures": [
+    {
+      "fixture_id": "FIX-01",
+      "description": "Storing economically better (zero rate, no trans, low cost)",
+      "decimal_calculated": {
+        "r_sell_net": 25000.0,
+        "r_hold_net": 25470.0,
+        "delta_r": 470.0,
+        "p_break_even": 2602.04
+      },
+      "fixture_table": {
+        "r_sell_net": 25000.0,
+        "r_hold_net": 25470.0,
+        "delta_r": 470.0,
+        "p_break_even": 2602.04
+      },
+      "differences": {
+        "delta_r_sell": 0.0,
+        "delta_r_hold": 0.0,
+        "delta_delta_r": 0.0,
+        "delta_p_be": 0.0
+      },
+      "reconciled_exact": true
+    },
+    {
+      "fixture_id": "FIX-02",
+      "description": "Selling immediately better (high storage cost c=120)",
+      "decimal_calculated": {
+        "r_sell_net": 25000.0,
+        "r_hold_net": 24770.0,
+        "delta_r": -230.0,
+        "p_break_even": 2673.47
+      },
+      "fixture_table": {
+        "r_sell_net": 25000.0,
+        "r_hold_net": 24770.0,
+        "delta_r": -230.0,
+        "p_break_even": 2673.47
+      },
+      "differences": {
+        "delta_r_sell": 0.0,
+        "delta_r_hold": 0.0,
+        "delta_delta_r": 0.0,
+        "delta_p_be": 0.0
+      },
+      "reconciled_exact": true
+    },
+    {
+      "fixture_id": "FIX-03",
+      "description": "Straddles break-even under uncertainty interval",
+      "decimal_calculated": {
+        "r_sell_net": 99250.0,
+        "r_hold_net": 103352.75,
+        "delta_r": 4102.75,
+        "p_break_even": 2115.42
+      },
+      "fixture_table": {
+        "r_sell_net": 99250.0,
+        "r_hold_net": 103352.75,
+        "delta_r": 4102.75,
+        "p_break_even": 2115.42
+      },
+      "differences": {
+        "delta_r_sell": 0.0,
+        "delta_r_hold": 0.0,
+        "delta_delta_r": 0.0,
+        "delta_p_be": 0.0
+      },
+      "reconciled_exact": true
+    },
+    {
+      "fixture_id": "FIX-04",
+      "description": "Exact break-even equality case",
+      "decimal_calculated": {
+        "r_sell_net": 39700.0,
+        "r_hold_net": 39700.0,
+        "delta_r": -0.0,
+        "p_break_even": 2115.42
+      },
+      "fixture_table": {
+        "r_sell_net": 39700.0,
+        "r_hold_net": 39700.0,
+        "delta_r": 0.0,
+        "p_break_even": 2115.42
+      },
+      "differences": {
+        "delta_r_sell": 0.0,
+        "delta_r_hold": 0.0,
+        "delta_delta_r": 0.0,
+        "delta_p_be": 0.0
+      },
+      "reconciled_exact": true
+    },
+    {
+      "fixture_id": "FIX-05",
+      "description": "Normalized single quintal reporting unit",
+      "decimal_calculated": {
+        "r_sell_net": 1985.0,
+        "r_hold_net": 2115.57,
+        "delta_r": 130.57,
+        "p_break_even": 2115.42
+      },
+      "fixture_table": {
+        "r_sell_net": 1985.0,
+        "r_hold_net": 2115.57,
+        "delta_r": 130.57,
+        "p_break_even": 2115.42
+      },
+      "differences": {
+        "delta_r_sell": 0.0,
+        "delta_r_hold": 0.0,
+        "delta_delta_r": 0.0,
+        "delta_p_be": 0.0
+      },
+      "reconciled_exact": true
+    }
+  ]
+}
