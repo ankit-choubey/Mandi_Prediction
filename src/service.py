@@ -88,13 +88,19 @@ class MandiMarketService:
         self._load_latest_index()
 
     def _load_latest_index(self) -> None:
-        """Loads and indexes latest market observations without swallowing errors."""
+        """Loads and indexes latest market observations with bounded resource and type guards."""
         if not self.latest_index_path.exists():
             self.index_loaded = False
             self.index_error = "Market price index file not found"
             return
 
         try:
+            file_size = self.latest_index_path.stat().st_size
+            if file_size > 10 * 1024 * 1024:
+                self.index_loaded = False
+                self.index_error = f"Market price index file exceeds 10 MB limit ({file_size} bytes)"
+                return
+
             with open(self.latest_index_path, "r", encoding="utf-8") as f:
                 payload = json.load(f)
 
@@ -130,6 +136,11 @@ class MandiMarketService:
             else:
                 self.index_loaded = False
                 self.index_error = "Market price index series must be an object or list"
+                return
+
+            if len(candidates) > 50000:
+                self.index_loaded = False
+                self.index_error = f"Market price index contains too many series records ({len(candidates)})"
                 return
 
             valid_series = {}
@@ -299,6 +310,20 @@ class MandiMarketService:
             except ValueError:
                 age_days = -1
 
+            # Derive price_display_permitted for catalog inventory
+            s_caps = s_rec.get("capabilities", {})
+            src_perm = s_caps.get("price_display_permitted")
+            is_acc = (s_rec.get("status") == "ACCEPTED" and s_rec.get("market_alias_status") == "ACCEPTED")
+            valid_dt = (age_days >= 0)
+            valid_mp = (float(s_rec.get("modal_price", 0.0)) > 0.0 and math.isfinite(float(s_rec.get("modal_price", 0.0))))
+
+            if src_perm is False:
+                disp_perm = False
+            elif not is_acc or not valid_dt or not valid_mp:
+                disp_perm = False
+            else:
+                disp_perm = True
+
             inventory.append({
                 "series_id": s_id,
                 "district": dist,
@@ -309,7 +334,13 @@ class MandiMarketService:
                 "latest_observation_date": obs_date_str,
                 "age_days": age_days,
                 "status": s_rec.get("status", "UNKNOWN"),
+                "market_alias_status": s_rec.get("market_alias_status", "UNKNOWN"),
+                "price_display_permitted": disp_perm,
+                "disposition": "ACCEPTED" if disp_perm else "REVIEW",
             })
+
+        acc_count = sum(1 for item in inventory if item["price_display_permitted"])
+        rev_count = len(inventory) - acc_count
 
         return CatalogData(
             total_series_count=len(self.series_data),
@@ -319,6 +350,8 @@ class MandiMarketService:
             commodities=sorted(list(commodities)),
             series_inventory=inventory,
             commodity_aliases=PADDY_SPELLING_ALIASES,
+            accepted_series_count=acc_count,
+            review_series_count=rev_count,
         )
 
     def get_latest_prices(
@@ -326,10 +359,13 @@ class MandiMarketService:
         commodity: Optional[str] = None,
         district: Optional[str] = None,
         market: Optional[str] = None,
+        verified_only: bool = False,
+        disposition: Optional[str] = None,
     ) -> List[PriceSeriesRecord]:
         """
         Query matching latest price records from the bounded imported index.
-        Returns ALL matching exact series rather than choosing one variety/grade arbitrarily.
+        Returns matching exact series rather than choosing one variety/grade arbitrarily.
+        Dynamically derives price_display_permitted from source disposition and identity.
         Dynamically recomputes age_days from server date in Asia/Kolkata.
         Preserves null min/max bounds and FILE_IMPORT data mode.
         """
@@ -342,6 +378,7 @@ class MandiMarketService:
         comm_filter = commodity.strip().lower() if commodity else None
         dist_filter = district.strip().lower() if district else None
         mkt_filter = market.strip().lower() if market else None
+        disp_filter = disposition.strip().upper() if disposition else None
 
         for s_id, s_rec in sorted(self.series_data.items()):
             rec_comm = s_rec.get("commodity", "").strip().lower()
@@ -369,6 +406,28 @@ class MandiMarketService:
             max_p = s_rec.get("max_price")
             min_price_clean = float(min_p) if min_p is not None and math.isfinite(float(min_p)) else None
             max_price_clean = float(max_p) if max_p is not None and math.isfinite(float(max_p)) else None
+
+            # Derive price_display_permitted strictly from identity and source evidence
+            source_caps = s_rec.get("capabilities", {})
+            source_perm = source_caps.get("price_display_permitted")
+            is_accepted = (s_rec.get("status") == "ACCEPTED" and s_rec.get("market_alias_status") == "ACCEPTED")
+            has_valid_date = (age_days >= 0)
+            has_valid_modal = (float(s_rec.get("modal_price", 0.0)) > 0.0 and math.isfinite(float(s_rec.get("modal_price", 0.0))))
+
+            if source_perm is False:
+                display_permitted = False
+            elif not is_accepted or not has_valid_date or not has_valid_modal:
+                display_permitted = False
+            else:
+                display_permitted = True
+
+            # Disposition / verified_only filtering
+            if verified_only and not display_permitted:
+                continue
+            if disp_filter in ("ACCEPTED", "VERIFIED", "APPROVED") and not display_permitted:
+                continue
+            if disp_filter in ("REVIEW", "UNKNOWN_MARKET_REVIEW", "UNAPPROVED", "QUARANTINED") and display_permitted:
+                continue
 
             # Safe source file hashes
             src_hashes = s_rec.get("source_file_hashes", [])
@@ -398,7 +457,7 @@ class MandiMarketService:
                 is_import_verified=bool(s_rec.get("is_import_verified", False)),
                 source_file_hashes=src_hashes,
                 capabilities={
-                    "price_display_permitted": True,
+                    "price_display_permitted": display_permitted,
                     "forecast_eligible": False,
                     "economics_eligible": False,
                     "active_advice_permitted": False,  # Server-derived fail-closed

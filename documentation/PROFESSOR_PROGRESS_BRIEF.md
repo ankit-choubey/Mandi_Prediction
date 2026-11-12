@@ -45,12 +45,23 @@ Independent review reproduced 246 calibration quantiles and 24 model/level/fold-
 
 ## What remains
 
-Steps 8, 9, and 10 backend repairs and review gates are complete and verified (`MP-APP-001A-R` passes all 29/29 executable review gates). The HTTP API benchmark route now dynamically serves verified source table values (`298.83`, `281.16`, `288.56` INR/quintal RMSE; coverage 94.38% persistence, 89.995%/94.40% HGB; F2 naive 92.32%) with full source-to-response numeric parity. Input contracts, partial-cost validation, and calibration payload checksum pinning are strictly enforced.
+The numerical backend repair and responsive research interface are independently verified:
+- **Three Boundary Closures Accepted:**
+  1. Real source index dynamically derives 26 accepted eligible series (`price_display_permitted: true`) and isolates 4 unapproved market review series (`price_display_permitted: false`) into an amber review preview with withheld prices.
+  2. Strict provenance validation rejects unsupported units (e.g. `INR/tonne`), invalid statuses (e.g. `NOT_A_VALID_STATUS`), and overflowing exponents (`1e999`) with HTTP 400. Missing costs leave dependent fields null while preserving explicit-zero inputs.
+  3. Historical full generator pipeline raises `PermissionError: LOCAL_FULL_GENERATION_BLOCKED` before any stream decoding or I/O when unauthorized.
+- **Step 11 Research Interface Delivered:**
+  - Accessible, responsive UI built with pure standard-library vanilla JavaScript and CSS, adhering to calm agricultural aesthetics.
+  - Verified across desktop (`1280x800`) and mobile (`375x667`) viewports using real Google Chrome headless automation. Screenshots saved in `experiments/reports/APP001B/screenshot_desktop_1280x800.png` and `experiments/reports/APP001B/screenshot_mobile_375x667.png`.
+  - 100% exact scalar and formatted numeric parity confirmed between source CSVs, API envelopes, and rendered DOM elements (catalog inventory 30/26/4, MAE 106.96, RMSE 275.69, F2 92.32%, F3 75.94%, F4 72.26%, economics gross ₹25,000, holding ₹25,470, net gain +₹470.00, break-even ₹2,602.04).
+- **Execution & Test Status:**
+  - Original 29 executable review gates: **29/29 passed, exit 0**.
+  - New boundary and parity verification: **41/41 checks passed, exit 0**.
+  - Full test suite: **414 passed** (369 in `tests/` + 45 in `backing/`, 0 failures, 18 numerical runtime warnings).
+  - Measured latencies: Full Python process startup `73.36 ms`; warm in-process WSGI handler execution `0.20`–`0.56 ms`.
+- **Milestone Accounting:**
+  - Steps 8, 9, 10, and 11 are completed and verified.
+  - Exactly **2 main milestones remain**: Step 12 (Integration & Production Deployment Architecture) and Step 13 (Forward Prospective Validation & Usability Trial).
+  - **2 optional ablations remain**: Arrivals Ablation and Weather Ablation.
 
-With Steps 8–10 backend delivery verified, **3 later main milestones remain: 11 interface, 12 integration/deployment, 13 forward validation/usability**, plus 2 optional arrivals/weather ablations.
-
-The corrected five-row economic fixture table reconciles independently at cent precision, including gain 130.57 INR in FIX-05. This verifies arithmetic, not commercial profit. The local quotation directory records 0/22 received rates; empirical profitability remains NOT_EVALUATED, and prospective predictions must be logged before outcomes for forward validation.
-
-Full test suite execution independently passed **401 tests** (356 `tests/` passes plus 45 `backing/` passes) with 18 numerical matmul warnings preserved. A separate executable review gate (`experiments/reviews/check_app001a_review_gates.py`) achieves **29/29 passed checks, exit code 0**. Real loopback HTTP smoke on `127.0.0.1` passed cleanly with sub-millisecond warm endpoint latencies.
-
-The verified historical data, baseline comparison, uncertainty findings, corrected accounting, and hardened backend API are suitable for a research progress discussion. Operational live advice and empirical commercial profitability remain unestablished. See `APP001A_REPAIR/`, `APP001A_INDEPENDENT_REVIEW.md`, and `MODEL_AND_MATH_VALIDATION.md` for complete verification evidence.
+The local quotation directory records 0/22 received rates. Commercial profitability and forward reliability remain research debt to be addressed in prospective trials. Future operational forecasts must be logged before outcomes; synthetic operational or scenario data requires prior proposal and approval. See `experiments/reports/APP001B/output_manifest.json` for verified evidence hashes.

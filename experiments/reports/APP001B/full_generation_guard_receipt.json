@@ -1,0 +1,8 @@
+{
+  "guard_mechanism": "authorized_budget flag verification prior to any stream or disk allocation",
+  "exception_type": "PermissionError",
+  "exception_code": "LOCAL_FULL_GENERATION_BLOCKED",
+  "unauthorized_pipeline_invocation_blocked": true,
+  "max_authorized_stream_bytes": 52428800,
+  "max_authorized_rows": 70000
+}

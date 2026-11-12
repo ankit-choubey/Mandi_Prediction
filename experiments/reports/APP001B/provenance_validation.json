@@ -1,0 +1,22 @@
+{
+  "valid_fixture_evaluated_delta_r": 470.0,
+  "mismatched_unit_rejection_status": 400,
+  "invalid_status_rejection_status": 400,
+  "overflow_exponent_rejection_status": 400,
+  "supported_units": [
+    "INR/quintal",
+    "INR/q",
+    "Rs/quintal",
+    "Rs./Quintal",
+    "\u20b9/quintal",
+    "\u20b9/q"
+  ],
+  "supported_statuses": [
+    "USER_ENTERED",
+    "OBSERVED",
+    "ILLUSTRATIVE",
+    "DEFAULT",
+    "UNKNOWN",
+    "MISSING"
+  ]
+}

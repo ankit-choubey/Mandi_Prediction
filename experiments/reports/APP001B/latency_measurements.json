@@ -1,0 +1,81 @@
+{
+  "measurement_method": "Loopback HTTP requests via standard-library http.client. Explicit distinction between full Python process startup (interpreter + imports + index loading) and in-process WSGI handler execution latency.",
+  "full_process_startup_ms": 70.47,
+  "service_construction_ms": 2230.0,
+  "endpoint_measurements": {
+    "Root UI HTML": {
+      "first_request_ms": 0.595,
+      "warm_mean_ms": 0.305,
+      "warm_min_ms": 0.246,
+      "warm_max_ms": 0.414,
+      "samples": 10,
+      "bytes": 33432
+    },
+    "Styles CSS": {
+      "first_request_ms": 0.29,
+      "warm_mean_ms": 0.239,
+      "warm_min_ms": 0.187,
+      "warm_max_ms": 0.295,
+      "samples": 10,
+      "bytes": 14713
+    },
+    "Application JS": {
+      "first_request_ms": 0.223,
+      "warm_mean_ms": 0.221,
+      "warm_min_ms": 0.182,
+      "warm_max_ms": 0.267,
+      "samples": 10,
+      "bytes": 30790
+    },
+    "Health API": {
+      "first_request_ms": 0.446,
+      "warm_mean_ms": 0.334,
+      "warm_min_ms": 0.289,
+      "warm_max_ms": 0.377,
+      "samples": 10,
+      "bytes": 1850
+    },
+    "Catalog API": {
+      "first_request_ms": 0.432,
+      "warm_mean_ms": 0.393,
+      "warm_min_ms": 0.361,
+      "warm_max_ms": 0.414,
+      "samples": 10,
+      "bytes": 12150
+    },
+    "Latest Prices API": {
+      "first_request_ms": 0.528,
+      "warm_mean_ms": 0.518,
+      "warm_min_ms": 0.481,
+      "warm_max_ms": 0.528,
+      "samples": 10,
+      "bytes": 26100
+    },
+    "Benchmark API": {
+      "first_request_ms": 0.37,
+      "warm_mean_ms": 0.355,
+      "warm_min_ms": 0.315,
+      "warm_max_ms": 0.386,
+      "samples": 10,
+      "bytes": 2702
+    },
+    "Economics Evaluate API": {
+      "first_request_ms": 0.344,
+      "warm_mean_ms": 0.274,
+      "warm_min_ms": 0.235,
+      "warm_max_ms": 0.315,
+      "samples": 10,
+      "bytes": 1710
+    }
+  },
+  "payload_sizes_bytes": {
+    "Root UI HTML": 33432,
+    "Styles CSS": 14713,
+    "Application JS": 30790,
+    "Health API": 1850,
+    "Catalog API": 12150,
+    "Latest Prices API": 26100,
+    "Benchmark API": 2702,
+    "Economics Evaluate API": 1710
+  }
+}

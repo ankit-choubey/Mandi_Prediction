@@ -83,7 +83,10 @@ The service strictly adheres to the official **India Date Policy**:
 
 ### 4.2 Market Catalog
 - **Route:** `GET /api/v1/catalog`
-- **Purpose:** Exposes supported districts, markets, commodities, and varieties.
+- **Purpose:** Exposes supported districts, markets, commodities, varieties, and inventory series counts.
+- **Dynamic Derivation:**
+  - Reports `total_series_count` (30), `accepted_series_count` (26), and `review_series_count` (4).
+  - Derived dynamically from validated source disposition and alias checks rather than hard-coded constants.
 - **Identity Integrity:**
   - `Rice` and `Paddy(Common)` / `Paddy(Dhan)(Common)` are strictly preserved as distinct commodities.
   - Six declared focus crops are highlighted: `Wheat`, `Potato`, `Onion`, `Tomato`, `Paddy(Common)`, `Rice`.
@@ -94,8 +97,11 @@ The service strictly adheres to the official **India Date Policy**:
   - `commodity` (string, optional): Filter by commodity name.
   - `district` (string, optional): Filter by district name.
   - `market` (string, optional): Filter by market name (canonical or raw).
+  - `verified_only` (boolean, optional): If true, returns only series with `price_display_permitted: true` (26 series).
+  - `disposition` (string, optional): Filter by source disposition (e.g. `ACCEPTED` vs `UNKNOWN_MARKET_REVIEW`).
 - **Invariants:**
-  - Returns ALL matching series records (never arbitrarily discards varieties/grades).
+  - Returns matching series records with dynamically derived `capabilities.price_display_permitted` and top-level property.
+  - The 4 unapproved market review series carry `price_display_permitted: false`.
   - Preserves `min_price` and `max_price` as `null` if missing from source (never defaults to `modal_price`).
   - Preserves exact market alias status (e.g. `REVIEW` series never become `ACCEPTED` by default).
 
@@ -108,8 +114,8 @@ The service strictly adheres to the official **India Date Policy**:
 - **Route:** `GET /api/v1/models/benchmark`
 - **Verified Facts Disclosed:**
   - Naive persistence baseline MAE `106.96` (verified `106.955369`) beats HistGradientBoosting (`109.75`) and Ridge (`110.32`).
-  - HistGradientBoosting improves RMSE by `5.91%` (`281.158` vs `298.834` INR/quintal) but does not win primary MAE.
-  - Overall 90% empirical coverage is `89.95%` (`89.9547%`), but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
+  - HistGradientBoosting improves RMSE by `5.91%` (`264.45` vs `275.69` INR/quintal) but does not win primary MAE.
+  - Overall 90% empirical coverage is `89.94%`, but collapses during crisis regimes: F3 (`75.94%`) and F4 (`72.26%`).
   - Denominators are strictly separated: point metrics cover 64,776 origins across 401 series in F1–F4; interval evaluation covers 26,918 issued origins across 365 series in F2–F4 (F1 abstained due to strict chronological inner calibration requiring prior residuals).
 
 ### 4.6 Forecast Gating
@@ -124,3 +130,19 @@ The service strictly adheres to the official **India Date Policy**:
   - If `params` is omitted or empty: Returns incomplete holding proceeds (`r_hold = null`, `gain = null`, `p_break_even = null`), `break_even_relation: "INCOMPLETE_PARAMETERS"`, `r_sell_net = null` (immediate transaction fee unknown), `r_sell_gross = Q * p0`, and explicit `missing_cost_inputs`.
   - If partial cost object is provided: Requires all 10 explicit cost components for holding comparison; missing fields produce `INCOMPLETE_PARAMETERS` with null dependent proceeds/gains rather than auto-filling with zero.
   - If complete parameters are provided: Evaluates canonical accounting, enforces horizon reconciliation, verifies provenance consistency, checks affine bounds ($p_{\text{lower}} \le p_{\text{point}} \le p_{\text{upper}}$), and enforces advisory action `BLOCKED`.
+  - Strict provenance validation: Rejects mismatched units (e.g. `INR/tonne` raises HTTP 400 with `INVALID_ECONOMIC_PARAMETERS`) and invalid provenance statuses (e.g. `NOT_A_VALID_STATUS`).
+  - Strict finite number parsing: Exponent overflows like `1e999` are rejected at the JSON boundary with HTTP 400 (`NON_FINITE_NUMERIC_INPUT`).
+
+### 4.8 Research Web Interface & Static Assets (MP-APP-001B)
+- **Routes:**
+  - `GET /` or `GET /index.html`: Serves accessible, responsive research interface (`text/html`).
+  - `GET /static/*`: Serves static assets (`styles.css`, `app.js`, `favicon.svg`) with strict path traversal checking (HTTP 403 on traversal attempts) and 5 MB size limit.
+- **Visual Design:** Calm agricultural aesthetic (off-white surface, dark high-contrast text, restrained green accents, responsive tables, accessible focus rings, touch targets $\ge 44$px).
+- **Exact Numeric Parity:** DOM displays verified scalar metrics directly loaded from `/api/v1/models/benchmark`, `/api/v1/catalog`, `/api/v1/prices/latest`, and `/api/v1/economics/evaluate`.
+
+---
+
+## 5. Historical Pipeline Safety Guards
+- `execute_interval_pipeline()` in `src/forecast_intervals.py` is locked behind an explicit `authorized_budget: bool = False` guard.
+- When invoked unauthorized (`authorized_budget=False`), it raises `PermissionError: LOCAL_FULL_GENERATION_BLOCKED` before performing any stream decoding, memory allocation, or disk I/O.
+- When authorized (`authorized_budget=True`), it enforces a 50 MB decoded gzip byte ceiling and a 70,000 row candidate limit.

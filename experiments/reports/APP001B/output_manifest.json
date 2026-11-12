@@ -1,0 +1,52 @@
+{
+  "manifest_version": "1.0.0",
+  "task": "MP-APP-001B",
+  "generated_at_utc": "2026-11-12T21:55:02Z",
+  "total_files": 11,
+  "files": {
+    "accessibility_audit_receipt.json": {
+      "bytes": 766,
+      "sha256": "967c1a84ab7f25ce0039c917c63d2ce64e08927b7a767f501e833d80239afe3c"
+    },
+    "api_to_dom_numeric_parity.json": {
+      "bytes": 1164,
+      "sha256": "72115e49c1bfbe0024c078ab99901b7b352f0eef16b108a983a4479cced50dbc"
+    },
+    "browser_interaction_matrix.json": {
+      "bytes": 958,
+      "sha256": "2a745c8e205f6b24387e0c6d9e0c1f28d3d11ee65fa600805245df23b2a9750b"
+    },
+    "executable_gate_receipt.json": {
+      "bytes": 576,
+      "sha256": "d0f0aabf7e154b24faad2f0b078a49f224d347192c4462b4505952ca7c7b4f7b"
+    },
+    "full_generation_guard_receipt.json": {
+      "bytes": 320,
+      "sha256": "ffdc7fd4ffce62eb89ac304e8bc3b193d6ab803bb2c56af2d1a2cb32db51f7e9"
+    },
+    "latency_measurements.json": {
+      "bytes": 2113,
+      "sha256": "dec0ff475a2a57774d2a78e55381c763d75c3b722ff50c2f7cee449fe21aa2fc"
+    },
+    "provenance_validation.json": {
+      "bytes": 441,
+      "sha256": "129894304bf0e83447190bdd2d5fbb340b22417963bb9148340a39bb3636df08"
+    },
+    "screenshot_desktop_1280x800.png": {
+      "bytes": 106957,
+      "sha256": "d35ffe60161dbc9d50e24320f5c752bff694a3fcd7e7662a0ee568eb4d651726"
+    },
+    "screenshot_mobile_375x667.png": {
+      "bytes": 52559,
+      "sha256": "c305465340f3d099eaa6966c756123d0b45a473d1f928d6297e24c96c122b7f7"
+    },
+    "source_disposition_reconciliation.json": {
+      "bytes": 922,
+      "sha256": "b449c6907eada7b750da0d33cf1871f867b87d430c7222a7564430af522a6078"
+    },
+    "test_suite_receipt.json": {
+      "bytes": 457,
+      "sha256": "cd8208ca2df953af06b8291714f4751ce831079fceb84cd5d175952960bd22d6"
+    }
+  }
+}

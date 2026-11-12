@@ -1,0 +1,29 @@
+{
+  "wcag_compliance_level": "WCAG 2.1 Level AA Target",
+  "semantic_landmarks": {
+    "header": true,
+    "nav": true,
+    "main": true,
+    "tablist": true,
+    "tabpanels": true,
+    "fieldsets_and_legends": true,
+    "footer": true
+  },
+  "form_accessibility": {
+    "explicit_labels": true,
+    "total_labels_bound": 22,
+    "aria_live_announcements": "polite region on #econ-results-card",
+    "stale_banner_indicator": true
+  },
+  "keyboard_navigation": {
+    "tab_selection_arrow_keys": true,
+    "skip_link_present": true,
+    "visible_focus_indicators": true
+  },
+  "responsive_design": {
+    "tested_desktop_width": 1280,
+    "tested_mobile_width": 375,
+    "mobile_overflow_x": "none / horizontal scrolling prevented",
+    "touch_target_min_px": 44
+  }
+}

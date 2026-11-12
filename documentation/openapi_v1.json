@@ -12,6 +12,27 @@
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "summary": "Research Web Interface",
+        "description": "Serves the accessible, responsive Step 11 research web interface with calm agricultural aesthetic, dynamic exact series cascade, audited model scorecards, and research economics calculator.",
+        "responses": {
+          "200": {
+            "description": "HTML page for research interface",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          }
+        }
+      }
+    },
     "/api/v1/health": {
       "get": {
         "summary": "Health and Capability Readiness",
@@ -82,6 +103,22 @@
               "type": "string"
             },
             "description": "Target APMC market (canonical or raw name)"
+          },
+          {
+            "name": "verified_only",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to series where price_display_permitted is true (26 accepted series)"
+          },
+          {
+            "name": "disposition",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by source disposition (e.g. 'ACCEPTED' or 'UNKNOWN_MARKET_REVIEW')"
           }
         ],
         "responses": {

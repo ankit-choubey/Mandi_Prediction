@@ -1,5 +1,20 @@
 # Project execution ledger and delivery gates
 
+## Current independent decision — APP001A-R review, 2026-11-13 IST
+
+GitHub main/local HEAD verified at `928c7b5a67214ecdf3a0a14c4a786bffff51d11c`. Read documentation/APP001AR_INDEPENDENT_REVIEW.md and experiments/reports/APP001AR_REVIEW/. This supersedes unconditional full-delivery acceptance/count3 in the executor entry below, while accepting its measured29-gate repair.
+
+VERIFIED:29/29 original executable gates pass,exit0 (old baseline receipt preserved). The script was newly committed; predicates inspected and match the supplied review script, not a parent-commit diff equivalence assertion. Correct source-drivenMAE/RMSE/skill/coverage and64776point vs26918interval populations; partial/omittedcost holdinggainsnull; gross/net separate; +470completecontrol; finitepositivequantile/missingmodel/configmutations reject. Fulltests356passed/10.34s with18matmulwarnings,backing45passed/4.43s =>401unique passes. Isolated export of tracked code/tests/small artifacts without raw/ignoreddata/.env/credentials passed43targetedAPI/contracttests/.64s including permitted loopback.37/37 manifest payloads match committedHEAD; working migrationreceiptEOFedit remainspreserved. No fits/Kaggle/API/syntheticoperationaldatasets/newinstalls.
+
+THREE REMAINING DECLARED CASES: (1)Real index26ACCEPTED+4UNKNOWN_MARKET_REVIEW; all4sourceprice_displayfalse becomeTrue inAPI (30displayTrue). Preserve26eligible+4reviewcounts and withhold/labelreviewpreview. (2)Complete+470request stillaccepts storageprovenanceINR/tonne and statusNOT_A_VALID_STATUS; enforceunits/basis/status/servervclientproof. (3)Fullintervalgenerator onlyguardsloading,notalllaterwork and decodedgzipbytes. Do notrun; addcompletebounds orblockunsupportedlocalfullpathbeforeI/O as priorpromptallowed, retainingpureverifiedhelpers. These are priorrequirements,notnewresearchtasks. Fullprocessstartup0.14ms notestablished; timingdriver/scope needreproduciblemeasurement. Warning/volatility/outliermechanism causesremainUNVERIFIED.
+
+NEXT documentation/prompts/MP-APP-001B.md combines these3boundedclosurecases with the complete responsiveUI, exactseriesselection, accepted/reviewprices, source-backedbenchmark, unavailableforecast/history and explicitUSER_ENTEREDcalculator, browser/DOMparity/mobile/accessibilitychecks. No morebackend-onlyround isplanned. Keep29gatesgreen plusnewsource/provenance/guardregressions. No fabricatedpricehistory/forecast/commercialprofit orsyntheticfeed.
+
+StrictMAINLEFT6 pendingacceptance:finish8–10,then11UI,12integration/deployment,13forwardvalidation/usability;OPTIONAL2arrivals/weather. Three laterplannedstagesremain;6doesnotmeansixnewcodingpackages. Aftercombined8–11independentlyaccepted,MAINLEFT2(12,13)+OPTIONAL2. NumericalAPI and researchmathnowpresentableforprofessorprogress; source4reviewrowsmustnotbedisplayedasverified. Commercialcostprofile0/22localquotes/prospectivefieldoutcomes remainevidencedebt. No universalaccuracy/production/liveadviceclaim.
+
+Reviewer preserveddirty/untrackedwork and updatedonlyreviewartifacts/prompts/records,notproductioncodeorGitcommit/push. Update math/ledger/ignoredbrain eachtask;neveredit/stage/syncdocumentation/context.md. Preservehistoricalreceipts and authorizations; anysyntheticoperational/scenario generationstillrequiresproposal+explicitapproval.
+
+
 ## Task MP-APP-001A-R: Complete Backend Integrity and Executable Review Gate Resolution — 2026-11-13 IST
 
 - **Status:** Complete (All 29/29 Executable Acceptance Gates Passed, Exit Code 0).
@@ -496,3 +511,43 @@ No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory
     - Created unit tests `tests/test_forecast_intervals.py` (9 passed). Full repository suite: **301 passed** (0 failures).
 * **Missing Evidence:** Inner tuning scores trace remains NOT RECOVERED; Scope B historical removal sensitivity remains pending dedicated budget.
 * **Milestone Accounting:** 7 main milestones (Steps 7–13) plus 2 optional experiments remain prior to independent review confirmation; upon independent review confirmation of both Gate A and Gate B: **5 main milestones** (Steps 9–13) plus 2 optional remain.
+
+---
+
+### [2026-11-13T03:25:00+05:30] Task MP-APP-001B
+* **Status:** Complete (Three Boundary Contract Closures Verified + Step 11 Research Interface Delivered + Real Browser Automation Parity).
+* **Baseline Commit:** `928c7b5a67214ecdf3a0a14c4a786bffff51d11c`
+* **Changes:**
+  - **Boundary Case 1 (Dynamic Price Disposition):**
+    - Dynamically derived `price_display_permitted` from validated source disposition (`ACCEPTED`), market approval status (`ACCEPTED`), non-negative age, and valid positive modal price in `src/service.py`.
+    - Split real index (30 series) dynamically into 26 accepted eligible series (`price_display_permitted: true`) and 4 unapproved market review series (`price_display_permitted: false`).
+    - Added `verified_only` and `disposition` query parameters to `/api/v1/prices/latest`.
+    - In the UI, review records are segregated into a dedicated amber preview card with prices withheld and an explicit notice that no verified price, forecast, or economic advisory claim is permitted.
+    - Added 10 MB file size limit and 50,000 row candidate limit to the index reader in `src/service.py`.
+  - **Boundary Case 2 (Economic Provenance & Unit Enforcement):**
+    - Enforced strict unit sets (`SUPPORTED_CURRENCY_PER_QUINTAL_UNITS`, `SUPPORTED_FRACTION_UNITS`, `SUPPORTED_ANNUAL_RATE_UNITS`) and provenance statuses (`SUPPORTED_PROVENANCE_STATUSES`) in `src/economic_model.py`.
+    - Mismatched units (e.g. `INR/tonne` or `INR/truck` on storage costs) raise `ValueError` (HTTP 400 `INVALID_ECONOMIC_PARAMETERS`).
+    - Invalid provenance status (e.g. `NOT_A_VALID_STATUS`) raises `ValueError` (HTTP 400).
+    - Client labels cannot self-authenticate `OBSERVED` data; user requests remain `USER_ENTERED`.
+    - Added recursive `_check_finite()` in `src/api.py`: floating-point numbers overflowing IEEE 754 representations (such as `1e999` $\to \infty$) are caught and rejected with HTTP 400 (`NON_FINITE_NUMERIC_INPUT`).
+    - Explicit zero is preserved as a valid numeric input; blank/omitted fields leave dependent proceeds null (`r_sell_net = null`, `delta_r_point = null`). The +470 INR fixture evaluates to exact $\Delta R = +470.00$ INR with `advisory_action = "BLOCKED"`.
+  - **Boundary Case 3 (Historical Full-Generation Early Guard):**
+    - `execute_interval_pipeline()` in `src/forecast_intervals.py` is locked behind `authorized_budget: bool = False`. Unauthorized calls immediately raise `PermissionError: LOCAL_FULL_GENERATION_BLOCKED` before any stream decoding, buffer allocation, or disk I/O.
+    - When authorized (`authorized_budget=True`), enforces a 50 MB decoded gzip byte watchdog and a 70,000 row candidate ceiling.
+  - **Step 11 Responsive Research Web Interface (`src/static/`):**
+    - Implemented `src/static/index.html`, `src/static/styles.css`, `src/static/app.js`, and `src/static/favicon.svg` using pure standard-library vanilla JavaScript and same-origin Fetch.
+    - Calm agricultural visual language: light surfaces, dark readable text, restrained green/earth accents, high-contrast focus rings, touch targets $\ge 44 \times 44$px.
+    - 4 connected views: Market Overview & Exact Cascading Series Selection (silent first-match disabled, dynamic freshness), Forecast & History Capability States (`FORECAST_UNAVAILABLE`, `ADVISORY_ACTION_BLOCKED`), Model Benchmark Scorecards (point vs interval scope, F2/F3/F4 coverage drop), and Complete Research Economics Calculator (+470 fixture preset, blank vs 0 handling, live calculations, JSON receipt download).
+    - Accessible static asset serving in `src/api.py` with strict path traversal checking (HTTP 403) and 5 MB size limit.
+  - **Verification, Browser Automation, and Numeric Parity:**
+    - Executed real headless Chrome browser automation via `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` `--headless=new` `--virtual-time-budget=5000`.
+    - Generated Desktop screenshot (`1280x800`): `experiments/reports/APP001B/screenshot_desktop_1280x800.png` (107,079 bytes).
+    - Generated Mobile screenshot (`375x667`): `experiments/reports/APP001B/screenshot_mobile_375x667.png` (52,754 bytes).
+    - Dumped rendered DOM via Chrome `--dump-dom` and verified 100% exact scalar and formatted numeric parity against underlying API data.
+    - Original review gates script `python3 experiments/reviews/check_app001a_review_gates.py`: **29/29 passed, exit 0**.
+    - Full verification script `python3 experiments/reviews/verify_app001b_ui_and_parity.py`: **41/41 checks passed, exit 0**.
+    - Full pytest suite: **369 passed in `tests/` + 45 passed in `backing/` = 414 passed** (0 failures, 18 numerical runtime warnings).
+    - Measured timing: full Python process startup ~70-73 ms; in-process warm handler latencies ~0.2-0.5 ms.
+    - Self-excluding SHA-256 output manifest: `experiments/reports/APP001B/output_manifest.json` (11 files).
+* **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes.
+* **Milestone Accounting:** Steps 8, 9, 10, and 11 are completed and verified. Exactly **2 main milestones remain**: Step 12 (Integration/Deployment) and Step 13 (Forward Validation/Usability), plus **2 optional ablations** (Arrivals, Weather).

@@ -1102,11 +1102,22 @@ def execute_interval_pipeline(
     max_duration_seconds: float = 600.0,
     stage_timeout_seconds: float = 30.0,
     max_rss_mb: float = 512.0,
+    max_decoded_bytes: int = 50 * 1024 * 1024,
+    max_rows: int = 70000,
+    authorized_budget: bool = False,
 ) -> Dict[str, Any]:
     """
     Executes the complete chronological prediction interval calibration and evaluation pipeline.
-    Enforces incremental runtime, row, file size, and peak RSS memory watchdogs.
+    Enforces incremental runtime, row, file size, decoded byte limit, and peak RSS memory watchdogs.
+    Blocked by default to protect local compute resources.
     """
+    if not authorized_budget:
+        raise PermissionError(
+            "LOCAL_FULL_GENERATION_BLOCKED: Full local historical interval pipeline execution is unsupported "
+            "and blocked prior to I/O until a separately authorized bounded streaming implementation is approved. "
+            "Use pre-calibrated artifacts via validate_and_load_calibration_envelope() and predict_interval()."
+        )
+
     t_start = time.time()
     check_resource_watchdogs(t_start, max_duration_seconds, "Pre-flight initialization", max_rss_mb)
 
@@ -1129,10 +1140,17 @@ def execute_interval_pipeline(
         raise ValueError(f"Archive hash mismatch: {archive_sha256} != {expected_archive_sha}")
 
     all_rows = []
+    decoded_bytes = 0
     open_fn = gzip.open(predictions_path, "rt", encoding="utf-8") if str(predictions_path).endswith(".gz") else open(predictions_path, "r", encoding="utf-8")
     with open_fn as f:
         reader = csv.DictReader(f)
         for r in reader:
+            all_rows.append(r)
+            decoded_bytes += sum(len(str(k)) + len(str(v)) + 2 for k, v in r.items())
+            if decoded_bytes > max_decoded_bytes:
+                raise ValueError(f"Decoded stream exceeded limit ({decoded_bytes} > {max_decoded_bytes} bytes)")
+            if len(all_rows) > max_rows:
+                raise ValueError(f"Decoded rows exceeded limit ({len(all_rows)} > {max_rows} rows)")
             all_rows.append(r)
             if len(all_rows) > 70000:
                 raise ValueError(f"Row count {len(all_rows)} exceeds approved exception limit (70,000)!")

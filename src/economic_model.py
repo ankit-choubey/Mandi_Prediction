@@ -679,6 +679,45 @@ def generate_sensitivity_matrix_with_quality_discount(
 # TASK MP-ECON-001: CANONICAL RESEARCH ECONOMICS CONTRACT & GATING
 # =====================================================================
 
+SUPPORTED_PROVENANCE_STATUSES = {
+    "USER_ENTERED",
+    "OBSERVED",
+    "ILLUSTRATIVE",
+    "DEFAULT",
+    "UNKNOWN",
+    "MISSING",
+}
+
+SUPPORTED_CURRENCY_PER_QUINTAL_UNITS = {
+    "INR/quintal",
+    "INR/q",
+    "Rs/quintal",
+    "Rs./Quintal",
+    "₹/quintal",
+    "₹/q",
+}
+
+SUPPORTED_FRACTION_UNITS = {
+    "fraction",
+    "decimal",
+    "ratio",
+    "%",
+    "percent",
+    "",
+}
+
+SUPPORTED_ANNUAL_RATE_UNITS = {
+    "annual_fraction",
+    "decimal_per_annum",
+    "annual_rate",
+    "ratio",
+    "fraction",
+    "%",
+    "percent",
+    "",
+}
+
+
 @dataclass
 class InputProvenance:
     """
@@ -687,13 +726,25 @@ class InputProvenance:
     """
     value: Any
     unit: str
-    status: Literal["OBSERVED", "USER_ENTERED", "ILLUSTRATIVE", "DEFAULT", "UNKNOWN", "MISSING"]
+    status: Literal["USER_ENTERED", "OBSERVED", "ILLUSTRATIVE", "DEFAULT", "UNKNOWN", "MISSING"]
     source: str = ""
     effective_date: Optional[str] = None
     market: Optional[str] = None
     commodity: Optional[str] = None
     horizon_days: Optional[int] = None
     notes: Optional[str] = None
+
+    def __post_init__(self):
+        if self.status not in SUPPORTED_PROVENANCE_STATUSES:
+            raise ValueError(
+                f"Invalid provenance status: '{self.status}'. "
+                f"Must be one of {sorted(SUPPORTED_PROVENANCE_STATUSES)}"
+            )
+        if type(self.value) is bool:
+            raise ValueError(f"Provenance value cannot be a boolean: {self.value}")
+        if isinstance(self.value, (int, float)):
+            if not math.isfinite(float(self.value)):
+                raise ValueError(f"Provenance value must be finite, got {self.value}")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -710,7 +761,10 @@ class InputProvenance:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> InputProvenance:
-        return cls(**d)
+        clean = dict(d)
+        if "declared_unit" in clean and "unit" not in clean:
+            clean["unit"] = clean.pop("declared_unit")
+        return cls(**clean)
 
 
 def calculate_canonical_accounting(
@@ -851,12 +905,21 @@ class ResearchEconomicRequest:
                     f"params.holding_period_days ({self.params.holding_period_days})"
                 )
 
-        if self.origin_date and self.target_date:
+        if self.origin_date:
             try:
-                od = datetime.strptime(str(self.origin_date)[:10], "%Y-%m-%d").date()
-                td = datetime.strptime(str(self.target_date)[:10], "%Y-%m-%d").date()
+                datetime.strptime(str(self.origin_date)[:10], "%Y-%m-%d").date()
             except ValueError as e:
-                raise ValueError(f"Invalid origin_date or target_date format (%Y-%m-%d required): {e}")
+                raise ValueError(f"Invalid origin_date format (%Y-%m-%d required): {e}")
+
+        if self.target_date:
+            try:
+                datetime.strptime(str(self.target_date)[:10], "%Y-%m-%d").date()
+            except ValueError as e:
+                raise ValueError(f"Invalid target_date format (%Y-%m-%d required): {e}")
+
+        if self.origin_date and self.target_date:
+            od = datetime.strptime(str(self.origin_date)[:10], "%Y-%m-%d").date()
+            td = datetime.strptime(str(self.target_date)[:10], "%Y-%m-%d").date()
 
             calendar_diff = (td - od).days
             if calendar_diff <= 0:
@@ -941,9 +1004,10 @@ class ResearchEconomicRequest:
             filtered_args = {k: v for k, v in p_dict.items() if k in EconomicParameters.__annotations__}
             params_obj = EconomicParameters(**filtered_args)
 
+        prov_input = d.get("provenance_map") or d.get("provenance")
         prov_obj = None
-        if d.get("provenance_map"):
-            prov_obj = {k: InputProvenance.from_dict(v) if isinstance(v, dict) else v for k, v in d["provenance_map"].items()}
+        if prov_input and isinstance(prov_input, dict):
+            prov_obj = {k: InputProvenance.from_dict(v) if isinstance(v, dict) else v for k, v in prov_input.items()}
 
         return cls(
             quantity_quintals=d["quantity_quintals"],
@@ -1171,10 +1235,15 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
     if request.provenance_map:
         param_mapping = {
             "storage_cost": (params.storage_cost_per_quintal, "storage_cost_per_quintal"),
+            "storage_cost_per_quintal": (params.storage_cost_per_quintal, "storage_cost_per_quintal"),
             "handling_cost": (params.handling_cost_per_quintal, "handling_cost_per_quintal"),
+            "handling_cost_per_quintal": (params.handling_cost_per_quintal, "handling_cost_per_quintal"),
             "incremental_transport": (params.incremental_transport_cost, "incremental_transport_cost"),
+            "incremental_transport_cost": (params.incremental_transport_cost, "incremental_transport_cost"),
             "quantity_loss": (params.quantity_loss_fraction, "quantity_loss_fraction"),
+            "quantity_loss_fraction": (params.quantity_loss_fraction, "quantity_loss_fraction"),
             "quality_discount": (params.quality_discount_fraction, "quality_discount_fraction"),
+            "quality_discount_fraction": (params.quality_discount_fraction, "quality_discount_fraction"),
             "annual_carrying_rate": (params.annual_carrying_rate, "annual_carrying_rate"),
             "transaction_cost_now": (params.transaction_cost_now, "transaction_cost_now"),
             "transaction_cost_later": (params.transaction_cost_later, "transaction_cost_later"),
@@ -1183,6 +1252,28 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             if prov_k in request.provenance_map:
                 prov_item = request.provenance_map[prov_k]
                 prov_val = prov_item.value if hasattr(prov_item, "value") else (prov_item.get("value") if isinstance(prov_item, dict) else None)
+                prov_unit = prov_item.unit if hasattr(prov_item, "unit") else (prov_item.get("unit", "") if isinstance(prov_item, dict) else "")
+
+                # Strict unit validation by component
+                if prov_k in ("storage_cost", "storage_cost_per_quintal", "handling_cost", "handling_cost_per_quintal", "incremental_transport", "incremental_transport_cost", "transaction_cost_now", "transaction_cost_later"):
+                    if prov_unit not in SUPPORTED_CURRENCY_PER_QUINTAL_UNITS:
+                        raise ValueError(
+                            f"Unsupported storage cost unit '{prov_unit}' for '{prov_k}'. "
+                            f"Expected INR/quintal basis, got '{prov_unit}'."
+                        )
+                elif prov_k in ("quantity_loss", "quantity_loss_fraction", "quality_discount", "quality_discount_fraction"):
+                    if prov_unit not in SUPPORTED_FRACTION_UNITS:
+                        raise ValueError(
+                            f"Unsupported provenance unit '{prov_unit}' for '{prov_k}'. "
+                            f"Expected fractional basis, got '{prov_unit}'."
+                        )
+                elif prov_k == "annual_carrying_rate":
+                    if prov_unit not in SUPPORTED_ANNUAL_RATE_UNITS:
+                        raise ValueError(
+                            f"Unsupported provenance unit '{prov_unit}' for '{prov_k}'. "
+                            f"Expected annual rate basis, got '{prov_unit}'."
+                        )
+
                 if prov_val is not None:
                     if type(prov_val) is bool or not isinstance(prov_val, (int, float)) or not math.isfinite(float(prov_val)):
                         raise ValueError(f"Invalid non-finite or boolean provenance value for '{prov_k}': {prov_val}")

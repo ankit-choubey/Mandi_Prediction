@@ -1,0 +1,47 @@
+{
+  "evaluation_type": "Real Imported Index Disposition Split",
+  "total_series": 30,
+  "accepted_eligible_series": 26,
+  "unapproved_review_series": 4,
+  "review_series_ids": [
+    "Kanpur|Baripaal APMC|Paddy(Basmati)|Basmati|FAQ",
+    "Kanpur|Baripaal APMC|Paddy(Common)|Fine|FAQ",
+    "Unnao|Purwa APMC|Paddy(Basmati)|SuperFine(Basmati)|FAQ",
+    "Unnao|Purwa APMC|Paddy(Common)|Common|FAQ"
+  ],
+  "price_display_permitted_review": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "price_display_permitted_verified": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "derivation_rule": "source_disposition == 'ACCEPTED' and market_alias_status == 'ACCEPTED' and age_days >= 0 and modal_price > 0"
+}

@@ -163,6 +163,10 @@ class PriceSeriesRecord:
     source_file_hashes: List[str]
     capabilities: Dict[str, bool]
 
+    @property
+    def price_display_permitted(self) -> bool:
+        return bool(self.capabilities.get("price_display_permitted", False))
+
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
@@ -176,6 +180,8 @@ class CatalogData:
     commodities: List[str]
     series_inventory: List[Dict[str, Any]]
     commodity_aliases: Optional[Dict[str, str]] = None
+    accepted_series_count: int = 0
+    review_series_count: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

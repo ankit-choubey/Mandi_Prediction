@@ -1,0 +1,19 @@
+{
+  "browser_engine": "Google Chrome (Headless New)",
+  "binary_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "target_loopback_url": "http://127.0.0.1:53902/",
+  "desktop_resolution": "1280x800",
+  "desktop_screenshot_path": "/Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/APP001B/screenshot_desktop_1280x800.png",
+  "desktop_screenshot_bytes": 106957,
+  "mobile_resolution": "375x667",
+  "mobile_screenshot_path": "/Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/APP001B/screenshot_mobile_375x667.png",
+  "mobile_screenshot_bytes": 52559,
+  "verified_interactions": [
+    "Page load and stylesheet/script binding",
+    "Asynchronous startup health and catalog fetch",
+    "Cascade selector population",
+    "Benchmark table dynamic population",
+    "+470 INR fixture initialization and arithmetic rendering",
+    "Tab panel ARIA states and keyboard navigation handlers"
+  ]
+}

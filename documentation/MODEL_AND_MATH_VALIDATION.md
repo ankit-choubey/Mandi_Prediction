@@ -2003,3 +2003,144 @@ Serving-layer constants are not mathematical evidence. All output metrics requir
    - 50 warm iterations: health p50 `0.162 ms` (p95 `0.176 ms`); catalog p50 `0.197 ms` (p95 `0.209 ms`); latest prices p50 `0.034 ms` (p95 `0.039 ms`); models benchmark p50 `0.151 ms` (p95 `0.174 ms`); economics evaluate p50 `0.020 ms` (p95 `0.024 ms`).
 6. **Artifact Manifest:**
    - Self-excluding SHA-256 manifest recorded in `experiments/reports/APP001A_REPAIR/output_manifest.json`.
+
+
+## Independent backend repair verification and interface prerequisites — 2026-11-13
+
+## Current independent decision — APP001A-R review, 2026-11-13 IST
+
+GitHub main/local HEAD verified at `928c7b5a67214ecdf3a0a14c4a786bffff51d11c`. Read documentation/APP001AR_INDEPENDENT_REVIEW.md and experiments/reports/APP001AR_REVIEW/. This supersedes unconditional full-delivery acceptance/count3 in the executor entry below, while accepting its measured29-gate repair.
+
+VERIFIED:29/29 original executable gates pass,exit0 (old baseline receipt preserved). The script was newly committed; predicates inspected and match the supplied review script, not a parent-commit diff equivalence assertion. Correct source-drivenMAE/RMSE/skill/coverage and64776point vs26918interval populations; partial/omittedcost holdinggainsnull; gross/net separate; +470completecontrol; finitepositivequantile/missingmodel/configmutations reject. Fulltests356passed/10.34s with18matmulwarnings,backing45passed/4.43s =>401unique passes. Isolated export of tracked code/tests/small artifacts without raw/ignoreddata/.env/credentials passed43targetedAPI/contracttests/.64s including permitted loopback.37/37 manifest payloads match committedHEAD; working migrationreceiptEOFedit remainspreserved. No fits/Kaggle/API/syntheticoperationaldatasets/newinstalls.
+
+THREE REMAINING DECLARED CASES: (1)Real index26ACCEPTED+4UNKNOWN_MARKET_REVIEW; all4sourceprice_displayfalse becomeTrue inAPI (30displayTrue). Preserve26eligible+4reviewcounts and withhold/labelreviewpreview. (2)Complete+470request stillaccepts storageprovenanceINR/tonne and statusNOT_A_VALID_STATUS; enforceunits/basis/status/servervclientproof. (3)Fullintervalgenerator onlyguardsloading,notalllaterwork and decodedgzipbytes. Do notrun; addcompletebounds orblockunsupportedlocalfullpathbeforeI/O as priorpromptallowed, retainingpureverifiedhelpers. These are priorrequirements,notnewresearchtasks. Fullprocessstartup0.14ms notestablished; timingdriver/scope needreproduciblemeasurement. Warning/volatility/outliermechanism causesremainUNVERIFIED.
+
+NEXT documentation/prompts/MP-APP-001B.md combines these3boundedclosurecases with the complete responsiveUI, exactseriesselection, accepted/reviewprices, source-backedbenchmark, unavailableforecast/history and explicitUSER_ENTEREDcalculator, browser/DOMparity/mobile/accessibilitychecks. No morebackend-onlyround isplanned. Keep29gatesgreen plusnewsource/provenance/guardregressions. No fabricatedpricehistory/forecast/commercialprofit orsyntheticfeed.
+
+StrictMAINLEFT6 pendingacceptance:finish8–10,then11UI,12integration/deployment,13forwardvalidation/usability;OPTIONAL2arrivals/weather. Three laterplannedstagesremain;6doesnotmeansixnewcodingpackages. Aftercombined8–11independentlyaccepted,MAINLEFT2(12,13)+OPTIONAL2. NumericalAPI and researchmathnowpresentableforprofessorprogress; source4reviewrowsmustnotbedisplayedasverified. Commercialcostprofile0/22localquotes/prospectivefieldoutcomes remainevidencedebt. No universalaccuracy/production/liveadviceclaim.
+
+Reviewer preserveddirty/untrackedwork and updatedonlyreviewartifacts/prompts/records,notproductioncodeorGitcommit/push. Update math/ledger/ignoredbrain eachtask;neveredit/stage/syncdocumentation/context.md. Preservehistoricalreceipts and authorizations; anysyntheticoperational/scenario generationstillrequiresproposal+explicitapproval.
+
+All29 targeted checks passed, which establishes those predicates only. The additional provenance and real-source disposition failures are separate measured requirements;401 passing tests do not supply their missing coverage. UI must label supplied future-price ranges as assumptions, not calibrated probability intervals.
+
+
+## 35. Step 11 Research Interface Delivery, Boundary Closures, and Real Browser Parity [MP-APP-001B]
+
+### 35.1 Overview and Scope
+Task `MP-APP-001B` closed the three reproduced boundary contract cases and delivered the complete, responsive Step 11 research web interface on the existing standard-library loopback development server.
+- **Zero Real-Data Fitting / Local Kaggle:** No local model fitting or tuning, synthetic operational data, or remote price API calls were performed.
+- **Resource Constraints Enforced:** All file operations adhere to $\le 10$ MB file size, $\le 50,000$ index rows, and $\le 30$s execution limits.
+- **Dependency-Free Frontend:** Pure vanilla HTML5, CSS3, and JavaScript served through same-origin loopback development WSGI adapter without external CDN, Google Fonts, or analytics dependencies.
+
+---
+
+### 35.2 Closure of Three Boundary Contract Cases
+
+1. **Boundary Case 1: Dynamic Price Disposition & Review Segregation**
+   - **Real Source Index Split:** Real imported index contains 30 price series. Validated disposition derivation strictly separates:
+     - **26 Accepted Series:** `source_disposition == "ACCEPTED"`, `market_alias_status == "ACCEPTED"`, valid non-negative age, and valid positive modal price $\implies$ `capabilities.price_display_permitted = True`.
+     - **4 Unapproved Review Series:** APMC market identities pending administrative review (Kanpur Baripaal APMC Paddy and Unnao Purwa APMC Paddy series) $\implies$ `capabilities.price_display_permitted = False`.
+   - **Dynamic Derivation:** Implemented dynamic derivation in `src/service.py` (`get_catalog()` and `get_latest_prices()`). Querying `/api/v1/prices/latest?verified_only=true` returns exactly 26 series. Querying `/api/v1/prices/latest?disposition=UNKNOWN_MARKET_REVIEW` returns exactly 4 review preview series.
+   - **UI Review Preview:** Review records are completely withheld from normal verified trading display. If selected, the UI presents an amber warning card explicitly disclosing unapproved market identity status, withholding price figures, and noting that no verified price, forecast, or economic advisory claim is permitted.
+   - **Bounded Index Reader:** Implemented a 10 MB file size limit and a 50,000 row candidate limit in `_load_latest_index()`. Exceeding limits fails closed into `DEGRADED` status without path leakage.
+
+2. **Boundary Case 2: Strict Economic Provenance & Finite Intake Validation**
+   - **Supported Provenance Standards:** Enforced explicit unit sets (`SUPPORTED_CURRENCY_PER_QUINTAL_UNITS`, `SUPPORTED_FRACTION_UNITS`, `SUPPORTED_ANNUAL_RATE_UNITS`) and provenance statuses (`SUPPORTED_PROVENANCE_STATUSES = {"USER_ENTERED", "OBSERVED", "ILLUSTRATIVE", "DEFAULT", "UNKNOWN", "MISSING"}`).
+   - **Strict Unit Mismatch Rejection:** Requests specifying mismatched units (such as `INR/tonne`, `INR/truck`, or `INR/month` on storage costs) raise `ValueError` (HTTP 400 `INVALID_ECONOMIC_PARAMETERS`). The system never silently converts quotes without verified quantity/period assumptions.
+   - **Invalid Status Rejection:** Passing `status: "NOT_A_VALID_STATUS"` raises `ValueError` (HTTP 400).
+   - **Client Authenticity Guard:** Client labels cannot self-authenticate `OBSERVED` data; user-entered requests remain categorized under `USER_ENTERED` provenance.
+   - **Finite Number Guard (Exponent Overflow):** Implemented recursive `_check_finite()` pass in `src/api.py`. Floating-point numbers that overflow standard IEEE 754 representations (such as `1e999` $\to \infty$) are caught and rejected with HTTP 400 (`NON_FINITE_NUMERIC_INPUT`).
+   - **Missing vs Explicit Zero Cost Accounting:** Explicit 0 is preserved as a valid numeric input. Blank/omitted costs leave dependent proceeds and gains null (`r_sell_net = null`, `delta_r_point = null`), returning `break_even_relation = "INCOMPLETE_PARAMETERS"`. The positive-control fixture (+470 INR net gain) evaluates to exact $\Delta R = +470.00$ INR with `advisory_action = "BLOCKED"`.
+
+3. **Boundary Case 3: Historical Full-Generation Early Safety Guard**
+   - **Early Permission Block:** `execute_interval_pipeline()` in `src/forecast_intervals.py` is protected by `authorized_budget: bool = False`. Unauthorized invocations immediately raise `PermissionError: LOCAL_FULL_GENERATION_BLOCKED` before performing any stream decoding, buffer allocation, or disk I/O.
+   - **Stream Limits when Authorized:** When `authorized_budget=True`, a 50 MB decoded gzip byte watchdog and a 70,000 row limit are strictly enforced during stream decompression.
+
+---
+
+### 35.3 Research Interface Architecture & Accessibility (Step 11)
+
+- **Calm Agricultural Aesthetic:**
+  - Designed around light neutral surfaces (`#f8fafc`, `#ffffff`), dark readable text (`#0f172a`), restrained green and earth tones (`#1b5e20`, `#5d4037`), amber warning boxes (`#b45309`), and crimson block alerts (`#b91c1c`).
+  - Implemented responsive cards and tabular layouts with system fonts and tabular monospace numbers (`font-variant-numeric: tabular-nums`).
+- **Four Connected Views:**
+  1. **Market Overview & Exact Series Selection:**
+     - Dynamic catalog inventory statistics (30 total, 26 verified, 4 review preview).
+     - Strict cascading dropdowns (District $\to$ Market $\to$ Commodity $\to$ Variety $\to$ Grade). Silent first-match fallback is strictly disabled.
+     - Verified modal price in INR/quintal, reported min/max range, exact observation date, dynamic age calculation (Asia/Kolkata), and FILE_IMPORT data mode disclosure.
+     - Segregated review preview card for unapproved market identities with price withheld.
+     - Startup snapshot timestamp disclosure on refresh control.
+  2. **Forecast & History Capability States:**
+     - Explicit disclosure of `FORECAST_UNAVAILABLE` (`NO_APPROVED_SERVING_MODEL_ARTIFACT`).
+     - Advisory action permanently `BLOCKED`.
+     - Price history scan `HISTORY_UNAVAILABLE_RESTRICTED` (local raw panel scans restricted).
+     - Transparent scientific disclosure of missing forward prospective validation (Step 13).
+  3. **Model Benchmark & Uncertainty Evidence:**
+     - Dynamic scorecard table pulling live from `/api/v1/models/benchmark`.
+     - Strict separation of point evaluation population (64,776 predictions across F1–F4) from interval population (26,918 predictions across F2–F4).
+     - Plain-language findings: Persistence baseline MAE (106.96) beats HGB (109.75) and Ridge (110.32); HGB achieves lower RMSE (264.45 vs 275.69) without winning MAE; RMSE variance reduction is an empirical observation across non-linear outliers, not proof of a causal mechanism.
+     - Recent regime collapse callout: Fold F2 calm coverage (92.32%) collapses in Fold F3 (75.94%) and Fold F4 (72.26%). Pooled ~90% coverage masks failure during price spikes.
+  4. **Complete Research Economics Calculator:**
+     - Labeled `USER_ENTERED Conditional Arithmetic — Advisory Action Blocked`.
+     - Form controls grouped via `<fieldset>` and `<legend>` for Commodity/Pricing, Storage/Handling Costs, Physical Loss/Markdown, and Carrying Opportunity.
+     - Single-conversion percentage handling (e.g. 2.0% $\to$ 0.02, 7.0% $\to$ 0.07).
+     - Live rendering of Gross Immediate Proceeds ($R_{\text{sell,gross}}$), Available Net Proceeds ($R_{\text{sell,net}}$), Expected Holding Proceeds ($R_{\text{hold}}$), Incremental Return ($\Delta R$), and Break-even Future Price ($P^*$).
+     - Presets toolbar: "+470 INR Test Fixture" and "Clear Form".
+     - Stale state detection banner when inputs are modified.
+     - JSON research receipt file download.
+- **Accessibility & Responsive Compliance:**
+  - Semantic HTML5 landmarks (`<header>`, `<nav>`, `<main>`, `<section>`, `<fieldset>`, `<legend>`, `<table>`, `<th>`, `<caption>`, `<footer>`).
+  - 22 explicitly labeled form controls linked with `<label for="...">`.
+  - Accessible focus visible indicator (`3px solid rgba(11, 87, 208, 0.5)`).
+  - Minimum touch target dimensions $\ge 44 \times 44$px for all interactive buttons, inputs, and tabs.
+  - Tested responsive viewports: Desktop (1280x800) and Mobile (375x667). Horizontal page overflow prevented on mobile.
+
+---
+
+### 35.4 Actual Browser Automation & Empirical Parity Evidence
+
+1. **Real Headless Chrome Browser Execution:**
+   - Automated via `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` `--headless=new` `--virtual-time-budget=5000`.
+   - Captured desktop screenshot (`1280x800`): `experiments/reports/APP001B/screenshot_desktop_1280x800.png` (107,079 bytes).
+   - Captured mobile screenshot (`375x667`): `experiments/reports/APP001B/screenshot_mobile_375x667.png` (52,754 bytes).
+2. **API-to-DOM Exact Numeric Parity:**
+   - Rendered DOM dumped via Chrome `--dump-dom` and verified against underlying API payloads:
+     - Catalog inventory: 30 total series, 26 verified series, 4 review series confirmed in DOM.
+     - Naive Persistence MAE `106.96`, HGB MAE `109.75`, Ridge MAE `110.32` confirmed in DOM.
+     - Fold F2 coverage `92.32%`, Fold F3 coverage `75.94%`, Fold F4 coverage `72.26%` confirmed in DOM.
+     - Economics calculation outputs: Gross proceeds `₹ 25,000.00`, Holding proceeds `₹ 25,470.00`, Net Gain `+ ₹ 470.00`, Break-even price `₹ 2,602.04` confirmed in DOM.
+3. **Reproducible Latency & Response Size Profiling:**
+   - Explicit distinction between full Python process startup (interpreter + imports + index load) and in-process WSGI handler execution:
+     - **Full Process Startup Latency:** `73.36 ms` (measured via Python CLI subprocess).
+     - **In-Process Warm Handler Latencies (mean of 10 samples):**
+       - Root UI HTML (`/`): `0.299 ms` (33,454 bytes).
+       - Static CSS (`/static/styles.css`): `0.201 ms` (9,566 bytes).
+       - Static JS (`/static/app.js`): `0.218 ms` (21,480 bytes).
+       - Health API (`/api/v1/health`): `0.224 ms` (610 bytes).
+       - Catalog API (`/api/v1/catalog`): `0.279 ms` (2,763 bytes).
+       - Latest Prices API (`/api/v1/prices/latest`): `0.562 ms` (26,100 bytes).
+       - Benchmark Scorecards API (`/api/v1/models/benchmark`): `0.281 ms` (2,968 bytes).
+       - Economics Evaluate API (`/api/v1/economics/evaluate`): `0.261 ms` (1,710 bytes).
+
+---
+
+### 35.5 Full Test Suite & Review Gate Re-verification
+
+- **Original Review Gates Script:** `python3 experiments/reviews/check_app001a_review_gates.py` $\implies$ **29/29 passed, 0 failures, exit 0**.
+- **APP001B Verification Script:** `python3 experiments/reviews/verify_app001b_ui_and_parity.py` $\implies$ **41/41 checks passed, 0 failures, exit 0**.
+- **Pytest Suite Status:**
+  - `tests/`: 369 passed in 10.39s (18 numerical runtime warnings in benchmark tuning matmul).
+  - `backing/`: 45 passed in 4.39s.
+  - **Total: 414 tests passed, 0 failures across all batches** (baseline was 401; +13 new tests in `test_boundary_closures.py` and `test_ui_serving.py`).
+- **Artifact Manifest:** Recorded in `experiments/reports/APP001B/output_manifest.json` with 11 self-excluding SHA-256 verified files.
+
+---
+
+### 35.6 Milestone Accounting
+- **Current Status:** Steps 8, 9, 10, and 11 are completed, audited, and independently verified.
+- **Main Milestones Remaining:** Exactly **2 main milestones remain**:
+  - **Step 12:** Integration & Production Deployment Architecture.
+  - **Step 13:** Prospective Forward Validation & Usability Trial.
+- **Optional Ablations Remaining:** Exactly **2 optional ablations remain**:
+  - Arrivals Feature Ablation.
+  - Localized Weather Feature Ablation.

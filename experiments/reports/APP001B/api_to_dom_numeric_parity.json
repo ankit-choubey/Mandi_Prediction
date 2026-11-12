@@ -1,0 +1,58 @@
+{
+  "verification_status": "PASSED_EXACT_NUMERIC_PARITY",
+  "rendered_dom_byte_length": 34196,
+  "parity_elements": {
+    "catalog_total_series": {
+      "api": 30,
+      "dom_found": true
+    },
+    "catalog_accepted_series": {
+      "api": 26,
+      "dom_found": true
+    },
+    "catalog_review_series": {
+      "api": 4,
+      "dom_found": true
+    },
+    "naive_persistence_mae": {
+      "source": 106.96,
+      "dom_found": true
+    },
+    "hgb_mae": {
+      "source": 109.75,
+      "dom_found": true
+    },
+    "ridge_mae": {
+      "source": 110.32,
+      "dom_found": true
+    },
+    "fold_f2_coverage": {
+      "source": 92.32,
+      "dom_found": true
+    },
+    "fold_f3_coverage": {
+      "source": 75.94,
+      "dom_found": true
+    },
+    "fold_f4_coverage": {
+      "source": 72.26,
+      "dom_found": true
+    },
+    "economics_delta_r": {
+      "source": 470.0,
+      "dom_found": true
+    },
+    "economics_r_gross": {
+      "source": 25000.0,
+      "dom_found": true
+    },
+    "economics_r_hold": {
+      "source": 25470.0,
+      "dom_found": true
+    },
+    "economics_p_breakeven": {
+      "source": 2602.04,
+      "dom_found": true
+    }
+  }
+}
