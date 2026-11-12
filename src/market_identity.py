@@ -252,13 +252,14 @@ def apply_market_canonicalization(
     out_df[market_col] = out_df.apply(_map_row, axis=1)
     return out_df
 
-
 # =============================================================================
 # Candidate Policy v2.1 Engine Extensions
 # =============================================================================
 
 CANDIDATE_ALIAS_COLUMNS_V21: List[str] = MARKET_ALIAS_COLUMNS + [
-    "evidence_known_date"
+    "evidence_known_date",
+    "assumed_known_date",
+    "knowledge_provenance"
 ]
 
 
@@ -282,7 +283,7 @@ def evaluate_alias_evidence_v21(
 
     Candidate v2.1 introduces strict, defensive criteria:
       1. Missing Field Check: Rejects empty/null district or market names.
-      2. Malformed Date Check: Rejects unparseable dates or inverted date ranges
+      2. Malformed Date Check: Rejects unparseable dates, NaT, or inverted date ranges
          (first_date > last_date).
       3. Strict District Match: Rejects cross-district candidate pairs.
       4. Exact Normalized Name Match: Requires identical base token strings.
@@ -293,24 +294,27 @@ def evaluate_alias_evidence_v21(
            (default 14 calendar days). Unbounded hiatus (e.g. Purwa 205d gap) fails.
          - Overlap during migration must be bounded: overlap_days <= max_migration_overlap_days
            (default 7 days).
-         - If overlapping records exist during migration, exact price agreement
-           must be >= min_price_agreement.
+         - If overlapping records exist during migration, verified price columns
+           must be present, finite, and exact price agreement must be >= min_price_agreement.
       6. Candidate Rule B (Concordance Overlap):
          - Applied when overlap_days > max_migration_overlap_days.
-         - Requires a minimum sample of overlapping natural keys:
-           len(overlapping_records_df) >= min_concordance_keys (default 5 keys).
+         - Requires verified price columns ('price_1', 'price_2') with finite numeric data.
+         - Requires a minimum sample of unique natural keys:
+           unique_keys >= min_concordance_keys (default 5 keys).
          - Requires exact-price agreement >= min_price_agreement (default 95.0%).
 
     Returns:
         (is_accepted: bool, evidence_dict: dict)
     """
     # 1. Missing field check
-    d1 = str(district_1).strip().lower() if district_1 is not None else ""
-    d2 = str(district_2).strip().lower() if district_2 is not None else ""
-    n1 = str(name_1).strip() if name_1 is not None else ""
-    n2 = str(name_2).strip() if name_2 is not None else ""
+    def _is_empty_or_null(v: Any) -> bool:
+        if v is None:
+            return True
+        s = str(v).strip().lower()
+        return s in {"", "none", "nan", "null", "<na>"}
 
-    if not d1 or not d2 or not n1 or not n2:
+    if _is_empty_or_null(district_1) or _is_empty_or_null(district_2) or \
+       _is_empty_or_null(name_1) or _is_empty_or_null(name_2):
         return False, {
             "status": "UNMAPPED/REVIEW",
             "rule": "Failed (missing required identity field)",
@@ -318,6 +322,11 @@ def evaluate_alias_evidence_v21(
             "overlap_days": 0,
             "price_agreement": None
         }
+
+    d1 = str(district_1).strip().lower()
+    d2 = str(district_2).strip().lower()
+    n1 = str(name_1).strip()
+    n2 = str(name_2).strip()
 
     # 2. Date parsing and malformed date check
     try:
@@ -330,6 +339,15 @@ def evaluate_alias_evidence_v21(
             "status": "UNMAPPED/REVIEW",
             "rule": "Failed (unparseable date)",
             "evidence": f"Date parsing failed: {e}",
+            "overlap_days": 0,
+            "price_agreement": None
+        }
+
+    if pd.isna(dt1_start) or pd.isna(dt1_end) or pd.isna(dt2_start) or pd.isna(dt2_end):
+        return False, {
+            "status": "UNMAPPED/REVIEW",
+            "rule": "Failed (NaT date detected)",
+            "evidence": f"One or more dates evaluated to NaT: [{first_date_1}, {last_date_1}, {first_date_2}, {last_date_2}]",
             "overlap_days": 0,
             "price_agreement": None
         }
@@ -384,15 +402,50 @@ def evaluate_alias_evidence_v21(
         gap_days = int((newer_start - older_end).days)
 
     price_agreement: Optional[float] = None
-
-    # Calculate price agreement if overlap dataframe is provided
-    total_matches = 0
+    has_overlap_df = overlapping_records_df is not None and not overlapping_records_df.empty
+    total_unique_keys = 0
     exact_matches = 0
-    if overlapping_records_df is not None and not overlapping_records_df.empty:
-        total_matches = len(overlapping_records_df)
-        if "price_1" in overlapping_records_df.columns and "price_2" in overlapping_records_df.columns:
-            exact_matches = int((overlapping_records_df["price_1"] == overlapping_records_df["price_2"]).sum())
-            price_agreement = round(float(exact_matches / total_matches), 4) if total_matches > 0 else 0.0
+
+    if has_overlap_df:
+        # Check price column presence
+        if "price_1" not in overlapping_records_df.columns or "price_2" not in overlapping_records_df.columns:
+            return False, {
+                "status": "UNMAPPED/REVIEW",
+                "rule": "Failed (missing required price columns)",
+                "evidence": "Overlapping records provided but missing 'price_1' or 'price_2' column.",
+                "overlap_days": overlap_days,
+                "price_agreement": None
+            }
+
+        # Validate finite numeric prices
+        p1 = pd.to_numeric(overlapping_records_df["price_1"], errors="coerce")
+        p2 = pd.to_numeric(overlapping_records_df["price_2"], errors="coerce")
+        valid_price_mask = p1.notna() & p2.notna()
+
+        if not valid_price_mask.all():
+            invalid_cnt = int((~valid_price_mask).sum())
+            return False, {
+                "status": "UNMAPPED/REVIEW",
+                "rule": "Failed (nonfinite or unparseable price values)",
+                "evidence": f"Overlapping records contain {invalid_cnt} nonfinite or unparseable price values.",
+                "overlap_days": overlap_days,
+                "price_agreement": None
+            }
+
+        # Count unique natural keys to prevent many-to-many joined row inflation
+        key_candidates = ["Arrival_Date", "Commodity", "Variety", "Grade"]
+        available_keys = [c for c in key_candidates if c in overlapping_records_df.columns]
+        if available_keys:
+            # Deduplicate by unique natural key
+            dedup_df = overlapping_records_df.drop_duplicates(subset=available_keys).copy()
+        else:
+            dedup_df = overlapping_records_df.copy()
+
+        total_unique_keys = len(dedup_df)
+        p1_dedup = pd.to_numeric(dedup_df["price_1"], errors="coerce")
+        p2_dedup = pd.to_numeric(dedup_df["price_2"], errors="coerce")
+        exact_matches = int((p1_dedup == p2_dedup).sum())
+        price_agreement = round(float(exact_matches / total_unique_keys), 4) if total_unique_keys > 0 else 0.0
 
     # Evaluation: Case A - Migration / Near-Contiguous handover
     if overlap_days <= max_migration_overlap_days:
@@ -406,12 +459,12 @@ def evaluate_alias_evidence_v21(
             }
 
         # If there are overlapping records during the short handover, verify concordance
-        if total_matches > 0 and price_agreement is not None:
-            if price_agreement < min_price_agreement:
+        if has_overlap_df and total_unique_keys > 0:
+            if price_agreement is not None and price_agreement < min_price_agreement:
                 return False, {
                     "status": "UNMAPPED/REVIEW",
                     "rule": f"Failed Candidate Rule A (handover price divergence < {min_price_agreement:.0%})",
-                    "evidence": f"overlap_days={overlap_days} <= {max_migration_overlap_days}; price_agreement={price_agreement:.4f} < {min_price_agreement} ({exact_matches}/{total_matches})",
+                    "evidence": f"overlap_days={overlap_days} <= {max_migration_overlap_days}; price_agreement={price_agreement:.4f} < {min_price_agreement} ({exact_matches}/{total_unique_keys})",
                     "overlap_days": overlap_days,
                     "price_agreement": price_agreement
                 }
@@ -420,8 +473,8 @@ def evaluate_alias_evidence_v21(
             f"gap_days={gap_days} <= {max_migration_gap_days}; "
             f"overlap_days={overlap_days} <= {max_migration_overlap_days} (verified chronological migration)"
         )
-        if total_matches > 0 and price_agreement is not None:
-            evidence_str += f"; price_agreement={price_agreement:.4f} ({exact_matches}/{total_matches})"
+        if has_overlap_df and total_unique_keys > 0 and price_agreement is not None:
+            evidence_str += f"; price_agreement={price_agreement:.4f} ({exact_matches}/{total_unique_keys} unique keys)"
 
         return True, {
             "status": "ACCEPTED",
@@ -433,11 +486,11 @@ def evaluate_alias_evidence_v21(
 
     # Evaluation: Case B - Extended Co-existence / Concordance Overlap
     else:
-        if total_matches < min_concordance_keys:
+        if not has_overlap_df or total_unique_keys < min_concordance_keys:
             return False, {
                 "status": "UNMAPPED/REVIEW",
-                "rule": f"Failed Candidate Rule B (insufficient overlapping keys: {total_matches} < {min_concordance_keys})",
-                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; overlapping keys count {total_matches} below required minimum of {min_concordance_keys}",
+                "rule": f"Failed Candidate Rule B (insufficient overlapping keys: {total_unique_keys} < {min_concordance_keys})",
+                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; unique overlapping keys count {total_unique_keys} below required minimum of {min_concordance_keys}",
                 "overlap_days": overlap_days,
                 "price_agreement": price_agreement
             }
@@ -446,7 +499,7 @@ def evaluate_alias_evidence_v21(
             return True, {
                 "status": "ACCEPTED",
                 "rule": f"Candidate Rule B (overlapping concordance >= {min_price_agreement:.0%})",
-                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; price_agreement={price_agreement:.4f} >= {min_price_agreement} ({exact_matches}/{total_matches})",
+                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; price_agreement={price_agreement:.4f} >= {min_price_agreement} ({exact_matches}/{total_unique_keys} unique keys)",
                 "overlap_days": overlap_days,
                 "price_agreement": price_agreement
             }
@@ -455,7 +508,7 @@ def evaluate_alias_evidence_v21(
             return False, {
                 "status": "UNMAPPED/REVIEW",
                 "rule": f"Failed Candidate Rule B (price agreement {agreement_val:.2%} < {min_price_agreement:.0%})",
-                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; price_agreement={agreement_val:.4f} < {min_price_agreement} ({exact_matches}/{total_matches})",
+                "evidence": f"overlap_days={overlap_days} > {max_migration_overlap_days}; price_agreement={agreement_val:.4f} < {min_price_agreement} ({exact_matches}/{total_unique_keys} unique keys)",
                 "overlap_days": overlap_days,
                 "price_agreement": price_agreement
             }
@@ -463,13 +516,21 @@ def evaluate_alias_evidence_v21(
 
 def validate_alias_table(alias_df: pd.DataFrame) -> Tuple[bool, List[str]]:
     """
-    Performs comprehensive defensive validation of an alias table:
+    Performs comprehensive defensive, fail-closed validation of an alias table:
       1. Schema compliance: All MARKET_ALIAS_COLUMNS must be present.
-      2. Non-empty identities: district, market_raw, market_canonical must be populated.
-      3. Inverted date check: first_date <= last_date for valid date strings.
-      4. Duplicate conflicting mappings: The same (district, market_raw) must NOT
+      2. Non-empty/non-null identities: district, market_raw, market_canonical, status.
+         Rejects pandas NaN, None, empty strings, and string 'nan'/'none'/'null'.
+      3. Valid status domain: status must be one of {'ACCEPTED', 'UNMAPPED/REVIEW', 'REJECTED'}.
+      4. Strict Date Validation:
+         - All date fields present ('first_date', 'last_date', 'evidence_known_date',
+           'assumed_known_date') must be parseable dates if non-empty; malformed strings
+           or NaT values fail validation.
+         - Inverted range check: first_date <= last_date.
+      5. Duplicate conflicting mappings: The same (district, market_raw) must NOT
          map to multiple distinct market_canonical values with status ACCEPTED.
-      5. Cycle detection: A -> B and B -> A or cyclic alias chains.
+      6. Nonterminal mapping chains: A -> B and B -> C (where A != B and B != C)
+         with status ACCEPTED are rejected to avoid ambiguous transitive expansion.
+      7. Cycle detection: A -> B and B -> A or multi-hop cyclic alias chains.
 
     Returns:
         (is_valid: bool, issues: List[str])
@@ -482,25 +543,52 @@ def validate_alias_table(alias_df: pd.DataFrame) -> Tuple[bool, List[str]]:
         issues.append(f"Missing required columns: {missing_cols}")
         return False, issues
 
-    # 2. Non-empty identities
-    for col in ["district", "market_raw", "market_canonical", "status"]:
-        null_count = int(alias_df[col].isna().sum())
-        empty_count = int((alias_df[col].astype(str).str.strip() == "").sum())
-        if null_count > 0 or empty_count > 0:
-            issues.append(f"Column '{col}' has {null_count} nulls and {empty_count} empty strings")
+    # Helper for null / string-null check
+    def _is_null_like(val: Any) -> bool:
+        if val is None or pd.isna(val):
+            return True
+        s = str(val).strip().lower()
+        return s in {"", "none", "nan", "null", "<na>"}
 
-    # 3. Inverted dates
+    # 2. Non-empty identities & valid status
+    valid_statuses = {"ACCEPTED", "UNMAPPED/REVIEW", "REJECTED"}
     for idx, row in alias_df.iterrows():
-        fd, ld = str(row["first_date"]).strip(), str(row["last_date"]).strip()
-        if fd and ld and fd != "nan" and ld != "nan":
-            try:
-                if pd.to_datetime(fd) > pd.to_datetime(ld):
-                    issues.append(f"Row {idx}: Inverted date range [{fd} > {ld}] for {row['market_raw']}")
-            except Exception:
-                pass
+        for col in ["district", "market_raw", "market_canonical", "status"]:
+            if _is_null_like(row.get(col)):
+                issues.append(f"Row {idx}: Column '{col}' is null or empty: {repr(row.get(col))}")
+
+        st = str(row.get("status", "")).strip().upper()
+        if st and st not in valid_statuses:
+            issues.append(f"Row {idx}: Invalid status '{row.get('status')}'. Must be one of {valid_statuses}")
+
+    # 3. Date validity & inverted dates
+    date_cols_to_check = [c for c in ["first_date", "last_date", "evidence_known_date", "assumed_known_date"] if c in alias_df.columns]
+
+    for idx, row in alias_df.iterrows():
+        parsed_dates = {}
+        for col in date_cols_to_check:
+            val = row.get(col)
+            if not _is_null_like(val):
+                try:
+                    dt = pd.to_datetime(val)
+                    if pd.isna(dt):
+                        issues.append(f"Row {idx}: Date field '{col}' evaluated to NaT: {repr(val)}")
+                    else:
+                        parsed_dates[col] = dt
+                except Exception as e:
+                    issues.append(f"Row {idx}: Malformed/unparseable date in '{col}': {repr(val)} ({e})")
+
+        # Inverted date check between first_date and last_date
+        if "first_date" in parsed_dates and "last_date" in parsed_dates:
+            if parsed_dates["first_date"] > parsed_dates["last_date"]:
+                issues.append(
+                    f"Row {idx}: Inverted date range [{row.get('first_date')} > {row.get('last_date')}] for '{row.get('market_raw')}'"
+                )
 
     # 4. Duplicate conflicting mappings
-    accepted_df = alias_df[alias_df["status"].astype(str).str.upper() == "ACCEPTED"]
+    status_series = alias_df["status"].astype(str).str.strip().str.upper()
+    accepted_df = alias_df[status_series == "ACCEPTED"]
+
     mapping_groups = accepted_df.groupby([
         accepted_df["district"].astype(str).str.strip().str.lower(),
         accepted_df["market_raw"].astype(str).str.strip().str.lower()
@@ -512,25 +600,36 @@ def validate_alias_table(alias_df: pd.DataFrame) -> Tuple[bool, List[str]]:
                 f"Conflicting duplicate mapping: ({d}, {raw_m}) maps to multiple canonical targets: {canonical_targets}"
             )
 
-    # 5. Cycle detection
-    # Graph of accepted non-identity mappings: raw -> canonical
-    adj: Dict[Tuple[str, str], Tuple[str, str]] = {}
-    for _, row in accepted_df.iterrows():
-        dist_key = row["district"].strip().lower()
-        raw_key = row["market_raw"].strip().lower()
-        can_key = row["market_canonical"].strip().lower()
+    # 5. Nonterminal mapping chains & Cycle detection
+    # Map of accepted nonidentity mappings: (district, raw) -> (district, canonical)
+    non_identity_edges: Dict[Tuple[str, str], Tuple[str, str]] = {}
+    for idx, row in accepted_df.iterrows():
+        dist_key = str(row["district"]).strip().lower()
+        raw_key = str(row["market_raw"]).strip().lower()
+        can_key = str(row["market_canonical"]).strip().lower()
         if raw_key != can_key:
-            adj[(dist_key, raw_key)] = (dist_key, can_key)
+            src = (dist_key, raw_key)
+            dst = (dist_key, can_key)
+            non_identity_edges[src] = dst
 
-    for start_node in adj:
+    # Check for nonterminal mapping chains: A -> B and B -> C where A != B and B != C
+    for src, dst in non_identity_edges.items():
+        if dst in non_identity_edges:
+            issues.append(
+                f"Nonterminal mapping chain detected: {src} -> {dst} -> {non_identity_edges[dst]}. "
+                f"Accepted mappings must be terminal single-hop mappings."
+            )
+
+    # Check for cycles
+    for start_node in non_identity_edges:
         visited = set()
         curr = start_node
-        while curr in adj:
+        while curr in non_identity_edges:
             if curr in visited:
                 issues.append(f"Cycle detected in alias mapping starting at {start_node}: cycle node {curr}")
                 break
             visited.add(curr)
-            curr = adj[curr]
+            curr = non_identity_edges[curr]
 
     is_valid = len(issues) == 0
     return is_valid, issues
@@ -538,42 +637,88 @@ def validate_alias_table(alias_df: pd.DataFrame) -> Tuple[bool, List[str]]:
 
 def build_causal_alias_mapping(
     alias_df: pd.DataFrame,
-    as_of_date: Optional[Union[str, pd.Timestamp]] = None
+    as_of_date: Optional[Union[str, pd.Timestamp]] = None,
+    evidence_mode: str = "verified"
 ) -> Dict[Tuple[str, str], str]:
     """
     Builds an alias lookup mapping respecting information availability as of cutoff date.
 
-    If `as_of_date` is provided:
-      - Only alias mappings whose evidence was known on or before `as_of_date`
-        (using `evidence_known_date` if present, else `first_date`) are applied.
-      - Any alias whose evidence became available strictly after `as_of_date`
-        is omitted, preventing lookahead bias in historical benchmark folds.
+    Fail-Closed Validation:
+      Validates alias_df before building mapping. Raises ValueError if validation fails.
+
+    Evidence Modes:
+      - 'verified' (default, fail-closed): Requires dated publication/retrieval evidence
+        in 'evidence_known_date'. If 'as_of_date' is supplied and 'evidence_known_date' is
+        missing, empty, unparseable, or strictly after 'as_of_date', nonidentity mappings
+        are strictly WITHHELD. NEVER falls back to 'first_date'.
+      - 'assumed': Uses 'assumed_known_date' (or 'evidence_known_date' if present) for
+        sensitivity analysis of assumed observation handover timings.
+      - 'retrospective': Applies all accepted aliases irrespective of cutoff date.
 
     Returns:
         (district_lower, market_raw_lower) -> market_canonical
     """
+    is_valid, issues = validate_alias_table(alias_df)
+    if not is_valid:
+        raise ValueError(f"Cannot build alias mapping: table failed defensive validation:\n" + "\n".join(issues))
+
+    evidence_mode_clean = str(evidence_mode).strip().lower()
+    if evidence_mode_clean not in {"verified", "assumed", "retrospective"}:
+        raise ValueError(
+            f"Unsupported evidence_mode: '{evidence_mode}'. Must be 'verified', 'assumed', or 'retrospective'."
+        )
+
     mapping: Dict[Tuple[str, str], str] = {}
-    accepted_df = alias_df[alias_df["status"].astype(str).str.upper() == "ACCEPTED"]
+    status_series = alias_df["status"].astype(str).str.strip().str.upper()
+    accepted_df = alias_df[status_series == "ACCEPTED"]
 
     as_of_dt = pd.to_datetime(as_of_date) if as_of_date is not None else None
+
+    def _is_null_like(val: Any) -> bool:
+        if val is None or pd.isna(val):
+            return True
+        s = str(val).strip().lower()
+        return s in {"", "none", "nan", "null", "<na>"}
 
     for _, row in accepted_df.iterrows():
         dist_key = str(row["district"]).strip().lower()
         raw_key = str(row["market_raw"]).strip().lower()
         can_target = str(row["market_canonical"]).strip()
+        can_key = can_target.lower()
 
-        # Check information availability
-        if as_of_dt is not None:
-            known_date_col = "evidence_known_date" if "evidence_known_date" in row and pd.notna(row["evidence_known_date"]) else "first_date"
-            date_val = str(row.get(known_date_col, "")).strip()
-            if date_val and date_val != "nan":
+        # Identity mappings (canonical anchors) are structural no-ops: always active
+        if raw_key == can_key:
+            mapping[(dist_key, raw_key)] = can_target
+            continue
+
+        # Non-identity alias mapping: check as-of information availability
+        if as_of_dt is not None and evidence_mode_clean != "retrospective":
+            if evidence_mode_clean == "verified":
+                # In verified mode, require evidence_known_date
+                val = row.get("evidence_known_date")
+                if _is_null_like(val):
+                    # Fail-closed: missing verified publication receipt withholds merge
+                    continue
                 try:
-                    known_dt = pd.to_datetime(date_val)
-                    if known_dt > as_of_dt:
-                        # Evidence was NOT available by cutoff date; withhold mapping
+                    known_dt = pd.to_datetime(val)
+                    if pd.isna(known_dt) or known_dt > as_of_dt:
                         continue
                 except Exception:
-                    pass
+                    continue
+
+            elif evidence_mode_clean == "assumed":
+                # In assumed mode, look for assumed_known_date, then evidence_known_date
+                val = row.get("assumed_known_date")
+                if _is_null_like(val):
+                    val = row.get("evidence_known_date")
+                if _is_null_like(val):
+                    continue
+                try:
+                    known_dt = pd.to_datetime(val)
+                    if pd.isna(known_dt) or known_dt > as_of_dt:
+                        continue
+                except Exception:
+                    continue
 
         mapping[(dist_key, raw_key)] = can_target
 
@@ -586,13 +731,15 @@ def apply_market_canonicalization_v21(
     district_col: str = "District",
     market_col: str = "Market",
     raw_market_col: str = "Market_Raw",
-    as_of_date: Optional[Union[str, pd.Timestamp]] = None
+    as_of_date: Optional[Union[str, pd.Timestamp]] = None,
+    evidence_mode: str = "verified"
 ) -> pd.DataFrame:
     """
     Applies Candidate v2.1 market canonicalization supporting causal cutoff filters:
       1. Preserves original market name in `raw_market_col` (e.g. 'Market_Raw').
       2. Maps `market_col` to `market_canonical` using accepted aliases.
-      3. If `as_of_date` is set, withholds mappings whose evidence was unknown at cutoff.
+      3. If `as_of_date` is set, withholds nonidentity mappings whose evidence was
+         unknown at cutoff under the specified evidence_mode ('verified', 'assumed', 'retrospective').
       4. If unmapped, assigns original name and preserves status.
 
     Pure function: returns a new DataFrame copy.
@@ -607,10 +754,10 @@ def apply_market_canonicalization_v21(
     if isinstance(alias_source, dict):
         mapping = alias_source
     elif isinstance(alias_source, pd.DataFrame):
-        mapping = build_causal_alias_mapping(alias_source, as_of_date=as_of_date)
+        mapping = build_causal_alias_mapping(alias_source, as_of_date=as_of_date, evidence_mode=evidence_mode)
     else:
         alias_df = load_market_aliases(alias_source)
-        mapping = build_causal_alias_mapping(alias_df, as_of_date=as_of_date)
+        mapping = build_causal_alias_mapping(alias_df, as_of_date=as_of_date, evidence_mode=evidence_mode)
 
     # 3. Canonicalize Market column
     def _map_row(row):

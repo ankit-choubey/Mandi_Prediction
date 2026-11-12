@@ -1143,8 +1143,8 @@ $$\text{Total} = 923 (\text{low-obs}) + 420 (\text{other}) + 323 (\text{quaranti
 - `other` (420): Residual matching failures (Kanpur 379, Jhansi 20, Lucknow 19, Ghaziabad 1, Unnao 1) designated **PENDING REMOTE CHECK**.
 
 ### 20.5 Causal Sensitivity (<20 Floor vs >=60 Train Eligibility)
-- **Mathematical Invariant:** $N_{\text{full}} \ge N_{\text{train}}$. Since any training-eligible series must satisfy $N_{\text{train}} \ge 60$ prior to cutoff, it automatically satisfies $N_{\text{full}} \ge 60 > 20$. The $<20$ full-history floor cannot prune any series that independently meets the $\ge 60$ training threshold.
-- **As-Of Provenance:** Because APMC names did not exist prior to November 2025, canonicalization cannot add training observations prior to `2025-12-18` (Folds F1, F2, F3).
+- **Mathematical Invariant (Fixed Identity):** $N_{\text{full}} \ge N_{\text{train}}$ holds strictly for every series when market identity and cleaning policies are held fixed, because training records are a mathematical subset of full-history records. Therefore, holding identity fixed, the $<20$ full-history floor cannot prune any series that independently satisfies the $\ge 60$ training threshold.
+- **Correction on Historical Alias Effect:** The initial claim that aliases cannot alter counts before `2025-12-18` is **retracted**. November 2025 chronologically precedes December 18, 2025, and in `MP-FC-006R`, alias canonicalization added $+2,355$ net training rows to Tier A at Fold F3 (`384,887` $\rightarrow$ `387,242`). In strict fail-closed causal mode (`evidence_mode="verified"`), absent dated publication receipts, nonidentity merges are strictly withheld as of historical cutoffs (yielding zero verified historical merges prior to present adjudication). Assumed observation handover timings (`2025-11-05`) are evaluated strictly as an explicit sensitivity analysis (`evidence_mode="assumed"`).
 
 ### 20.6 Prepared Remote Kernel Execution Request
 - Prepared notebook: `experiments/notebooks/mp_data_007_identity_review.ipynb`
@@ -1152,3 +1152,53 @@ $$\text{Total} = 923 (\text{low-obs}) + 420 (\text{other}) + 323 (\text{quaranti
 - Invariant Gate 1: Panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` (fail-closed).
 - Expected outputs: `identity_comparison_v2_vs_v21.csv`, `excel_unmatched_reclassification_v21.json`, `manifest_v21.json`.
 - Status: **Awaiting explicit owner approval; zero self-approval.**
+
+
+## MP-DATA-007 independent review — 2026-11-12 IST
+Commit 4cef31a1c4658b0a45504deda9b276e5771736fa remotely verified; 24 targeted identity tests passed in 0.50s. Full 189-pass receipt reported only. CHANGES REQUIRED: notebook hardcodes legacy unmatched counts as v21 results and lacks requested causal reconstruction; missing knowledge date falls back to first observation; malformed alias dates pass validation (both independently reproduced). Candidate historical evidence_known_date entries lack historical provenance; false F3 no-alias-effect narrative contradicted by prior +2355 rows. Gap/range/shared-day definitions and hypothesis wording need repair. documentation/context.md modified again contrary to instruction. Two EOF-only working edits preserved. See documentation/DATA007_REVIEW.md. Next local-only prompt documentation/prompts/MP-DATA-007B.md. No Kaggle execution/panel freeze/ML authorization.
+
+
+---
+
+## 21. Section 21: MP-DATA-007B Mathematical Validation & Gate Repair
+
+### 21.1 Definitions and Count Separations
+- **Inclusive Calendar Date-Range Overlap:** $\max(0, (\min(ld_1, ld_2) - \max(fd_1, fd_2)).\text{days} + 1)$. For Jhansi Grain APMC (2026-01-01 to 2026-01-14) vs Jhansi (Grain) APMC (2025-11-02 to 2026-01-14), the inclusive range overlap is exactly **14 calendar days**.
+- **Shared Observation Dates:** The count of unique calendar dates on which quotes actually appeared in both series feeds. For Jhansi Grain APMC and Jhansi (Grain) APMC, this count is exactly **10 dates**.
+- **Overlapping Natural Keys:** Unique tuples of `(Arrival_Date, Commodity, Variety, Grade)`. Evaluated as unique natural keys; duplicate many-to-many joined rows are deduplicated prior to sample size evaluation ($N_{\text{unique}} \ge 5$).
+- **Modal Price Agreement:** Proportion of unique natural keys where modal prices match exactly: $\frac{\sum \mathbf{1}(p_1 = p_2)}{N_{\text{unique}}}$. Certified for modal prices only, not full quotes.
+- **Candidate Policy Limits as Assumptions:** The 14-day migration hiatus limit, 7-day migration overlap limit, 5 unique keys minimum, and 95% modal concordance threshold are declared engineering assumptions subject to sensitivity analysis, not empirical physical laws.
+
+### 21.2 Fail-Closed Identity and Manifest Gates
+- **Defensive Table Validation (`validate_alias_table`):**
+  - Schema conformity to `MARKET_ALIAS_COLUMNS`.
+  - Non-null/non-empty identity fields (`district`, `market_raw`, `market_canonical`, `status`), strictly rejecting pandas `NaN`, `None`, `""`, and string representations `"nan"`, `"none"`, `"null"`.
+  - Strict date parsing across all date columns (`first_date`, `last_date`, `evidence_known_date`, `assumed_known_date`), failing closed on malformed strings (`"not-a-date"`) or NaT values.
+  - Inverted date range detection: $fd \le ld$.
+  - Detection of conflicting duplicate mappings under `status == 'ACCEPTED'`.
+  - Detection of nonterminal mapping chains ($A \rightarrow B$ and $B \rightarrow C$ where $A \ne B$ and $B \ne C$) and multi-hop cycles.
+- **Nested Manifest Dispositions (`extract_manifest_dispositions`):**
+  - Parses `manifest["summary_metrics"]` directly without literal fallback constants.
+  - Strictly asserts row conservation:
+    $$\text{accepted\_rows} + \text{duplicates} + \text{conflicts} + \text{low\_obs} + \text{invalid\_dropped} = \text{total\_raw\_rows}$$
+    $$463,217 + 855 + 2,936 + 5,350 + 27 = 472,385$$
+  - Raises `KeyError` on missing schema fields; raises `ValueError` on conservation violation.
+
+### 21.3 Pre-Floor Causal Sensitivity & Future Mutation Invariance
+- **Causal Sensitivity Formulation (`evaluate_causal_train_eligibility_sensitivity`):**
+  - Reconstructs training series identities BEFORE the $<20$ full-history filter across cutoffs F1 (`2024-12-31`), F2 (`2025-06-30`), F3 (`2025-12-18`), and F4 (`2026-03-31`).
+  - Evaluates in `verified` mode (missing gazette receipts withhold nonidentity merges, yielding 0 historical merges) and `assumed` mode (evaluating sensitivity to assumed Nov 2025 APMC handover dates).
+  - Asserts that holding identity and cleaning fixed, $N_{\text{full}} \ge N_{\text{train}}$ holds across all series.
+- **Future Mutation Invariance (`verify_future_mutation_invariance`):**
+  - Mutates observations dated strictly after `cutoff_date` (corrupting prices, changing names, injecting synthetic future rows).
+  - Asserts that training series keys, observation counts, and Tier A eligibility sets as of `cutoff_date` are bit-for-bit invariant ($I_{\text{mut}} = I_{\text{base}}$).
+
+### 21.4 Verification & Test Receipts
+- `tests/test_identity_policy_v21.py`: **19 passed in 0.19s**
+- `tests/test_identity_comparison.py`: **8 passed in 0.17s**
+- `tests/test_market_identity.py`: **12 passed in 0.16s**
+- Entire test suite: **204 passed in 4.69s**, exit code 0.
+- Bit-level byte equality verified across all 7 embedded payloads in `experiments/notebooks/mp_data_007_identity_review.ipynb`.
+- Isolated miniature end-to-end smoke test executed and passed in temporary workspace.
+- **Panel v2 Status:** **PROVISIONAL** (reproduction hash `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`).
+- **Authorization Note:** Zero remote compute executed; zero ML trained; zero panel freeze declared.

@@ -78,20 +78,23 @@ The forensic analysis below reconciles `data/reference/market_aliases.csv` again
 
 ### 3.2 Jhansi Grain Variants (Jhansi)
 - **Observed Chronology:** Historical `Jhansi (Grain)` ceased on `2025-11-03`. Direct comparison to `Jhansi Grain APMC` (first date `2026-01-01`) showed a 59-day gap.
-- **Transitive Linkage:** However, `Jhansi (Grain) APMC` migrated directly from `Jhansi (Grain)` on `2025-11-02` (100% price match). Then, between `2026-01-01` and `2026-01-14`, BOTH `Jhansi (Grain) APMC` AND `Jhansi Grain APMC` reported concurrently:
-  - Overlap: 10 calendar days.
-  - Overlapping keys: 23 unique natural keys.
-  - **Exact price agreement: 23 / 23 = 100.0%**.
-- **Candidate v2.1 Ruling:** **`ACCEPTED`**. The mapping `Jhansi Grain APMC -> Jhansi (Grain)` is valid via transitive equivalence (`Jhansi Grain APMC` $\equiv$ `Jhansi (Grain) APMC` $\rightarrow$ `Jhansi (Grain)`). The justification is updated from erroneous Rule A to Candidate Rule B (transitive concordance). Redundant duplicate records during the 10-day overlap deduplicate cleanly under identical prices.
+- **Transitive Linkage & Overlap Definitions:**
+  `Jhansi (Grain) APMC` migrated directly from `Jhansi (Grain)` on `2025-11-02` (100% price match). Then, between `2026-01-01` and `2026-01-14`, BOTH `Jhansi (Grain) APMC` AND `Jhansi Grain APMC` co-existed:
+  - **Inclusive Calendar Range Overlap:** Exactly 14 calendar days (2026-01-01 to 2026-01-14 inclusive).
+  - **Shared Observation Dates:** Exactly 10 dates with active price reporting in both raw series.
+  - **Overlapping Natural Keys:** 23 unique natural keys `(Date, Commodity, Variety, Grade)`.
+  - **Modal Price Agreement:** 23 / 23 = **100.0% exact modal match**.
+- **Candidate v2.1 Ruling:** **`ACCEPTED` (as a working hypothesis pending official verification)**. The mapping `Jhansi Grain APMC -> Jhansi (Grain)` is formulated via transitive equivalence (`Jhansi Grain APMC` $\equiv$ `Jhansi (Grain) APMC` $\rightarrow$ `Jhansi (Grain)`). The rule evaluates inclusive range overlap (14 days). Candidate policy limits (14d gap, 7d migration overlap, 5 keys, 95% modal match) are declared assumptions requiring sensitivity analysis, not validated empirical laws.
 
 ### 3.3 Baripaal APMC vs Varipaal (Kanpur)
 - **Observed Chronology:** `Varipaal APMC` began `2025-11-01`. `Baripaal APMC` began `2026-03-01`.
-- **Co-Reporting Overlap:** Between `2026-03-01` and `2026-04-26` (52 calendar days), both mandis were actively transmitting quotes concurrently:
+- **Co-Reporting Overlap:** Between `2026-03-01` and `2026-04-26` (56 days inclusive calendar range; 52 calendar days of active overlap window), both series reported concurrently:
   - Overlapping natural keys: 462 keys.
   - Exact modal price matches: 442 keys (95.67%).
   - **Conflicting keys: Exactly 20 keys (4.33%) had differing prices on the same day**.
 - **Normalization Mismatch:** `normalize_market_name('Baripaal APMC') == 'baripaal'`, while `normalize_market_name('Varipaal APMC') == 'varipaal'`.
-- **Candidate v2.1 Ruling:** **`UNMAPPED/REVIEW`**. Although Hindi phonology alternates B/V (बारीपाल / वारीपाल), concurrent reporting with 20 diverging quotes proves they were distinct data channels. Merging them would inject artificial price conflicts into the panel. `Baripaal APMC` remains its own canonical market `Baripaal APMC` (as established in reference row 24).
+- **Candidate v2.1 Ruling:** **`UNMAPPED/REVIEW`**. Although Hindi phonology alternates B/V (बारीपाल / वारीपाल), concurrent reporting with 20 diverging quotes demonstrates observed co-reporting with unresolved physical identity. Differing quotes do not prove distinct physical mandis, but merging them would inject artificial price conflicts into the panel. `Baripaal APMC` is retained as an unmerged canonical market to prevent unverified conflict injection.
+
 
 ---
 
@@ -151,11 +154,15 @@ $$\text{Total Unmatched Rows} = 923 + 420 + 323 + 197 + 32 = 1,895$$
 
 ## 6. Causal Sensitivity: Full-History Floor vs Train Eligibility
 
-1. **Mathematical Proof on Floor Interaction:**
+1. **Mathematical Invariant on Floor Interaction (Fixed Identity):**
    Train-only eligibility at cutoff $T_{\text{cutoff}}$ requires $N_{\text{train}} \ge 60$ observations strictly prior to $T_{\text{cutoff}}$. Full-history pruning requires $N_{\text{full}} \ge 20$ observations across the entire 5-year span.
-   Since $N_{\text{full}} \ge N_{\text{train}}$ for every series, any series with $N_{\text{train}} \ge 60$ automatically has $N_{\text{full}} \ge 60 > 20$. Therefore, **the $<20$ full-history floor cannot prune any series that independently satisfies the $\ge 60$ training threshold**.
-2. **Border Series via Canonicalization:**
-   The only series affected by canonicalization are border series where two raw market labels (e.g. historical and APMC) each had $<20$ observations, but combine to $\ge 20$ observations under an alias. Because APMC names did not exist prior to November 2025, merging them in 2026 adds zero observations prior to `2025-12-18` (Folds F1, F2, F3).
+   Holding market identity and cleaning policies fixed, $N_{\text{full}} \ge N_{\text{train}}$ holds strictly for every series because training observations are a mathematical subset of full-history observations. Therefore, **holding identity fixed, the $<20$ full-history floor cannot prune any series that independently satisfies the $\ge 60$ training threshold**.
+
+2. **Explicit Retraction & Correction Regarding Historical Alias Effects:**
+   > [!WARNING]
+   > **Correction of Erroneous Claim:** The initial MP-DATA-007 draft erroneously asserted that aliases could not affect counts before `2025-12-18` because APMC suffixes appeared in November 2025. This statement is **retracted**. November 2025 chronologically *precedes* December 18, 2025. In `MP-FC-006R`, alias canonicalization added **+2,355 net training observations** to Tier A for Cutoff F3 (`384,887` $\rightarrow$ `387,242`), demonstrating that canonicalization does alter historical training eligibility when aliases bridge fragmented pre-cutoff series.
+   >
+   > Furthermore, historical knowledge dates in `market_alias_candidates_v21.csv` lack dated government gazette publication receipts. In strict fail-closed causal mode (`evidence_mode="verified"`), absent official retrieval receipts, nonidentity merges are strictly withheld as of historical cutoffs, resulting in **zero verified historical merges** prior to present adjudication (`2026-11-12`). Assumed observation handover timings (`2025-11-05`) are evaluated strictly as an explicit sensitivity analysis (`evidence_mode="assumed"`), not proven causal ground truth.
 
 ---
 

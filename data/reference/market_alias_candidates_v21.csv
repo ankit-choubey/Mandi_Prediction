@@ -1,44 +1,44 @@
-district,market_raw,market_canonical,rule,evidence,first_date,last_date,overlap_days,price_agreement,status,evidence_known_date
-Ghaziabad,Ghaziabad,Ghaziabad,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Ghaziabad,Ghaziabad APMC,Ghaziabad,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 103/103 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Ghaziabad,Hapur,Hapur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-05,0,,ACCEPTED,2021-09-01
-Ghaziabad,Hapur APMC,Hapur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-4d; overlap=4d; 61/61 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Ghaziabad,Muradnagar,Muradnagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Ghaziabad,Muradnagar APMC,Muradnagar,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 34/34 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Ghaziabad,Noida,Noida,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-03,0,,ACCEPTED,2021-09-01
-Ghaziabad,Noida APMC,Noida,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=2d; 39/39 keys match 100.0%,2025-11-01,2026-09-30,2,1.0,ACCEPTED,2025-11-05
-Jhansi,Baruwasagar,Baruwasagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-05,0,,ACCEPTED,2021-09-01
-Jhansi,Baruwasagar APMC,Baruwasagar,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=3d; 5/5 keys match 100.0%,2025-11-03,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Jhansi,Chirgaon,Chirgaon,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Jhansi,Chirgaon APMC,Chirgaon,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=2d; 6/6 keys match 100.0%,2025-11-02,2026-09-30,2,1.0,ACCEPTED,2025-11-05
-Jhansi,Gurusarai,Gurusarai,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Jhansi,Gurusarai APMC,Gurusarai,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 28/28 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Jhansi,Jhansi,Jhansi,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Jhansi,Jhansi APMC,Jhansi,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 49/49 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Jhansi,Jhansi (Grain),Jhansi (Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2024-05-25,2025-11-03,0,,ACCEPTED,2021-09-01
-Jhansi,Jhansi (Grain) APMC,Jhansi (Grain),"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-1d; overlap=2d; 5/5 keys match 100.0%,2025-11-02,2026-01-14,2,1.0,ACCEPTED,2025-11-05
-Jhansi,Jhansi Grain APMC,Jhansi (Grain),Candidate Rule B (transitive concordance via Jhansi (Grain) APMC),10d overlap with Jhansi (Grain) APMC (2026-01-01..14); 23/23 keys agree 100%; transitive anchor Jhansi (Grain),2026-01-01,2026-01-14,10,1.0,ACCEPTED,2026-01-14
-Jhansi,Mauranipur,Mauranipur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Jhansi,Mauranipur APMC,Mauranipur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 43/43 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Jhansi,Moth,Moth,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Jhansi,Moth APMC,Moth,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 30/30 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Kanpur,Baripaal APMC,Baripaal APMC,Identity (unmerged market yard),Unique market for normalized token in district,2026-03-01,2026-09-30,0,,ACCEPTED,2026-03-01
-Kanpur,Choubepur,Choubepur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Kanpur,Choubepur APMC,Choubepur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 66/66 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Kanpur,Kanpur(Grain),Kanpur(Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Kanpur,Kanpur(Grain) APMC,Kanpur(Grain),"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 63/63 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Kanpur,Uttaripura,Uttaripura,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-10-24,2025-11-04,0,,ACCEPTED,2021-09-01
-Kanpur,Uttaripura APMC,Uttaripura,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 66/66 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Kanpur,Varipaal,Varipaal,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Kanpur,Varipaal APMC,Varipaal,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 47/47 keys match 100.0%,2025-11-01,2026-04-26,3,1.0,ACCEPTED,2025-11-05
-Lucknow,Banthara,Banthara,Identity (canonical anchor),Canonical baseline anchor for normalized token,2022-05-18,2025-11-04,0,,ACCEPTED,2021-09-01
-Lucknow,Banthara APMC,Banthara,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 8/8 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Lucknow,Lucknow,Lucknow,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Lucknow,Lucknow APMC,Lucknow,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=3d; 64/64 keys match 100.0%,2025-11-02,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Unnao,Bangarmau,Bangarmau,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Unnao,Bangarmau APMC,Bangarmau,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 88/88 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,2025-11-05
-Unnao,Purwa,Purwa,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-07-31,0,,ACCEPTED,2021-09-01
-Unnao,Purwa APMC,Purwa,Candidate Rule A Failed (hiatus=205d > 14d limit; 0 overlap keys),"Older Purwa ended 2025-07-31; Purwa APMC started 2026-02-21 (gap=205d, overlap=0d, keys=0); unverified transition concordance",2026-02-21,2026-09-30,0,,UNMAPPED/REVIEW,2026-02-21
-Unnao,Unnao,Unnao,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,2021-09-01
-Unnao,Unnao APMC,Unnao,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 27/27 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,2025-11-05
-Kanpur,Baripaal APMC,Varipaal,Candidate Rule B Failed (cross-phonetic b/v; 20 conflicting keys),52d co-reporting (2026-03-01..04-26) with Varipaal APMC; 442/462 modal match (95.67%) but 20 keys conflict; normalized mismatch,2026-03-01,2026-09-30,52,0.9567,UNMAPPED/REVIEW,2026-04-26
+district,market_raw,market_canonical,rule,evidence,first_date,last_date,overlap_days,price_agreement,status,evidence_known_date,assumed_known_date,knowledge_provenance
+Ghaziabad,Ghaziabad,Ghaziabad,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Ghaziabad,Ghaziabad APMC,Ghaziabad,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 103/103 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Ghaziabad,Hapur,Hapur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-05,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Ghaziabad,Hapur APMC,Hapur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-4d; overlap=4d; 61/61 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Ghaziabad,Muradnagar,Muradnagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Ghaziabad,Muradnagar APMC,Muradnagar,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 34/34 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Ghaziabad,Noida,Noida,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-03,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Ghaziabad,Noida APMC,Noida,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=2d; 39/39 keys match 100.0%,2025-11-01,2026-09-30,2,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Baruwasagar,Baruwasagar,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-02,2025-11-05,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Baruwasagar APMC,Baruwasagar,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=3d; 5/5 keys match 100.0%,2025-11-03,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Chirgaon,Chirgaon,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Chirgaon APMC,Chirgaon,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=2d; 6/6 keys match 100.0%,2025-11-02,2026-09-30,2,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Gurusarai,Gurusarai,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Gurusarai APMC,Gurusarai,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 28/28 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Jhansi,Jhansi,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Jhansi APMC,Jhansi,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 49/49 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Jhansi (Grain),Jhansi (Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2024-05-25,2025-11-03,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Jhansi (Grain) APMC,Jhansi (Grain),"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-1d; overlap=2d; 5/5 keys match 100.0%,2025-11-02,2026-01-14,2,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Jhansi Grain APMC,Jhansi (Grain),Candidate Rule B (transitive concordance via Jhansi (Grain) APMC),10d overlap with Jhansi (Grain) APMC (2026-01-01..14); 23/23 keys agree 100%; transitive anchor Jhansi (Grain),2026-01-01,2026-01-14,10,1.0,ACCEPTED,,2026-01-14,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Mauranipur,Mauranipur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Mauranipur APMC,Mauranipur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 43/43 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Jhansi,Moth,Moth,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Jhansi,Moth APMC,Moth,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 30/30 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Kanpur,Baripaal APMC,Baripaal APMC,Identity (unmerged market yard),Unique market for normalized token in district,2026-03-01,2026-09-30,0,,ACCEPTED,,2026-03-01,STRUCTURAL_IDENTITY_ANCHOR
+Kanpur,Choubepur,Choubepur,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Kanpur,Choubepur APMC,Choubepur,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 66/66 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Kanpur,Kanpur(Grain),Kanpur(Grain),Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Kanpur,Kanpur(Grain) APMC,Kanpur(Grain),"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 63/63 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Kanpur,Uttaripura,Uttaripura,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-10-24,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Kanpur,Uttaripura APMC,Uttaripura,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 66/66 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Kanpur,Varipaal,Varipaal,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Kanpur,Varipaal APMC,Varipaal,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 47/47 keys match 100.0%,2025-11-01,2026-04-26,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Lucknow,Banthara,Banthara,Identity (canonical anchor),Canonical baseline anchor for normalized token,2022-05-18,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Lucknow,Banthara APMC,Banthara,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 8/8 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Lucknow,Lucknow,Lucknow,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Lucknow,Lucknow APMC,Lucknow,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-2d; overlap=3d; 64/64 keys match 100.0%,2025-11-02,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Unnao,Bangarmau,Bangarmau,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Unnao,Bangarmau APMC,Bangarmau,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=4d; 88/88 keys match 100.0%,2025-11-01,2026-09-30,4,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Unnao,Purwa,Purwa,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-07-31,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Unnao,Purwa APMC,Purwa,Candidate Rule A Failed (hiatus=205d > 14d limit; 0 overlap keys),"Older Purwa ended 2025-07-31; Purwa APMC started 2026-02-21 (gap=205d, overlap=0d, keys=0); unverified transition concordance",2026-02-21,2026-09-30,0,,UNMAPPED/REVIEW,,2026-02-21,ASSUMED_OBSERVATION_HANDOVER
+Unnao,Unnao,Unnao,Identity (canonical anchor),Canonical baseline anchor for normalized token,2021-09-01,2025-11-04,0,,ACCEPTED,,2021-09-01,STRUCTURAL_IDENTITY_ANCHOR
+Unnao,Unnao APMC,Unnao,"Candidate Rule A (verified migration: gap <= 7d, overlap 2-4d, 100% price match)",gap=-3d; overlap=3d; 27/27 keys match 100.0%,2025-11-01,2026-09-30,3,1.0,ACCEPTED,,2025-11-05,ASSUMED_OBSERVATION_HANDOVER
+Kanpur,Baripaal APMC,Varipaal,Candidate Rule B Failed (cross-phonetic b/v; 20 conflicting keys),52d co-reporting (2026-03-01..04-26) with Varipaal APMC; 442/462 modal match (95.67%) but 20 keys conflict; normalized mismatch,2026-03-01,2026-09-30,52,0.9567,UNMAPPED/REVIEW,,2026-04-26,ASSUMED_OBSERVATION_HANDOVER

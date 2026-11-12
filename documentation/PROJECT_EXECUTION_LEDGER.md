@@ -98,3 +98,31 @@ Accept corrected FC006R as a retrospective benchmark for Step 2 only. Remote com
 - **Policy Implementation:** Pure functions `evaluate_alias_evidence_v21()`, `validate_alias_table()`, `build_causal_alias_mapping()`, `apply_market_canonicalization_v21()` added to `src/market_identity.py`. Legacy reproduction paths preserved. Candidate table saved to `data/reference/market_alias_candidates_v21.csv`.
 - **Testing:** 24 unit tests pass in 0.19s across `tests/test_market_identity.py` and `tests/test_identity_policy_v21.py`.
 - **Prepared Remote Kernel:** Authored `experiments/notebooks/mp_data_007_identity_review.ipynb` and metadata `experiments/kaggle/007/kernel-metadata.json`. All 5 code cells AST-parse; 6 embedded payloads match working source bytes exactly; isolated bootstrap smoke test passes. Hard-stop Gate 1 enforces panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`. Awaiting separate owner approval. Zero self-approval.
+
+
+## MP-DATA-007 independent review — 2026-11-12 IST
+Commit 4cef31a1c4658b0a45504deda9b276e5771736fa remotely verified; 24 targeted identity tests passed in 0.50s. Full 189-pass receipt reported only. CHANGES REQUIRED: notebook hardcodes legacy unmatched counts as v21 results and lacks requested causal reconstruction; missing knowledge date falls back to first observation; malformed alias dates pass validation (both independently reproduced). Candidate historical evidence_known_date entries lack historical provenance; false F3 no-alias-effect narrative contradicted by prior +2355 rows. Gap/range/shared-day definitions and hypothesis wording need repair. documentation/context.md modified again contrary to instruction. Two EOF-only working edits preserved. See documentation/DATA007_REVIEW.md. Next local-only prompt documentation/prompts/MP-DATA-007B.md. No Kaggle execution/panel freeze/ML authorization.
+
+
+## Task MP-DATA-007B Execution Record — 2026-11-12 IST
+- **Status:** **PREPARED FOR REVIEW / CANDIDATE IDENTITY EXPERIMENT REPAIRED**
+- **Baseline Commit:** `4cef31a1c4658b0a45504deda9b276e5771736fa`
+- **Scope & Compliance:** Local repair only ($\le 10$ MB/file, $\le 50,000$ rows, $\le 30$s compute). Zero Kaggle kernel pushes, zero dataset uploads, zero ML training, and **panel v2 remains PROVISIONAL**.
+- **Defensive Gate Repairs:**
+  1. `validate_alias_table()`: Made fail-closed for malformed dates (`"not-a-date"`), NaT values, null identities (`None`, `np.nan`, `""`, `"nan"`, `"none"`, `"null"`), unknown statuses, conflicting duplicates, cycles, and nonterminal chains ($A \rightarrow B$ and $B \rightarrow C$).
+  2. `build_causal_alias_mapping()`: In `evidence_mode="verified"`, strictly withholds nonidentity merges absent dated publication receipts (zero historical merges). In `evidence_mode="assumed"`, checks `assumed_known_date` (`2025-11-05`). Observation-date fallback completely eliminated.
+  3. `evaluate_alias_evidence_v21()`: Enforces numeric finite prices and deduplicates by natural keys before Rule B sample size check.
+- **Shared Comparison Helpers (`src/identity_comparison.py`):**
+  1. `extract_manifest_dispositions()`: Direct nested parsing of `manifest["summary_metrics"]` with strict row conservation assertion ($463,217 + 855 + 2,936 + 5,350 + 27 = 472,385$).
+  2. `compare_panel_dispositions()`: Computes panel disposition deltas and district-level breakdown.
+  3. `classify_excel_against_panel()`: Strict mutually exclusive precedence (`matched_exact` $\rightarrow$ `matched_different` $\rightarrow$ `quarantined_strategy2` $\rightarrow$ `low_obs_dropped` $\rightarrow$ `spelling_unmapped` $\rightarrow$ `absent_from_raw` $\rightarrow$ `other`) with row conservation assertion.
+  4. `evaluate_causal_train_eligibility_sensitivity()`: Reconstructs training series identities BEFORE the full-history floor across F1..F4.
+  5. `verify_future_mutation_invariance()`: Proves future value mutations do not corrupt historical cutoff eligibility.
+- **Testing & Verification Receipts:**
+  - `tests/test_identity_policy_v21.py`: 19 passed in 0.19s.
+  - `tests/test_identity_comparison.py`: 8 passed in 0.17s.
+  - `tests/test_market_identity.py`: 12 passed in 0.16s.
+  - Full test suite: 204 passed in 4.69s, exit code 0.
+- **Prepared Notebook:** Rebuilt `experiments/notebooks/mp_data_007_identity_review.ipynb`. All 7 embedded module payloads match disk bytes bit-for-bit. AST passes on all 5 code cells. Isolated miniature smoke test passes end-to-end in temporary directory. Kernel metadata path verified.
+- **Workflow & Journal Integrity:** Acknowledged prior modification of `documentation/context.md` as noncompliance. `documentation/context.md` left completely untouched and unstaged. ONLY local git-ignored `brain/context.md` updated.
+- **Next Action:** Await owner review and explicit authorization for remote kernel execution.
