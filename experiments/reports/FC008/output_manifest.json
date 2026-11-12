@@ -1,58 +1,68 @@
 {
   "manifest": [
     {
+      "filename": "calibration_envelope_v1.json",
+      "relpath": "experiments/reports/FC008/calibration_envelope_v1.json",
+      "path": "experiments/reports/FC008/calibration_envelope_v1.json",
+      "size_bytes": 69856,
+      "sha256": "84ba2da323164382208e1b0225c6c241d11c562814849c30c535e5bd4e57411c"
+    },
+    {
       "filename": "calibration_quantiles.json",
       "relpath": "experiments/reports/FC008/calibration_quantiles.json",
+      "path": "experiments/reports/FC008/calibration_quantiles.json",
       "size_bytes": 62652,
       "sha256": "8b50d04134dd0e41ff3a5a7595d838c124a4ff2d72999c87b8c9b9d3d3883268"
     },
     {
       "filename": "interval_evaluation_receipt.json",
       "relpath": "experiments/reports/FC008/interval_evaluation_receipt.json",
-      "size_bytes": 1439,
-      "sha256": "a4e45f28869f46304b6eb770bacd0fef4021a01ee4a14647551049625ba9f2ca"
+      "path": "experiments/reports/FC008/interval_evaluation_receipt.json",
+      "size_bytes": 1941,
+      "sha256": "63be05cf6922e3b63730e28ec09995c82bfb27814fc6f1939d14b68945c1922e"
     },
     {
       "filename": "intervals_by_crop.csv",
       "relpath": "experiments/reports/FC008/intervals_by_crop.csv",
+      "path": "experiments/reports/FC008/intervals_by_crop.csv",
       "size_bytes": 5841,
       "sha256": "68f5486a27d95043ca1cfa0b09df74fad21f4d54cf7d7923a21d52d2b607e3eb"
     },
     {
       "filename": "intervals_by_district.csv",
       "relpath": "experiments/reports/FC008/intervals_by_district.csv",
+      "path": "experiments/reports/FC008/intervals_by_district.csv",
       "size_bytes": 5294,
       "sha256": "92cd2bc184c4d88e2d39f177ef0294f0e5cbd369aaa795ba97686e38a73fb6b1"
     },
     {
       "filename": "intervals_by_fold.csv",
       "relpath": "experiments/reports/FC008/intervals_by_fold.csv",
+      "path": "experiments/reports/FC008/intervals_by_fold.csv",
       "size_bytes": 3786,
       "sha256": "a99afb8d8b309d8949b5abc046d99eef3e459578b081499c3fdd0e8692f202a0"
     },
     {
       "filename": "intervals_by_regime.csv",
       "relpath": "experiments/reports/FC008/intervals_by_regime.csv",
+      "path": "experiments/reports/FC008/intervals_by_regime.csv",
       "size_bytes": 3333,
       "sha256": "49189cf48a83730573ff7c9751558b5314fa805f7873fc7c8ec566de8e37f7ab"
     },
     {
       "filename": "intervals_overall.csv",
       "relpath": "experiments/reports/FC008/intervals_overall.csv",
+      "path": "experiments/reports/FC008/intervals_overall.csv",
       "size_bytes": 1341,
       "sha256": "27df8c9252cbe1265907d790549583d8ebcd7dd02aba7088f907b4db0c08a9b4"
     },
     {
       "filename": "master_intervals_scorecards.csv",
       "relpath": "experiments/reports/FC008/master_intervals_scorecards.csv",
+      "path": "experiments/reports/FC008/master_intervals_scorecards.csv",
       "size_bytes": 18247,
       "sha256": "4189f3f8172a70269d31f9c02207fee1989b25b1bed25695995e0c387e14f3a8"
-    },
-    {
-      "filename": "output_manifest.json",
-      "relpath": "experiments/reports/FC008/output_manifest.json",
-      "size_bytes": 1952,
-      "sha256": "bfc0718f392528d135f01bb22669a6c1fb6ec7d2870cd1090ab1715c4ea97606"
     }
-  ]
+  ],
+  "source_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970"
 }

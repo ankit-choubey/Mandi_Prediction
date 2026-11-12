@@ -38,9 +38,10 @@ CRITICAL SAFEGUARDS:
   4. Explicit error handling for L >= 1, non-positive prices, negative costs, or division-by-zero.
 """
 
-from dataclasses import dataclass
-from typing import Optional, Dict, Any, Literal, Union
+from dataclasses import dataclass, asdict
+from typing import Optional, Dict, Any, Literal, Union, List, Tuple
 from datetime import date, datetime
+import math
 import numpy as np
 
 from src.health_status import (
@@ -68,6 +69,7 @@ class EconomicParameters:
     handling_cost_per_quintal: float = 0.0       # incremental handling (in ₹ / quintal)
     transaction_cost_now: float = 0.0            # selling cost now (₹ / quintal)
     transaction_cost_later: float = 0.0          # selling cost later (₹ / quintal)
+    incremental_transport_cost: float = 0.0      # incremental transport (₹ / initial quintal)
     scenario_name: str = "custom"
 
     def __post_init__(self):
@@ -93,6 +95,15 @@ class EconomicParameters:
             raise ValueError(
                 f"Handling cost must be non-negative, got {self.handling_cost_per_quintal}"
             )
+        if self.incremental_transport_cost < 0.0:
+            raise ValueError(
+                f"Incremental transport cost must be non-negative, got {self.incremental_transport_cost}"
+            )
+
+    @property
+    def direct_cost_c(self) -> float:
+        """Total direct cost per initial quintal: c = c_storage + c_handling + c_transport."""
+        return self.storage_cost_per_quintal + self.handling_cost_per_quintal + self.incremental_transport_cost
 
 
 def calculate_immediate_sale_proceeds(
@@ -155,8 +166,12 @@ def calculate_storage_sale_proceeds(
     # Gross storage revenue
     gross_proceeds = remaining_quantity * effective_future_price
 
-    # Total incremental direct storage and handling cost
-    total_unit_storage_cost = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    # Total incremental direct storage, handling, and transport cost
+    total_unit_storage_cost = (
+        params.storage_cost_per_quintal
+        + params.handling_cost_per_quintal
+        + getattr(params, "incremental_transport_cost", 0.0)
+    )
     storage_and_handling_cost = quantity_quintals * total_unit_storage_cost
 
     # Financing / Opportunity carrying cost
@@ -210,7 +225,11 @@ def calculate_break_even_future_price(
         if params.carrying_cost_type in ('financing', 'opportunity') else 0.0
     )
 
-    total_direct_costs = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    total_direct_costs = (
+        params.storage_cost_per_quintal
+        + params.handling_cost_per_quintal
+        + getattr(params, "incremental_transport_cost", 0.0)
+    )
 
     # Net transaction cost differential per initial quintal
     trans_diff = (
@@ -264,7 +283,11 @@ def calculate_incremental_benefit_per_quintal(
         (params.annual_carrying_rate * params.holding_period_days / 365.0)
         if params.carrying_cost_type in ('financing', 'opportunity') else 0.0
     )
-    total_direct_costs = params.storage_cost_per_quintal + params.handling_cost_per_quintal
+    total_direct_costs = (
+        params.storage_cost_per_quintal
+        + params.handling_cost_per_quintal
+        + getattr(params, "incremental_transport_cost", 0.0)
+    )
     trans_diff = (
         params.transaction_cost_later * (1.0 - params.quantity_loss_fraction)
         - params.transaction_cost_now
@@ -570,6 +593,7 @@ def generate_sensitivity_matrix(
     return records
 
 
+
 def generate_sensitivity_matrix_with_quality_discount(
     base_prices=(1500.0, 2500.0, 3500.0),
     storage_costs=(10.0, 20.0, 35.0, 50.0),
@@ -611,3 +635,422 @@ def generate_sensitivity_matrix_with_quality_discount(
                         })
     return records
 
+
+# =====================================================================
+# TASK MP-ECON-001: CANONICAL RESEARCH ECONOMICS CONTRACT & GATING
+# =====================================================================
+
+@dataclass
+class InputProvenance:
+    """
+    Provenance record for individual economic model inputs.
+    Distinguishes observed measurements from illustrative defaults or missing values.
+    """
+    value: Any
+    unit: str
+    status: Literal["OBSERVED", "USER_ENTERED", "ILLUSTRATIVE", "DEFAULT", "UNKNOWN", "MISSING"]
+    source: str = ""
+    effective_date: Optional[str] = None
+    market: Optional[str] = None
+    commodity: Optional[str] = None
+    horizon_days: Optional[int] = None
+    notes: Optional[str] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "value": self.value,
+            "unit": self.unit,
+            "status": self.status,
+            "source": self.source,
+            "effective_date": self.effective_date,
+            "market": self.market,
+            "commodity": self.commodity,
+            "horizon_days": self.horizon_days,
+            "notes": self.notes,
+        }
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InputProvenance:
+        return cls(**d)
+
+
+def calculate_canonical_accounting(
+    quantity_quintals: float,
+    current_price: float,
+    future_price: float,
+    params: EconomicParameters,
+) -> Dict[str, float]:
+    """
+    Evaluates canonical economic accounting equations:
+      R_sell = Q * (p0 - tn)
+      R_hold = Q * ((1-L)*((1-d)*pH - tl) - c - p0*f)
+      delta_per_initial_quintal = (1-L)*(1-d)*pH - p0*(1+f) - c - (1-L)*tl + tn
+      Delta_R = Q * delta_per_initial_quintal
+      p_break_even = (p0*(1+f) + c + (1-L)*tl - tn) / ((1-L)*(1-d))
+
+    Enforces exact algebraic equivalence:
+      |R_hold - R_sell - Delta_R| < 1e-7
+      |delta(p_break_even)| < 1e-7
+    """
+    if quantity_quintals <= 0.0:
+        raise ValueError(f"Quantity Q must be positive, got {quantity_quintals}")
+    if current_price <= 0.0:
+        raise ValueError(f"Current price p0 must be positive, got {current_price}")
+    if future_price < 0.0:
+        raise ValueError(f"Future price pH cannot be negative, got {future_price}")
+
+    q = float(quantity_quintals)
+    p0 = float(current_price)
+    ph = float(future_price)
+    l = float(params.quantity_loss_fraction)
+    d = float(params.quality_discount_fraction)
+    c = float(params.direct_cost_c)
+    tn = float(params.transaction_cost_now)
+    tl = float(params.transaction_cost_later)
+
+    if params.carrying_cost_type in ('financing', 'opportunity') and params.annual_carrying_rate > 0.0:
+        f = float(params.annual_carrying_rate * params.holding_period_days / 365.0)
+    else:
+        f = 0.0
+
+    retention = (1.0 - l) * (1.0 - d)
+    if retention <= 0.0:
+        raise ZeroDivisionError("Effective produce retention (1-L)*(1-d) is zero or negative.")
+
+    # Canonical equations
+    r_sell = q * (p0 - tn)
+    r_hold = q * ((1.0 - l) * ((1.0 - d) * ph - tl) - c - p0 * f)
+    delta_per_quintal = (1.0 - l) * (1.0 - d) * ph - p0 * (1.0 + f) - c - (1.0 - l) * tl + tn
+    delta_r = q * delta_per_quintal
+
+    p_break_even = (p0 * (1.0 + f) + c + (1.0 - l) * tl - tn) / retention
+    required_pct_change = ((p_break_even - p0) / p0) * 100.0
+
+    # Strict algebraic reconciliation check
+    diff_accounting = abs(r_hold - r_sell - delta_r)
+    assert diff_accounting < 1e-7, f"Algebraic reconciliation violation: |R_hold - R_sell - Delta_R| = {diff_accounting}"
+
+    # Break-even zero check
+    delta_at_be = (1.0 - l) * (1.0 - d) * p_break_even - p0 * (1.0 + f) - c - (1.0 - l) * tl + tn
+    assert abs(delta_at_be) < 1e-7, f"Break-even zero violation: delta(p_be) = {delta_at_be}"
+
+    return {
+        "quantity_quintals": q,
+        "current_price": p0,
+        "future_price": ph,
+        "loss_fraction": l,
+        "quality_discount": d,
+        "direct_cost_c": c,
+        "trans_cost_now_tn": tn,
+        "trans_cost_later_tl": tl,
+        "carrying_rate_factor_f": f,
+        "r_sell": r_sell,
+        "r_hold": r_hold,
+        "delta_per_quintal": delta_per_quintal,
+        "delta_r": delta_r,
+        "p_break_even": p_break_even,
+        "required_pct_change": required_pct_change,
+    }
+
+
+@dataclass
+class ResearchEconomicRequest:
+    """
+    Serializable request contract for research economics evaluation.
+    Accepts point price and/or interval bounds (lower, upper).
+    """
+    quantity_quintals: float
+    current_price: float
+    future_price_point: Optional[float] = None
+    future_price_lower: Optional[float] = None
+    future_price_upper: Optional[float] = None
+    holding_period_days: int = 7
+    commodity: str = "Unknown"
+    district: str = "Unknown"
+    market: str = "Unknown"
+    variety: str = "Unknown"
+    grade: str = "Unknown"
+    origin_date: Optional[str] = None
+    target_date: Optional[str] = None
+    params: Optional[EconomicParameters] = None
+    provenance_map: Optional[Dict[str, InputProvenance]] = None
+    is_reporting_normalization: bool = False
+    units: str = "INR/quintal"
+
+    def to_dict(self) -> Dict[str, Any]:
+        params_dict = None
+        if self.params is not None:
+            params_dict = {
+                "storage_cost_per_quintal": self.params.storage_cost_per_quintal,
+                "quantity_loss_fraction": self.params.quantity_loss_fraction,
+                "annual_carrying_rate": self.params.annual_carrying_rate,
+                "holding_period_days": self.params.holding_period_days,
+                "carrying_cost_type": self.params.carrying_cost_type,
+                "quality_discount_fraction": self.params.quality_discount_fraction,
+                "handling_cost_per_quintal": self.params.handling_cost_per_quintal,
+                "transaction_cost_now": self.params.transaction_cost_now,
+                "transaction_cost_later": self.params.transaction_cost_later,
+                "incremental_transport_cost": self.params.incremental_transport_cost,
+                "scenario_name": self.params.scenario_name,
+            }
+        prov_dict = None
+        if self.provenance_map is not None:
+            prov_dict = {k: v.to_dict() if hasattr(v, "to_dict") else v for k, v in self.provenance_map.items()}
+
+        return {
+            "quantity_quintals": self.quantity_quintals,
+            "current_price": self.current_price,
+            "future_price_point": self.future_price_point,
+            "future_price_lower": self.future_price_lower,
+            "future_price_upper": self.future_price_upper,
+            "holding_period_days": self.holding_period_days,
+            "commodity": self.commodity,
+            "district": self.district,
+            "market": self.market,
+            "variety": self.variety,
+            "grade": self.grade,
+            "origin_date": self.origin_date,
+            "target_date": self.target_date,
+            "params": params_dict,
+            "provenance_map": prov_dict,
+            "is_reporting_normalization": self.is_reporting_normalization,
+            "units": self.units,
+        }
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResearchEconomicRequest:
+        params_obj = None
+        if d.get("params"):
+            params_obj = EconomicParameters(**d["params"])
+        prov_obj = None
+        if d.get("provenance_map"):
+            prov_obj = {k: InputProvenance.from_dict(v) if isinstance(v, dict) else v for k, v in d["provenance_map"].items()}
+
+        return cls(
+            quantity_quintals=d["quantity_quintals"],
+            current_price=d["current_price"],
+            future_price_point=d.get("future_price_point"),
+            future_price_lower=d.get("future_price_lower"),
+            future_price_upper=d.get("future_price_upper"),
+            holding_period_days=d.get("holding_period_days", 7),
+            commodity=d.get("commodity", "Unknown"),
+            district=d.get("district", "Unknown"),
+            market=d.get("market", "Unknown"),
+            variety=d.get("variety", "Unknown"),
+            grade=d.get("grade", "Unknown"),
+            origin_date=d.get("origin_date"),
+            target_date=d.get("target_date"),
+            params=params_obj,
+            provenance_map=prov_obj,
+            is_reporting_normalization=d.get("is_reporting_normalization", False),
+            units=d.get("units", "INR/quintal"),
+        )
+
+
+@dataclass
+class ResearchEconomicResult:
+    """
+    Serializable result contract for research economics evaluation.
+    Contains affine-propagated lower/point/upper bounds, break-even relations,
+    and fail-closed advisory gating.
+    """
+    r_sell_net: float
+    r_hold_point_net: Optional[float]
+    r_hold_lower_net: Optional[float]
+    r_hold_upper_net: Optional[float]
+    delta_r_point: Optional[float]
+    delta_r_lower: Optional[float]
+    delta_r_upper: Optional[float]
+    delta_per_quintal_point: Optional[float]
+    delta_per_quintal_lower: Optional[float]
+    delta_per_quintal_upper: Optional[float]
+    p_break_even: float
+    required_pct_change_break_even: float
+    break_even_relation: Literal[
+        "ENTIRELY_ABOVE_BREAK_EVEN",
+        "STRADDLES_BREAK_EVEN",
+        "ENTIRELY_BELOW_BREAK_EVEN",
+        "POINT_ONLY_ABOVE_BREAK_EVEN",
+        "POINT_ONLY_BELOW_BREAK_EVEN",
+        "UNDEFINED_BREAK_EVEN",
+        "NO_FUTURE_PRICE",
+    ]
+    operational_status: Literal["RESEARCH_ONLY", "ADVICE_BLOCKED", "SIMULATION_ONLY"]
+    advisory_action: Literal["BLOCKED"]
+    advisory_permitted: bool
+    gate_reasons: List[str]
+    quantity_quintals: float
+    is_reporting_normalization: bool
+    params_used: Dict[str, Any]
+    provenance_summary: Dict[str, Any]
+    missing_cost_inputs: List[str]
+    disclaimer: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "r_sell_net": self.r_sell_net,
+            "r_hold_point_net": self.r_hold_point_net,
+            "r_hold_lower_net": self.r_hold_lower_net,
+            "r_hold_upper_net": self.r_hold_upper_net,
+            "delta_r_point": self.delta_r_point,
+            "delta_r_lower": self.delta_r_lower,
+            "delta_r_upper": self.delta_r_upper,
+            "delta_per_quintal_point": self.delta_per_quintal_point,
+            "delta_per_quintal_lower": self.delta_per_quintal_lower,
+            "delta_per_quintal_upper": self.delta_per_quintal_upper,
+            "p_break_even": self.p_break_even,
+            "required_pct_change_break_even": self.required_pct_change_break_even,
+            "break_even_relation": self.break_even_relation,
+            "operational_status": self.operational_status,
+            "advisory_action": self.advisory_action,
+            "advisory_permitted": self.advisory_permitted,
+            "gate_reasons": self.gate_reasons,
+            "quantity_quintals": self.quantity_quintals,
+            "is_reporting_normalization": self.is_reporting_normalization,
+            "params_used": self.params_used,
+            "provenance_summary": self.provenance_summary,
+            "missing_cost_inputs": self.missing_cost_inputs,
+            "disclaimer": self.disclaimer,
+        }
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ResearchEconomicResult:
+        return cls(**d)
+
+
+def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEconomicResult:
+    """
+    Evaluates cost-aware research economics with affine uncertainty propagation
+    and fail-closed capability gating.
+
+    Invariants:
+    - Delta is an increasing affine function of pH: delta_lower <= delta_point <= delta_upper.
+    - Break-even relation is purely descriptive and cannot bypass advisory gating.
+    - Advisory status is strictly RESEARCH_ONLY / ADVICE_BLOCKED under unverified commercial costs.
+    """
+    # 1. Parameter Validation
+    if request.quantity_quintals <= 0:
+        raise ValueError(f"Quantity must be positive, got {request.quantity_quintals}")
+    if request.current_price <= 0:
+        raise ValueError(f"Current price must be positive, got {request.current_price}")
+    if request.units not in ("INR/quintal", "INR/q", "₹/quintal", "Rs/quintal"):
+        raise ValueError(f"Unsupported units: {request.units}")
+
+    params = request.params or get_default_scenarios()["Central"]
+    q = float(request.quantity_quintals)
+    p0 = float(request.current_price)
+
+    # 2. Immediate Sale Accounting
+    r_sell = q * (p0 - params.transaction_cost_now)
+
+    # 3. Future Price Accounting (Point, Lower, Upper)
+    has_point = request.future_price_point is not None and math.isfinite(request.future_price_point)
+    has_lower = request.future_price_lower is not None and math.isfinite(request.future_price_lower)
+    has_upper = request.future_price_upper is not None and math.isfinite(request.future_price_upper)
+
+    acct_point = calculate_canonical_accounting(q, p0, request.future_price_point, params) if has_point else None
+    acct_lower = calculate_canonical_accounting(q, p0, request.future_price_lower, params) if has_lower else None
+    acct_upper = calculate_canonical_accounting(q, p0, request.future_price_upper, params) if has_upper else None
+
+    # Affine Monotonicity Check
+    if has_lower and has_upper:
+        assert request.future_price_lower <= request.future_price_upper + 1e-6, "Lower bound exceeds upper bound!"
+        assert acct_lower["delta_per_quintal"] <= acct_upper["delta_per_quintal"] + 1e-6, "Affine monotonicity violation!"
+    if has_lower and has_point and has_upper:
+        assert acct_lower["delta_per_quintal"] <= acct_point["delta_per_quintal"] + 1e-6, "Affine monotonicity violation (lower vs point)!"
+        assert acct_point["delta_per_quintal"] <= acct_upper["delta_per_quintal"] + 1e-6, "Affine monotonicity violation (point vs upper)!"
+
+    # Break-even threshold
+    p_be = (acct_point or acct_lower or acct_upper or calculate_canonical_accounting(q, p0, p0, params))["p_break_even"]
+    req_pct = ((p_be - p0) / p0) * 100.0
+
+    # 4. Break-even Relation Classification
+    tol = 1e-6
+    if has_lower and has_upper:
+        if request.future_price_lower > p_be + tol:
+            be_relation = "ENTIRELY_ABOVE_BREAK_EVEN"
+        elif request.future_price_upper < p_be - tol:
+            be_relation = "ENTIRELY_BELOW_BREAK_EVEN"
+        else:
+            be_relation = "STRADDLES_BREAK_EVEN"
+    elif has_point:
+        if request.future_price_point > p_be + tol:
+            be_relation = "POINT_ONLY_ABOVE_BREAK_EVEN"
+        else:
+            be_relation = "POINT_ONLY_BELOW_BREAK_EVEN"
+    else:
+        be_relation = "NO_FUTURE_PRICE"
+
+    # 5. Missing Input Audit and Gating Reasons
+    missing_costs = []
+    prov_summary = {}
+    gate_reasons = []
+
+    # Check cost provenance map
+    expected_cost_keys = ["storage_cost", "quantity_loss", "annual_rate", "handling_cost", "transaction_costs"]
+    if request.provenance_map:
+        for k in expected_cost_keys:
+            rec = request.provenance_map.get(k)
+            if not rec or rec.status in ("MISSING", "UNKNOWN"):
+                missing_costs.append(k)
+                prov_summary[k] = "MISSING_OR_UNKNOWN"
+            elif rec.status in ("ILLUSTRATIVE", "DEFAULT"):
+                missing_costs.append(f"{k}_(UNVERIFIED_{rec.status})")
+                prov_summary[k] = rec.status
+            else:
+                prov_summary[k] = rec.status
+    else:
+        missing_costs = ["NO_PROVENANCE_MAP_SUPPLIED_DEFAULT_ASSUMPTIONS_USED"]
+        prov_summary = {"status": "UNVERIFIED_DEFAULT_PARAMETERS"}
+
+    gate_reasons.append("RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE")
+    gate_reasons.append("POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE")
+    if missing_costs:
+        gate_reasons.append("UNVERIFIED_COMMERCIAL_COST_FEED")
+
+    if request.is_reporting_normalization:
+        prov_summary["quantity_note"] = "Declared reporting normalization (1.0 quintal), not an observed farmer holding."
+
+    disclaimer = (
+        "RESEARCH ONLY. Mathematical calculations are conditional on declared parameters. "
+        "Interval coverage does not cover uncertain storage costs or physical shrinkage. "
+        "Advisory action is strictly blocked pending approved prospective validation."
+    )
+
+    return ResearchEconomicResult(
+        r_sell_net=r_sell,
+        r_hold_point_net=acct_point["r_hold"] if acct_point else None,
+        r_hold_lower_net=acct_lower["r_hold"] if acct_lower else None,
+        r_hold_upper_net=acct_upper["r_hold"] if acct_upper else None,
+        delta_r_point=acct_point["delta_r"] if acct_point else None,
+        delta_r_lower=acct_lower["delta_r"] if acct_lower else None,
+        delta_r_upper=acct_upper["delta_r"] if acct_upper else None,
+        delta_per_quintal_point=acct_point["delta_per_quintal"] if acct_point else None,
+        delta_per_quintal_lower=acct_lower["delta_per_quintal"] if acct_lower else None,
+        delta_per_quintal_upper=acct_upper["delta_per_quintal"] if acct_upper else None,
+        p_break_even=p_be,
+        required_pct_change_break_even=req_pct,
+        break_even_relation=be_relation,
+        operational_status="RESEARCH_ONLY",
+        advisory_action="BLOCKED",
+        advisory_permitted=False,
+        gate_reasons=gate_reasons,
+        quantity_quintals=q,
+        is_reporting_normalization=request.is_reporting_normalization,
+        params_used={
+            "storage_cost_per_quintal": params.storage_cost_per_quintal,
+            "handling_cost_per_quintal": params.handling_cost_per_quintal,
+            "incremental_transport_cost": params.incremental_transport_cost,
+            "direct_cost_c": params.direct_cost_c,
+            "quantity_loss_fraction": params.quantity_loss_fraction,
+            "quality_discount_fraction": params.quality_discount_fraction,
+            "annual_carrying_rate": params.annual_carrying_rate,
+            "holding_period_days": params.holding_period_days,
+            "transaction_cost_now": params.transaction_cost_now,
+            "transaction_cost_later": params.transaction_cost_later,
+            "scenario_name": params.scenario_name,
+        },
+        provenance_summary=prov_summary,
+        missing_cost_inputs=missing_costs,
+        disclaimer=disclaimer,
+    )

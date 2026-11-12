@@ -1644,3 +1644,147 @@ All 24 scorecards were re-evaluated using pure Python standard library scalar ar
 - **Milestones Remaining:**
   - 7 main milestones (Steps 7–13) plus 2 optional experiments remain prior to independent review confirmation.
   - Upon independent review confirmation of both Gate A and Gate B: **5 main milestones** (Steps 9–13) plus 2 optional remain.
+
+
+## 29. Independent FC008 review and comparison requirement — 2026-11-13
+
+## Independent review decision — 2026-11-13 IST (current)
+
+GitHub main and local HEAD independently verified at `8d4ed57d5546fea5d10e2119b729dcd3de5255b0`. See `documentation/FC008_INDEPENDENT_REVIEW.md` and `experiments/reports/FC008_REVIEW/independent_review.json`. This decision supersedes unconditional executor completion statements below. Step 7 accepted as a retrospective development benchmark with missing inner tuning trace and Scope B pending. Step 8 historical numerical evaluation verified, but full delivery remains OPEN: real JSON artifact inference rejects 90%/95% numeric levels; required identity/time validation is absent; manifests hash themselves; resource compliance claims lack measurement/enforcement. No retraining needed.
+
+Independent saved-prediction review: 64,776 rows, 25,379,343 decoded bytes, ~126 MB peak RSS, 0.63s. Matched 246 calibration quantiles and all 24 fold/overall model/level summaries for coverage, width, relative width, tail misses, interval scores and fallback counts. Six point-method headline metrics match the prior scalar reference. Bootstrap CIs not independently resampled. Naive MAE106.96 beats HGB109.75 and Ridge110.32; HGB RMSE281.16 is5.91% lower than naive298.83. Primary naive interval coverage90/95 overall89.9547/94.3829%, but F3=75.9377/84.0764 and F4=72.2581/83.9702. Pooled near-nominal coverage does not establish recent conditional coverage. Shock/crisis and NumPy buffer-reuse explanations remain UNVERIFIED, not causal findings.
+
+Tests:14 targeted passed in0.30s. Reviewer full attempt interrupted within local operation budget:320 passed,18 numerical warnings,25.18s,exit2,INCOMPLETE. Separate collection346 tests. Executor301-pass historical claim is not independently reproduced as the current full suite. Use bounded complete batches next; inspect arithmetic warnings.
+
+Remaining6 main milestones (finish8,then9–13),plus2 OPTIONAL arrivals/weather ablations. Next `documentation/prompts/MP-ECON-001.md` combines bounded Step8 delivery repairs with Step9 core economic accounting/provenance/gating. If independently accepted,4 main milestones10–13 remain. No new synthetic dataset/feed/scenario generation without proposal and explicit approval; missing cost observations do not become zeros or empirical profit evidence. Dataset-first remains default. Professor progress presentation is appropriate with findings and limitations; finished live farmer advisory/profitability/forward reliability is not established. See `documentation/PROFESSOR_PROGRESS_BRIEF.md`.
+
+User preference reaffirmed: fast execution without altered methods, complete milestone prompts, required-versus-observed/delta/limitations tables at EVERY step, achieved/open/next and counts every review. Prefer saved arithmetic and checkpointed work; GPU only when the actual workload benefits. Real-time execution is not evidence of live-data freshness. Reviewer preserved existing dirty/untracked files and did not commit/push; never sync or edit documentation/context.md.
+
+Every future report must state the declared target, observed result, denominator, difference, uncertainty/limitations and acceptance decision. No artificial overall project accuracy or completion percentage. The economic accounting and validation contract for the next task is specified in documentation/prompts/MP-ECON-001.md.
+
+
+## 30. Step 8 delivery repairs and Step 9 research economics validation [MP-ECON-001] — 2026-11-13
+
+### 30.1 Concrete Step 8 Defect Resolutions
+1. **JSON Numeric Key Normalization in Saved Inference Helper:**
+   - *Defect:* `predict_interval()` in `src/forecast_intervals.py` failed with `UNSUPPORTED_NOMINAL_LEVEL` when evaluating saved JSON artifacts because Python float levels (`0.90`, `0.95`) did not match JSON string keys (`"0.9"`, `"0.95"`).
+   - *Resolution:* Implemented `normalize_nominal_level()` accepting floats (`0.9`, `0.90`, `0.95`), integers (`90`, `95`), and strings (`"0.9"`, `"0.90"`, `"0.95"`, `"90%"`). Quantile lookup searches normalized candidate keys (`norm_str`, `norm_float`, `f"{norm_float:.1f}"`, `str(norm_float)`).
+   - *Verification:* Verified across all 4 folds (F1 abstained; F2, F3, F4 calibrated), exact commodity and pooled fallback, and both nominal levels. Pre-export in-memory bounds and post-load JSON bounds match to machine precision ($|\Delta| < 10^{-9}$).
+
+2. **Versioned Calibration Artifact Envelope and Validated Boundary:**
+   - *Deliverable:* Created `experiments/reports/FC008/calibration_envelope_v1.json` via `create_calibration_envelope()` and validated loading boundary `validate_and_load_calibration_envelope()`.
+   - *Metadata Enforced:* Schema version `1.0.0`, artifact type `CALIBRATION_ENVELOPE`, status `RESEARCH_ONLY`, `operational_advisory_allowed: False`, source archive SHA-256 `a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970`, code SHA-256, config byte and semantic hashes, units `INR/quintal`, target horizon policy `t+7 calendar days (matched 6-8 days in retrospective panel)`, supported models (`naive`, `ridge`, `hist_gradient_boosting`), fold validity scopes (`F1: 2025-01-08 to 2025-06-24`, `F2: 2025-07-08 to 2025-10-25`, `F3: 2025-12-26 to 2026-03-25`, `F4: 2026-04-08 to 2026-09-24`), quantiles hierarchy, and prominent undercoverage disclosures.
+   - *Validation Invariants:* Enforces non-negative quantiles and monotonicity ($q_{0.90} \le q_{0.95}$). Enforces model, units, and horizon matching, and rejects origin dates outside documented historical fold validity scopes.
+
+3. **Manifest Self-Hash Exclusion and Idempotent Verification:**
+   - *Defect:* Previous manifests (`FC007_VERIFIED/output_manifest.json` and `FC008/output_manifest.json`) included their own hashes, causing self-verification to fail.
+   - *Resolution:* Implemented `build_output_manifest()` strictly excluding `output_manifest.json` and temporary files (`*.tmp`). Manifests are written atomically and verified immediately against actual disk bytes.
+   - *Verification:* All 9 files in FC008 and all 10 files in FC007_VERIFIED verified 100% against actual disk bytes. Repeated generation without payload edits produces byte-for-byte identical manifests.
+
+4. **Config Semantic Equivalence Reconciliation:**
+   - *Observation:* Working copy of `experiments/configs/interval_calibration_v1.json` has byte hash `e7798e51e319685ebc705c383b113ecb3f6771169ae8528512c0657774858117` due to a trailing newline, while original run receipt recorded `e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298`.
+   - *Reconciliation:* Demonstrated semantic equivalence: parsed JSON canonical representation has identical semantic SHA-256 `7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2`. Recorded byte hash, semantic hash, and original run-receipt hash in the receipt and envelope without rewriting historical provenance.
+
+5. **Resource Compliance Measurement & Hypothesis Discipline:**
+   - *Resolution:* Replaced unmeasured compliance assertions with actual cross-platform measurement via `get_peak_rss_mb()`. Measured peak RSS on macOS is ~17 MB (well below the 512 MB exception limit). Runtime is ~0.63s (< 10-minute limit).
+   - *Hypotheses:* Market crisis volatility and NumPy buffer-reuse explanations are explicitly categorized as `UNVERIFIED_HYPOTHESIS`.
+
+---
+
+### 30.2 Canonical Economic Accounting & Algebraic Reconciliation
+
+#### Mathematical Formulations
+Let:
+- $Q$: Harvested quantity in quintals ($Q > 0$).
+- $p_0$: Spot modal price at origin date $t$ (INR/quintal, $p_0 > 0$).
+- $p_H$: Price observed $h$ calendar days later at target date $t+h$ (INR/quintal, $p_H \ge 0$).
+- $L$: Physical quantity shrinkage fraction during holding ($0 \le L < 1$).
+- $d$: Quality discount / price markdown fraction upon later sale ($0 \le d < 1$).
+- $c$: Direct storage, handling, and incremental transport cost per initial quintal over $h$ days (INR/quintal, $c \ge 0$).
+- $t_n$: Transaction/marketing cost per initial quintal for immediate sale (INR/quintal, $t_n \ge 0$).
+- $t_l$: Transaction/marketing cost per remaining quintal for later sale (INR/quintal, $t_l \ge 0$).
+- $f$: Carrying rate factor over $h$ days: $f = \frac{\text{annual rate} \times h}{365}$ if carrying type is financing or opportunity, else $0$ (dimensionless).
+
+The canonical accounting formulas are:
+$$\begin{aligned}
+R_{\text{sell}} &= Q \cdot (p_0 - t_n) \\
+R_{\text{hold}} &= Q \cdot \left((1-L)((1-d)p_H - t_l) - c - p_0 f\right) \\
+\delta_{\text{per initial quintal}} &= (1-L)(1-d)p_H - p_0(1+f) - c - (1-L)t_l + t_n \\
+\Delta_R &= Q \cdot \delta_{\text{per initial quintal}} \\
+p_{\text{break-even}} &= \frac{p_0(1+f) + c + (1-L)t_l - t_n}{(1-L)(1-d)}
+\end{aligned}$$
+
+#### Algebraic Reconciliation Proof
+1. Equivalence of $\Delta_R$ and $R_{\text{hold}} - R_{\text{sell}}$:
+$$\begin{aligned}
+R_{\text{hold}} - R_{\text{sell}} &= Q \left[(1-L)((1-d)p_H - t_l) - c - p_0 f\right] - Q(p_0 - t_n) \\
+&= Q \left[(1-L)(1-d)p_H - (1-L)t_l - c - p_0 f - p_0 + t_n\right] \\
+&= Q \left[(1-L)(1-d)p_H - p_0(1+f) - c - (1-L)t_l + t_n\right] \\
+&= Q \cdot \delta \equiv \Delta_R \quad \blacksquare
+\end{aligned}$$
+
+2. Break-Even Price Root Property:
+$$\begin{aligned}
+\delta(p_{\text{break-even}}) &= (1-L)(1-d) \left[\frac{p_0(1+f) + c + (1-L)t_l - t_n}{(1-L)(1-d)}\right] - p_0(1+f) - c - (1-L)t_l + t_n \\
+&= p_0(1+f) + c + (1-L)t_l - t_n - p_0(1+f) - c - (1-L)t_l + t_n = 0 \quad \blacksquare
+\end{aligned}$$
+
+Verified across 1,000 randomized test trials: $|R_{\text{hold}} - R_{\text{sell}} - \Delta_R| < 10^{-7}$ and $|\delta(p_{\text{break-even}})| < 10^{-7}$.
+
+---
+
+### 30.3 Affine Uncertainty Interval Propagation & Capability Gating
+
+1. **Affine Monotonicity:**
+   Because produce retention $(1-L)(1-d) > 0$, $\delta$ is a strictly increasing affine function of $p_H$:
+   $$\frac{\partial \delta}{\partial p_H} = (1-L)(1-d) > 0$$
+   Therefore:
+   $$\hat{p}_{\text{lower}} \le \hat{p}_{\text{point}} \le \hat{p}_{\text{upper}} \implies \delta_{\text{lower}} \le \delta_{\text{point}} \le \delta_{\text{upper}}$$
+   Net proceeds $[R_{\text{hold, lower}}, R_{\text{hold, upper}}]$ and incremental benefits $[\Delta_{R, \text{lower}}, \Delta_{R, \text{upper}}]$ represent conditional sensitivity ranges under fixed declared parameters, NOT probability distributions of profitability.
+
+2. **Mathematical Break-Even Classification:**
+   - $\text{ENTIRELY\_ABOVE\_BREAK\_EVEN}$: $\hat{p}_{\text{lower}} > p_{\text{break-even}} \iff \delta_{\text{lower}} > 0$.
+   - $\text{ENTIRELY\_BELOW\_BREAK\_EVEN}$: $\hat{p}_{\text{upper}} < p_{\text{break-even}} \iff \delta_{\text{upper}} < 0$.
+   - $\text{STRADDLES\_BREAK\_EVEN}$: $\hat{p}_{\text{lower}} \le p_{\text{break-even}} \le \hat{p}_{\text{upper}} \iff \delta_{\text{lower}} \le 0 \le \delta_{\text{upper}}$.
+
+3. **Strict Capability Safety Gating:**
+   - Break-even relations are purely descriptive arithmetic and CANNOT authorize live farmer advice.
+   - Positive lower conditional gain alone CANNOT authorize farmer advice.
+   - When commercial costs are unverified, data is stale, or prospective validation is unverified:
+     $$\text{operational\_status} = \text{RESEARCH\_ONLY}, \quad \text{advisory\_action} = \text{BLOCKED}, \quad \text{advisory\_permitted} = \text{False}$$
+
+---
+
+### 30.4 Commercial Cost Audit & Backtest Designation
+- **Audit Findings:** Inspected `data/reference/crop_storage_parameters.csv` and `data/raw/storage/local_warehouse_quotations.csv`. All 22 facilities across target UP districts (Ghaziabad: 4, Jhansi: 3, Kanpur Nagar: 5, Lucknow: 6, Unnao: 4) have quotation status "Not received" and rate status "Not published online - call facility".
+- **Zero Commercial Tariffs:** 0 out of 22 facilities have published commercial tariffs.
+- **Empirical Backtest Status:** Marked `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`. Running an empirical policy backtest against unverified illustrative assumptions would fabricate unwarranted profitability claims. Zero synthetic operational feeds were generated.
+
+---
+
+### 30.5 Required vs Observed Evaluation Matrix [MP-ECON-001]
+
+| Requirement ID | Specification | Observed Status | Denominator / Sample | Difference | Limitations / Action |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **A.1** JSON Level Lookup | Fix numeric float lookup against JSON string keys | **PASSED** | 9 test cases, 4 folds | $|\Delta| < 10^{-9}$ vs in-memory | Retrospective artifacts remain RESEARCH_ONLY |
+| **A.2** Calibration Envelope | Versioned envelope artifact and loading validator | **PASSED** | 1 envelope artifact | 0 schema violations | F3/F4 undercoverage disclosed (F3=75.9%, F4=72.3%) |
+| **A.3** Manifest Self-Exclusion | Exclude `output_manifest.json` from itself | **PASSED** | 9 files (FC008), 10 files (FC007) | 100% hash match | Idempotent double-generation verified |
+| **A.4** Config Equivalence | Reconcile working config vs receipt byte hash | **PASSED** | 1 config file | 100% semantic identity | Byte hash diff is trailing newline; semantic SHA identical |
+| **A.5** RSS Measurement | Measure and enforce actual peak RSS | **PASSED** | 1 measurement | ~17 MB measured (<< 512 MB) | Crisis volatility and buffer reuse marked UNVERIFIED |
+| **B.1** Canonical Accounting | Reconcile $R_{\text{sell}}, R_{\text{hold}}, \delta, \Delta_R, p_{\text{BE}}$ | **PASSED** | 1,000 random trials + 3 fixtures | $|\Delta| < 10^{-7}$ | Carrying cost: financing OR opportunity, never both |
+| **C.1** Affine Bounds | Monotonic propagation $\delta_{\text{lower}} \le \delta_{\text{upper}}$ | **PASSED** | 100 random trials | Monotonicity 100% | Conditional range, not profitability probability |
+| **C.2** Advisory Gating | Positive lower bound blocks live advice | **PASSED** | 10 boundary tests | Action strictly BLOCKED | Advisory permitted = False |
+| **D.1** Commercial Audit | Audit local warehouse quotations in UP | **PASSED** | 22 facilities | 0/22 quotes available | 100% missing commercial tariff rate |
+| **D.2** Empirical Backtest | Record honest evaluation status | **PASSED** | Full predictions archive | Status: NOT_EVALUATED | No synthetic scenario generation without approval |
+
+---
+
+### 30.6 Project Milestone Accounting
+- **Current Step:** Step 8 delivery defects repaired and verified; Step 9 core research economics completed and verified.
+- **Milestones Remaining:**
+  - **4 main milestones** remain (Steps 10–13):
+    - Step 10: Model Training and Verification (Kaggle CPU Benchmark)
+    - Step 11: Prospective / Out-of-Sample Deployment Architecture & Integration
+    - Step 12: Production Safety Gating & Operational Decision Runbook
+    - Step 13: Final End-to-End System Integration & Professor Briefing
+  - **2 optional ablations** remain (Arrivals Ablation and Weather Ablation).

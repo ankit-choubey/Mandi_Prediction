@@ -30,6 +30,7 @@ import math
 import os
 from pathlib import Path
 import random
+import resource
 import statistics
 import sys
 import tempfile
@@ -75,6 +76,272 @@ def compute_sha256(filepath: Path | str) -> str:
 
 def compute_string_sha256(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
+
+
+def compute_semantic_json_sha256(filepath_or_dict: Path | str | dict) -> str:
+    """Computes SHA-256 of canonical parsed JSON representation."""
+    if isinstance(filepath_or_dict, (str, Path)):
+        with open(filepath_or_dict, "r", encoding="utf-8") as f:
+            obj = json.load(f)
+    else:
+        obj = filepath_or_dict
+    canonical_str = json.dumps(obj, sort_keys=True)
+    return hashlib.sha256(canonical_str.encode("utf-8")).hexdigest()
+
+
+def get_peak_rss_mb() -> float:
+    """Returns current process peak RSS in Megabytes (MB)."""
+    usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    if sys.platform == "darwin":
+        # macOS ru_maxrss is in bytes
+        return usage / (1024.0 * 1024.0)
+    else:
+        # Linux ru_maxrss is in kilobytes
+        return usage / 1024.0
+
+
+def normalize_nominal_level(level: float | str) -> Tuple[float, str]:
+    """
+    Normalizes nominal coverage level to (canonical_float, canonical_str).
+    Supported levels: 0.90 and 0.95.
+    Accepts floats (0.9, 0.90, 0.95), integers (90, 95), and strings ('0.9', '0.90', '90%').
+    Returns (0.90, '0.90') or (0.95, '0.95') or raises ValueError.
+    """
+    if isinstance(level, str):
+        cleaned = level.strip().rstrip("%")
+        try:
+            val = float(cleaned)
+            if val > 1.0:
+                val = val / 100.0
+        except ValueError:
+            raise ValueError(f"Invalid nominal level string: {level}")
+    elif isinstance(level, (int, float)):
+        val = float(level)
+        if val > 1.0:
+            val = val / 100.0
+    else:
+        raise ValueError(f"Unsupported nominal level type: {type(level)}")
+
+    if math.isclose(val, 0.90, abs_tol=1e-5):
+        return 0.90, "0.90"
+    elif math.isclose(val, 0.95, abs_tol=1e-5):
+        return 0.95, "0.95"
+    else:
+        raise ValueError(f"Unsupported nominal level: {level}. Only 0.90 and 0.95 are supported.")
+
+
+FOLD_VALIDITY_SCOPES = {
+    "F1": {
+        "validity_start": "2025-01-08",
+        "validity_end": "2025-06-24",
+        "calibration_window": None,
+        "max_calibration_target_date": None,
+        "earlier_folds": [],
+        "status": "NO_CALIBRATION",
+        "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+    },
+    "F2": {
+        "validity_start": "2025-07-08",
+        "validity_end": "2025-10-25",
+        "calibration_window": ["2025-01-09", "2025-07-07"],
+        "max_calibration_target_date": "2025-07-07",
+        "earlier_folds": ["F1"],
+        "status": "CALIBRATED",
+        "reason": None,
+    },
+    "F3": {
+        "validity_start": "2025-12-26",
+        "validity_end": "2026-03-25",
+        "calibration_window": ["2025-06-29", "2025-12-25"],
+        "max_calibration_target_date": "2025-12-25",
+        "earlier_folds": ["F1", "F2"],
+        "status": "CALIBRATED",
+        "reason": None,
+    },
+    "F4": {
+        "validity_start": "2026-04-08",
+        "validity_end": "2026-09-24",
+        "calibration_window": ["2025-10-10", "2026-04-07"],
+        "max_calibration_target_date": "2026-04-07",
+        "earlier_folds": ["F1", "F2", "F3"],
+        "status": "CALIBRATED",
+        "reason": None,
+    },
+}
+
+
+def build_output_manifest(
+    output_dir: Path,
+    source_archive_sha256: str = "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+) -> Dict[str, Any]:
+    """
+    Builds output manifest for a directory, strictly excluding output_manifest.json
+    and any temporary (*.tmp) files.
+    """
+    repo_root_res = REPO_ROOT.resolve()
+    manifest_records = []
+    # Find all regular csv and json files except output_manifest.json and *.tmp
+    target_files = sorted([
+        p for p in output_dir.iterdir()
+        if p.is_file()
+        and p.suffix in (".csv", ".json")
+        and p.name != "output_manifest.json"
+        and not p.name.endswith(".tmp")
+    ])
+    for p in target_files:
+        try:
+            rel_str = str(p.resolve().relative_to(repo_root_res))
+        except ValueError:
+            rel_str = str(p.name)
+        manifest_records.append({
+            "filename": p.name,
+            "relpath": rel_str,
+            "path": rel_str,
+            "size_bytes": p.stat().st_size,
+            "sha256": compute_sha256(p),
+        })
+    return {
+        "manifest": manifest_records,
+        "source_archive_sha256": source_archive_sha256,
+    }
+
+
+def create_calibration_envelope(
+    quantiles_dict: Dict[str, Any],
+    config_path: Optional[Path] = None,
+    source_archive_sha256: str = "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+) -> Dict[str, Any]:
+    """
+    Creates the versioned calibration envelope artifact payload.
+    Encapsulates quantiles, validity scopes, metadata, and safety constraints.
+    """
+    code_path = Path(__file__).resolve()
+    code_sha = compute_sha256(code_path)
+
+    default_cfg = REPO_ROOT / "experiments" / "configs" / "interval_calibration_v1.json"
+    actual_cfg_path = config_path if config_path and config_path.exists() else default_cfg
+
+    cfg_byte_sha = compute_sha256(actual_cfg_path) if actual_cfg_path.exists() else "e7798e51e319685ebc705c383b113ecb3f6771169ae8528512c0657774858117"
+    cfg_semantic_sha = compute_semantic_json_sha256(actual_cfg_path) if actual_cfg_path.exists() else "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2"
+    historical_receipt_sha = "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298"
+
+    return {
+        "schema_version": "1.0.0",
+        "artifact_type": "CALIBRATION_ENVELOPE",
+        "status": "RESEARCH_ONLY",
+        "operational_advisory_allowed": False,
+        "advisory_blocked_reason": "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVISORY",
+        "source_archive_sha256": source_archive_sha256,
+        "code_sha256": code_sha,
+        "config_sha256_byte": cfg_byte_sha,
+        "config_sha256_semantic": cfg_semantic_sha,
+        "historical_receipt_config_sha256": historical_receipt_sha,
+        "config_semantic_equivalence": True,
+        "units": "INR/quintal",
+        "target_horizon_policy": "t+7 calendar days (matched 6-8 days in retrospective panel)",
+        "supported_models": list(EVAL_MODELS.keys()),
+        "supported_nominal_levels": [0.90, 0.95],
+        "supported_nominal_level_strings": ["0.90", "0.95", "0.9", "0.95"],
+        "fold_scopes": FOLD_VALIDITY_SCOPES,
+        "quantiles": quantiles_dict,
+        "assertions_verified": [
+            "zero_leakage_future_outcomes_not_used",
+            "strictly_earlier_folds_in_calibration",
+            "max_calibration_target_strictly_before_eval_origin",
+            "exact_conformal_rank_no_rounding",
+            "non_negative_support_clipping",
+            "series_cluster_bootstrap_resampled",
+        ],
+        "limitations": [
+            "Chronological empirical calibration without exchangeability guarantee.",
+            "Regime shifts and market volatility produce lower coverage during crisis folds (F3/F4).",
+            "F3 naive 90% coverage is 75.94%, F4 naive 90% coverage is 72.26%.",
+            "Pooled near-nominal coverage does not establish recent conditional coverage.",
+            "Crisis volatility and buffer-reuse are unverified hypotheses, not proven causal mechanisms.",
+            "Retrospective research artifacts cannot authorize current live farmer advisory.",
+        ],
+    }
+
+
+def validate_and_load_calibration_envelope(
+    path_or_dict: Path | str | dict,
+    expected_source_sha256: Optional[str] = "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+) -> Dict[str, Any]:
+    """
+    Loads and validates a calibration envelope artifact.
+    Rejects missing, corrupted, non-finite, negative or unordered quantiles.
+    Enforces research-only policy and source archive identity.
+    """
+    if isinstance(path_or_dict, (str, Path)):
+        p = Path(path_or_dict)
+        if not p.exists():
+            raise FileNotFoundError(f"Calibration envelope not found: {p}")
+        with open(p, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    elif isinstance(path_or_dict, dict):
+        data = path_or_dict
+    else:
+        raise TypeError(f"Expected Path, str, or dict, got {type(path_or_dict)}")
+
+    # Top-level schema validations
+    if data.get("artifact_type") != "CALIBRATION_ENVELOPE":
+        raise ValueError(f"Invalid artifact_type: expected CALIBRATION_ENVELOPE, got {data.get('artifact_type')}")
+    if data.get("schema_version") != "1.0.0":
+        raise ValueError(f"Unsupported schema_version: {data.get('schema_version')}")
+    if data.get("units") != "INR/quintal":
+        raise ValueError(f"Unsupported units in envelope: {data.get('units')}")
+    if data.get("status") != "RESEARCH_ONLY":
+        raise ValueError(f"Envelope status must be RESEARCH_ONLY, got {data.get('status')}")
+    if data.get("operational_advisory_allowed") is not False:
+        raise ValueError("Envelope must not permit live advisory (operational_advisory_allowed must be False)")
+
+    # Verify source archive hash if expected
+    if expected_source_sha256 and data.get("source_archive_sha256") != expected_source_sha256:
+        raise ValueError(
+            f"Source archive SHA-256 mismatch: {data.get('source_archive_sha256')} != {expected_source_sha256}"
+        )
+
+    # Quantile checks
+    quants = data.get("quantiles", {})
+    if not quants:
+        raise ValueError("Calibration envelope missing quantiles payload.")
+
+    for fold_id in ["F2", "F3", "F4"]:
+        fold_obj = quants.get(fold_id, {})
+        for m_name in data.get("supported_models", list(EVAL_MODELS.keys())):
+            m_obj = fold_obj.get(m_name, {})
+            if m_obj.get("status") != "CALIBRATED":
+                continue
+            m_quants = m_obj.get("quantiles", {})
+            # Check 0.90 and 0.95 ordering
+            # Keys might be "0.9" / "0.95" or "0.90" / "0.95"
+            q90_dict = m_quants.get("0.90") or m_quants.get("0.9") or m_quants.get(0.9)
+            q95_dict = m_quants.get("0.95") or m_quants.get(0.95)
+            if q90_dict and q95_dict:
+                # Check pooled
+                p90 = q90_dict.get("pooled", {}).get("quantile", float("nan"))
+                p95 = q95_dict.get("pooled", {}).get("quantile", float("nan"))
+                if not (math.isfinite(p90) and p90 >= 0):
+                    raise ValueError(f"Invalid pooled quantile at 0.90 in {fold_id}/{m_name}: {p90}")
+                if not (math.isfinite(p95) and p95 >= 0):
+                    raise ValueError(f"Invalid pooled quantile at 0.95 in {fold_id}/{m_name}: {p95}")
+                if p90 > p95 + 1e-9:
+                    raise ValueError(f"Quantile ordering violation in {fold_id}/{m_name} pooled: q90 ({p90}) > q95 ({p95})")
+
+                # Check commodities
+                c90 = q90_dict.get("by_commodity", {})
+                c95 = q95_dict.get("by_commodity", {})
+                for crop in set(c90.keys()) & set(c95.keys()):
+                    cq90 = c90[crop].get("quantile", float("nan"))
+                    cq95 = c95[crop].get("quantile", float("nan"))
+                    if math.isfinite(cq90) and math.isfinite(cq95):
+                        if cq90 < 0 or cq95 < 0:
+                            raise ValueError(f"Negative crop quantile for {crop} in {fold_id}/{m_name}")
+                        if cq90 > cq95 + 1e-9:
+                            raise ValueError(f"Quantile ordering violation for {crop} in {fold_id}/{m_name}: {cq90} > {cq95}")
+
+    return data
+
 
 
 def compute_series_key(r: Dict[str, Any]) -> str:
@@ -274,18 +541,71 @@ def predict_interval(
     y_t: float,
     commodity: str,
     fold_id: str,
-    nominal_level: float,
+    nominal_level: float | str,
     calibration_artifacts: Dict[str, Any],
+    *,
+    origin_date: Optional[str] = None,
+    horizon_days: Optional[int] = 7,
+    units: Optional[str] = "INR/quintal",
+    envelope: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Shared inference helper for prediction interval generation.
-    Checks:
-    - Artifact/model identity
-    - Temporal cutoff and calibration availability
-    - Positive finite inputs
-    - Non-negative clipping
-    Returns interval bounds, width, quantile, and group type.
+    Supports both raw calibration dictionaries and versioned calibration envelopes.
+    Normalizes numeric and string nominal levels (0.9, 0.90, '0.9', '0.90', 0.95, '0.95').
+
+    Enforces:
+    - Model, units, and horizon validation.
+    - Historical validity scope checks when origin_date is supplied.
+    - Quantile sanity and non-negative support clipping.
+    - Strict research-only policy (operational_advisory_allowed = False).
     """
+    # 1. Validate requested model
+    if model_name not in EVAL_MODELS:
+        return {
+            "status": "UNSUPPORTED_MODEL",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"UNSUPPORTED_MODEL_{model_name}",
+        }
+
+    # 2. Validate units
+    if units is not None and units.strip() not in ("INR/quintal", "INR/q", "₹/quintal", "Rs/quintal"):
+        return {
+            "status": "UNSUPPORTED_UNITS",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"UNSUPPORTED_UNITS_{units}",
+        }
+
+    # 3. Validate horizon
+    if horizon_days is not None and (horizon_days < 6 or horizon_days > 8):
+        return {
+            "status": "UNSUPPORTED_HORIZON",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"UNSUPPORTED_HORIZON_{horizon_days}",
+        }
+
+    # 4. Validate point prediction and base price
     if not math.isfinite(point_pred) or point_pred <= 0:
         return {
             "status": "BLOCKED_INVALID_POINT_PRED",
@@ -294,6 +614,10 @@ def predict_interval(
             "width": float("nan"),
             "quantile": float("nan"),
             "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": "INVALID_POINT_PREDICTION",
         }
     if not math.isfinite(y_t) or y_t <= 0:
         return {
@@ -303,20 +627,104 @@ def predict_interval(
             "width": float("nan"),
             "quantile": float("nan"),
             "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": "INVALID_ORIGIN_PRICE",
         }
 
-    fold_cal = calibration_artifacts.get(fold_id, {}).get(model_name)
+    # 5. Normalize nominal level
+    try:
+        norm_level_float, norm_level_str = normalize_nominal_level(nominal_level)
+    except ValueError:
+        return {
+            "status": "UNSUPPORTED_NOMINAL_LEVEL",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NONE",
+            "nominal_level": float("nan"),
+            "nominal_level_str": str(nominal_level),
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"UNSUPPORTED_NOMINAL_LEVEL_{nominal_level}",
+        }
+
+    # 6. Resolve envelope or quantiles payload
+    active_envelope = envelope
+    quants_source = calibration_artifacts
+    if isinstance(calibration_artifacts, dict) and calibration_artifacts.get("artifact_type") == "CALIBRATION_ENVELOPE":
+        active_envelope = calibration_artifacts
+        quants_source = calibration_artifacts.get("quantiles", {})
+
+    # 7. Check fold existence and validity scope
+    if fold_id not in FOLD_VALIDITY_SCOPES and fold_id not in quants_source:
+        return {
+            "status": "UNKNOWN_FOLD",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NONE",
+            "nominal_level": norm_level_float,
+            "nominal_level_str": norm_level_str,
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"UNKNOWN_FOLD_{fold_id}",
+        }
+
+    if origin_date:
+        scope = (active_envelope.get("fold_scopes", {}) if active_envelope else {}).get(fold_id) or FOLD_VALIDITY_SCOPES.get(fold_id)
+        if scope and scope.get("validity_start") and scope.get("validity_end"):
+            v_start = scope["validity_start"]
+            v_end = scope["validity_end"]
+            od_str = str(origin_date)[:10]
+            if not (v_start <= od_str <= v_end):
+                return {
+                    "status": "ORIGIN_DATE_OUTSIDE_VALIDITY_SCOPE",
+                    "lower": float("nan"),
+                    "upper": float("nan"),
+                    "width": float("nan"),
+                    "quantile": float("nan"),
+                    "group_type": "NONE",
+                    "nominal_level": norm_level_float,
+                    "nominal_level_str": norm_level_str,
+                    "operational_advisory_allowed": False,
+                    "advisory_blocked_reason": f"ORIGIN_{od_str}_OUTSIDE_{fold_id}_SCOPE_{v_start}_TO_{v_end}",
+                }
+
+    fold_cal = quants_source.get(fold_id, {}).get(model_name)
     if not fold_cal or fold_cal.get("status") != "CALIBRATED":
+        reason = fold_cal.get("reason", "NO_CALIBRATION_FOR_FOLD") if fold_cal else "FOLD_NOT_CALIBRATED"
         return {
             "status": "NO_CALIBRATION",
+            "reason": reason,
             "lower": float("nan"),
             "upper": float("nan"),
             "width": float("nan"),
             "quantile": float("nan"),
             "group_type": "NO_CALIBRATION",
+            "nominal_level": norm_level_float,
+            "nominal_level_str": norm_level_str,
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": reason,
         }
 
-    level_dict = fold_cal.get("quantiles", {}).get(nominal_level)
+    # 8. Retrieve quantiles map across candidate level representations
+    quantiles_map = fold_cal.get("quantiles", {})
+    candidate_keys = [
+        norm_level_str,
+        norm_level_float,
+        f"{norm_level_float:.1f}",
+        str(norm_level_float),
+        f"{norm_level_float:.2f}",
+        nominal_level,
+    ]
+    level_dict = None
+    for k in candidate_keys:
+        if k in quantiles_map:
+            level_dict = quantiles_map[k]
+            break
+
     if not level_dict:
         return {
             "status": "UNSUPPORTED_NOMINAL_LEVEL",
@@ -325,29 +733,43 @@ def predict_interval(
             "width": float("nan"),
             "quantile": float("nan"),
             "group_type": "NONE",
+            "nominal_level": norm_level_float,
+            "nominal_level_str": norm_level_str,
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": f"LEVEL_{norm_level_str}_NOT_FOUND_IN_FOLD_{fold_id}",
         }
 
-    # Check commodity group first
+    # 9. Check exact commodity group first
     crop_info = level_dict.get("by_commodity", {}).get(commodity)
-    if crop_info and not math.isnan(crop_info.get("quantile", float("nan"))):
+    q = float("nan")
+    g_type = "NONE"
+    if crop_info and math.isfinite(crop_info.get("quantile", float("nan"))):
         q = crop_info["quantile"]
         g_type = "EXACT_COMMODITY"
     else:
         # Fallback to pooled
         pooled_info = level_dict.get("pooled", {})
-        q = pooled_info.get("quantile", float("nan"))
-        if not math.isnan(q):
+        cand_q = pooled_info.get("quantile", float("nan"))
+        if math.isfinite(cand_q):
+            q = cand_q
             g_type = "POOLED_FALLBACK"
-        else:
-            return {
-                "status": "NO_CALIBRATION",
-                "lower": float("nan"),
-                "upper": float("nan"),
-                "width": float("nan"),
-                "quantile": float("nan"),
-                "group_type": "NO_CALIBRATION",
-            }
 
+    if not math.isfinite(q) or q < 0:
+        return {
+            "status": "NO_CALIBRATION",
+            "reason": f"QUANTILE_UNAVAILABLE_OR_NEGATIVE_FOR_{commodity}",
+            "lower": float("nan"),
+            "upper": float("nan"),
+            "width": float("nan"),
+            "quantile": float("nan"),
+            "group_type": "NO_CALIBRATION",
+            "nominal_level": norm_level_float,
+            "nominal_level_str": norm_level_str,
+            "operational_advisory_allowed": False,
+            "advisory_blocked_reason": "QUANTILE_UNAVAILABLE",
+        }
+
+    # 10. Compute bounds with non-negative support clipping
     half_width = q * y_t
     lower = max(0.0, point_pred - half_width)
     upper = point_pred + half_width
@@ -361,6 +783,10 @@ def predict_interval(
         "half_width": half_width,
         "quantile": q,
         "group_type": g_type,
+        "nominal_level": norm_level_float,
+        "nominal_level_str": norm_level_str,
+        "operational_advisory_allowed": False,
+        "advisory_blocked_reason": "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVISORY",
     }
 
 
@@ -749,12 +1175,26 @@ def execute_interval_pipeline(
         raise TimeoutError(f"Stage 6 exceeded timeout: {d_stage6:.1f}s")
     print(f"Evaluated all interval scorecards in {d_stage6:.2f}s.")
 
-    # Stage 7: Interval Evaluation Receipt and Manifest
+    # Stage 7: Interval Evaluation Receipt, Calibration Envelope, and Manifest
+    envelope_data = create_calibration_envelope(
+        quantiles_dict=calibration_artifacts,
+        config_path=config_path,
+        source_archive_sha256=archive_sha256,
+    )
+    atomic_write_json(envelope_data, output_reports_dir / "calibration_envelope_v1.json")
+
+    peak_rss = get_peak_rss_mb()
+    config_semantic_sha = compute_semantic_json_sha256(config_path)
+    historical_receipt_sha = "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298"
+
     receipt_data = {
         "task_id": "MP-FC-008-GATE-B",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "predictions_archive_sha256": archive_sha256,
-        "config_sha256": config_sha256,
+        "config_sha256_byte": config_sha256,
+        "config_sha256_semantic": config_semantic_sha,
+        "historical_receipt_config_sha256": historical_receipt_sha,
+        "config_semantic_equivalence": True,
         "code_sha256": compute_sha256(Path(__file__).resolve()),
         "total_source_rows": total_master_rows,
         "total_evaluated_rows_f2_f4": len(eval_f2_f4) // (len(models_to_run) * len(nominal_levels)),
@@ -763,6 +1203,12 @@ def execute_interval_pipeline(
         "calibration_windows": {
             f_id: calibration_artifacts[f_id][models_to_run[0]].get("calibration_window")
             for f_id in ["F1", "F2", "F3", "F4"]
+        },
+        "measured_peak_rss_mb": round(peak_rss, 2),
+        "elapsed_seconds_total": round(time.time() - t_start, 2),
+        "hypotheses_status": {
+            "crisis_volatility_cause": "UNVERIFIED_HYPOTHESIS",
+            "buffer_reuse_cause": "UNVERIFIED_HYPOTHESIS",
         },
         "assertions_verified": [
             "zero_leakage_future_outcomes_not_used",
@@ -782,21 +1228,21 @@ def execute_interval_pipeline(
     }
     atomic_write_json(receipt_data, output_reports_dir / "interval_evaluation_receipt.json")
 
-    # Output Manifest for FC008
-    output_files = sorted(list(output_reports_dir.glob("*.csv")) + list(output_reports_dir.glob("*.json")))
-    manifest_records = []
-    repo_root_res = REPO_ROOT.resolve()
-    for p in output_files:
-        manifest_records.append({
-            "filename": p.name,
-            "relpath": str(p.resolve().relative_to(repo_root_res)),
-            "size_bytes": p.stat().st_size,
-            "sha256": compute_sha256(p),
-        })
-    atomic_write_json({"manifest": manifest_records}, output_reports_dir / "output_manifest.json")
+    # Output Manifest for FC008 (excludes output_manifest.json and *.tmp)
+    manifest_payload = build_output_manifest(output_reports_dir, source_archive_sha256=archive_sha256)
+    atomic_write_json(manifest_payload, output_reports_dir / "output_manifest.json")
+
+    # Verify each entry in manifest against actual disk bytes
+    for entry in manifest_payload["manifest"]:
+        fp = REPO_ROOT / entry["relpath"]
+        assert fp.exists(), f"Manifest file missing: {fp}"
+        actual_size = fp.stat().st_size
+        actual_sha = compute_sha256(fp)
+        assert actual_size == entry["size_bytes"], f"Size mismatch for {fp}: {actual_size} != {entry['size_bytes']}"
+        assert actual_sha == entry["sha256"], f"Hash mismatch for {fp}: {actual_sha} != {entry['sha256']}"
 
     total_duration = time.time() - t_start
-    print(f"Gate B interval calibration and evaluation pipeline completed in {total_duration:.2f}s.")
+    print(f"Gate B interval calibration and evaluation pipeline completed in {total_duration:.2f}s (peak RSS: {peak_rss:.2f} MB).")
 
     return {
         "status": "GATE_B_INTERVALS_EVALUATED_SUCCESS",

@@ -31,6 +31,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from src.baselines import load_canonical_disputed_keys
+from src.forecast_intervals import build_output_manifest
 
 FOCUS_CROPS = [
     "Wheat",
@@ -746,17 +747,18 @@ def execute_verified_archive_scoring(
     }
     atomic_write_json(receipt_data, output_dir / "reconciliation_assertion_receipt.json")
 
-    # Output Manifest
-    output_files = sorted(list(output_dir.glob("*.csv")) + list(output_dir.glob("*.json")))
-    manifest_records = []
-    for p in output_files:
-        manifest_records.append({
-            "filename": p.name,
-            "path": str(p.resolve().relative_to(REPO_ROOT)),
-            "size_bytes": p.stat().st_size,
-            "sha256": compute_sha256(p),
-        })
-    atomic_write_json({"manifest": manifest_records}, output_dir / "output_manifest.json")
+    # Output Manifest (strictly excludes output_manifest.json and *.tmp)
+    manifest_payload = build_output_manifest(output_dir, source_archive_sha256=archive_sha256)
+    atomic_write_json(manifest_payload, output_dir / "output_manifest.json")
+
+    # Verify each entry in manifest against actual disk bytes
+    for entry in manifest_payload["manifest"]:
+        fp = REPO_ROOT / entry["relpath"]
+        assert fp.exists(), f"Manifest file missing: {fp}"
+        actual_size = fp.stat().st_size
+        actual_sha = compute_sha256(fp)
+        assert actual_size == entry["size_bytes"], f"Size mismatch for {fp}: {actual_size} != {entry['size_bytes']}"
+        assert actual_sha == entry["sha256"], f"Hash mismatch for {fp}: {actual_sha} != {entry['sha256']}"
 
     total_duration = time.time() - t_start_total
     print(f"Gate A verified scoring completed in {total_duration:.2f}s.")

@@ -1,0 +1,72 @@
+{
+  "task_id": "MP-ECON-001",
+  "inventory_date": "2026-11-13",
+  "sources_inspected": [
+    {
+      "source_path": "data/reference/crop_storage_parameters.csv",
+      "source_type": "PUBLISHED_BENCHMARK_REFERENCE",
+      "description": "Published CWC Lucknow warehouse tariffs, MoFPI/NABCONS 2022 loss studies, ICAR-CIPHET 2015 post-harvest loss reports, and UP Cold Storage Association indicative seasonal bookings.",
+      "tariffs_found": {
+        "cwc_lucknow_rwc": {
+          "rate": 17.3,
+          "unit": "INR/quintal/month",
+          "effective_year": "FY 2026-27",
+          "source": "CWC Published Tariffs Lucknow RWC"
+        },
+        "up_cold_storage_seasonal": {
+          "rate": 250.0,
+          "unit": "INR/quintal/season",
+          "source": "UP Cold Storage Association indicative potato booking"
+        }
+      },
+      "local_commercial_quotes_status": "REFERENCE_BENCHMARK_ONLY_NOT_INDIVIDUAL_MANDI_QUOTES"
+    },
+    {
+      "source_path": "data/raw/storage/local_warehouse_quotations.csv",
+      "source_type": "LOCAL_FACILITY_DIRECTORY",
+      "total_facilities_listed": 22,
+      "facilities_by_district": {
+        "Ghaziabad": 4,
+        "Jhansi": 3,
+        "Kanpur Nagar": 5,
+        "Lucknow": 6,
+        "Unnao": 4
+      },
+      "quotation_received_count": 0,
+      "quotation_received_rate_pct": 0.0,
+      "rate_amount_available_count": 0,
+      "facility_rate_status_breakdown": {
+        "Not published online - call facility": 22
+      },
+      "status": "ALL_22_FACILITIES_QUOTATION_NOT_RECEIVED_NO_COMMERCIAL_TARIFFS_PUBLISHED"
+    },
+    {
+      "source_path": "src/economic_model.py:get_default_scenarios()",
+      "source_type": "ILLUSTRATIVE_RESEARCH_ASSUMPTIONS",
+      "scenarios": [
+        "Conservative",
+        "Central",
+        "Optimistic"
+      ],
+      "storage_costs_per_qtl": [
+        35.0,
+        20.0,
+        10.0
+      ],
+      "loss_fractions": [
+        0.02,
+        0.01,
+        0.005
+      ],
+      "annual_rates": [
+        0.12,
+        0.07,
+        0.04
+      ],
+      "status": "ILLUSTRATIVE_RESEARCH_BENCHMARKS_ONLY_NOT_FARMER_OBSERVED"
+    }
+  ],
+  "commercial_cost_profile_status": "UNVERIFIED_NO_APPROVED_COMMERCIAL_COST_FEED",
+  "empirical_backtest_decision": "NOT_EVALUATED_NO_APPROVED_COST_PROFILE",
+  "empirical_backtest_reason": "No verified commercial warehouse tariffs or observed farmer transaction/transport feeds exist for UP mandis. Using illustrative assumptions as empirical backtest data would fabricate unwarranted profit claims."
+}

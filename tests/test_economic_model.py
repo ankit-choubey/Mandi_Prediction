@@ -28,6 +28,11 @@ from src.economic_model import (
     calculate_storage_sale_proceeds,
     calculate_break_even_future_price,
     evaluate_sell_vs_store,
+    calculate_canonical_accounting,
+    InputProvenance,
+    ResearchEconomicRequest,
+    ResearchEconomicResult,
+    evaluate_research_economics,
 )
 
 
@@ -442,3 +447,194 @@ def test_17_sensitivity_matrix_schemas_and_quality_discount():
     assert sens_dq[0]["Quality_Discount_Fraction"] == 0.0
     assert sens_dq[1]["Quality_Discount_Fraction"] == 0.02
     assert sens_dq[1]["Break_Even_Future_Price_Rupees_Per_Qtl"] > sens_dq[0]["Break_Even_Future_Price_Rupees_Per_Qtl"]
+
+
+# =====================================================================
+# TASK MP-ECON-001: RESEARCH ECONOMICS CONTRACT & GATING TESTS
+# =====================================================================
+
+def test_canonical_accounting_reconciliation_and_invariants():
+    """
+    Test MP-ECON-001 Section B:
+    Reconciles R_hold - R_sell == Delta_R and delta(p_break_even) == 0.
+    Verifies quantity scaling preserves per-quintal delta.
+    """
+    import random
+    rng = random.Random(42)
+
+    # Hand-computed fixture 1
+    p1 = EconomicParameters(storage_cost_per_quintal=50.0, quantity_loss_fraction=0.02, carrying_cost_type='none')
+    r1 = calculate_canonical_accounting(10.0, 2500.0, 2650.0, p1)
+    assert r1["r_sell"] == 25000.0
+    assert r1["r_hold"] == 25470.0
+    assert r1["delta_r"] == 470.0
+    assert math.isclose(r1["p_break_even"], 2602.0408, rel_tol=1e-4)
+
+    # Hand-computed fixture 2
+    p2 = EconomicParameters(storage_cost_per_quintal=120.0, quantity_loss_fraction=0.02, carrying_cost_type='none')
+    r2 = calculate_canonical_accounting(10.0, 2500.0, 2650.0, p2)
+    assert r2["r_sell"] == 25000.0
+    assert r2["r_hold"] == 24770.0
+    assert r2["delta_r"] == -230.0
+    assert math.isclose(r2["p_break_even"], 2673.4693, rel_tol=1e-4)
+
+    # 100 Randomized parameter trials
+    for _ in range(100):
+        q = rng.uniform(1.0, 500.0)
+        p0 = rng.uniform(500.0, 5000.0)
+        ph = rng.uniform(500.0, 6000.0)
+        cs = rng.uniform(0.0, 100.0)
+        ch = rng.uniform(0.0, 20.0)
+        ct = rng.uniform(0.0, 30.0)
+        l = rng.uniform(0.0, 0.10)
+        d = rng.uniform(0.0, 0.10)
+        rate = rng.uniform(0.0, 0.20)
+        tn = rng.uniform(0.0, 25.0)
+        tl = rng.uniform(0.0, 25.0)
+
+        params = EconomicParameters(
+            storage_cost_per_quintal=cs,
+            handling_cost_per_quintal=ch,
+            incremental_transport_cost=ct,
+            quantity_loss_fraction=l,
+            quality_discount_fraction=d,
+            annual_carrying_rate=rate,
+            holding_period_days=7,
+            transaction_cost_now=tn,
+            transaction_cost_later=tl,
+        )
+        res = calculate_canonical_accounting(q, p0, ph, params)
+        assert abs(res["r_hold"] - res["r_sell"] - res["delta_r"]) < 1e-7
+        assert abs(res["delta_r"] - q * res["delta_per_quintal"]) < 1e-7
+
+        # Invariance to Q scaling
+        res_scaled = calculate_canonical_accounting(q * 10.0, p0, ph, params)
+        assert abs(res_scaled["delta_per_quintal"] - res["delta_per_quintal"]) < 1e-7
+        assert abs(res_scaled["p_break_even"] - res["p_break_even"]) < 1e-7
+        assert abs(res_scaled["delta_r"] - 10.0 * res["delta_r"]) < 1e-6
+
+
+def test_affine_uncertainty_propagation_and_break_even_relations():
+    """
+    Test MP-ECON-001 Section C:
+    Verifies increasing affine property delta_lower <= delta_point <= delta_upper
+    and correct classification of break_even_relation.
+    """
+    params = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+    )
+    p0 = 2000.0
+    acct = calculate_canonical_accounting(10.0, p0, p0, params)
+    p_be = acct["p_break_even"]
+
+    # 1. Entirely above break-even
+    req_above = ResearchEconomicRequest(
+        quantity_quintals=10.0,
+        current_price=p0,
+        future_price_point=p_be + 100.0,
+        future_price_lower=p_be + 20.0,
+        future_price_upper=p_be + 150.0,
+        params=params,
+    )
+    res_above = evaluate_research_economics(req_above)
+    assert res_above.break_even_relation == "ENTIRELY_ABOVE_BREAK_EVEN"
+    assert res_above.delta_per_quintal_lower <= res_above.delta_per_quintal_point <= res_above.delta_per_quintal_upper
+    assert res_above.delta_per_quintal_lower > 0.0
+
+    # 2. Entirely below break-even
+    req_below = ResearchEconomicRequest(
+        quantity_quintals=10.0,
+        current_price=p0,
+        future_price_point=p_be - 50.0,
+        future_price_lower=p_be - 100.0,
+        future_price_upper=p_be - 10.0,
+        params=params,
+    )
+    res_below = evaluate_research_economics(req_below)
+    assert res_below.break_even_relation == "ENTIRELY_BELOW_BREAK_EVEN"
+    assert res_below.delta_per_quintal_lower <= res_below.delta_per_quintal_point <= res_below.delta_per_quintal_upper
+    assert res_below.delta_per_quintal_upper < 0.0
+
+    # 3. Straddles break-even
+    req_straddle = ResearchEconomicRequest(
+        quantity_quintals=10.0,
+        current_price=p0,
+        future_price_point=p_be + 10.0,
+        future_price_lower=p_be - 30.0,
+        future_price_upper=p_be + 50.0,
+        params=params,
+    )
+    res_straddle = evaluate_research_economics(req_straddle)
+    assert res_straddle.break_even_relation == "STRADDLES_BREAK_EVEN"
+    assert res_straddle.delta_per_quintal_lower <= 0.0 <= res_straddle.delta_per_quintal_upper
+
+
+def test_advisory_safety_gating_fail_closed():
+    """
+    Test MP-ECON-001 Section C & D:
+    Ensures positive lower bound alone CANNOT authorize live advice.
+    Operational status must be RESEARCH_ONLY, advisory_action BLOCKED, advisory_permitted False.
+    """
+    params = EconomicParameters(
+        storage_cost_per_quintal=20.0,
+        quantity_loss_fraction=0.01,
+        annual_carrying_rate=0.07,
+        holding_period_days=7,
+    )
+    # Even with huge gain (p_lower = 3000 vs p0 = 2000)
+    req = ResearchEconomicRequest(
+        quantity_quintals=10.0,
+        current_price=2000.0,
+        future_price_point=3200.0,
+        future_price_lower=3000.0,
+        future_price_upper=3400.0,
+        params=params,
+        provenance_map={
+            "storage_cost": InputProvenance(20.0, "INR/quintal", "ILLUSTRATIVE", "Central Scenario"),
+        }
+    )
+    res = evaluate_research_economics(req)
+    assert res.break_even_relation == "ENTIRELY_ABOVE_BREAK_EVEN"
+    assert res.operational_status == "RESEARCH_ONLY"
+    assert res.advisory_action == "BLOCKED"
+    assert res.advisory_permitted is False
+    assert "POSITIVE_LOWER_BOUND_CANNOT_AUTHORIZE_FARMER_ADVICE" in res.gate_reasons
+    assert "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVICE" in res.gate_reasons
+    assert "UNVERIFIED_COMMERCIAL_COST_FEED" in res.gate_reasons
+
+
+def test_research_economics_serialization_roundtrip():
+    """Verify request and result dataclass serialization to dict and reconstruction."""
+    req = ResearchEconomicRequest(
+        quantity_quintals=50.0,
+        current_price=2100.0,
+        future_price_point=2250.0,
+        future_price_lower=2180.0,
+        future_price_upper=2320.0,
+        holding_period_days=7,
+        commodity="Wheat",
+        district="Lucknow",
+        market="Lucknow",
+        is_reporting_normalization=True,
+        provenance_map={
+            "storage_cost": InputProvenance(17.30, "INR/quintal", "OBSERVED", "CWC Lucknow Tariff"),
+            "quantity_loss": InputProvenance(0.01, "fraction", "ILLUSTRATIVE", "CIPHET"),
+        }
+    )
+    d_req = req.to_dict()
+    reloaded_req = ResearchEconomicRequest.from_dict(d_req)
+    assert reloaded_req.quantity_quintals == req.quantity_quintals
+    assert reloaded_req.commodity == req.commodity
+    assert reloaded_req.is_reporting_normalization is True
+    assert reloaded_req.provenance_map["storage_cost"].value == 17.30
+
+    res = evaluate_research_economics(reloaded_req)
+    d_res = res.to_dict()
+    reloaded_res = ResearchEconomicResult.from_dict(d_res)
+    assert reloaded_res.operational_status == res.operational_status
+    assert reloaded_res.advisory_action == res.advisory_action
+    assert reloaded_res.break_even_relation == res.break_even_relation
+    assert abs(reloaded_res.p_break_even - res.p_break_even) < 1e-9

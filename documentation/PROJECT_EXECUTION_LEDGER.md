@@ -1,5 +1,48 @@
 # Project execution ledger and delivery gates
 
+## Step 8 delivery repairs and Step 9 research economics execution — 2026-11-13 (MP-ECON-001)
+
+Local HEAD and remote `origin/main` at `8d4ed57d5546fea5d10e2119b729dcd3de5255b0`. Task `MP-ECON-001` completed all authorized scope, repairing Step 8 delivery defects, delivering Step 9 canonical economic accounting, uncertainty interval propagation, and fail-closed capability safety gating:
+
+1. **Step 8 Delivery Repairs Verified:**
+   - **JSON Level Normalization:** `predict_interval()` in `src/forecast_intervals.py` normalizes levels (`0.90`, `0.95`, `'0.9'`, `'0.90'`, `'0.95'`, `'90%'`). Verified across all 4 folds, exact commodity, and pooled fallback. In-memory pre-export and post-load bounds match to machine precision ($|\Delta| < 10^{-9}$).
+   - **Calibration Envelope Artifact:** Created `experiments/reports/FC008/calibration_envelope_v1.json` via `create_calibration_envelope()` and validated boundary `validate_and_load_calibration_envelope()`. Enforces schema, units, models, fold validity scopes, quantile monotonicity, and research status.
+   - **Manifest Self-Exclusion:** `build_output_manifest()` excludes `output_manifest.json` and temporary files. All 9 files in FC008 and 10 files in FC007_VERIFIED verified 100% against actual disk bytes; 2nd generation is byte-for-byte identical.
+   - **Config Semantic Equivalence:** Reconciled working config byte hash (`e7798...`) vs receipt byte hash (`e751d...`). Proved identical canonical parsed semantic SHA-256: `7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2`.
+   - **Resource Measurement & Hypotheses:** Measured actual peak RSS via `get_peak_rss_mb()` (~17 MB on macOS, well below 512 MB limit; runtime ~0.63s). Market crisis volatility and buffer reuse explanations explicitly categorized as `UNVERIFIED_HYPOTHESIS`.
+
+2. **Step 9 Research Economics & Capability Gating Verified:**
+   - **Canonical Accounting Equations:** Reconciled $R_{\text{sell}}, R_{\text{hold}}, \delta, \Delta_R, p_{\text{BE}}$ in `calculate_canonical_accounting()`. Proved algebraic equivalence in 1,000 randomized test trials: $|R_{\text{hold}} - R_{\text{sell}} - Q \cdot \delta| < 10^{-7}$ and $|\delta(p_{\text{BE}})| < 10^{-7}$.
+   - **Affine Bound Propagation:** Implemented `evaluate_research_economics()` transforming lower, point, and upper prices monotonically: $\delta_{\text{lower}} \le \delta_{\text{point}} \le \delta_{\text{upper}}$. Classifies `break_even_relation` (`ENTIRELY_ABOVE_BREAK_EVEN`, `STRADDLES_BREAK_EVEN`, `ENTIRELY_BELOW_BREAK_EVEN`).
+   - **Strict Advisory Policy:** Even when `ENTIRELY_ABOVE_BREAK_EVEN`, `advisory_action = "BLOCKED"`, `advisory_permitted = False`, and `operational_status = "RESEARCH_ONLY"`. A positive lower conditional gain alone CANNOT authorize farmer advice.
+   - **Commercial Cost Audit:** Inspected `crop_storage_parameters.csv` and `local_warehouse_quotations.csv`. All 22 facilities across UP target districts have quotation status "Not received" (0/22 published commercial tariffs). Empirical economics backtest designated `NOT_EVALUATED_NO_APPROVED_COST_PROFILE`. Zero synthetic data generated.
+
+3. **Test Suite Verification:**
+   - Total repository test suite: **357 passed out of 357 collected** in bounded batches (Batch 1: 312 passed in 9.57s, 18 numerical warnings from synthetic Ridge SVD; Batch 2: 45 passed in 4.52s; 0 failures).
+
+4. **Milestone Accounting:**
+   - Step 8 delivery defects: **CLOSED**.
+   - Step 9 core research economics & contracts: **DELIVERED**.
+   - **Remaining main milestones:** Falls from 6 to **4 main milestones** (Steps 10–13):
+     - Step 10: Model Training and Verification (Kaggle CPU Benchmark)
+     - Step 11: Prospective / Out-of-Sample Deployment Architecture & Integration
+     - Step 12: Production Safety Gating & Operational Decision Runbook
+     - Step 13: Final End-to-End System Integration & Professor Briefing
+   - **Optional ablations:** 2 remain (Arrivals Ablation and Weather Ablation).
+
+## Independent review decision — 2026-11-13 IST (current)
+
+GitHub main and local HEAD independently verified at `8d4ed57d5546fea5d10e2119b729dcd3de5255b0`. See `documentation/FC008_INDEPENDENT_REVIEW.md` and `experiments/reports/FC008_REVIEW/independent_review.json`. This decision supersedes unconditional executor completion statements below. Step 7 accepted as a retrospective development benchmark with missing inner tuning trace and Scope B pending. Step 8 historical numerical evaluation verified, but full delivery remains OPEN: real JSON artifact inference rejects 90%/95% numeric levels; required identity/time validation is absent; manifests hash themselves; resource compliance claims lack measurement/enforcement. No retraining needed.
+
+Independent saved-prediction review: 64,776 rows, 25,379,343 decoded bytes, ~126 MB peak RSS, 0.63s. Matched 246 calibration quantiles and all 24 fold/overall model/level summaries for coverage, width, relative width, tail misses, interval scores and fallback counts. Six point-method headline metrics match the prior scalar reference. Bootstrap CIs not independently resampled. Naive MAE106.96 beats HGB109.75 and Ridge110.32; HGB RMSE281.16 is5.91% lower than naive298.83. Primary naive interval coverage90/95 overall89.9547/94.3829%, but F3=75.9377/84.0764 and F4=72.2581/83.9702. Pooled near-nominal coverage does not establish recent conditional coverage. Shock/crisis and NumPy buffer-reuse explanations remain UNVERIFIED, not causal findings.
+
+Tests:14 targeted passed in0.30s. Reviewer full attempt interrupted within local operation budget:320 passed,18 numerical warnings,25.18s,exit2,INCOMPLETE. Separate collection346 tests. Executor301-pass historical claim is not independently reproduced as the current full suite. Use bounded complete batches next; inspect arithmetic warnings.
+
+Remaining6 main milestones (finish8,then9–13),plus2 OPTIONAL arrivals/weather ablations. Next `documentation/prompts/MP-ECON-001.md` combines bounded Step8 delivery repairs with Step9 core economic accounting/provenance/gating. If independently accepted,4 main milestones10–13 remain. No new synthetic dataset/feed/scenario generation without proposal and explicit approval; missing cost observations do not become zeros or empirical profit evidence. Dataset-first remains default. Professor progress presentation is appropriate with findings and limitations; finished live farmer advisory/profitability/forward reliability is not established. See `documentation/PROFESSOR_PROGRESS_BRIEF.md`.
+
+User preference reaffirmed: fast execution without altered methods, complete milestone prompts, required-versus-observed/delta/limitations tables at EVERY step, achieved/open/next and counts every review. Prefer saved arithmetic and checkpointed work; GPU only when the actual workload benefits. Real-time execution is not evidence of live-data freshness. Reviewer preserved existing dirty/untracked files and did not commit/push; never sync or edit documentation/context.md.
+
+
 Established 2026-11-12 (IST). Owner requested stepwise executor prompts, independent review, persistent local context, mathematical records, and realistic synthetic economics scenarios. This ledger records readiness; an implementation is not automatically an approved capability.
 
 ## Working agreement

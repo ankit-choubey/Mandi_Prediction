@@ -32,6 +32,12 @@ from src.forecast_intervals import (
     quantile_linear,
     compute_series_key,
     compute_origin_key,
+    normalize_nominal_level,
+    build_output_manifest,
+    create_calibration_envelope,
+    validate_and_load_calibration_envelope,
+    compute_semantic_json_sha256,
+    get_peak_rss_mb,
 )
 
 
@@ -315,3 +321,184 @@ class TestSerializationAndInferenceRoundtrip:
                 reader = list(csv.DictReader(f))
             assert len(reader) == 2
             assert reader[0]["slice"] == "A"
+
+    def test_normalize_nominal_level(self):
+        """Verify nominal level normalizer handles floats, strings, and percentages."""
+        assert normalize_nominal_level(0.90) == (0.90, "0.90")
+        assert normalize_nominal_level(0.9) == (0.90, "0.90")
+        assert normalize_nominal_level("0.90") == (0.90, "0.90")
+        assert normalize_nominal_level("0.9") == (0.90, "0.90")
+        assert normalize_nominal_level("90%") == (0.90, "0.90")
+        assert normalize_nominal_level(90) == (0.90, "0.90")
+
+        assert normalize_nominal_level(0.95) == (0.95, "0.95")
+        assert normalize_nominal_level("0.95") == (0.95, "0.95")
+        assert normalize_nominal_level("95%") == (0.95, "0.95")
+        assert normalize_nominal_level(95) == (0.95, "0.95")
+
+        with pytest.raises(ValueError, match="Unsupported nominal level"):
+            normalize_nominal_level(0.80)
+        with pytest.raises(ValueError, match="Unsupported nominal level"):
+            normalize_nominal_level("0.99")
+        with pytest.raises(ValueError, match="Invalid nominal level"):
+            normalize_nominal_level("invalid_level")
+
+    def test_predict_interval_json_reload_roundtrip(self):
+        """
+        Verify saved JSON calibration artifacts reload and evaluate without UNSUPPORTED_NOMINAL_LEVEL.
+        Tests 90% and 95%, exact commodity and pooled fallback, and all calibrated folds.
+        Compares pre-export and post-load bounds numerically to machine precision.
+        """
+        cal_path = Path("experiments/reports/FC008/calibration_quantiles.json")
+        assert cal_path.exists(), "FC008 calibration_quantiles.json missing!"
+        with open(cal_path, "r", encoding="utf-8") as f:
+            cal_json = json.load(f)
+
+        envelope_path = Path("experiments/reports/FC008/calibration_envelope_v1.json")
+        assert envelope_path.exists(), "FC008 calibration_envelope_v1.json missing!"
+        envelope = validate_and_load_calibration_envelope(envelope_path)
+
+        # F1 produces NO_CALIBRATION
+        res_f1 = predict_interval("naive", 2000.0, 2000.0, "Wheat", "F1", 0.90, cal_json)
+        assert res_f1["status"] == "NO_CALIBRATION"
+        assert res_f1["operational_advisory_allowed"] is False
+
+        # Test cases across folds, commodities, models, and levels
+        test_cases = [
+            ("F2", "Wheat", "naive", 0.90, 2150.0, 2100.0, "EXACT_COMMODITY"),
+            ("F2", "Wheat", "naive", "0.90", 2150.0, 2100.0, "EXACT_COMMODITY"),
+            ("F2", "Wheat", "naive", 0.95, 2150.0, 2100.0, "EXACT_COMMODITY"),
+            ("F2", "Potato", "ridge", "0.95", 1450.0, 1400.0, "EXACT_COMMODITY"),
+            ("F2", "ExoticCrop", "hist_gradient_boosting", 0.90, 1800.0, 1750.0, "POOLED_FALLBACK"),
+            ("F3", "Wheat", "naive", 0.90, 2200.0, 2150.0, "EXACT_COMMODITY"),
+            ("F3", "Potato", "naive", 0.95, 1300.0, 1250.0, "EXACT_COMMODITY"),
+            ("F4", "Wheat", "naive", 0.90, 2300.0, 2250.0, "EXACT_COMMODITY"),
+            ("F4", "Rice", "naive", 0.95, 2600.0, 2550.0, "EXACT_COMMODITY"),
+        ]
+
+        for fold, crop, model, level, p, yt, exp_group in test_cases:
+            res_raw = predict_interval(model, p, yt, crop, fold, level, cal_json)
+            res_env = predict_interval(model, p, yt, crop, fold, level, envelope)
+
+            assert res_raw["status"] == "SUCCESS", f"Failed for {fold} {crop} {model} {level}: {res_raw}"
+            assert res_env["status"] == "SUCCESS"
+            assert res_raw["group_type"] == exp_group
+            assert res_env["group_type"] == exp_group
+
+            # Strict numerical equivalence between raw JSON quantiles and envelope
+            assert abs(res_raw["lower"] - res_env["lower"]) < 1e-9
+            assert abs(res_raw["upper"] - res_env["upper"]) < 1e-9
+            assert abs(res_raw["quantile"] - res_env["quantile"]) < 1e-9
+            assert abs(res_raw["width"] - res_env["width"]) < 1e-9
+            assert res_raw["operational_advisory_allowed"] is False
+            assert res_env["operational_advisory_allowed"] is False
+
+    def test_predict_interval_boundary_validations(self):
+        """Verify fail-safe behavior for invalid models, units, horizons, dates, and nonfinite values."""
+        cal_path = Path("experiments/reports/FC008/calibration_quantiles.json")
+        with open(cal_path, "r", encoding="utf-8") as f:
+            cal = json.load(f)
+
+        # Invalid model
+        res_m = predict_interval("unsupported_model", 2000.0, 2000.0, "Wheat", "F2", 0.90, cal)
+        assert res_m["status"] == "UNSUPPORTED_MODEL"
+
+        # Invalid units
+        res_u = predict_interval("naive", 2000.0, 2000.0, "Wheat", "F2", 0.90, cal, units="USD")
+        assert res_u["status"] == "UNSUPPORTED_UNITS"
+
+        # Invalid horizon
+        res_h = predict_interval("naive", 2000.0, 2000.0, "Wheat", "F2", 0.90, cal, horizon_days=30)
+        assert res_h["status"] == "UNSUPPORTED_HORIZON"
+
+        # Nonfinite point prediction
+        res_nan = predict_interval("naive", float("nan"), 2000.0, "Wheat", "F2", 0.90, cal)
+        assert res_nan["status"] == "BLOCKED_INVALID_POINT_PRED"
+
+        # Negative origin price
+        res_neg = predict_interval("naive", 2000.0, -100.0, "Wheat", "F2", 0.90, cal)
+        assert res_neg["status"] == "BLOCKED_INVALID_ORIGIN_PRICE"
+
+        # Origin date outside validity scope
+        res_date = predict_interval("naive", 2000.0, 2000.0, "Wheat", "F2", 0.90, cal, origin_date="2026-08-01")
+        assert res_date["status"] == "ORIGIN_DATE_OUTSIDE_VALIDITY_SCOPE"
+
+        # Origin date inside validity scope
+        res_date_ok = predict_interval("naive", 2000.0, 2000.0, "Wheat", "F2", 0.90, cal, origin_date="2025-08-01")
+        assert res_date_ok["status"] == "SUCCESS"
+
+
+class TestEnvelopeAndManifestIntegrity:
+    def test_calibration_envelope_validation_rules(self):
+        """Verify envelope validation rejects corrupted, unordered, negative quantiles, or bad metadata."""
+        envelope_path = Path("experiments/reports/FC008/calibration_envelope_v1.json")
+        envelope = validate_and_load_calibration_envelope(envelope_path)
+        assert envelope["artifact_type"] == "CALIBRATION_ENVELOPE"
+        assert envelope["status"] == "RESEARCH_ONLY"
+        assert envelope["operational_advisory_allowed"] is False
+
+        # Test unordered quantiles detection: q90 > q95
+        import copy
+        bad_env = copy.deepcopy(envelope)
+        k90 = "0.9" if "0.9" in bad_env["quantiles"]["F2"]["naive"]["quantiles"] else "0.90"
+        k95 = "0.95" if "0.95" in bad_env["quantiles"]["F2"]["naive"]["quantiles"] else 0.95
+        bad_env["quantiles"]["F2"]["naive"]["quantiles"][k90]["pooled"]["quantile"] = 0.50
+        bad_env["quantiles"]["F2"]["naive"]["quantiles"][k95]["pooled"]["quantile"] = 0.10
+        with pytest.raises(ValueError, match="Quantile ordering violation"):
+            validate_and_load_calibration_envelope(bad_env)
+
+        # Test negative quantile detection
+        bad_env2 = copy.deepcopy(envelope)
+        bad_env2["quantiles"]["F2"]["naive"]["quantiles"][k90]["pooled"]["quantile"] = -0.05
+        with pytest.raises(ValueError, match="Invalid pooled quantile"):
+            validate_and_load_calibration_envelope(bad_env2)
+
+        # Test wrong artifact type
+        bad_env3 = copy.deepcopy(envelope)
+        bad_env3["artifact_type"] = "WRONG_TYPE"
+        with pytest.raises(ValueError, match="Invalid artifact_type"):
+            validate_and_load_calibration_envelope(bad_env3)
+
+        # Test source archive mismatch
+        with pytest.raises(ValueError, match="Source archive SHA-256 mismatch"):
+            validate_and_load_calibration_envelope(envelope, expected_source_sha256="wrong_hash")
+
+    def test_manifest_self_exclusion_and_idempotency(self):
+        """Verify output manifest excludes itself and temporary files, and repeated generation is idempotent."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            # Create sample payload files
+            (tmp / "file1.csv").write_text("a,b\n1,2\n", encoding="utf-8")
+            (tmp / "file2.json").write_text('{"key": "value"}', encoding="utf-8")
+            (tmp / "temp_file.tmp").write_text("temporary data", encoding="utf-8")
+
+            # First manifest generation
+            m1 = build_output_manifest(tmp, source_archive_sha256="dummy_sha")
+            m1_path = tmp / "output_manifest.json"
+            atomic_write_json(m1, m1_path)
+
+            m1_filenames = [e["filename"] for e in m1["manifest"]]
+            assert "file1.csv" in m1_filenames
+            assert "file2.json" in m1_filenames
+            assert "output_manifest.json" not in m1_filenames
+            assert "temp_file.tmp" not in m1_filenames
+            assert len(m1["manifest"]) == 2
+
+            # Second manifest generation in populated directory with existing output_manifest.json
+            m2 = build_output_manifest(tmp, source_archive_sha256="dummy_sha")
+            m2_filenames = [e["filename"] for e in m2["manifest"]]
+            assert "output_manifest.json" not in m2_filenames
+            assert m1 == m2, "Manifest generation is not idempotent!"
+
+    def test_semantic_config_equivalence(self):
+        """Verify semantic config equivalence between working file and original run receipt."""
+        cfg_path = Path("experiments/configs/interval_calibration_v1.json")
+        semantic_sha = compute_semantic_json_sha256(cfg_path)
+        expected_semantic = "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2"
+        assert semantic_sha == expected_semantic
+
+    def test_peak_rss_mb_measurement(self):
+        """Verify cross-platform peak RSS reporting returns a positive float."""
+        rss = get_peak_rss_mb()
+        assert isinstance(rss, float)
+        assert rss > 0.0

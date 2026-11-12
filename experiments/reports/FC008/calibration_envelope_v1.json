@@ -1,0 +1,2080 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_type": "CALIBRATION_ENVELOPE",
+  "status": "RESEARCH_ONLY",
+  "operational_advisory_allowed": false,
+  "advisory_blocked_reason": "RETROSPECTIVE_RESEARCH_ONLY_NO_LIVE_ADVISORY",
+  "source_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970",
+  "code_sha256": "a7891026c5449f454425cf17a5200bf2711a183f3f1bf0a26e3dbdacab06e915",
+  "config_sha256_byte": "e7798e51e319685ebc705c383b113ecb3f6771169ae8528512c0657774858117",
+  "config_sha256_semantic": "7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2",
+  "historical_receipt_config_sha256": "e751d066fac83bb658a5793d2760ced3ab58abb76a02c095872ba152182b7298",
+  "config_semantic_equivalence": true,
+  "units": "INR/quintal",
+  "target_horizon_policy": "t+7 calendar days (matched 6-8 days in retrospective panel)",
+  "supported_models": [
+    "naive",
+    "ridge",
+    "hist_gradient_boosting"
+  ],
+  "supported_nominal_levels": [
+    0.9,
+    0.95
+  ],
+  "supported_nominal_level_strings": [
+    "0.90",
+    "0.95",
+    "0.9",
+    "0.95"
+  ],
+  "fold_scopes": {
+    "F1": {
+      "validity_start": "2025-01-08",
+      "validity_end": "2025-06-24",
+      "calibration_window": null,
+      "max_calibration_target_date": null,
+      "earlier_folds": [],
+      "status": "NO_CALIBRATION",
+      "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA"
+    },
+    "F2": {
+      "validity_start": "2025-07-08",
+      "validity_end": "2025-10-25",
+      "calibration_window": [
+        "2025-01-09",
+        "2025-07-07"
+      ],
+      "max_calibration_target_date": "2025-07-07",
+      "earlier_folds": [
+        "F1"
+      ],
+      "status": "CALIBRATED",
+      "reason": null
+    },
+    "F3": {
+      "validity_start": "2025-12-26",
+      "validity_end": "2026-03-25",
+      "calibration_window": [
+        "2025-06-29",
+        "2025-12-25"
+      ],
+      "max_calibration_target_date": "2025-12-25",
+      "earlier_folds": [
+        "F1",
+        "F2"
+      ],
+      "status": "CALIBRATED",
+      "reason": null
+    },
+    "F4": {
+      "validity_start": "2026-04-08",
+      "validity_end": "2026-09-24",
+      "calibration_window": [
+        "2025-10-10",
+        "2026-04-07"
+      ],
+      "max_calibration_target_date": "2026-04-07",
+      "earlier_folds": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "status": "CALIBRATED",
+      "reason": null
+    }
+  },
+  "quantiles": {
+    "F1": {
+      "naive": {
+        "status": "NO_CALIBRATION",
+        "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+        "calibration_window": null,
+        "total_calibration_rows": 0,
+        "quantiles": {}
+      },
+      "ridge": {
+        "status": "NO_CALIBRATION",
+        "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+        "calibration_window": null,
+        "total_calibration_rows": 0,
+        "quantiles": {}
+      },
+      "hist_gradient_boosting": {
+        "status": "NO_CALIBRATION",
+        "reason": "FIRST_OUTER_FOLD_NO_PRIOR_DATA",
+        "calibration_window": null,
+        "total_calibration_rows": 0,
+        "quantiles": {}
+      }
+    },
+    "F2": {
+      "naive": {
+        "status": "CALIBRATED",
+        "fold_id": "F2",
+        "fold_start_date": "2025-07-08",
+        "calibration_window": [
+          "2025-01-09",
+          "2025-07-07"
+        ],
+        "earlier_folds": [
+          "F1"
+        ],
+        "total_calibration_rows": 37858,
+        "total_calibration_series": 359,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.1111111111111111,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 34074
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.045,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1388
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.02418207681365576,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1006
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.2,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 520
+              },
+              "Bottle gourd": {
+                "quantile": 0.14285714285714285,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1427
+              },
+              "Brinjal": {
+                "quantile": 0.1111111111111111,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1459
+              },
+              "Cauliflower": {
+                "quantile": 0.21212121212121213,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 816
+              },
+              "Green Chilli": {
+                "quantile": 0.1125,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1351
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.024691358024691357,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 918
+              },
+              "Onion": {
+                "quantile": 0.14772727272727273,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1869
+              },
+              "Potato": {
+                "quantile": 0.11428571428571428,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 1975
+              },
+              "Pumpkin": {
+                "quantile": 0.13249211356466878,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1098
+              },
+              "Rice": {
+                "quantile": 0.021352313167259787,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1314
+              },
+              "Tomato": {
+                "quantile": 0.2962962962962963,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1820
+              },
+              "Wheat": {
+                "quantile": 0.03889627659574468,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1485
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.1686746987951807,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 35967
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.06912442396313365,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1465
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.029508196721311476,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1062
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.2631578947368421,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 549
+              },
+              "Bottle gourd": {
+                "quantile": 0.18604651162790697,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1506
+              },
+              "Brinjal": {
+                "quantile": 0.16206896551724137,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1540
+              },
+              "Cauliflower": {
+                "quantile": 0.2682926829268293,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 861
+              },
+              "Green Chilli": {
+                "quantile": 0.15384615384615385,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1426
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.031746031746031744,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 969
+              },
+              "Onion": {
+                "quantile": 0.17857142857142858,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1973
+              },
+              "Potato": {
+                "quantile": 0.16666666666666666,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 2085
+              },
+              "Pumpkin": {
+                "quantile": 0.20833333333333334,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1159
+              },
+              "Rice": {
+                "quantile": 0.045816733067729085,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1387
+              },
+              "Tomato": {
+                "quantile": 0.38768115942028986,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1921
+              },
+              "Wheat": {
+                "quantile": 0.057692307692307696,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1568
+              }
+            }
+          }
+        }
+      },
+      "ridge": {
+        "status": "CALIBRATED",
+        "fold_id": "F2",
+        "fold_start_date": "2025-07-08",
+        "calibration_window": [
+          "2025-01-09",
+          "2025-07-07"
+        ],
+        "earlier_folds": [
+          "F1"
+        ],
+        "total_calibration_rows": 37858,
+        "total_calibration_series": 359,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.10785176457449552,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 34074
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.04307589261293782,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1388
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.02462122023099499,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1006
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.1926358862385161,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 520
+              },
+              "Bottle gourd": {
+                "quantile": 0.1461168214138466,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1427
+              },
+              "Brinjal": {
+                "quantile": 0.11496820225189822,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1459
+              },
+              "Cauliflower": {
+                "quantile": 0.2015941030189015,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 816
+              },
+              "Green Chilli": {
+                "quantile": 0.11667635081750967,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1351
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.024777758253787054,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 918
+              },
+              "Onion": {
+                "quantile": 0.1434837403738344,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1869
+              },
+              "Potato": {
+                "quantile": 0.11094580033337025,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 1975
+              },
+              "Pumpkin": {
+                "quantile": 0.13684291287049796,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1098
+              },
+              "Rice": {
+                "quantile": 0.03638798938698955,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1314
+              },
+              "Tomato": {
+                "quantile": 0.27537261412724495,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1820
+              },
+              "Wheat": {
+                "quantile": 0.03899171194414453,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1485
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.16480877031737398,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 35967
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.06824024389303376,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1465
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.03205483567706311,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1062
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.26007153307964415,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 549
+              },
+              "Bottle gourd": {
+                "quantile": 0.1935979091823989,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1506
+              },
+              "Brinjal": {
+                "quantile": 0.16340022840961116,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1540
+              },
+              "Cauliflower": {
+                "quantile": 0.26347688070858283,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 861
+              },
+              "Green Chilli": {
+                "quantile": 0.1604868534160076,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1426
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.03472804147306642,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 969
+              },
+              "Onion": {
+                "quantile": 0.17364738238961774,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1973
+              },
+              "Potato": {
+                "quantile": 0.16976809271554338,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 2085
+              },
+              "Pumpkin": {
+                "quantile": 0.19544269349516916,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1159
+              },
+              "Rice": {
+                "quantile": 0.059036720522922526,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1387
+              },
+              "Tomato": {
+                "quantile": 0.36037744593972204,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1921
+              },
+              "Wheat": {
+                "quantile": 0.06128339464087793,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1568
+              }
+            }
+          }
+        }
+      },
+      "hist_gradient_boosting": {
+        "status": "CALIBRATED",
+        "fold_id": "F2",
+        "fold_start_date": "2025-07-08",
+        "calibration_window": [
+          "2025-01-09",
+          "2025-07-07"
+        ],
+        "earlier_folds": [
+          "F1"
+        ],
+        "total_calibration_rows": 37858,
+        "total_calibration_series": 359,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.11560749852997532,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 34074
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.04358830140224827,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1388
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.026074547818352584,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1006
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.18188506465111146,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 520
+              },
+              "Bottle gourd": {
+                "quantile": 0.15572696099431083,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1427
+              },
+              "Brinjal": {
+                "quantile": 0.12185343092650902,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1459
+              },
+              "Cauliflower": {
+                "quantile": 0.20930971310285978,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 816
+              },
+              "Green Chilli": {
+                "quantile": 0.11230174612021725,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1351
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.02481074017650228,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 918
+              },
+              "Onion": {
+                "quantile": 0.14335579474728088,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1869
+              },
+              "Potato": {
+                "quantile": 0.11944030168696948,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 1975
+              },
+              "Pumpkin": {
+                "quantile": 0.15342051887467503,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1098
+              },
+              "Rice": {
+                "quantile": 0.02648937054317857,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1314
+              },
+              "Tomato": {
+                "quantile": 0.273763180648911,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1820
+              },
+              "Wheat": {
+                "quantile": 0.04110040401123396,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1485
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.17018072883243765,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 37858,
+              "series_count": 359,
+              "k_rank": 35967
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.06349876426945085,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1541,
+                "series_count": 13,
+                "k_rank": 1465
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.03235551493194481,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1116,
+                "series_count": 12,
+                "k_rank": 1062
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.26897536703088126,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 576,
+                "series_count": 11,
+                "k_rank": 549
+              },
+              "Bottle gourd": {
+                "quantile": 0.21400958142475154,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1584,
+                "series_count": 13,
+                "k_rank": 1506
+              },
+              "Brinjal": {
+                "quantile": 0.17358038637313858,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1620,
+                "series_count": 13,
+                "k_rank": 1540
+              },
+              "Cauliflower": {
+                "quantile": 0.2678190506221314,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 905,
+                "series_count": 10,
+                "k_rank": 861
+              },
+              "Green Chilli": {
+                "quantile": 0.1555577307021895,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1500,
+                "series_count": 13,
+                "k_rank": 1426
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.033278523153730075,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1018,
+                "series_count": 10,
+                "k_rank": 969
+              },
+              "Onion": {
+                "quantile": 0.17306362476232237,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2075,
+                "series_count": 16,
+                "k_rank": 1973
+              },
+              "Potato": {
+                "quantile": 0.16418487162440948,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2193,
+                "series_count": 17,
+                "k_rank": 2085
+              },
+              "Pumpkin": {
+                "quantile": 0.23680533289540232,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1219,
+                "series_count": 11,
+                "k_rank": 1159
+              },
+              "Rice": {
+                "quantile": 0.047398981626026515,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1459,
+                "series_count": 13,
+                "k_rank": 1387
+              },
+              "Tomato": {
+                "quantile": 0.3422937415185212,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 2021,
+                "series_count": 17,
+                "k_rank": 1921
+              },
+              "Wheat": {
+                "quantile": 0.06033589480044045,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1649,
+                "series_count": 15,
+                "k_rank": 1568
+              }
+            }
+          }
+        }
+      }
+    },
+    "F3": {
+      "naive": {
+        "status": "CALIBRATED",
+        "fold_id": "F3",
+        "fold_start_date": "2025-12-26",
+        "calibration_window": [
+          "2025-06-29",
+          "2025-12-25"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2"
+        ],
+        "total_calibration_rows": 23920,
+        "total_calibration_series": 354,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.09411764705882353,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 21529
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.12105263157894737,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 833
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.022900763358778626,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 738
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.14634146341463414,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 726
+              },
+              "Bottle gourd": {
+                "quantile": 0.18181818181818182,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 861
+              },
+              "Brinjal": {
+                "quantile": 0.13705583756345177,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 863
+              },
+              "Ginger(Green)": {
+                "quantile": 0.07142857142857142,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 739
+              },
+              "Green Chilli": {
+                "quantile": 0.20224719101123595,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 774
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.014084507042253521,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 658
+              },
+              "Onion": {
+                "quantile": 0.051470588235294115,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1261
+              },
+              "Potato": {
+                "quantile": 0.088,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1224
+              },
+              "Pumpkin": {
+                "quantile": 0.14583333333333334,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 738
+              },
+              "Rice": {
+                "quantile": 0.025806451612903226,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 829
+              },
+              "Tomato": {
+                "quantile": 0.20833333333333334,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 899
+              },
+              "Wheat": {
+                "quantile": 0.015267175572519083,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1082
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.14754098360655737,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 22725
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.16666666666666666,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 879
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.02905982905982906,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 779
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.2,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 766
+              },
+              "Bottle gourd": {
+                "quantile": 0.2535211267605634,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 909
+              },
+              "Brinjal": {
+                "quantile": 0.18181818181818182,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 911
+              },
+              "Ginger(Green)": {
+                "quantile": 0.11538461538461539,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 780
+              },
+              "Green Chilli": {
+                "quantile": 0.32786885245901637,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 817
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.023809523809523808,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 695
+              },
+              "Onion": {
+                "quantile": 0.07042253521126761,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1331
+              },
+              "Potato": {
+                "quantile": 0.11666666666666667,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1292
+              },
+              "Pumpkin": {
+                "quantile": 0.20689655172413793,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 779
+              },
+              "Rice": {
+                "quantile": 0.05572755417956656,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 875
+              },
+              "Tomato": {
+                "quantile": 0.2847222222222222,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 949
+              },
+              "Wheat": {
+                "quantile": 0.019762845849802372,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1142
+              }
+            }
+          }
+        }
+      },
+      "ridge": {
+        "status": "CALIBRATED",
+        "fold_id": "F3",
+        "fold_start_date": "2025-12-26",
+        "calibration_window": [
+          "2025-06-29",
+          "2025-12-25"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2"
+        ],
+        "total_calibration_rows": 23920,
+        "total_calibration_series": 354,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.09629144703301297,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 21529
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.11696864046899773,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 833
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.0246232785203559,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 738
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.14340849117161916,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 726
+              },
+              "Bottle gourd": {
+                "quantile": 0.18405902571683516,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 861
+              },
+              "Brinjal": {
+                "quantile": 0.13218246334294304,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 863
+              },
+              "Ginger(Green)": {
+                "quantile": 0.07712201869345303,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 739
+              },
+              "Green Chilli": {
+                "quantile": 0.20582347285823663,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 774
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.018309815703051065,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 658
+              },
+              "Onion": {
+                "quantile": 0.0682791300172791,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1261
+              },
+              "Potato": {
+                "quantile": 0.10208031944231495,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1224
+              },
+              "Pumpkin": {
+                "quantile": 0.15142717849930212,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 738
+              },
+              "Rice": {
+                "quantile": 0.027697618681209246,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 829
+              },
+              "Tomato": {
+                "quantile": 0.20221092190947373,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 899
+              },
+              "Wheat": {
+                "quantile": 0.01891361762655557,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1082
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.14713676035105877,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 22725
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.16533229914100042,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 879
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.03023102698259062,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 779
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.19199347711797243,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 766
+              },
+              "Bottle gourd": {
+                "quantile": 0.2616501545973335,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 909
+              },
+              "Brinjal": {
+                "quantile": 0.18410551667505573,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 911
+              },
+              "Ginger(Green)": {
+                "quantile": 0.11922394805788623,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 780
+              },
+              "Green Chilli": {
+                "quantile": 0.33524726829218116,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 817
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.022519417225783607,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 695
+              },
+              "Onion": {
+                "quantile": 0.09468664794451699,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1331
+              },
+              "Potato": {
+                "quantile": 0.13534713165175724,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1292
+              },
+              "Pumpkin": {
+                "quantile": 0.20466931736484156,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 779
+              },
+              "Rice": {
+                "quantile": 0.07001309693279784,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 875
+              },
+              "Tomato": {
+                "quantile": 0.27799160449995386,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 949
+              },
+              "Wheat": {
+                "quantile": 0.023251262127118127,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1142
+              }
+            }
+          }
+        }
+      },
+      "hist_gradient_boosting": {
+        "status": "CALIBRATED",
+        "fold_id": "F3",
+        "fold_start_date": "2025-12-26",
+        "calibration_window": [
+          "2025-06-29",
+          "2025-12-25"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2"
+        ],
+        "total_calibration_rows": 23920,
+        "total_calibration_series": 354,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.09743193121926334,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 21529
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.12794967350286762,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 833
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.02275876736424419,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 738
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.14599239876226236,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 726
+              },
+              "Bottle gourd": {
+                "quantile": 0.1885433309492012,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 861
+              },
+              "Brinjal": {
+                "quantile": 0.13637543735887425,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 863
+              },
+              "Ginger(Green)": {
+                "quantile": 0.07035716330452166,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 739
+              },
+              "Green Chilli": {
+                "quantile": 0.1926178467211696,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 774
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.01631939505820064,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 658
+              },
+              "Onion": {
+                "quantile": 0.07029325452640425,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1261
+              },
+              "Potato": {
+                "quantile": 0.11114562598025952,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1224
+              },
+              "Pumpkin": {
+                "quantile": 0.1438854281817503,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 738
+              },
+              "Rice": {
+                "quantile": 0.02954750773957762,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 829
+              },
+              "Tomato": {
+                "quantile": 0.20003636030313005,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 899
+              },
+              "Wheat": {
+                "quantile": 0.016312346631614866,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1082
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.1457075086044792,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 23920,
+              "series_count": 354,
+              "k_rank": 22725
+            },
+            "by_commodity": {
+              "Apple": {
+                "quantile": 0.16798476725198377,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 924,
+                "series_count": 12,
+                "k_rank": 879
+              },
+              "Bengal Gram(Gram)(Whole)": {
+                "quantile": 0.029626869795783092,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 819,
+                "series_count": 13,
+                "k_rank": 779
+              },
+              "Bhindi(Ladies Finger)": {
+                "quantile": 0.19403061863910323,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 805,
+                "series_count": 11,
+                "k_rank": 766
+              },
+              "Bottle gourd": {
+                "quantile": 0.26460306735314637,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 955,
+                "series_count": 13,
+                "k_rank": 909
+              },
+              "Brinjal": {
+                "quantile": 0.17372930180930715,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 957,
+                "series_count": 13,
+                "k_rank": 911
+              },
+              "Ginger(Green)": {
+                "quantile": 0.1068032677406858,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 820,
+                "series_count": 10,
+                "k_rank": 780
+              },
+              "Green Chilli": {
+                "quantile": 0.31676548426952444,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 859,
+                "series_count": 13,
+                "k_rank": 817
+              },
+              "Gur(Jaggery)": {
+                "quantile": 0.023514947668201624,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 730,
+                "series_count": 10,
+                "k_rank": 695
+              },
+              "Onion": {
+                "quantile": 0.09332410110665262,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1400,
+                "series_count": 19,
+                "k_rank": 1331
+              },
+              "Potato": {
+                "quantile": 0.13751815021969632,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1358,
+                "series_count": 18,
+                "k_rank": 1292
+              },
+              "Pumpkin": {
+                "quantile": 0.18909440144893436,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 818,
+                "series_count": 11,
+                "k_rank": 779
+              },
+              "Rice": {
+                "quantile": 0.06633240047210819,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 920,
+                "series_count": 13,
+                "k_rank": 875
+              },
+              "Tomato": {
+                "quantile": 0.29774836849021213,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 997,
+                "series_count": 17,
+                "k_rank": 949
+              },
+              "Wheat": {
+                "quantile": 0.021842941800303762,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 1201,
+                "series_count": 17,
+                "k_rank": 1142
+              }
+            }
+          }
+        }
+      }
+    },
+    "F4": {
+      "naive": {
+        "status": "CALIBRATED",
+        "fold_id": "F4",
+        "fold_start_date": "2026-04-08",
+        "calibration_window": [
+          "2025-10-10",
+          "2026-04-07"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "total_calibration_rows": 5445,
+        "total_calibration_series": 325,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.1032258064516129,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 4902
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.1522633744855967,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 199
+              },
+              "Brinjal": {
+                "quantile": 0.14534883720930233,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 216
+              },
+              "Ginger(Green)": {
+                "quantile": 0.09428571428571429,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 194
+              },
+              "Green Chilli": {
+                "quantile": 0.10714285714285714,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 198
+              },
+              "Onion": {
+                "quantile": 0.047619047619047616,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 223
+              },
+              "Potato": {
+                "quantile": 0.14,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 294
+              },
+              "Pumpkin": {
+                "quantile": 0.11538461538461539,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 182
+              },
+              "Rice": {
+                "quantile": 0.03939544513457552,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 194
+              },
+              "Tomato": {
+                "quantile": 0.14130434782608695,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 183
+              },
+              "Wheat": {
+                "quantile": 0.029686864579097194,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 423
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.16444444444444445,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 5174
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.25,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 210
+              },
+              "Brinjal": {
+                "quantile": 0.21951219512195122,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 228
+              },
+              "Ginger(Green)": {
+                "quantile": 0.2318840579710145,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 205
+              },
+              "Green Chilli": {
+                "quantile": 0.13636363636363635,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 209
+              },
+              "Onion": {
+                "quantile": 0.07317073170731707,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 235
+              },
+              "Potato": {
+                "quantile": 0.20454545454545456,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 310
+              },
+              "Pumpkin": {
+                "quantile": 0.1824561403508772,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 192
+              },
+              "Rice": {
+                "quantile": 0.08514559528197567,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 205
+              },
+              "Tomato": {
+                "quantile": 0.17222222222222222,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 193
+              },
+              "Wheat": {
+                "quantile": 0.05703125,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 447
+              }
+            }
+          }
+        }
+      },
+      "ridge": {
+        "status": "CALIBRATED",
+        "fold_id": "F4",
+        "fold_start_date": "2026-04-08",
+        "calibration_window": [
+          "2025-10-10",
+          "2026-04-07"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "total_calibration_rows": 5445,
+        "total_calibration_series": 325,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.10530990983992523,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 4902
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.13654910357934325,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 199
+              },
+              "Brinjal": {
+                "quantile": 0.13445505751413156,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 216
+              },
+              "Ginger(Green)": {
+                "quantile": 0.0975417805406586,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 194
+              },
+              "Green Chilli": {
+                "quantile": 0.11047793884586696,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 198
+              },
+              "Onion": {
+                "quantile": 0.05148055366853125,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 223
+              },
+              "Potato": {
+                "quantile": 0.12135575107128234,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 294
+              },
+              "Pumpkin": {
+                "quantile": 0.11422011892112799,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 182
+              },
+              "Rice": {
+                "quantile": 0.04025797007747898,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 194
+              },
+              "Tomato": {
+                "quantile": 0.14939368447248894,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 183
+              },
+              "Wheat": {
+                "quantile": 0.03357699902915413,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 423
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.16447473123378412,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 5174
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.22779585293906565,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 210
+              },
+              "Brinjal": {
+                "quantile": 0.19984486537556967,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 228
+              },
+              "Ginger(Green)": {
+                "quantile": 0.22560989186342165,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 205
+              },
+              "Green Chilli": {
+                "quantile": 0.13054542541806388,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 209
+              },
+              "Onion": {
+                "quantile": 0.09739890001660721,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 235
+              },
+              "Potato": {
+                "quantile": 0.20867986309221617,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 310
+              },
+              "Pumpkin": {
+                "quantile": 0.19145023842818373,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 192
+              },
+              "Rice": {
+                "quantile": 0.07429580276706578,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 205
+              },
+              "Tomato": {
+                "quantile": 0.17498271728715734,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 193
+              },
+              "Wheat": {
+                "quantile": 0.05353977076548469,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 447
+              }
+            }
+          }
+        }
+      },
+      "hist_gradient_boosting": {
+        "status": "CALIBRATED",
+        "fold_id": "F4",
+        "fold_start_date": "2026-04-08",
+        "calibration_window": [
+          "2025-10-10",
+          "2026-04-07"
+        ],
+        "earlier_folds": [
+          "F1",
+          "F2",
+          "F3"
+        ],
+        "total_calibration_rows": 5445,
+        "total_calibration_series": 325,
+        "quantiles": {
+          "0.9": {
+            "pooled": {
+              "quantile": 0.10430438212442651,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 4902
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.14340237339228662,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 199
+              },
+              "Brinjal": {
+                "quantile": 0.13444944954888796,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 216
+              },
+              "Ginger(Green)": {
+                "quantile": 0.09116644340445614,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 194
+              },
+              "Green Chilli": {
+                "quantile": 0.10973930946441304,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 198
+              },
+              "Onion": {
+                "quantile": 0.06269237091097983,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 223
+              },
+              "Potato": {
+                "quantile": 0.1381278187135652,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 294
+              },
+              "Pumpkin": {
+                "quantile": 0.10436953919872363,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 182
+              },
+              "Rice": {
+                "quantile": 0.03767471295377688,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 194
+              },
+              "Tomato": {
+                "quantile": 0.14505783481467086,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 183
+              },
+              "Wheat": {
+                "quantile": 0.03252747332883854,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 423
+              }
+            }
+          },
+          "0.95": {
+            "pooled": {
+              "quantile": 0.16066521136119066,
+              "group_type": "POOLED_FALLBACK",
+              "n_calibration": 5445,
+              "series_count": 325,
+              "k_rank": 5174
+            },
+            "by_commodity": {
+              "Bottle gourd": {
+                "quantile": 0.23016429871759186,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 220,
+                "series_count": 12,
+                "k_rank": 210
+              },
+              "Brinjal": {
+                "quantile": 0.2060046757466451,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 239,
+                "series_count": 12,
+                "k_rank": 228
+              },
+              "Ginger(Green)": {
+                "quantile": 0.22883959296839793,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 10,
+                "k_rank": 205
+              },
+              "Green Chilli": {
+                "quantile": 0.13581977322096506,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 218,
+                "series_count": 11,
+                "k_rank": 209
+              },
+              "Onion": {
+                "quantile": 0.08695689249946031,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 246,
+                "series_count": 17,
+                "k_rank": 235
+              },
+              "Potato": {
+                "quantile": 0.19185793412367716,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 325,
+                "series_count": 17,
+                "k_rank": 310
+              },
+              "Pumpkin": {
+                "quantile": 0.17077927476205326,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 201,
+                "series_count": 10,
+                "k_rank": 192
+              },
+              "Rice": {
+                "quantile": 0.08632669678024359,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 214,
+                "series_count": 13,
+                "k_rank": 205
+              },
+              "Tomato": {
+                "quantile": 0.175268506129092,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 202,
+                "series_count": 12,
+                "k_rank": 193
+              },
+              "Wheat": {
+                "quantile": 0.05574862295416406,
+                "group_type": "EXACT_COMMODITY",
+                "n_calibration": 469,
+                "series_count": 19,
+                "k_rank": 447
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "assertions_verified": [
+    "zero_leakage_future_outcomes_not_used",
+    "strictly_earlier_folds_in_calibration",
+    "max_calibration_target_strictly_before_eval_origin",
+    "exact_conformal_rank_no_rounding",
+    "non_negative_support_clipping",
+    "series_cluster_bootstrap_resampled"
+  ],
+  "limitations": [
+    "Chronological empirical calibration without exchangeability guarantee.",
+    "Regime shifts and market volatility produce lower coverage during crisis folds (F3/F4).",
+    "F3 naive 90% coverage is 75.94%, F4 naive 90% coverage is 72.26%.",
+    "Pooled near-nominal coverage does not establish recent conditional coverage.",
+    "Crisis volatility and buffer-reuse are unverified hypotheses, not proven causal mechanisms.",
+    "Retrospective research artifacts cannot authorize current live farmer advisory."
+  ]
+}

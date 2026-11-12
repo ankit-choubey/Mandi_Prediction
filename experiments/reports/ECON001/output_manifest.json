@@ -1,0 +1,47 @@
+{
+  "manifest": [
+    {
+      "filename": "capability_gate_matrix.json",
+      "relpath": "experiments/reports/ECON001/capability_gate_matrix.json",
+      "path": "experiments/reports/ECON001/capability_gate_matrix.json",
+      "size_bytes": 1931,
+      "sha256": "c0d5a080808f108cbb1f69189550d0663bd62807680af4293a2f63451c402921"
+    },
+    {
+      "filename": "cost_provenance_inventory.json",
+      "relpath": "experiments/reports/ECON001/cost_provenance_inventory.json",
+      "path": "experiments/reports/ECON001/cost_provenance_inventory.json",
+      "size_bytes": 2536,
+      "sha256": "b2950437d681c9bc35e5405eb2ac6fd5cc35a3a6561f68d7fdae8ef2fb669391"
+    },
+    {
+      "filename": "equation_reconciliation_receipt.json",
+      "relpath": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
+      "path": "experiments/reports/ECON001/equation_reconciliation_receipt.json",
+      "size_bytes": 2259,
+      "sha256": "f0e44f27758f43cd7286ca29c0060b49b3eb0ba70224333d3e108acb8e1ca04a"
+    },
+    {
+      "filename": "fixture_verification_table.csv",
+      "relpath": "experiments/reports/ECON001/fixture_verification_table.csv",
+      "path": "experiments/reports/ECON001/fixture_verification_table.csv",
+      "size_bytes": 1236,
+      "sha256": "44d47c8e4a217a64f225b3626d0d44ac50ff81e8532f27a68ab4ca07481bc4b5"
+    },
+    {
+      "filename": "missing_input_audit.json",
+      "relpath": "experiments/reports/ECON001/missing_input_audit.json",
+      "path": "experiments/reports/ECON001/missing_input_audit.json",
+      "size_bytes": 1400,
+      "sha256": "8f796cc811087f9b943194a4e7ac7ec2cfd3d175b82c0574cae00a0691bccd15"
+    },
+    {
+      "filename": "requirement_vs_achieved.json",
+      "relpath": "experiments/reports/ECON001/requirement_vs_achieved.json",
+      "path": "experiments/reports/ECON001/requirement_vs_achieved.json",
+      "size_bytes": 4355,
+      "sha256": "0bff79504fd63e9ac3173c87a8bb09be1d354efcd08aaf9433dc803663aad52e"
+    }
+  ],
+  "source_archive_sha256": "a61b38328e011b2ed75dd5d814fbf697d624ac948c50a198d374bfcaff2b9970"
+}

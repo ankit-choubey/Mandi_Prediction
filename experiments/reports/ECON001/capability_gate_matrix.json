@@ -1,0 +1,41 @@
+{
+  "task_id": "MP-ECON-001",
+  "capabilities": [
+    {
+      "capability_name": "retrospective_research_economics",
+      "description": "Pure mathematical sell-versus-hold calculation on explicit user/research parameters.",
+      "authorization": "AUTHORIZED",
+      "operational_status": "RESEARCH_ONLY",
+      "advisory_action": "BLOCKED",
+      "live_advisory_allowed": false,
+      "gating_rule": "Requires explicit parameters. Returns conditional arithmetic only."
+    },
+    {
+      "capability_name": "affine_uncertainty_interval_propagation",
+      "description": "Monotonic transformation of prediction interval bounds [lower, upper] to holding benefit bounds.",
+      "authorization": "AUTHORIZED",
+      "operational_status": "RESEARCH_ONLY",
+      "advisory_action": "BLOCKED",
+      "live_advisory_allowed": false,
+      "gating_rule": "Bounds represent conditional range under fixed costs, NOT profitability probability."
+    },
+    {
+      "capability_name": "live_farmer_advisory_recommendation",
+      "description": "Actionable SELL/STORE advisory for farmers.",
+      "authorization": "BLOCKED",
+      "operational_status": "ADVICE_BLOCKED",
+      "advisory_action": "BLOCKED",
+      "live_advisory_allowed": false,
+      "gating_rule": "Hard blocked: commercial cost profiles unverified, recent interval coverage undercovered (72-76%), no prospective randomized trial."
+    },
+    {
+      "capability_name": "empirical_backtest_on_forecast_archive",
+      "description": "Empirical backtest of policy win rates / economic uplift on historical predictions archive.",
+      "authorization": "BLOCKED_MISSING_DATA",
+      "operational_status": "NOT_EVALUATED_NO_APPROVED_COST_PROFILE",
+      "advisory_action": "BLOCKED",
+      "live_advisory_allowed": false,
+      "gating_rule": "Requires verified commercial tariff feed. No synthetic operational feed generation without owner proposal & approval."
+    }
+  ]
+}

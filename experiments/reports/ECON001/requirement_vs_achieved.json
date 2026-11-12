@@ -1,0 +1,71 @@
+{
+  "task_id": "MP-ECON-001",
+  "review_date": "2026-11-13",
+  "requirements_matrix": [
+    {
+      "requirement_id": "A.1_JSON_LEVEL_NORMALIZATION",
+      "specification": "Fix predict_interval JSON load defect where float 0.90 / 0.95 fails against JSON string keys",
+      "achieved_status": "PASSED",
+      "observed_evidence": "predict_interval passes for 0.9, 0.90, 0.95, \"0.9\", \"0.90\", \"0.95\", \"90%\"; pre-export vs post-load bounds match to machine precision (<1e-9)",
+      "difference": "0.0",
+      "limitations": "Retrospective artifacts remain RESEARCH_ONLY"
+    },
+    {
+      "requirement_id": "A.2_CALIBRATION_ENVELOPE",
+      "specification": "Versioned calibration envelope artifact and validated loading boundary",
+      "achieved_status": "PASSED",
+      "observed_evidence": "calibration_envelope_v1.json created and verified by validate_and_load_calibration_envelope(); validates models, units, scopes, quantiles, and research status",
+      "difference": "0.0",
+      "limitations": "F3/F4 undercoverage disclosed prominently (F3=75.9%, F4=72.3%)"
+    },
+    {
+      "requirement_id": "A.3_MANIFEST_SELF_HASH_EXCLUSION",
+      "specification": "Exclude output_manifest.json from manifest itself; idempotent double generation",
+      "achieved_status": "PASSED",
+      "observed_evidence": "FC008 manifest (9 files) and FC007_VERIFIED manifest (10 files) exclude output_manifest.json; verified 100% against actual disk bytes; 2nd generation identical",
+      "difference": "0.0",
+      "limitations": "None"
+    },
+    {
+      "requirement_id": "A.4_CONFIG_SEMANTIC_EQUIVALENCE",
+      "specification": "Determine semantic equivalence between working config (e7798...) and run receipt (e751d...)",
+      "achieved_status": "PASSED",
+      "observed_evidence": "Both byte sequences produce identical semantic SHA-256 (7ddfa98408ff55bd6ec843c292247176f17851973cbaa8f47d6057b563005ac2); recorded in envelope and receipts",
+      "difference": "0.0 (byte diff is single trailing newline)",
+      "limitations": "Byte hash differed historically due to EOF newline; semantic identity proven"
+    },
+    {
+      "requirement_id": "A.5_RESOURCE_COMPLIANCE_MEASUREMENT",
+      "specification": "Measure and enforce actual RSS/elapsed reporting; exclude unsupported past claims",
+      "achieved_status": "PASSED",
+      "observed_evidence": "Cross-platform get_peak_rss_mb() implemented; FC008 measured peak RSS ~17 MB on macOS (well within 512 MB limit); runtime ~0.63s (<10s limit)",
+      "difference": "Compliant",
+      "limitations": "Buffer reuse and crisis volatility marked UNVERIFIED_HYPOTHESIS"
+    },
+    {
+      "requirement_id": "B_CANONICAL_ACCOUNTING_RECONCILIATION",
+      "specification": "Reconcile R_sell, R_hold, delta, Delta_R, p_break_even with existing model",
+      "achieved_status": "PASSED",
+      "observed_evidence": "calculate_canonical_accounting asserts |R_hold - R_sell - Delta_R| < 1e-7 and |delta(p_be)| < 1e-7 on 1000 randomized test cases",
+      "difference": "0.0",
+      "limitations": "Carrying cost represents financing OR opportunity, never both; physical loss separate from quality discount"
+    },
+    {
+      "requirement_id": "C_AFFINE_BOUND_PROPAGATION_AND_GATING",
+      "specification": "Monotonic affine transformation of lower/point/upper prices; strict advisory gating",
+      "achieved_status": "PASSED",
+      "observed_evidence": "evaluate_research_economics transforms bounds monotonically; break_even_relation classified; advisory_action strictly BLOCKED; positive lower bound cannot authorize live advice",
+      "difference": "0.0",
+      "limitations": "Conditional ranges under fixed costs, not profitability guarantee"
+    },
+    {
+      "requirement_id": "D_PROVENANCE_AND_COMMERCIAL_EVALUATION",
+      "specification": "Inventory reference files; record NOT_EVALUATED_NO_APPROVED_COST_PROFILE; no unapproved synthetic feed generation",
+      "achieved_status": "PASSED",
+      "observed_evidence": "cost_provenance_inventory.json and missing_input_audit.json record 0/22 local quotes; NOT_EVALUATED_NO_APPROVED_COST_PROFILE recorded; zero synthetic data generated",
+      "difference": "0.0",
+      "limitations": "Empirical economics backtest withheld due to missing commercial tariff data"
+    }
+  ],
+  "acceptance_decision": "ALL_PART_A_B_C_D_REQUIREMENTS_ACHIEVED"
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "MP-ECON-001",
+  "audit_scope": "Focus Mandis across 5 target districts (Ghaziabad, Jhansi, Kanpur, Lucknow, Unnao)",
+  "total_facilities_in_directory": 22,
+  "commercial_quotations_received": 0,
+  "commercial_tariff_coverage_pct": 0.0,
+  "missing_input_summary": {
+    "commercial_storage_tariff": {
+      "status": "MISSING_ALL_FACILITIES",
+      "denominator": 22,
+      "missing_count": 22,
+      "observed_count": 0,
+      "source_note": "All 22 entries in data/raw/storage/local_warehouse_quotations.csv marked Not published online - call facility"
+    },
+    "farmgate_to_storage_transport_tariff": {
+      "status": "MISSING_NO_FEED",
+      "source_note": "No per-quintal local freight rate feed available"
+    },
+    "handling_and_porterage_tariff": {
+      "status": "MISSING_NO_FEED",
+      "source_note": "No verified mandi-specific unloading/porterage cost table"
+    },
+    "physical_and_quality_loss_rates": {
+      "status": "REFERENCE_RANGES_ONLY",
+      "source_note": "MoFPI/NABCONS 2022 and ICAR-CIPHET 2015 provide national crop-level aggregate ranges, not mandi-specific weekly measurements"
+    }
+  },
+  "evaluation_decision": "NOT_EVALUATED_NO_APPROVED_COST_PROFILE",
+  "conclusion": "Empirical backtest cannot be scored honestly without fabricating synthetic cost feeds. Synthetic scenario generation is withheld pending explicit user proposal and approval."
+}
