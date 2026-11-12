@@ -274,33 +274,55 @@ evaluates unweighted harmonic mean across all three classes. A trivial Always-No
 
 ## 8. Data Reconciliation & Unit Ingestion Standards
 
-### 8.1 Partition Accounting Identity
-Every ingestion pipeline in this repository must enforce mathematical conservation of rows. For every individual input file and aggregated across the collection:
-$$\text{rows\_in} = \text{rows\_out} + \text{duplicates\_removed} + \text{rejected}$$
+### 8.1 Partition Accounting Identity (with Cross-File Conflicts)
+Every ingestion pipeline in this repository must enforce mathematical conservation of rows across within-file and cross-file transformations. For every individual input file and aggregated across the collection:
+$$\text{rows\_in} = \text{rows\_out} + \text{duplicates} + \text{conflicts} + \text{rejected}$$
 Where:
 * **$\text{rows\_in}$:** Total raw records parsed from the physical source file on disk.
-* **$\text{rows\_out}$:** Valid, standardized, and deduplicated records accepted into output partitions.
-* **$\text{duplicates\_removed}$:** Redundant identical rows eliminated during within-file deduplication.
-* **$\text{rejected}$:** Records excluded due to missing core identifiers (`District`, `Commodity`), completely blank records, or unparseable dates.
+* **$\text{rows\_out}$:** Clean, valid, standardized records accepted into published output partitions (`agmarknet_arrivals_up_consolidated.csv` and `{District}_{Commodity}.csv`).
+* **$\text{duplicates}$:** Redundant identical rows eliminated during within-file deduplication plus cross-file exact deduplication on the canonical series identity natural key:
+  $$\text{Natural Key} = (\text{District\_Std}, \text{Market}, \text{Commodity\_Std}, \text{Variety}, \text{Grade}, \text{Arrival\_Date})$$
+* **$\text{conflicts}$:** Rows sharing the exact same natural key but exhibiting differing quantities (`Arrivals_Raw`) or prices (`Min_Price`, `Max_Price`, `Modal_Price`). All conflicting rows are partitioned to `conflicts.csv` in `output_dir` (never summed, averaged, or arbitrarily selected).
+* **$\text{rejected}$:** Records excluded prior to merging, categorized by explicit primary rejection reason:
+  1. `missing_district`: Missing or blank district value (handled via pandas string dtype, preventing literal `"nan"` casts).
+  2. `missing_commodity`: Missing or blank commodity value.
+  3. `unparseable_date`: Date string failing explicit formats (`%d/%m/%Y`, `%d-%m-%Y`, `%Y-%m-%d`). Datetime/Timestamp cells are handled directly before string conversion.
+  4. `missing_quantity`: Missing or blank arrival quantity (price-only rows are rejected because they do not represent physical market arrivals).
 
-*Reconciliation Invariant:* Summary arithmetic alone is insufficient; pipeline runs must assert $\text{rows\_in} == \text{rows\_out} + \text{duplicates\_removed} + \text{rejected}$ at runtime and persist row-level reconciliation in `manifest.json`.
+*Independent Read-Back Reconciliation Check:* After writing outputs to disk, pipeline runs must re-read all written master CSVs, per-district-crop CSVs, and `conflicts.csv`, independently verifying that file row counts match $\text{rows\_out}$ and $\text{conflicts}$. Discrepancies raise explicit `ValueError` exceptions rather than suppressible runtime assertions.
 
 ### 8.2 Arrival Quantity & Unit Resolution Standard
 1. **Preservation of Raw Values:** The original raw numerical quantity is permanently stored in `Arrivals_Raw`.
-2. **Explicit Unit Categorization:** The detected source unit is stored in `Arrival_Unit_Source`:
-   * `'Tonnes'`: Derived from an explicit column header naming tonnes (e.g. `Arrivals (Tonnes)`) or an `Arrival_Unit` column explicitly indicating metric tonnes/MT.
-   * `'Quintals'`: Derived from an explicit column header naming quintals (e.g. `Arrivals (Qtl)`) or an `Arrival_Unit` column indicating quintals.
-   * `'UNVERIFIED'`: Assigned when source column is generic (`qty`, `arrivals`, `arrival quantity`) and no explicit unit column exists, or unit text is ambiguous.
+2. **Explicit Unit Categorization (Exact Set Matching Only):** The detected source unit is stored in `Arrival_Unit_Source`:
+   * `'Tonnes'`: Derived from an explicit column header naming tonnes (e.g. `Arrivals (Tonnes)`) or an `Arrival_Unit` column exactly matching the normalized set `{'tonne', 'tonnes', 'ton', 'tons', 'mt', 'metric tonne', 'metric tonnes'}`. Substring matching is strictly prohibited to prevent false positives (e.g. 'cotton').
+   * `'Quintals'`: Derived from an explicit column header naming quintals (e.g. `Arrivals (Qtl)`) or an `Arrival_Unit` column exactly matching `{'quintal', 'quintals', 'qtl', 'qtls'}`.
+   * `'UNVERIFIED'`: Assigned when source column is generic (`qty`, `arrivals`, `arrival quantity`) and no explicit unit column exists, or unit text falls outside recognized sets.
 3. **Standardized Tonnes Export:**
    * If `Arrival_Unit_Source == 'Tonnes'`: $\text{Arrivals\_Tonnes} = \text{Arrivals\_Raw}$.
    * If `Arrival_Unit_Source == 'Quintals'`: $\text{Arrivals\_Tonnes} = \text{Arrivals\_Raw} / 10.0$ ($1 \text{ Tonne} = 10 \text{ Quintals}$).
-   * If `Arrival_Unit_Source == 'UNVERIFIED'`: $\text{Arrivals\_Tonnes} = \text{NaN}$ (never guessed or mapped to tonnes without proof).
+   * If `Arrival_Unit_Source == 'UNVERIFIED'`: $\text{Arrivals\_Tonnes} = \text{NaN}$ (never guessed or mapped to tonnes without explicit documentation).
 
-### 8.3 Ingestion Task Scorecard
+### 8.3 Quality Defect Register (MP-DATA-002B)
 
-| Task ID | Component Audited / Refactored | Tests Added / Total Passing | Files Discovered / Excluded | Real-Data Dry-Run Rows (In / Out / Dups / Rej) | Units Verified (Tonnes / Qtl / Unverified) | Pipeline Status |
+| Defect # | Ingestion Defect Description | Remediation Implemented | Status |
+|---|---|---|---|
+| **D1** | `District`/`Commodity` `astype(str)` turns `NaN` into `"nan"` | Replaced with pandas string dtype (`"string"`); `NaN` preserved as `<NA>`; rejected with explicit reasons | **FIXED** |
+| **D2** | In-place title-casing alters source identities | `District_Raw`/`Commodity_Raw` preserved in source casing; `District_Std`/`Commodity_Std` mapped via explicit dictionary; unmapped tracked with `mapped=False` | **FIXED** |
+| **D3** | Cross-file duplicates and conflicting values unhandled | Natural key grouping detects exact cross-file duplicates (deduplicated) and differing quantity/price (partitioned to `conflicts.csv`) | **FIXED** |
+| **D4** | Monolithic rejection without reason attribution | Row classification emits exact counts for `missing_district`, `missing_commodity`, `unparseable_date`, and `missing_quantity` | **FIXED** |
+| **D5** | Missing independent disk reconciliation | Post-write verification re-reads master and per-pair files from disk, asserting row counts with explicit `ValueError` | **FIXED** |
+| **D6** | Excel date objects distorted by string casting | Datetime/Timestamp objects formatted directly via `.strftime('%Y-%m-%d')` before string conversion; openpyxl test flagged BLOCKED when missing | **FIXED (BLOCKED: openpyxl)** |
+| **D7** | Substring matching on unit strings falsely matches words like 'cotton' | Replaced with exact set membership (`TONNE_UNITS`, `QUINTAL_UNITS`); non-matches set to `UNVERIFIED` | **FIXED** |
+| **D8** | Duplicate source columns mapping to same alias cause silent dataframe duplicate columns | Alias collision detection raises `AliasCollisionError` and marks file as failed in `failed_files` | **FIXED** |
+| **D9** | Single input directory constraint and symlink path traversal risks | Accepted multiple `--input-dir` arguments; recorded per-file `source_dir` in manifest; path containment verified with `os.path.realpath` | **FIXED** |
+| **D10** | Disparate discovery logic and error swallowing in audit | Unified `discover_input_files()` function shared between audit and organize; `audit_arrivals_folder()` reports `failed_files` and `PARTIAL` status | **FIXED** |
+
+### 8.4 Ingestion Task Scorecard
+
+| Task ID | Component Audited / Refactored | Tests Added / Total Passing | Files Discovered / Excluded / Failed | Real-Data Dry-Run Rows (In / Out / Dups / Conflicts / Rej) | Units Verified (Tonnes / Qtl / Unverified) | Pipeline Status |
 |---|---|---|---|---|---|---|
-| **MP-DATA-002** | `src/ingest_agmarknet_arrivals.py` (Non-destructive arrivals) | 12 new / 133 passing (1 skipped) | 3 valid / 28 excluded | In: 481 / Out: 481 / Dups: 0 / Rej: 0 | Tonnes: 0 / Qtl: 0 / Unverified: 481 (CEDA files) | **VERIFIED & IMMUTABLE** |
+| **MP-DATA-002** | `src/ingest_agmarknet_arrivals.py` (Non-destructive arrivals) | 12 new / 133 passing (1 skipped) | 3 valid / 28 excluded / 0 failed | In: 481 / Out: 481 / Dups: 0 / Conflicts: 0 / Rej: 0 | Tonnes: 0 / Qtl: 0 / Unverified: 481 (CEDA files) | **VERIFIED & IMMUTABLE** |
+| **MP-DATA-002B** | `src/ingest_agmarknet_arrivals.py` (Quality & robustness fixes) | 5 new (17 total) / 138 passing (1 skipped: openpyxl BLOCKED) | 10 found (5 valid, 5 failed) / 28 excluded / 5 failed (xlsx openpyxl missing) | In: 1,690 / Out: 999 / Dups: 97 / Conflicts: 0 / Rej: 594 (missing_quantity) | Tonnes: 0 / Qtl: 0 / Unverified: 1,690 | **VERIFIED & DETERMINISTIC (PARTIAL)** |
 
 ---
 
