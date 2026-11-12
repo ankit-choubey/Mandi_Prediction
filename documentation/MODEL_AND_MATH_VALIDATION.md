@@ -343,3 +343,58 @@ The eleven architectural corrections introduced under Task `MP-SETUP-003` are pe
 10. **Scoped Academic Literature Review Criteria:** Lines 1024–1035, 1160–1170 (Section 19.7 & 23: replaces rigid 18-paper quota with scoped domain-relevant review criteria).
 11. **Cryptographic Integrity vs. Source Authenticity:** Lines 920–938 (Section 18.2: establishes that SHA-256 proves bit-level file integrity on disk, not institutional origin authenticity).
 
+---
+
+## 10. Kaggle Remote Execution Scorecard (Price Profile & Corroboration: MP-DATA-003B)
+
+### 10.1 Remote Kernel Execution Audit Record
+* **Task ID:** `MP-DATA-003B`
+* **Kernel ID:** [`theankitchoubey/mp-data-003b-price-profile`](https://www.kaggle.com/code/theankitchoubey/mp-data-003b-price-profile) (Version 2)
+* **Dataset ID:** [`theankitchoubey/mandi-prediction-audit-003b`](https://www.kaggle.com/datasets/theankitchoubey/mandi-prediction-audit-003b) (Version 1, 30 files, 101.32 MB)
+* **Hardware & Runtime:** Kaggle Linux CPU Kernel (2 vCPUs), Internet Disabled, Python 3.13.18, GCC 13.3.0, Random Seed: 42
+* **Execution Status:** `KernelWorkerStatus.COMPLETE` (Exit Code 0)
+* **Full Summary Report:** [`experiments/reports/mp_data_003b_kaggle_summary.md`](file:///Users/theankit/Documents/AK/Projects/Mandi_Prediction/experiments/reports/mp_data_003b_kaggle_summary.md)
+
+### 10.2 Mathematical Conservation & Multiset Verification
+$$\text{Total Raw Rows (472,385)} = \text{Accepted (462,350)} + \text{Invalid (27)} + \text{Conflicting (2,936)} + \text{Low-Obs Dropped (7,072)} + \text{Exact Dupes (0)}$$
+
+* **Conservation Check:** $462,350 + 27 + 2,936 + 7,072 + 0 = 472,385$ (**VERIFIED TRUE**)
+* **Multiset Identity Proof:** Surviving pipeline records matched committed `data/processed/mandi_5year_validated.csv` with **0 discrepancies across all 462,350 rows** (**VERIFIED TRUE**).
+* **Quarantine Partition Breakdown:**
+  * Non-positive price invalid drops: 27 rows (Ghaziabad 4, Jhansi 13, Kanpur 9, Lucknow 0, Unnao 1).
+  * Strategy 2 conflicting price quotes on identical date: 2,936 rows.
+  * Low observation series ($<20$ observations): 7,072 rows (partitioned to `low_obs_dropped_rows.csv`).
+  * Exact duplicate rows dropped: 0 rows.
+
+### 10.3 Series Eligibility Empirical Profile (1,297 Retained Series)
+Evaluated across 5 districts, 41 markets, and 108 commodities:
+* **Observation Count:** Min: 20.0, Median: 139.0, Mean: 356.5, P90: 1,177.4, Max: 1,426.0
+* **Calendar Span:** Min: 21 days, Median: 334.0 days, Mean: 706.9 days, P90: 1,525.0 days, Max: 1,527.0 days
+* **Coverage Share:** Min: 0.0198, Median: 0.4663, Mean: 0.4784, P90: 0.8228, Max: 0.9720
+* **Longest Gap:** Min: 2 days, Median: 21.0 days, Mean: 94.1 days, P90: 283.8 days, Max: 1,289.0 days
+* **Missing Days:** Min: 1 day, Median: 174.0 days, Mean: 350.4 days, P90: 986.0 days, Max: 1,468.0 days
+
+### 10.4 Price Corroboration Concordance
+* **Agmarknet Daily Excel Reports (5 files, 16,030 rows):**
+  * Post-panel dates (`2026-10-01` to `2026-11-06`, 27 dates): 1,289 rows.
+  * Natural key matches within panel window: 12,602 rows.
+  * Exact modal price concordance: **12,525 rows (99.39%)**, median difference = ₹0.00.
+  * Non-zero differences: 77 rows (0.61%, captured in `corroboration_diff_sample.csv`).
+* **CEDA Price Data (594 rows, Lucknow Wheat):**
+  * Natural key matches within panel window: 591 rows.
+  * Exact modal price concordance: **591 rows (100.00%)**, mean difference = ₹0.0000.
+  * Unmatched CEDA rows: 3 rows (`2024-11-07`, `2025-03-24`, `2025-06-27`), all proven to be quarantined in `quarantined_conflicting_records.csv` under Strategy 2 due to conflicting same-grade price quotes.
+
+### 10.5 Verified Output Artifacts & Checksums
+
+| Artifact Filename | Size (Bytes) | Line Count | SHA-256 Digest |
+|---|---|---|---|
+| `low_obs_dropped_rows.csv` | 1,107,461 | 7,073 | `b0f0ea08e67c67f41acbab18e7239fafb9641b33d9cbf528c52950d1facf158c` |
+| `series_eligibility.csv` | 174,644 | 1,298 | `deaca152a5db96d7edc0deb009034a463c1110448591360aec4ad5591c516b48` |
+| `corroboration_diff_sample.csv` | 6,385 | 78 | `e82ab3bb4e1a6a7058d20032b915513594bea0a51edf83d7d6f2a88880e828c7` |
+| `disposition_summary.json` | 1,710 | N/A | `362c7923cf77dd17cec1ef722eabf7bef1d1d59a52438afc3737435da068c7b6` |
+| `series_profile_summary.json` | 1,330 | N/A | `3690179c2a2f07ca88b6c5fcfc22b7ea236a880614037ecaa3d3b5e532d39d9f` |
+| `excel_corroboration_summary.json` | 7,164 | N/A | `05fefe69f9dd783f18ecd2ef9788aeafab8196127de58107bcb63ed92d67c32e` |
+| `ceda_corroboration_summary.json` | 1,424 | N/A | `5dc430161519139e9e42c2183ecf7d1a3523959666248d9d8992e06601b4e172` |
+
+

@@ -21,3 +21,4 @@ env/
 
 /brain/
 /data/interim/
+/experiments/outputs/
