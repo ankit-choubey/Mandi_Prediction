@@ -411,7 +411,9 @@ class RecommendationSafetyGate:
         is_demo: bool = False,
         is_historical_analysis: bool = False,
         source_available: bool = True,
-        has_verified_fresh_alternative: bool = False
+        has_verified_fresh_alternative: bool = False,
+        market_alias_status: Optional[str] = None,
+        is_verified_unit: bool = True,
     ) -> SafetyGateDecision:
         """
         Evaluate whether a farmer-facing recommendation may proceed.
@@ -640,20 +642,63 @@ class RecommendationSafetyGate:
                 is_historical=False
             )
 
-        # 9. Delayed Data (3 to 5 days lag)
-        if freshness == FreshnessStatus.DELAYED:
-            op_st = operational_state.value if operational_state else OperationalState.SUCCESS.value
+        # Market Alias Status Check (MP-SRC-004)
+        if market_alias_status and market_alias_status.upper() in ("REVIEW", "UNMAPPED", "UNMAPPED/REVIEW"):
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
             return SafetyGateDecision(
-                is_permitted=True,
-                recommendation_status=RecommendationStatus.DELAYED.value,
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=freshness.value,
+                operational_state=operational_state.value if operational_state else OperationalState.QUARANTINED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason=f"Active farmer advice withheld: Market alias '{market_alias_status}' is unverified or under review.",
+                warning="Market alias under review.",
+                is_demo=False,
+                is_historical=False,
+            )
+
+        # Unverified Unit Check (MP-SRC-004)
+        if not is_verified_unit:
+            freshness, lag = self.engine.evaluate_freshness(obs_str)
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
+                freshness_status=freshness.value,
+                operational_state=operational_state.value if operational_state else OperationalState.QUARANTINED.value,
+                observation_date=obs_str,
+                reference_date=ref_str,
+                lag_days=lag,
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason="Active farmer advice withheld: Commodity price or arrival unit is unverified.",
+                warning="Unverified price unit.",
+                is_demo=False,
+                is_historical=False,
+            )
+
+        # 9. Delayed Data (3 to 5 days lag) - Resolved Policy (MP-SRC-004)
+        # Price display remains permitted with explicit observation date disclosures,
+        # but active farmer storage recommendations are withheld (blocked) to prevent
+        # commercial decisions on delayed market data.
+        if freshness == FreshnessStatus.DELAYED:
+            op_st = operational_state.value if operational_state else OperationalState.STALE_DATA.value
+            return SafetyGateDecision(
+                is_permitted=False,
+                recommendation_status=RecommendationStatus.BLOCKED.value,
                 freshness_status=FreshnessStatus.DELAYED.value,
                 operational_state=op_st,
                 observation_date=obs_str,
                 reference_date=ref_str,
                 lag_days=lag,
-                message=f"Notice: Market observations are delayed by {lag} days. Not a live or today's price quote.",
-                blocked_reason=None,
-                warning=f"DELAYED DATA NOTICE: Observation date is {obs_str} ({lag} days lag).",
+                message=BLOCKED_RECOMMENDATION_MESSAGE,
+                blocked_reason=(
+                    f"Active farmer advice withheld: Market observation is delayed by {lag} calendar days "
+                    f"(observation date {obs_str}, reference {ref_str}). Commercial recommendations require CURRENT "
+                    f"data (<= {self.engine.freshness_current_days} days lag). Price display is permitted with explicit delay notice."
+                ),
+                warning=f"DELAYED DATA NOTICE: Observation date is {obs_str} ({lag} days lag). Not a live or today's price quote.",
                 is_demo=False,
                 is_historical=False
             )

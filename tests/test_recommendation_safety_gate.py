@@ -94,21 +94,27 @@ class TestRecommendationSafetyGate(unittest.TestCase):
         self.assertEqual(res["recommendation_status"], "ACTIVE")
 
     # -------------------------------------------------------------------------
-    # Requirement 2: DELAYED data displays an explicit delay warning
+    # Requirement 2: DELAYED data displays explicit delay warning & withholds active advice (MP-SRC-004)
     # -------------------------------------------------------------------------
     def test_02_delayed_data_displays_explicit_delay_warning(self):
-        """DELAYED data (4 days old) allows evaluation but discloses the delay."""
+        """
+        Policy Resolution (MP-SRC-004): DELAYED data (3 to 5 calendar days old) allows price display
+        with explicit delay disclosures, but active commercial storage recommendations are withheld
+        (blocked) to protect farmers from acting on delayed or stale price quotes.
+        """
         obs_date = "2026-10-21"  # 4 days lag
         decision = self.gate.evaluate_gate(observation_date=obs_date)
 
-        self.assertTrue(decision.is_permitted)
-        self.assertEqual(decision.recommendation_status, RecommendationStatus.DELAYED.value)
+        self.assertFalse(decision.is_permitted)
+        self.assertEqual(decision.recommendation_status, RecommendationStatus.BLOCKED.value)
         self.assertEqual(decision.freshness_status, FreshnessStatus.DELAYED.value)
         self.assertEqual(decision.lag_days, 4)
-        self.assertIn("delayed by 4 days", decision.message)
-        self.assertIn("Not a live or today's price", decision.message)
+        self.assertIn("delayed", decision.warning.lower())
+        self.assertIn("4 days lag", decision.warning)
+        self.assertIn("Not a live or today's price", decision.warning)
+        self.assertIn("Active farmer advice withheld", decision.blocked_reason)
 
-        # Economic evaluation reflects DELAYED status
+        # Economic evaluation is BLOCKED per resolved safety gate policy
         res = evaluate_sell_vs_store(
             quantity_quintals=10.0,
             current_price=2500.0,
@@ -117,9 +123,10 @@ class TestRecommendationSafetyGate(unittest.TestCase):
             observation_date=obs_date,
             reference_date=self.ref_date
         )
-        self.assertEqual(res["recommendation_status"], "DELAYED")
-        self.assertEqual(res["action"], "STORE")
-        self.assertIn("delayed", res["message"].lower())
+        self.assertEqual(res["action"], "BLOCKED")
+        self.assertEqual(res["recommendation_status"], "BLOCKED")
+        self.assertFalse(res["is_actionable_advisory"])
+        self.assertIn("delayed", res["safety_gate"]["warning"].lower())
 
     # -------------------------------------------------------------------------
     # Requirement 3: STALE data blocks active storage recommendations
@@ -571,6 +578,32 @@ class TestRecommendationSafetyGate(unittest.TestCase):
         self.assertEqual(res_with_date["action"], "STORE")
         self.assertEqual(res_with_date["recommendation_status"], "ACTIVE")
         self.assertTrue(res_with_date["is_actionable_advisory"])
+
+    # -------------------------------------------------------------------------
+    # Requirement 14: Review market alias blocks active recommendation (MP-SRC-004)
+    # -------------------------------------------------------------------------
+    def test_14_review_market_alias_blocks_active_recommendation(self):
+        """Markets with alias status UNMAPPED/REVIEW must block active commercial advice."""
+        decision = self.gate.evaluate_gate(
+            observation_date="2026-10-24",
+            market_alias_status="REVIEW",
+        )
+        self.assertFalse(decision.is_permitted)
+        self.assertEqual(decision.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("under review", decision.blocked_reason.lower())
+
+    # -------------------------------------------------------------------------
+    # Requirement 15: Unverified unit blocks active recommendation (MP-SRC-004)
+    # -------------------------------------------------------------------------
+    def test_15_unverified_unit_blocks_active_recommendation(self):
+        """Observations with unverified price/quantity unit must block active advice."""
+        decision = self.gate.evaluate_gate(
+            observation_date="2026-10-24",
+            is_verified_unit=False,
+        )
+        self.assertFalse(decision.is_permitted)
+        self.assertEqual(decision.recommendation_status, RecommendationStatus.BLOCKED.value)
+        self.assertIn("unit is unverified", decision.blocked_reason.lower())
 
 
 if __name__ == "__main__":

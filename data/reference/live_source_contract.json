@@ -1,0 +1,93 @@
+{
+  "contract_version": "1.0.0",
+  "source_metadata": {
+    "source_name": "Government of India Daily Mandi Prices (data.gov.in / AGMARKNET)",
+    "resource_id": "9ef84268-d588-465a-a308-a864a43d0070",
+    "resource_title": "Current Daily Price of Various Commodities from Various Markets (Mandi)",
+    "endpoint_url": "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
+    "portal": "Open Government Data (OGD) Platform India (data.gov.in)",
+    "publisher": "Ministry of Agriculture and Farmers Welfare, Directorate of Marketing & Inspection (DMI) / AGMARKNET",
+    "documentation_url": "https://data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi",
+    "access_date": "2026-11-12",
+    "published_price_unit": "Rs./Quintal",
+    "unit_verification": "Standard Agmarknet mandi wholesale price unit confirmed via official portal documentation and Agmarknet metadata; not inferred from price values."
+  },
+  "scope": {
+    "state": "Uttar Pradesh",
+    "approved_districts": [
+      "Ghaziabad",
+      "Jhansi",
+      "Kanpur",
+      "Lucknow",
+      "Unnao"
+    ],
+    "kanpur_subdivision_policy": {
+      "approved_district_token": "Kanpur",
+      "kanpur_dehat_policy": "EXCLUDE_AND_QUARANTINE",
+      "explanation": "Official administrative division separates Kanpur Nagar (urban/grain markets) from Kanpur Dehat (rural markets such as Jhijhank, Rura, Pukharayan). The five-district scope authorizes 'Kanpur' (Kanpur Nagar / Kanpur Grain APMC, Baripaal APMC, Uttaripura APMC, Choubepur APMC). 'Kanpur Dehat' records must not be silently merged into 'Kanpur' and are rejected/quarantined as out-of-scope subdivision records."
+    }
+  },
+  "request_parameters": {
+    "api_key_param": "api-key",
+    "format": "json",
+    "default_limit": 1000,
+    "max_limit": 1000,
+    "filter_prefix": "filters",
+    "fixed_filters": {
+      "state": "Uttar Pradesh"
+    },
+    "supported_filters": [
+      "state",
+      "district",
+      "arrival_date"
+    ]
+  },
+  "response_schema": {
+    "required_fields": [
+      "state",
+      "district",
+      "market",
+      "commodity",
+      "variety",
+      "grade",
+      "arrival_date",
+      "min_price",
+      "max_price",
+      "modal_price"
+    ],
+    "field_aliases": {
+      "state": ["state", "State"],
+      "district": ["district", "District"],
+      "market": ["market", "Market"],
+      "commodity": ["commodity", "Commodity"],
+      "variety": ["variety", "Variety"],
+      "grade": ["grade", "Grade"],
+      "arrival_date": ["arrival_date", "Arrival_Date"],
+      "min_price": ["min_price", "Min_Price", "Min_x0020_Price"],
+      "max_price": ["max_price", "Max_Price", "Max_x0020_Price"],
+      "modal_price": ["modal_price", "Modal_Price", "Modal_x0020_Price"]
+    }
+  },
+  "data_validation_rules": {
+    "missing_grade_policy": "Missing, null, or whitespace-only grade values must be explicitly recorded as 'SOURCE_NOT_PROVIDED'. Silent mapping to 'FAQ' is strictly forbidden.",
+    "unknown_market_alias_policy": "Markets not matching accepted canonical aliases in the reference alias table enter disposition 'REVIEW'.",
+    "price_bounds_rule": "0.0 < min_price <= modal_price <= max_price. Violations are quarantined as INVALID_PRICE_BOUNDS.",
+    "date_format_rule": "Accept YYYY-MM-DD or DD/MM/YYYY. Reject future dates relative to reference date (IST). Unparseable dates quarantined as MALFORMED_DATE."
+  },
+  "operational_bounds": {
+    "max_http_requests": 50,
+    "max_records_total": 25000,
+    "max_bytes_per_response": 10485760,
+    "timeout_seconds_per_request": 10,
+    "timeout_seconds_per_district_batch": 30,
+    "max_transient_retries_per_page": 2,
+    "retry_status_codes": [429, 500, 502, 503, 504],
+    "non_retry_status_codes": [400, 401, 403, 404]
+  },
+  "storage_conventions": {
+    "snapshots_root": "data/live_snapshots",
+    "path_template": "data/live_snapshots/{run_id_utc}/{district}/page_{page_offset:05d}.json",
+    "manifest_name": "run_receipt.json",
+    "write_mode": "EXCLUSIVE_NO_OVERWRITE"
+  }
+}

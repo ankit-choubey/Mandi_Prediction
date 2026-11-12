@@ -93,15 +93,33 @@ class CurrentDataReporter:
         if not os.path.exists(self.csv_path):
             return None
 
-        # Load minimal subset or recent rows
-        df = pd.read_csv(self.csv_path, parse_dates=["Arrival_Date"], low_memory=False)
-
-        if commodity:
-            df = df[df["Commodity"].str.lower() == commodity.strip().lower()]
-        if district:
-            df = df[df["District"].str.lower() == district.strip().lower()]
-        if market:
-            df = df[df["Market"].str.lower() == market.strip().lower()]
+        # Bounded read to strictly respect local resource limits (<= 10MB, <= 50,000 rows)
+        if os.path.getsize(self.csv_path) > 10 * 1024 * 1024:
+            chunks = []
+            total_read = 0
+            for chunk in pd.read_csv(self.csv_path, chunksize=5000, parse_dates=["Arrival_Date"], low_memory=False):
+                if commodity:
+                    chunk = chunk[chunk["Commodity"].str.lower() == commodity.strip().lower()]
+                if district:
+                    chunk = chunk[chunk["District"].str.lower() == district.strip().lower()]
+                if market:
+                    chunk = chunk[chunk["Market"].str.lower() == market.strip().lower()]
+                if not chunk.empty:
+                    chunks.append(chunk)
+                total_read += 5000
+                if total_read >= 25000:
+                    break
+            if not chunks:
+                return None
+            df = pd.concat(chunks, ignore_index=True)
+        else:
+            df = pd.read_csv(self.csv_path, parse_dates=["Arrival_Date"], low_memory=False)
+            if commodity:
+                df = df[df["Commodity"].str.lower() == commodity.strip().lower()]
+            if district:
+                df = df[df["District"].str.lower() == district.strip().lower()]
+            if market:
+                df = df[df["Market"].str.lower() == market.strip().lower()]
 
         if df.empty:
             return None

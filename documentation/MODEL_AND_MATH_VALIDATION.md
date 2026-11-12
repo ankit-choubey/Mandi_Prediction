@@ -1257,3 +1257,46 @@ Next prompt documentation/prompts/MP-DATA-007R.md combines exact repair tests wi
   - F4 (2026-03-31): active aliases = 21 (verified) / 41 (assumed) / 41 (retrospective), subset violations = 0.
 - Mathematical subset invariant strictly holds ($N_{\text{train}} \ge 60 \implies N_{\text{full}} \ge 20$, 0 violations).
 - Future mutation invariance test strictly holds under value corruptions and adversarial conflicting quotes.
+
+
+## DATA007R review; next live-ingestion milestone — 2026-11-12 IST
+Accepted remote comparison to advance ingestion, not live/ML approval or blanket causal verification. Commit ed066bea9c0141c5fcb465864f5a5fbc9f74b121 verified on GitHub; 11 small hashes, seven payload matches and two 14741-row classification counts independently checked. Independent 50 targeted tests passed in 1.03s. v2 retained immutable baseline; v2.1 conservative research candidate 463217 rows/1170 series (+3 Unnao) with hash a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14; no v2.1 model-score inheritance. Full large-panel hashes remain execution-record supported.
+Resource breach: executor trace ran full candidate panel and comparisons locally contrary to <=10MB/50000-row rule. Record noncompliance, do not repeat; do not label all preflight checks compliant. Cause of 77 diffs still unknown; report's aggregation-cause assertion rejected. Review alias is Baripaal APMC->Varipaal; availability CSV mode needs explicit reconciliation. Details documentation/DATA007R_REVIEW.md.
+Next prompt documentation/prompts/MP-SRC-004.md integrates live client, manual immutable capture, and trust adapters (Steps3–5 foundations). Existing-key bounded read-only API verification permitted when owner dispatches prompt; no new credentials, Kaggle, installs, background schedule activation or training. Credentials/source failure must not stop offline implementation and tests. Continue tonight priority with honest implemented/verified/pending labels.
+
+
+## Section 23 — MP-SRC-004 Live Price Ingestion, Immutable Snapshots & Trust Reporting (2026-11-12 IST)
+
+### 23.1 Task Summary & Status
+- **Task ID:** `MP-SRC-004` (Steps 3–5 Foundations)
+- **Baseline Git Commit:** `ed066bea9c0141c5fcb465864f5a5fbc9f74b121`
+- **Execution Status:** `IMPLEMENTED + CREDENTIALS/SOURCE BLOCKED`
+- **Official API Resource:** `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070` (Daily Mandi Price Arrivals, Ministry of Agriculture & Farmers Welfare / AGMARKNET).
+- **Credential State:** `OGD_API_KEY` is not present in local environment or `.env`. Per prompt instructions, completed full offline implementation, formal data contract, bounded CLI client, immutable snapshot engine, safety gate adapters, runbook, and 22 unit tests. Live network verification campaign is blocked awaiting local key configuration.
+
+### 23.2 Source Contract & Scope Boundaries
+- **Contract:** `data/reference/live_source_contract.json`
+- **Published Price Units:** `Rs./Quintal` (verified from portal metadata, not inferred from price values).
+- **Approved Scope:** Exactly 5 districts (`Ghaziabad`, `Jhansi`, `Kanpur`, `Lucknow`, `Unnao`).
+- **Kanpur Subdivision Policy:** Administrative division separates urban mandis (`Kanpur`) from rural mandis (`Kanpur Dehat`). `Kanpur Dehat` records (e.g. Jhijhank, Rura, Pukharayan) are strictly quarantined as `OUT_OF_SCOPE_DISTRICT` to prevent silent geographic scope creep.
+- **Missing Grade Normalization:** Missing, null, or empty string grade is normalized explicitly to `SOURCE_NOT_PROVIDED`; silent mapping to `FAQ` is strictly forbidden.
+- **Market Alias Resolution:** Markets matching accepted entries in candidate policy v2.1 are mapped to canonical names (`ACCEPTED`); review markets (`Purwa APMC`, `Baripaal APMC -> Varipaal`) and unrecognized yards enter disposition `UNKNOWN_MARKET_REVIEW`.
+
+### 23.3 Mathematical Conservation of Ingested Records
+Every fetched batch enforces strict disjoint conservation:
+$$\text{records\_fetched} = \text{records\_accepted} + \text{records\_duplicate} + \sum_{k} \text{records\_quarantined}_k$$
+- `records_accepted`: clean observations matching 5 approved districts, valid date, valid price bounds ($0 < P_{\min} \le P_{\text{modal}} \le P_{\max}$), and accepted alias.
+- `records_duplicate`: exact identical observations on same key and prices within batch.
+- `records_quarantined`: mutually exclusive partitions (`INVALID_PRICE_BOUNDS`, `MALFORMED_DATE`, `FUTURE_DATED`, `OUT_OF_SCOPE_DISTRICT`, `UNKNOWN_MARKET_REVIEW`, `CONFLICTING_QUOTE`, `MISSING_REQUIRED_FIELDS`).
+
+### 23.4 Operational Trust & Policy Resolutions
+- **Freshness Policy (IST):** `CURRENT` $\le 2$ calendar days lag, `DELAYED` 3–5 calendar days lag, `STALE` $> 5$ calendar days lag.
+- **Delayed Advisory Resolution:** Delayed data permits **price display** with explicit observation date disclosures, but active commercial storage recommendations are **withheld / blocked** (`is_permitted = False`, `action = "BLOCKED"`). Commercial recommendations require fresh (`CURRENT`) data.
+- **Decoupled Capabilities:** Price display, forecasting eligibility, and economic advisory eligibility are strictly decoupled. Fresh prices alone do not authorize unapproved ML forecasts or synthetic-cost economic advice.
+- **Local Resource Limits:** All local operations strictly adhered to limits ($\le 10$ MB file size, $\le 50,000$ rows, $\le 30$s per operation). Bounded chunked reading in `CurrentDataReporter` prevents reading $> 10$ MB panels into memory.
+
+### 23.5 Verification & Unit Test Evidence
+- **Targeted Tests:** `tests/test_live_price_ingestion.py` (22 tests), `tests/test_recommendation_safety_gate.py` (17 tests), `tests/test_operational_output.py` (17 tests) $\implies$ 56 passed in 5.42s.
+- **Full Test Suite:** 239 passed in 9.46s (0 failures, 0 errors).
+- **Runbook:** Authored `documentation/LIVE_INGESTION_RUNBOOK.md` detailing CLI usage, key setup, and deferred scheduler blueprint. Zero automated schedulers (cron/launchd) activated.
+

@@ -151,3 +151,24 @@ Next prompt documentation/prompts/MP-DATA-007R.md combines exact repair tests wi
 - **Causal Reconstruction & Mutation Invariance:** Reconstructed folds F1, F2, F3, F4 from pre-canonicalization cleaned raw arrivals. Zero mathematical subset violations. Future mutation invariance strictly holds under value corruptions and adversarial conflicting quotes.
 - **Unit Test Receipts:** 215 tests passed in 4.45s across entire suite.
 - **Next Step:** Await independent owner review of forensic summaries under `experiments/reports/identity_007r/`. No data freeze declared.
+
+
+## DATA007R review; next live-ingestion milestone — 2026-11-12 IST
+Accepted remote comparison to advance ingestion, not live/ML approval or blanket causal verification. Commit ed066bea9c0141c5fcb465864f5a5fbc9f74b121 verified on GitHub; 11 small hashes, seven payload matches and two 14741-row classification counts independently checked. Independent 50 targeted tests passed in 1.03s. v2 retained immutable baseline; v2.1 conservative research candidate 463217 rows/1170 series (+3 Unnao) with hash a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14; no v2.1 model-score inheritance. Full large-panel hashes remain execution-record supported.
+Resource breach: executor trace ran full candidate panel and comparisons locally contrary to <=10MB/50000-row rule. Record noncompliance, do not repeat; do not label all preflight checks compliant. Cause of 77 diffs still unknown; report's aggregation-cause assertion rejected. Review alias is Baripaal APMC->Varipaal; availability CSV mode needs explicit reconciliation. Details documentation/DATA007R_REVIEW.md.
+Next prompt documentation/prompts/MP-SRC-004.md integrates live client, manual immutable capture, and trust adapters (Steps3–5 foundations). Existing-key bounded read-only API verification permitted when owner dispatches prompt; no new credentials, Kaggle, installs, background schedule activation or training. Credentials/source failure must not stop offline implementation and tests. Continue tonight priority with honest implemented/verified/pending labels.
+
+
+## MP-SRC-004 — Live Price Ingestion, Immutable Snapshots & Trust Reporting (2026-11-12 IST)
+- **Task ID:** `MP-SRC-004` (Steps 3–5 Foundations)
+- **Baseline Git Commit:** `ed066bea9c0141c5fcb465864f5a5fbc9f74b121`
+- **Execution Status:** `IMPLEMENTED + CREDENTIALS/SOURCE BLOCKED`
+- **Live Source Contract:** Published `data/reference/live_source_contract.json` specifying API resource `9ef84268-d588-465a-a308-a864a43d0070`, price units `Rs./Quintal`, 5 authorized districts (`Ghaziabad`, `Jhansi`, `Kanpur`, `Lucknow`, `Unnao`), Kanpur Dehat subdivision quarantine policy, and missing grade `SOURCE_NOT_PROVIDED` policy.
+- **Client & Engine:** Implemented `src/live_price_ingestion.py` with injected transport, clock, and secret-safe parameter/URL sanitization and body echo redaction. Enforces bounded pagination ($\le 50$ requests, $\le 25,000$ records, $\le 10$ MB), cycle detection, and fail-closed error handling.
+- **Immutable Snapshots:** Collision-safe exclusive writes (`mode 'x'`) under ignored `data/live_snapshots/<UTC_RUN_ID>/<District>/page_<offset:05d>.json`.
+- **Trust & Freshness Integration:** Resolved delayed policy mismatch in `src/health_status.py` and `src/current_data_output.py`. Active farmer advice withheld on delayed (3–5d), stale (>5d), future, missing, conflicting, review, or unverified-unit data. Decoupled capabilities: price display enabled; forecast/economics eligibility blocked.
+- **Local Resource Limits:** Adhered to $\le 10$ MB / $\le 50,000$ rows / $\le 30$s limits. Bounded chunked reading implemented in `CurrentDataReporter`.
+- **Unit Test Receipts:** 239 passed in 9.46s across full test suite (22 new live ingestion tests, 2 new safety gate tests).
+- **Runbook & Scheduler Status:** Authored `documentation/LIVE_INGESTION_RUNBOOK.md`. Scheduler activation is strictly deferred; zero background automations activated.
+- **Next Step:** Await owner configuration of `OGD_API_KEY` in local `.env` for bounded live verification campaign.
+

@@ -43,9 +43,9 @@
 
 ### WHAT IS STILL OPEN
 1. **The 77 Disputed Price Differences (Feb–Mar 2026):**
-   - The cause of the 77 price discrepancies between the external Agmarknet monthly export (fractional rupees) and daily panel feed (integer prices) remains **UNRESOLVED**. Candidate policy v2.1 does not alter these 77 records because they stem from upstream reporting granularity shifts, not market alias mappings.
+   - The cause of the 77 price discrepancies between the external Agmarknet monthly export (fractional rupees) and daily panel feed (integer prices) remains **UNKNOWN and UNRESOLVED**. Candidate policy v2.1 does not alter these 77 records; unchanged aliases prove that market mapping is not the cause, but do not establish upstream precision or aggregation as the verified cause.
 2. **Field Verification of Review Markets:**
-   - `Purwa APMC` (Unnao, 205-day hiatus) and `Varipaal` (Kanpur, 52-day co-reporting with 20 divergent keys) remain classified as `UNMAPPED/REVIEW`. They cannot be merged without official government gazette or market committee confirmation.
+   - `Purwa APMC` in Unnao (205-day hiatus) and `Baripaal APMC -> Varipaal` in Kanpur (52-day co-reporting with 20 divergent keys) remain classified as `UNMAPPED/REVIEW`. They cannot be merged without official government gazette or market committee confirmation.
 3. **Official Data Freeze Approval:**
    - Candidate Panel v2.1 remains strictly **PROVISIONAL**. Executor does not possess authority to declare a panel freeze; release readiness requires independent owner sign-off.
 
@@ -129,3 +129,19 @@
    - Panel v2 has an established immutable SHA-256 hash (`851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`) across multiple benchmark evaluations (MP-DATA-006, MP-FC-006, MP-FC-006R).
 3. **Data Freeze Caveat:**
    - A dataset freeze should **NOT** be declared until the owner independently reviews whether the 3-series difference in Unnao warrants transitioning to v2.1.
+
+---
+
+## 5. Dated Factual Corrections & Audit Clarifications (2026-11-12 IST, per DATA007R Review)
+
+1. **Cause of 77 Price Differences:**
+   - The cause remains formally **UNKNOWN and UNRESOLVED**. While the candidate identity mapping proves that the 77 differences are independent of alias choices, this observation does not constitute proof of upstream reporting precision or aggregation changes.
+2. **Review Market Identity Mapping:**
+   - The review market mapping in Kanpur is specifically `Baripaal APMC -> Varipaal` (Candidate Rule B review with 20 divergent keys over 52-day overlap), alongside `Purwa APMC -> Purwa` in Unnao (Candidate Rule A review with 205-day hiatus).
+3. **Causal Availability CSV Evidence Mode:**
+   - The committed `causal_cutoff_availability_by_crop.csv` records `verified` evidence mode results only. As noted in `documentation/DATA007R_REVIEW.md`, `causal_eligibility_sensitivity_v21.json` is the authoritative source for mode-specific breakdowns across verified, assumed, and retrospective regimes.
+4. **Local Resource Limit Deviation Disclosure:**
+   - The prior executor transcript performed local candidate full-panel pipeline execution and hashing, exceeding the local rule budget ($\le 10$ MB / $\le 50,000$ rows). This is formally recorded as an execution noncompliance and is not repeated.
+5. **Panel Invariance & Scope Limitations:**
+   - Panel v2 (`851e7184...`) remains the immutable benchmark. Candidate Panel v2.1 (`a2995369...`) is a versioned research candidate; no v2 model performance scores are inherited by v2.1. No empirical claims about live operational performance are derived from retrospective panel metrics.
+
