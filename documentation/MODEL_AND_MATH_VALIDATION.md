@@ -1202,3 +1202,58 @@ Commit 4cef31a1c4658b0a45504deda9b276e5771736fa remotely verified; 24 targeted i
 - Isolated miniature end-to-end smoke test executed and passed in temporary workspace.
 - **Panel v2 Status:** **PROVISIONAL** (reproduction hash `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31`).
 - **Authorization Note:** Zero remote compute executed; zero ML trained; zero panel freeze declared.
+
+
+## MP-DATA-007B review and tonight priority — 2026-11-12 IST
+Owner wants same quality with faster completion tonight, clear achieved/open/next after every report, and detailed prompts reducing repair cycles. Treat this as delivery priority, not authorization to fabricate evidence or skip checks; prospective field outcomes cannot be obtained before they occur. Batch reusable checks and final full-suite validation, focus integrated Release 1 plus labelled scenario economics. No claim all 13 packages+optional experiments will be validated tonight.
+Commit a78f4a0995aabeb02d2510c35054e16e930d1fc4 remotely verified; independent 39 targeted tests passed in 0.67s. Full 204-pass receipt reported only. Partial repairs accepted, actual run not ready: classifier strips APMC and falsely matches reviewed Purwa names; TierA helper omits 30% coverage; notebook June cutoff/partial Excel discovery and absent disposition inputs; cutoff helper fed already-pruned panel; aggregate-only mutation checks. Independent small fixtures reproduced false Purwa match and sparse series erroneously accepted. See documentation/DATA007B_REVIEW.md.
+Next prompt documentation/prompts/MP-DATA-007R.md combines exact repair tests with ONE conditional remote run requiring explicit owner approval. Preserve pre-existing EOF-only source/test edits and documentation/context.md untouched. Panel provisional, no ML/live approval.
+
+
+## 22. MP-DATA-007R Remote Run & Mathematical Verification Record — 2026-11-12 IST
+
+### 22.1 Execution Envelope & Preflight
+- **Task ID:** `MP-DATA-007R`
+- **Authorized Execution:** Exactly ONE remote kernel run on existing dataset `theankitchoubey/mandi-prediction-audit-003b` (v1).
+- **Kernel ID:** `theankitchoubey/mp-data-007-identity-review` (Version 1)
+- **Status:** `KernelWorkerStatus.COMPLETE` (Runtime: 1,017.4s / ~16.9 min)
+- **Preflight Diff Hash:** `9ae433496515f421caa36f57b42084affbcbe7793b0f9030d812d369531581b7`
+- **Unit Test Receipts:** 215 tests passed in 4.45s (including 19 targeted identity comparison and reconstruction tests).
+- **Decoded Payload Equality:** All 7 embedded modules verified bit-for-bit identical to working files.
+
+### 22.2 Mathematical Panel v2 Gate & Row Conservation
+- **Panel v2 Computed SHA-256:** `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` (**EXACT MATCH**)
+- **Gate 1 Status:** **PASSED** (fail-closed check confirmed).
+- **Row Conservation Identity:**
+  $$\text{Raw In (472,385)} = \text{Accepted (463,217)} + \text{Dups (855)} + \text{Conflicts (2,936)} + \text{Low-Obs (5,350)} + \text{Invalid (27)}$$
+  $$463,217 + 855 + 2,936 + 5,350 + 27 = 472,385 \quad (\text{Strictly Verified})$$
+
+### 22.3 Candidate Panel v2.1 Metrics & Dispositions
+- **Candidate Panel v2.1 Computed SHA-256:** `a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14`
+- **Candidate Panel Status:** **PROVISIONAL** (unapproved for final freeze).
+- **Dispositions:** Identical row counts to v2 (463,217 accepted rows across 472,385 raw in).
+- **Unique Series:** 1,170 series (+3 series in Unnao: 165 $\to$ 168) due to withholding unverified `Purwa APMC` $\to$ `Purwa` merge.
+
+### 22.4 In-Window Excel Dispositions (14,741 Rows $\le$ 2026-09-30)
+- Total Ingested Excel Rows: `16,030` across 5 official Agmarknet report files.
+- In-Window Observations: `14,741` rows.
+- Strict Category Conservation ($14,741 = 12,769 + 77 + 326 + 920 + 325 + 324$):
+  - `matched_exact`: **12,769 rows** (86.62%) — modal difference = 0.00.
+  - `matched_different`: **77 rows** (0.52%) — exactly the 77 disputed Feb–Mar 2026 rows.
+  - `conflicting`: **326 rows** (2.21%) — quarantined under Strategy 2.
+  - `low_obs`: **920 rows** (6.24%) — dropped due to series $< 20$ records.
+  - `absent`: **325 rows** (2.20%) — market recognized, but natural key absent from daily feed.
+  - `spelling-review`: **324 rows** (2.20%) — isolated from review markets (`Purwa APMC`: 4, `Varipaal`: 320).
+  - `invalid`: **0 rows** (0.00%).
+  - `other`: **0 rows** (0.00%).
+
+### 22.5 Causal Cutoff Reconstruction & Invariance Verification
+- Reconstructed folds F1, F2, F3, F4 from pre-canonicalization cleaned raw arrivals (`472,358` rows).
+- Applied Tier A ($\ge 60$ obs and coverage $\ge 0.30$) and Tier B ($\ge 120$ obs and coverage $\ge 0.30$).
+- Evaluated verified, assumed, and retrospective modes:
+  - F1 (2024-12-31): active aliases = 21, train obs = 340,032, Tier A series = 451, Tier B series = 438, subset violations = 0.
+  - F2 (2025-06-30): active aliases = 21, train obs = 392,708, Tier A series = 487, Tier B series = 451, subset violations = 0.
+  - F3 (2025-12-18): active aliases = 21 (verified) / 40 (assumed) / 41 (retrospective), subset violations = 0.
+  - F4 (2026-03-31): active aliases = 21 (verified) / 41 (assumed) / 41 (retrospective), subset violations = 0.
+- Mathematical subset invariant strictly holds ($N_{\text{train}} \ge 60 \implies N_{\text{full}} \ge 20$, 0 violations).
+- Future mutation invariance test strictly holds under value corruptions and adversarial conflicting quotes.

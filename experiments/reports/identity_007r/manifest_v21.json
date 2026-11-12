@@ -1,0 +1,87 @@
+{
+  "task_id": "MP-DATA-007R",
+  "timestamp_utc": "2026-11-12T12:15:21.250749+00:00",
+  "legacy_v2_sha256": "851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31",
+  "candidate_v21_sha256": "a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14",
+  "candidate_status": "PROVISIONAL",
+  "artifacts": [
+    {
+      "filename": "identity_comparison_v2_vs_v21.csv",
+      "path": "/kaggle/working/identity_comparison_v2_vs_v21.csv",
+      "size_bytes": 232,
+      "sha256": "bf881a037f75cb81cb7f595d9f35b3087c6b665b3d99815df7bf3b23b809b3da"
+    },
+    {
+      "filename": "excel_unmatched_reclassification_v21.json",
+      "path": "/kaggle/working/excel_unmatched_reclassification_v21.json",
+      "size_bytes": 1199,
+      "sha256": "cbaaa2c14511f0ed857b0fc8d7385ed0d3644ce1af6f082a772670ef8b7d561e"
+    },
+    {
+      "filename": "excel_classifications_v2.csv",
+      "path": "/kaggle/working/excel_classifications_v2.csv",
+      "size_bytes": 4473730,
+      "sha256": "9a7fe60496a7122a2cf5224a0ae446feab19c2b3535dd375b0d8d57ff82b4ac2"
+    },
+    {
+      "filename": "excel_classifications_v21.csv",
+      "path": "/kaggle/working/excel_classifications_v21.csv",
+      "size_bytes": 4476646,
+      "sha256": "a70a41e32ae46de3617be09d6aaa27edb135397dffab6f46792dc858af2c6972"
+    },
+    {
+      "filename": "excel_disposition_breakdown_by_district_crop.csv",
+      "path": "/kaggle/working/excel_disposition_breakdown_by_district_crop.csv",
+      "size_bytes": 1007,
+      "sha256": "7919a4410cd179533c2c07f6e173a61fa381f257e89f5ef8979a7ab795f4ce8d"
+    },
+    {
+      "filename": "disputed_77_keys_v2_vs_v21.csv",
+      "path": "/kaggle/working/disputed_77_keys_v2_vs_v21.csv",
+      "size_bytes": 5766,
+      "sha256": "11bc7d69cde7428f6e3283f02db23273dbd8bfbbd77950c0cb1f2c85cacc9512"
+    },
+    {
+      "filename": "causal_eligibility_sensitivity_v21.json",
+      "path": "/kaggle/working/causal_eligibility_sensitivity_v21.json",
+      "size_bytes": 20820,
+      "sha256": "3d15c977b854fca9d26e99411911fc14bf9ac717c3a2a4866798cda7c1829b2d"
+    },
+    {
+      "filename": "causal_cutoff_availability_by_crop.csv",
+      "path": "/kaggle/working/causal_cutoff_availability_by_crop.csv",
+      "size_bytes": 959,
+      "sha256": "4dd81abd44943875f430a0736f0a6c1e97adb9ca5f45f2a00fbeed7184dd14d4"
+    },
+    {
+      "filename": "future_mutation_receipt.json",
+      "path": "/kaggle/working/future_mutation_receipt.json",
+      "size_bytes": 496,
+      "sha256": "a5ec3a2b3f2e3b0bf6400867e091aaac96e624ad77f7ae411ecaef2230893abb"
+    },
+    {
+      "filename": "mandi_5year_validated_v2.csv",
+      "path": "/kaggle/working/mandi_5year_validated_v2.csv",
+      "size_bytes": 67455377,
+      "sha256": "851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31"
+    },
+    {
+      "filename": "mandi_5year_validated_v21.csv",
+      "path": "/kaggle/working/mandi_5year_validated_v21.csv",
+      "size_bytes": 67464487,
+      "sha256": "a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14"
+    },
+    {
+      "filename": "processing_manifest_v2.json",
+      "path": "/kaggle/working/processing_manifest_v2.json",
+      "size_bytes": 5136,
+      "sha256": "a43eb701f20d2b70b96165dd145c2012d46e5ab6f98b4c3771171cb11bfcc461"
+    },
+    {
+      "filename": "processing_manifest_v21.json",
+      "path": "/kaggle/working/processing_manifest_v21.json",
+      "size_bytes": 5142,
+      "sha256": "6dc47f38861746ec21e418d2da6dafc74c7b0993d11990211b09d1306a5fb6d3"
+    }
+  ]
+}

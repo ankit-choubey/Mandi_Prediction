@@ -126,3 +126,28 @@ Commit 4cef31a1c4658b0a45504deda9b276e5771736fa remotely verified; 24 targeted i
 - **Prepared Notebook:** Rebuilt `experiments/notebooks/mp_data_007_identity_review.ipynb`. All 7 embedded module payloads match disk bytes bit-for-bit. AST passes on all 5 code cells. Isolated miniature smoke test passes end-to-end in temporary directory. Kernel metadata path verified.
 - **Workflow & Journal Integrity:** Acknowledged prior modification of `documentation/context.md` as noncompliance. `documentation/context.md` left completely untouched and unstaged. ONLY local git-ignored `brain/context.md` updated.
 - **Next Action:** Await owner review and explicit authorization for remote kernel execution.
+
+
+## MP-DATA-007B review and tonight priority — 2026-11-12 IST
+Owner wants same quality with faster completion tonight, clear achieved/open/next after every report, and detailed prompts reducing repair cycles. Treat this as delivery priority, not authorization to fabricate evidence or skip checks; prospective field outcomes cannot be obtained before they occur. Batch reusable checks and final full-suite validation, focus integrated Release 1 plus labelled scenario economics. No claim all 13 packages+optional experiments will be validated tonight.
+Commit a78f4a0995aabeb02d2510c35054e16e930d1fc4 remotely verified; independent 39 targeted tests passed in 0.67s. Full 204-pass receipt reported only. Partial repairs accepted, actual run not ready: classifier strips APMC and falsely matches reviewed Purwa names; TierA helper omits 30% coverage; notebook June cutoff/partial Excel discovery and absent disposition inputs; cutoff helper fed already-pruned panel; aggregate-only mutation checks. Independent small fixtures reproduced false Purwa match and sparse series erroneously accepted. See documentation/DATA007B_REVIEW.md.
+Next prompt documentation/prompts/MP-DATA-007R.md combines exact repair tests with ONE conditional remote run requiring explicit owner approval. Preserve pre-existing EOF-only source/test edits and documentation/context.md untouched. Panel provisional, no ML/live approval.
+
+
+## MP-DATA-007R Execution & Evidence Record — 2026-11-12 IST
+- **Task ID:** `MP-DATA-007R`
+- **Baseline Commit:** `a78f4a0995aabeb02d2510c35054e16e930d1fc4`
+- **Authorized Execution:** Exactly ONE private Kaggle CPU kernel run on existing dataset `theankitchoubey/mandi-prediction-audit-003b` (v1) following pass of all Part A preflight checks.
+- **Remote Kernel Run:** `theankitchoubey/mp-data-007-identity-review` (Version 1). Completed with status `KernelWorkerStatus.COMPLETE` in 1,017.4s (~16.9 min).
+- **Gate 1 Reproduction:** Panel v2 SHA-256 == `851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31` strictly reproduced and verified. Row conservation identity verified ($472,385 = 463,217 + 855 + 2,936 + 5,350 + 27$).
+- **Candidate Panel v2.1:** Computed candidate SHA-256 == `a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14`. Dispositions match row counts of v2; unique series increase by +3 (1,167 $\to$ 1,170) in Unnao due to keeping Purwa APMC unmerged. Candidate status remains strictly **PROVISIONAL**.
+- **Forensic Excel Reclassification (14,741 in-window rows):** Mutually exclusive classification with strict row conservation ($14,741 = 12,769 + 77 + 326 + 920 + 325 + 324$):
+  - `matched_exact`: 12,769
+  - `matched_different`: 77 (disputed Feb-Mar 2026 keys, cause unresolved)
+  - `conflicting`: 326
+  - `low_obs`: 920
+  - `absent`: 325
+  - `spelling-review`: 324 (exclusively candidate review markets: 4 in Unnao, 320 in Kanpur)
+- **Causal Reconstruction & Mutation Invariance:** Reconstructed folds F1, F2, F3, F4 from pre-canonicalization cleaned raw arrivals. Zero mathematical subset violations. Future mutation invariance strictly holds under value corruptions and adversarial conflicting quotes.
+- **Unit Test Receipts:** 215 tests passed in 4.45s across entire suite.
+- **Next Step:** Await independent owner review of forensic summaries under `experiments/reports/identity_007r/`. No data freeze declared.

@@ -1,0 +1,46 @@
+{
+  "total_excel_rows": 16030,
+  "in_window_excel_rows": 14741,
+  "panel_v2": {
+    "sha256": "851e718468d6b8c9fd07944535a462338e71aa105af25339fe9438b697088f31",
+    "matched_exact": 12769,
+    "matched_different": 77,
+    "unmatched_total": 1895,
+    "categories": {
+      "matched_exact": 12769,
+      "matched_different": 77,
+      "invalid": 0,
+      "conflicting": 326,
+      "low_obs": 920,
+      "absent": 649,
+      "spelling-review": 0,
+      "other": 0,
+      "quarantined_strategy2": 326,
+      "low_obs_dropped": 920,
+      "absent_from_raw": 649,
+      "spelling_unmapped": 0
+    },
+    "conservation_ok": true
+  },
+  "panel_v21": {
+    "sha256": "a299536914b5683613f7a0aa242e447f832a33894a476d73401e49fa24449c14",
+    "matched_exact": 12769,
+    "matched_different": 77,
+    "unmatched_total": 1895,
+    "categories": {
+      "matched_exact": 12769,
+      "matched_different": 77,
+      "invalid": 0,
+      "conflicting": 326,
+      "low_obs": 920,
+      "absent": 325,
+      "spelling-review": 324,
+      "other": 0,
+      "quarantined_strategy2": 326,
+      "low_obs_dropped": 920,
+      "absent_from_raw": 325,
+      "spelling_unmapped": 324
+    },
+    "conservation_ok": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "cutoff_tested": "2025-12-18",
+  "evidence_mode": "verified",
+  "train_hash_baseline": "92d88c949d7a11ecdf8c32cd389fc84e7984a4162cae2f4c63ef1e74d1df2a93",
+  "tier_a_hash_baseline": "97b5d9fef384018adb9fc04d43ae15e795426bf6c99307d74942e8a430f0d01e",
+  "future_mutation_invariance_verified": true,
+  "mutations_tested": [
+    "future_modal_price_corruption_99999",
+    "future_market_name_suffix_mutated",
+    "future_adversarial_same_key_conflicting_quote",
+    "future_duplicate_quotes"
+  ]
+}
