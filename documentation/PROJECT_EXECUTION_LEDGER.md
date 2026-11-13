@@ -1,5 +1,11 @@
 # Project execution ledger and delivery gates
 
+## Independent UI002 decision — 13 November 2026
+
+GitHub/localHEAD6af1dbc026259993326344f4d981ccb9b6a3bad5. Independentcombinedregression424passed/18warnings/15.38s. Browsercorrectmodel/foldvaluesandfinal+470output;newdisplayedbreak-evenreversestransactionfeesigns,andwaterfallgrossholding25470wrongversus25970,storagecostUnavailablewrongversus500. Hardcodedprovenancehashes,timestampstuckInitializing,andacceptancepredicatesneedrepair. Producerreportcoverage50.81%andfold56.41/45.47/50.81arewrong;correct89.9547overall,92.3159/75.9377/72.2581folds. Causeundercoverageunresolved. SeeUI002_INDEPENDENT_REVIEW.md.
+
+NEXTdocumentation/prompts/MP-FINAL-013.mdcombinesboundedUIclosureandStep13engineering(protocol/shadowlogging/outcomematching/scoring/usabilityinstruments/handoff). MAINLEFT1Step13;UIclosureisboundedrepair,notnewmilestone. Futurefieldoutcomes/participantscannotbefabricated;Step13engineeringcomplete!=empiricalaccepted. DockerimageNOT_RUN;arrivals/weatheroptional2. Fullfeature/modelscoreinventoryPROJECT_FEATURES_AND_SCORECARD.md;RAGoptionalnotimplemented,confusionmatrixnotdirectlyapplicabletopriceregression. Reviewerchangedrecords/prompts,notproductioncode/commit/push;preserveexistingdirtyworkandnevereditdocumentation/context.md.
+
 ## Current independent decision — RELEASE001R accepted; UI002 next, 2026-11-13 IST
 
 GitHub `main` and local `HEAD` independently match `fab8e3183bf32707b8a5c3c90c96f251ecc0c8a3`. Reviewer reproduced 10/10 release integration tests,379 main tests with18 existing numerical warnings,45 backing tests,both sanitized launchers,and the `python3 -S` serving import:424 current passes. **Step12 local code, portability, lifecycle,and packaging configuration accepted.** Docker image build/run remains NOT_RUN because the engine is inactive; no engine activation,image pull/build/run,or public deployment occurred. CanonicalMAINLEFT1:Step13 prospective shadow validation/usability. Separateoptionalinfra1:Docker smoke. Optionalablations2:arrivals/weather.
@@ -699,3 +705,39 @@ No retraining needed. Next documentation/prompts/MP-FC-008.md combines mandatory
     - Evidence directory: `experiments/reports/UI002/` populated with 5 receipts, 6 screenshots, and self-excluding `output_manifest.json` (11 files).
 * **Missing Evidence / Limitations:** Forward operational validation (Step 13) has not yet been conducted; commercial warehouse quotes remain 0/22 published in target UP districts; recent temporal coverage collapse (F3: 75.94%, F4: 72.26%) demonstrates model vulnerability during crisis regimes; container packaging marked `NOT_RUN` due to inactive local Docker daemon.
 * **Milestone Accounting:** UI002 is an interface presentation refinement under accepted Step 11; canonical Step 11 remains verified and closed. Step 12 local code and packaging verification is completed; container image build and execution remain `NOT_RUN` pending Docker daemon activation approval. Exactly **1 main research milestone remains**: **Step 13 (Forward Validation & Usability)**, plus **2 optional ablations** (Arrivals, Weather).
+
+
+---
+
+### [2026-11-13T06:05:00+05:30] Task MP-FINAL-013
+* **Status:** Complete (Final UI Defect Closures, Authoritative Server Waterfall Decomposition, Dynamic Provenance Hashes, Epistemic Timestamp Separation, Frozen Prospective Validation Protocol & Shadow Registry CLI, Realistic Usability Study Protocol & Technical Rehearsal, Academic Feature Scorecard).
+* **Baseline Commit:** `6af1dbc026259993326344f4d981ccb9b6a3bad5`
+* **Changes:**
+  - **Six UI002 Review Findings Closed:**
+    1. *Break-Even Analytical Formulation Sign Parity:* Corrected equation in `src/static/index.html` to $P^* = \frac{P_0(1+f) + c + (1-L)t_l - t_n}{(1-L)(1-d)}$. Verified exact numerical parity with Decimal server logic ($t_n=10, t_l=20 \implies P^* = 2,611.84$ INR/q).
+    2. *Authoritative Server Waterfall Decomposition:* Added `waterfall_components` to `ResearchEconomicResult` in `src/economic_model.py`. Renders 10 exact Decimal steps in `src/static/app.js`. Preserved blank-vs-zero semantics: missing cost parameters render `Unavailable (Missing Cost)`.
+    3. *Dynamic Reproducibility Drawer Hashes:* `src/service.py` dynamically hashes `latest_observation_index.json` on startup and exposes it via `/api/v1/health` capabilities metadata. Drawer reflects live hashes (`45c9dd75...`, `3d3bc047...`) and reverts to `Unavailable` when service degrades.
+    4. *Epistemic Timestamp Separation:* Disentangled temporal references: snapshot dataset creation timestamp (`generated_at_utc`), server runtime process startup time (`server_time_utc`), and IST observation calendar date are distinctly labeled in the DOM.
+    5. *Explicit Negative Delta Sign Formatting:* Repaired `renderPriceMovement` to prepend an explicit minus sign (`− ₹ X.XX (−X.XX%)`) for negative changes.
+    6. *Print Series Identity & DOM Numeric Verification:* Added `#print-series-identity` element in `index.html` and `.print-series-header` in `styles.css`. Headless Chromium print emulation screenshot confirmed series identity retention.
+  - **Prospective Shadow Validation Protocol & Tooling (Step 13):**
+    - Protocol `APMC-PV-2026-V1` frozen in `documentation/FORWARD_VALIDATION_PROTOCOL.md` and `experiments/configs/forward_validation_protocol_v1.json`.
+    - Implemented `src/prospective_shadow.py` with append-only JSONL shadow registry, SHA-256 chaining, process-safe file locking (`fcntl`), and subcommands (`init`, `validate-snapshot`, `issue`, `import-outcomes`, `match`, `scorecard`).
+    - Added unit test suite `tests/test_prospective_shadow.py` (**6/6 passed** in 0.03s).
+    - Executed real smoke test on `latest_observation_index.json` (dated 2026-11-11, evaluated 2026-11-13 IST): honestly recorded 9 staleness abstentions (age: 2 days $> 1$ day allowed) and 2 review abstentions with 0 fabricated forecasts. Scorecard reported `EMPIRICAL_PENDING`.
+  - **Usability Study Protocol & Technical Rehearsal:**
+    - Authored `documentation/USABILITY_STUDY_PROTOCOL.md` detailing 6 APMC evaluator tasks, informed consent form, and Brooke (1996) System Usability Scale (SUS) framework.
+    - Conducted evaluator technical rehearsal across all 6 tasks: all flows passed without errors in $< 20$s per task.
+  - **Academic Feature Inventory & Model Scorecard:**
+    - Updated `documentation/PROJECT_FEATURES_AND_SCORECARD.md` establishing model trade-offs, literature benchmarks with verified DOIs, regression-vs-classification framing, and the optional RAG architectural recommendation.
+  - **Verification & Acceptance Evidence:**
+    - Final acceptance test driver (`experiments/reviews/test_final013_acceptance.js`): **17/17 checks passed** (100%).
+    - Interactive browser flows (`experiments/reviews/test_interactive_browser_flows.js`): **21/21 checks passed** (100%).
+    - Review gates check (`experiments/reviews/check_app001a_review_gates.py`): **29/29 passed** (100%).
+    - Pytest unit suite (`tests/`): **385 passed**, 18 warnings in 11.65s.
+    - Backing suite (`backing/`): **45 passed** in 5.38s.
+    - Clean checkout serving tests (`test_ui_serving.py`, `test_integration_release.py`): **16 passed** in 0.95s.
+    - Total combined regression: **508 passed, 0 failures, 18 numerical warnings preserved**.
+    - Evidence directory: `experiments/reports/FINAL013/` populated with 2 receipts, 4 screenshots, `summary.md`, and self-excluding `output_manifest.json` (7 files).
+* **Missing Evidence / Limitations:** Real prospective out-of-sample forward outcomes (Step 13) cannot be manufactured and await future calendar observation dates; usability trial participant Likert scores cannot be fabricated without human subjects; commercial warehouse quotes remain 0/22 published in target UP districts; local Docker daemon remains `NOT_RUN` (native standard-library serving is fully operational).
+* **Milestone Accounting:** Step 13 prospective validation protocol and shadow tooling are **ENGINEERING_COMPLETE_EMPIRICAL_PENDING**. Usability study is **TECHNICAL_REHEARSAL_COMPLETE_FIELD_TRIAL_PENDING**. Container packaging is **NOT_RUN** (local infrastructure decision). Exactly **0 engineering milestones** remain. Exactly **2 optional ablations** remain (Arrivals, Weather).

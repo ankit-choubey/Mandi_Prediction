@@ -1035,6 +1035,8 @@ legend {
   padding: 1.25rem;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .waterfall-title {
@@ -1070,6 +1072,13 @@ legend {
   border-radius: var(--radius-sm);
   padding: 1rem 1.125rem;
   margin-bottom: 1rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#econ-disclosures-list li {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .alert-amber {
@@ -1196,6 +1205,10 @@ legend {
   }
 }
 
+.print-series-header {
+  display: none;
+}
+
 @media print {
   body {
     background: #ffffff !important;
@@ -1207,6 +1220,20 @@ legend {
   #btn-use-in-calc, #btn-export-receipt, .skip-link, .stale-banner,
   #series-selector-form, .tab-btn {
     display: none !important;
+  }
+
+  .print-series-header {
+    display: block !important;
+    font-size: 11pt;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333333;
+  }
+
+  #obs-verified-card.active-card,
+  #obs-review-card.active-card {
+    display: block !important;
   }
 
   .tab-panel {

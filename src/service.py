@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, date, timezone, timedelta
 import csv
+import hashlib
 import json
 import math
 import os
@@ -114,8 +115,10 @@ class MandiMarketService:
                 self.index_error = f"Market price index file exceeds 10 MB limit ({file_size} bytes)"
                 return
 
-            with open(self.latest_index_path, "r", encoding="utf-8") as f:
-                payload = json.load(f)
+            with open(self.latest_index_path, "rb") as f:
+                raw_bytes = f.read()
+            index_file_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+            payload = json.loads(raw_bytes.decode("utf-8"))
 
             if not isinstance(payload, dict):
                 self.index_loaded = False
@@ -178,6 +181,7 @@ class MandiMarketService:
                 "generated_at_utc": payload.get("generated_at_utc"),
                 "total_series_indexed": len(self.series_data),
                 "composite_source_sha256": payload.get("composite_source_sha256"),
+                "index_file_sha256": index_file_sha256,
             }
             self.index_loaded = True
             self.index_error = None
@@ -210,6 +214,7 @@ class MandiMarketService:
                     "total_series": len(self.series_data),
                     "index_version": self.index_metadata.get("index_version"),
                     "generated_at_utc": self.index_metadata.get("generated_at_utc"),
+                    "index_file_sha256": self.index_metadata.get("index_file_sha256"),
                     "source_sha256": self.index_metadata.get("composite_source_sha256"),
                 },
             )
@@ -274,14 +279,16 @@ class MandiMarketService:
         )
 
         process_status = "HEALTHY" if self.index_loaded else "DEGRADED"
+        startup_time_utc = self.start_datetime_utc.isoformat().replace("+00:00", "Z")
 
         return HealthResponseData(
             process_status=process_status,
             uptime_seconds=round(uptime, 2),
-            server_time_utc=now_utc.isoformat(),
+            server_time_utc=now_utc.isoformat().replace("+00:00", "Z"),
             server_time_ist=now_ist.isoformat(),
             date_policy_timezone="Asia/Kolkata (UTC+05:30)",
             capabilities=capabilities,
+            startup_time_utc=startup_time_utc,
         )
 
     def get_catalog(self) -> CatalogData:

@@ -24,4 +24,5 @@ env/
 /data/imported_snapshots/
 /data/interim/
 /data/live_snapshots/
+/data/shadow_registry/
 /experiments/outputs/

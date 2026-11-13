@@ -1,0 +1,634 @@
+{
+  "task_id": "MP-FINAL-013",
+  "timestamp_utc": "2026-11-13T00:35:58.691Z",
+  "all_passed": true,
+  "total_checks": 17,
+  "passed_count": 17,
+  "failed_count": 0,
+  "checks": [
+    {
+      "id": "CHECK_01_HEALTHY_TIMESTAMPS",
+      "description": "Healthy server loads with distinct snapshot import timestamp and catalog statistics",
+      "passed": true,
+      "details": {
+        "badge": "Service: HEALTHY",
+        "serviceAsOf": "Snapshot: 2026-11-12 13:40:23 UTC (Imported)",
+        "totalSeries": "30",
+        "acceptedSeries": "26",
+        "reviewSeries": "4"
+      }
+    },
+    {
+      "id": "CHECK_02_DRAWER_PROVENANCE_HASHES",
+      "description": "Reproducibility drawer dynamically reflects valid index and composite source SHA-256",
+      "passed": true,
+      "details": {
+        "indexSha": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+        "sourceSha": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11"
+      }
+    },
+    {
+      "id": "CHECK_03_BREAK_EVEN_FORMULA_SIGNS",
+      "description": "Visible break-even formula displays correct sign: +(1-L)t_l - t_n",
+      "passed": true,
+      "details": {
+        "foundTextSnippet": "P* = [P_0(1+f) + c + (1-L)t_l - t_n] / [(1-L)(1-d)]\n              Break-Even Fut"
+      }
+    },
+    {
+      "id": "CHECK_04_EXACT_OBSERVATION_AND_PRINT_HEADER",
+      "description": "Lucknow Banthara Wheat Dara FAQ renders ₹ 2721.00, 2026-11-11, and print series header",
+      "passed": true,
+      "details": {
+        "price": "₹ 2721.00",
+        "date": "2026-11-11",
+        "age": "2 days old (India Calendar) (2026-11-11)",
+        "printHeader": "Selected Series: Wheat (Dara/FAQ) — Banthara, Lucknow [Observed: 2026-11-11, Modal Price: ₹ 2721.00/q]",
+        "activeCard": true
+      }
+    },
+    {
+      "id": "CHECK_05_SINGLE_OBSERVATION_PRICE_MOVEMENT",
+      "description": "Single observation truthfully renders unavailable without trend inference",
+      "passed": true,
+      "details": {
+        "badge": "CAPABILITY_UNAVAILABLE",
+        "content": "Price change unavailable — a second verified observation is required.\n        \n          Dataset-first snapshot mode: currently containing 1 observation per series.\n          In accordance with scientific truth-preserving rules, price change cannot be inferred from min/max spread, model predictions, or hypothetical fixtures. A second verified observation on a distinct date is required to establish temporal direction."
+      }
+    },
+    {
+      "id": "CHECK_06_NEGATIVE_DELTA_MINUS_SIGN",
+      "description": "Negative snapshot difference explicitly displays minus sign on currency and percentage",
+      "passed": true,
+      "details": {
+        "deltaText": "− ₹ 79.00 (−2.82%)",
+        "hasMinus": true
+      }
+    },
+    {
+      "id": "CHECK_07_FIXTURE_AND_WATERFALL_DECIMAL_PARITY",
+      "description": "Reference fixture (+470 INR) renders post-storage gross 25970, direct cost 500, net hold 25470, gain +470",
+      "passed": true,
+      "details": {
+        "fixData": {
+          "grossSell": "₹ 25,000.00",
+          "netSell": "₹ 25,000.00",
+          "holdProceeds": "₹ 25,470.00",
+          "deltaR": "+ ₹ 470.00",
+          "breakeven": "₹ 2,602.04",
+          "waterfallRows": [
+            {
+              "step": "1. Immediate Gross Sale",
+              "formula": "Q × P₀",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "2. Spot Transaction Fee",
+              "formula": "− (Q × t_n)",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "3. Net Immediate Proceeds",
+              "formula": "R_sell,net = Gross − Spot Fee",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "4. Post-Storage Gross Value",
+              "formula": "Q × (1−L)(1−d) × P_H",
+              "amount": "₹ 25,970.00"
+            },
+            {
+              "step": "5. Direct Storage & Handling",
+              "formula": "− (Q × c)",
+              "amount": "− ₹ 500.00"
+            },
+            {
+              "step": "6. Post-Storage Transaction Fee",
+              "formula": "− (Q(1−L) × t_l)",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "7. Carrying / Financing Cost",
+              "formula": "− (Q × P₀ × f) [None]",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "8. Expected Net Holding Proceeds",
+              "formula": "R_hold = Value − Costs − Fees − Carrying",
+              "amount": "₹ 25,470.00"
+            },
+            {
+              "step": "9. Net Incremental Benefit (ΔR)",
+              "formula": "R_hold − R_sell,net",
+              "amount": "+ ₹ 470.00"
+            },
+            {
+              "step": "10. Break-Even Future Price (P*)",
+              "formula": "[P₀(1+f) + c + (1−L)t_l − t_n] / [(1−L)(1−d)]",
+              "amount": "₹ 2,602.04 / q"
+            }
+          ]
+        },
+        "row4PostGross": {
+          "step": "4. Post-Storage Gross Value",
+          "formula": "Q × (1−L)(1−d) × P_H",
+          "amount": "₹ 25,970.00"
+        },
+        "row5DirectCost": {
+          "step": "5. Direct Storage & Handling",
+          "formula": "− (Q × c)",
+          "amount": "− ₹ 500.00"
+        },
+        "row8NetHold": {
+          "step": "8. Expected Net Holding Proceeds",
+          "formula": "R_hold = Value − Costs − Fees − Carrying",
+          "amount": "₹ 25,470.00"
+        },
+        "row9Delta": {
+          "step": "9. Net Incremental Benefit (ΔR)",
+          "formula": "R_hold − R_sell,net",
+          "amount": "+ ₹ 470.00"
+        }
+      }
+    },
+    {
+      "id": "CHECK_08_FINANCING_WATERFALL_PARITY",
+      "description": "Financing 7% carrying cost renders − ₹ 33.56, net hold ₹ 25,436.44, incremental benefit + ₹ 436.44",
+      "passed": true,
+      "details": {
+        "finData": {
+          "deltaR": "+ ₹ 436.44",
+          "waterfallRows": [
+            {
+              "step": "1. Immediate Gross Sale",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "2. Spot Transaction Fee",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "3. Net Immediate Proceeds",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "4. Post-Storage Gross Value",
+              "amount": "₹ 25,970.00"
+            },
+            {
+              "step": "5. Direct Storage & Handling",
+              "amount": "− ₹ 500.00"
+            },
+            {
+              "step": "6. Post-Storage Transaction Fee",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "7. Carrying / Financing Cost",
+              "amount": "− ₹ 33.56"
+            },
+            {
+              "step": "8. Expected Net Holding Proceeds",
+              "amount": "₹ 25,436.44"
+            },
+            {
+              "step": "9. Net Incremental Benefit (ΔR)",
+              "amount": "+ ₹ 436.44"
+            },
+            {
+              "step": "10. Break-Even Future Price (P*)",
+              "amount": "₹ 2,605.47 / q"
+            }
+          ]
+        },
+        "finCarryingRow": {
+          "step": "7. Carrying / Financing Cost",
+          "amount": "− ₹ 33.56"
+        },
+        "finHoldRow": {
+          "step": "8. Expected Net Holding Proceeds",
+          "amount": "₹ 25,436.44"
+        }
+      }
+    },
+    {
+      "id": "CHECK_09_NONZERO_FEES_DECIMAL_PARITY",
+      "description": "Nonzero fees (10/20) yield spot fee 100, post fee 196, net sell 24900, net hold 25274, gain +374, break-even 2611.84",
+      "passed": true,
+      "details": {
+        "feeData": {
+          "netSell": "₹ 24,900.00",
+          "holdProceeds": "₹ 25,274.00",
+          "deltaR": "+ ₹ 374.00",
+          "breakeven": "₹ 2,611.84",
+          "waterfallRows": [
+            {
+              "step": "1. Immediate Gross Sale",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "2. Spot Transaction Fee",
+              "amount": "− ₹ 100.00"
+            },
+            {
+              "step": "3. Net Immediate Proceeds",
+              "amount": "₹ 24,900.00"
+            },
+            {
+              "step": "4. Post-Storage Gross Value",
+              "amount": "₹ 25,970.00"
+            },
+            {
+              "step": "5. Direct Storage & Handling",
+              "amount": "− ₹ 500.00"
+            },
+            {
+              "step": "6. Post-Storage Transaction Fee",
+              "amount": "− ₹ 196.00"
+            },
+            {
+              "step": "7. Carrying / Financing Cost",
+              "amount": "₹ 0.00"
+            },
+            {
+              "step": "8. Expected Net Holding Proceeds",
+              "amount": "₹ 25,274.00"
+            },
+            {
+              "step": "9. Net Incremental Benefit (ΔR)",
+              "amount": "+ ₹ 374.00"
+            },
+            {
+              "step": "10. Break-Even Future Price (P*)",
+              "amount": "₹ 2,611.84 / q"
+            }
+          ]
+        },
+        "spotFeeRow": {
+          "step": "2. Spot Transaction Fee",
+          "amount": "− ₹ 100.00"
+        },
+        "postFeeRow": {
+          "step": "6. Post-Storage Transaction Fee",
+          "amount": "− ₹ 196.00"
+        }
+      }
+    },
+    {
+      "id": "CHECK_10_OMITTED_COST_PRESERVES_UNAVAILABLE",
+      "description": "Blank storage cost marks post-storage gross, direct cost, and hold proceeds as Unavailable (Missing Cost)",
+      "passed": true,
+      "details": {
+        "blankData": {
+          "holdProceeds": "Unavailable (Missing Cost)",
+          "deltaR": "Unavailable (Missing Cost)",
+          "breakeven": "Unavailable",
+          "waterfallRows": [
+            {
+              "step": "1. Immediate Gross Sale",
+              "amount": "₹ 25,000.00"
+            },
+            {
+              "step": "2. Spot Transaction Fee",
+              "amount": "− ₹ 100.00"
+            },
+            {
+              "step": "3. Net Immediate Proceeds",
+              "amount": "₹ 24,900.00"
+            },
+            {
+              "step": "4. Post-Storage Gross Value",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "5. Direct Storage & Handling",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "6. Post-Storage Transaction Fee",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "7. Carrying / Financing Cost",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "8. Expected Net Holding Proceeds",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "9. Net Incremental Benefit (ΔR)",
+              "amount": "Unavailable (Missing Cost)"
+            },
+            {
+              "step": "10. Break-Even Future Price (P*)",
+              "amount": "Unavailable (Missing Cost)"
+            }
+          ]
+        },
+        "postGrossBlank": {
+          "step": "4. Post-Storage Gross Value",
+          "amount": "Unavailable (Missing Cost)"
+        },
+        "directCostBlank": {
+          "step": "5. Direct Storage & Handling",
+          "amount": "Unavailable (Missing Cost)"
+        }
+      }
+    },
+    {
+      "id": "CHECK_11_RECEIPT_JSON_VALIDITY",
+      "description": "Exported receipt JSON contains explicit task_id MP-FINAL-013, unsigned disclaimer, and exact numbers",
+      "passed": true,
+      "details": {
+        "receipt_id": "REC-TEST-VERIFY",
+        "task_id": "MP-FINAL-013",
+        "receipt_nature": "Unsigned JSON evaluation receipt for researcher recordkeeping; not a cryptographically signed instrument.",
+        "advisory_status": "BLOCKED",
+        "provenance_mode": "USER_ENTERED",
+        "r_sell_net": 25000,
+        "r_hold_point_net": 25470,
+        "delta_r_point": 470,
+        "p_break_even": 2602.0408163265306
+      }
+    },
+    {
+      "id": "CHECK_12_PRINT_SERIES_IDENTITY_RETAINED",
+      "description": "Print stylesheet cleanly hides interactive form while retaining selected series header and card",
+      "passed": true,
+      "details": {
+        "formHidden": true,
+        "printHeaderVisible": true,
+        "printHeaderText": "Selected Series: Wheat (Dara/FAQ) — Banthara, Lucknow [Observed: 2026-11-11, Modal Price: ₹ 2721.00/q]",
+        "cardVisible": true
+      }
+    },
+    {
+      "id": "CHECK_13_VIEWPORT_DESKTOP_1440X900",
+      "description": "Viewport desktop_1440x900 (1440x900) has zero horizontal overflow",
+      "passed": true,
+      "details": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "wideElements": [
+          {
+            "tag": "HTML",
+            "id": "",
+            "className": "",
+            "sw": 1440,
+            "ow": 1440
+          },
+          {
+            "tag": "BODY",
+            "id": "",
+            "className": "",
+            "sw": 1440,
+            "ow": 1440
+          },
+          {
+            "tag": "HEADER",
+            "id": "",
+            "className": "app-header",
+            "sw": 1440,
+            "ow": 1440
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "container",
+            "sw": 1220,
+            "ow": 1220
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-inner",
+            "sw": 1180,
+            "ow": 1180
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-brand",
+            "sw": 538,
+            "ow": 538
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-title-block",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "H1",
+            "id": "",
+            "className": "",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "P",
+            "id": "",
+            "className": "",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-meta",
+            "sw": 630,
+            "ow": 630
+          }
+        ]
+      }
+    },
+    {
+      "id": "CHECK_13_VIEWPORT_DESKTOP_1280X800",
+      "description": "Viewport desktop_1280x800 (1280x800) has zero horizontal overflow",
+      "passed": true,
+      "details": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "wideElements": [
+          {
+            "tag": "HTML",
+            "id": "",
+            "className": "",
+            "sw": 1280,
+            "ow": 1280
+          },
+          {
+            "tag": "BODY",
+            "id": "",
+            "className": "",
+            "sw": 1280,
+            "ow": 1280
+          },
+          {
+            "tag": "HEADER",
+            "id": "",
+            "className": "app-header",
+            "sw": 1280,
+            "ow": 1280
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "container",
+            "sw": 1220,
+            "ow": 1220
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-inner",
+            "sw": 1180,
+            "ow": 1180
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-brand",
+            "sw": 538,
+            "ow": 538
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-title-block",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "H1",
+            "id": "",
+            "className": "",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "P",
+            "id": "",
+            "className": "",
+            "sw": 484,
+            "ow": 484
+          },
+          {
+            "tag": "DIV",
+            "id": "",
+            "className": "header-meta",
+            "sw": 630,
+            "ow": 630
+          }
+        ]
+      }
+    },
+    {
+      "id": "CHECK_13_VIEWPORT_MOBILE_375X667",
+      "description": "Viewport mobile_375x667 (375x667) has zero horizontal overflow",
+      "passed": true,
+      "details": {
+        "scrollWidth": 375,
+        "clientWidth": 375,
+        "wideElements": [
+          {
+            "tag": "UL",
+            "id": "",
+            "className": "tab-list",
+            "sw": 988,
+            "ow": 335
+          }
+        ]
+      }
+    },
+    {
+      "id": "CHECK_14_DEGRADED_MODE_RESILIENCE",
+      "description": "Absent snapshot sets service to DEGRADED, clears drawer hashes to Unavailable",
+      "passed": true,
+      "details": {
+        "badge": "Service: DEGRADED",
+        "serviceAsOf": "Server UTC: 2026-11-13 00:35:56Z",
+        "drawerIndexSha": "Unavailable",
+        "drawerSourceSha": "Unavailable"
+      }
+    },
+    {
+      "id": "CHECK_15_PROSPECTIVE_SHADOW_CLI_SMOKE",
+      "description": "Prospective shadow CLI runs init, validate, issue (with honest 2-day staleness abstention), and scorecard",
+      "passed": true,
+      "details": {
+        "initJson": {
+          "status": "EXISTING_REGISTRY_PRESERVED",
+          "registry_dir": "/Users/theankit/Documents/AK/Projects/Mandi_Prediction/data/shadow_registry",
+          "created_at_utc": "2026-11-13T00:18:27.182272Z",
+          "config_hash": "d1f44e872e790c0f14c8ea3f820b23088d0dcd6a09562c192e644e26ac665599"
+        },
+        "valJson": {
+          "snapshot_path": "data/imported_snapshots/latest_observation_index.json",
+          "file_size_bytes": 41194,
+          "file_sha256": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+          "composite_source_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+          "total_series_rows": 30,
+          "valid_series_count": 30,
+          "accepted_eligible_count": 30,
+          "review_withheld_count": 0,
+          "districts_covered": [
+            "Ghaziabad",
+            "Jhansi",
+            "Kanpur",
+            "Lucknow",
+            "Unnao"
+          ],
+          "commodities_covered": [
+            "Arecanut(Betelnut/Supari)",
+            "Firewood",
+            "Fish",
+            "Ginger(Green)",
+            "Groundnut",
+            "Gur(Jaggery)",
+            "Lemon",
+            "Mentha Oil",
+            "Onion",
+            "Paddy(Basmati)",
+            "Paddy(Common)",
+            "Potato",
+            "Wheat",
+            "Wood"
+          ],
+          "generated_at_utc": "2026-11-12T13:40:23.620822+00:00"
+        },
+        "issueJson": {
+          "status": "DRY_RUN_COMPLETED",
+          "snapshot_validated": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+          "current_date_ist": "2026-11-13",
+          "records_processed": 11,
+          "issued_point_forecasts": 0,
+          "abstained_stale": 9,
+          "abstained_review": 2,
+          "abstained_out_of_scope": 19,
+          "skipped_existing_duplicates": 0,
+          "total_new_appended": 0
+        },
+        "scoreJson": {
+          "scorecard_status": "EMPIRICAL_PENDING",
+          "message": "Zero matured forward outcomes available. Forward horizons have not yet closed.",
+          "total_forecasts_issued": 0,
+          "total_forecasts_abstained": 0,
+          "pending_maturation_count": 0,
+          "unmatched_closed_count": 0,
+          "matured_matches_count": 0,
+          "metrics": {
+            "primary_mae_inr": null,
+            "rmse_inr": null,
+            "mean_bias_inr": null,
+            "mape_pct": null,
+            "within_5_pct_tolerance_pct": null
+          },
+          "advisory_status": "BLOCKED"
+        }
+      }
+    }
+  ]
+}

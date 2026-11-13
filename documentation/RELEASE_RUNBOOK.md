@@ -160,3 +160,63 @@ To transition this research release candidate to prospective forward validation 
 6. **Farmer Usability & Advisory Safeties:**
    - Advisory action remains permanently `BLOCKED` in software until prospective coverage ($\ge 90\%$) and error criteria are met.
    - Farmer usability testing must focus on interface comprehension, transparent uncertainty communication, and storage break-even arithmetic, with clear disclaimers that output constitutes academic research and not financial advice.
+
+---
+
+## 8. Prospective Shadow Validation CLI Runbook (`src/prospective_shadow.py`)
+
+Under Task MP-FINAL-013, the prospective shadow registry and evaluation tool was delivered in `src/prospective_shadow.py`. It requires zero external pip packages and runs entirely on the Python standard library.
+
+### 8.1 Initialize Registry
+Initializes the append-only registry directory, metadata, and binds the frozen protocol configuration (`experiments/configs/forward_validation_protocol_v1.json`):
+```bash
+python3 src/prospective_shadow.py init \
+  --registry data/shadow_registry \
+  --protocol experiments/configs/forward_validation_protocol_v1.json
+```
+
+### 8.2 Validate Input Snapshot
+Validates snapshot size ($\le 10$ MB, $\le 50,000$ rows), schema integrity, computes SHA-256 hash, and verifies coverage:
+```bash
+python3 src/prospective_shadow.py validate-snapshot \
+  --snapshot data/imported_snapshots/latest_observation_index.json
+```
+
+### 8.3 Issue Shadow Predictions (Dry Run & Live)
+Evaluates candidates against snapshot. Automatically applies fail-closed freshness policy ($\le 1$ calendar day allowed in IST) and review-status withholding:
+```bash
+# Dry run (default: previews issuance and logs honest abstentions without mutating registry)
+python3 src/prospective_shadow.py issue \
+  --snapshot data/imported_snapshots/latest_observation_index.json
+
+# Live append (commits to append-only JSONL shadow ledger with SHA-256 chaining)
+python3 src/prospective_shadow.py issue \
+  --snapshot data/imported_snapshots/latest_observation_index.json \
+  --live
+```
+
+### 8.4 Import Future Outcomes & Match Mature Pairs
+Ingests fresh outcomes when future calendar dates arrive, and matches them to issued forecasts within the $6 \le \Delta t \le 8$ day maturity window ($T+7$ nominal):
+```bash
+# Ingest ground-truth observation snapshot
+python3 src/prospective_shadow.py import-outcomes \
+  --snapshot data/imported_snapshots/future_observation_index_20261118.json \
+  --live
+
+# Match matured pairs using protocol tie-breaking rules
+python3 src/prospective_shadow.py match --live
+```
+
+### 8.5 Generate Audited Scorecard
+Evaluates candidate models against the Naive Persistence reference standard on primary MAE, RMSE, bias, MAPE, and within 5% tolerance:
+```bash
+python3 src/prospective_shadow.py scorecard
+```
+When forward outcomes have not yet matured, the scorecard honestly outputs:
+```json
+{
+  "scorecard_status": "EMPIRICAL_PENDING",
+  "message": "Zero matured forward outcomes available. Forward horizons have not yet closed.",
+  "advisory_status": "BLOCKED"
+}
+```

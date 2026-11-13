@@ -126,6 +126,7 @@ class HealthResponseData:
     server_time_ist: str
     date_policy_timezone: str
     capabilities: Dict[str, ServiceCapability]
+    startup_time_utc: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -134,6 +135,7 @@ class HealthResponseData:
             "server_time_utc": self.server_time_utc,
             "server_time_ist": self.server_time_ist,
             "date_policy_timezone": self.date_policy_timezone,
+            "startup_time_utc": self.startup_time_utc,
             "capabilities": {k: v.to_dict() for k, v in self.capabilities.items()},
         }
 

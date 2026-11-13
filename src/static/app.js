@@ -34,6 +34,7 @@
     // Reproducibility Drawer
     drawerIndexSha: document.getElementById('drawer-index-sha'),
     drawerSourceSha: document.getElementById('drawer-source-sha'),
+    printSeriesIdentity: document.getElementById('print-series-identity'),
 
     // Navigation Tabs & Panels
     tabButtons: document.querySelectorAll('.tab-btn'),
@@ -248,21 +249,42 @@
         elements.badgeHealth.textContent = `Service: ${status}`;
         elements.badgeHealth.className = status === 'HEALTHY' ? 'badge badge-success' : 'badge badge-amber';
 
-        if (resp.data.as_of_utc) {
-          const dt = new Date(resp.data.as_of_utc);
-          elements.serviceAsOf.textContent = `Snapshot UTC: ${dt.toISOString().replace('.000Z', 'Z')}`;
+        const serverUtc = resp.data.server_time_utc;
+        const pricesCap = resp.data.capabilities?.prices;
+        const genUtc = pricesCap?.metadata?.generated_at_utc;
+
+        if (elements.serviceAsOf) {
+          if (status === 'HEALTHY' && genUtc) {
+            elements.serviceAsOf.textContent = `Snapshot: ${genUtc.substring(0, 19).replace('T', ' ')} UTC (Imported)`;
+          } else if (serverUtc) {
+            elements.serviceAsOf.textContent = `Server UTC: ${serverUtc.substring(0, 19).replace('T', ' ')}Z`;
+          } else {
+            elements.serviceAsOf.textContent = 'Server Snapshot: Unavailable';
+          }
         }
 
-        // Populate drawer source hash if exposed safely in prices capability
-        const priceMeta = resp.data.capabilities?.prices?.metadata;
-        if (priceMeta && priceMeta.source_sha256 && elements.drawerSourceSha) {
-          elements.drawerSourceSha.textContent = priceMeta.source_sha256;
+        // Dynamically populate drawer hashes from loaded prices capability
+        const priceMeta = pricesCap?.metadata;
+        if (elements.drawerIndexSha) {
+          elements.drawerIndexSha.textContent = (status === 'HEALTHY' && priceMeta?.index_file_sha256)
+            ? priceMeta.index_file_sha256
+            : 'Unavailable';
+        }
+        if (elements.drawerSourceSha) {
+          elements.drawerSourceSha.textContent = (status === 'HEALTHY' && priceMeta?.source_sha256)
+            ? priceMeta.source_sha256
+            : 'Unavailable';
         }
       }
     } catch (err) {
       console.error('Failed to load health:', err);
       elements.badgeHealth.textContent = 'Service: Degraded';
       elements.badgeHealth.className = 'badge badge-danger';
+      if (elements.serviceAsOf) {
+        elements.serviceAsOf.textContent = 'Server Snapshot: Unavailable';
+      }
+      if (elements.drawerIndexSha) elements.drawerIndexSha.textContent = 'Unavailable';
+      if (elements.drawerSourceSha) elements.drawerSourceSha.textContent = 'Unavailable';
     }
   }
 
@@ -528,7 +550,12 @@
     state.latestObservation = null;
     elements.obsEmptyState.style.display = 'block';
     elements.obsVerifiedCard.style.display = 'none';
+    elements.obsVerifiedCard.classList.remove('active-card');
     elements.obsReviewCard.style.display = 'none';
+    elements.obsReviewCard.classList.remove('active-card');
+    if (elements.printSeriesIdentity) {
+      elements.printSeriesIdentity.textContent = 'Selected Series: None Selected';
+    }
   }
 
   // Display Exact Selected Series
@@ -553,7 +580,9 @@
     if (match.price_display_permitted) {
       // Verified Accepted Series Card
       elements.obsReviewCard.style.display = 'none';
+      elements.obsReviewCard.classList.remove('active-card');
       elements.obsVerifiedCard.style.display = 'block';
+      elements.obsVerifiedCard.classList.add('active-card');
 
       elements.obsSeriesTitle.textContent = `${match.commodity} (${match.variety} - Grade ${match.grade})`;
       elements.obsMarketSubtitle.textContent = `${match.market} APMC, ${match.district} District`;
@@ -564,18 +593,28 @@
       elements.obsDate.textContent = match.observation_date || 'Unknown';
       elements.obsAge.textContent = formatServerAge(match.age_days, match.observation_date);
 
+      if (elements.printSeriesIdentity) {
+        elements.printSeriesIdentity.textContent = `Selected Series: ${match.commodity} (${match.variety}/${match.grade}) — ${match.market}, ${match.district} [Observed: ${match.observation_date}, Modal Price: ₹ ${Number(match.modal_price).toFixed(2)}/q]`;
+      }
+
       // Render Truth-Preserving Price Movement Panel
       renderPriceMovement(match);
     } else {
       // Review Preview Card (Price Withheld)
       elements.obsVerifiedCard.style.display = 'none';
+      elements.obsVerifiedCard.classList.remove('active-card');
       elements.obsReviewCard.style.display = 'block';
+      elements.obsReviewCard.classList.add('active-card');
 
       elements.revDistrict.textContent = match.district;
       elements.revMarket.textContent = `${match.market} (Unapproved Market Identity)`;
       elements.revCommodity.textContent = match.commodity;
       elements.revVarietyGrade.textContent = `${match.variety} / ${match.grade}`;
       elements.revDate.textContent = match.observation_date || 'Unknown';
+
+      if (elements.printSeriesIdentity) {
+        elements.printSeriesIdentity.textContent = `Selected Series (REVIEW WITHHELD): ${match.commodity} (${match.variety}/${match.grade}) — ${match.market}, ${match.district} [Observed: ${match.observation_date}, Price Withheld]`;
+      }
     }
   }
 
@@ -601,7 +640,10 @@
       const latest = distinctDateObs[distinctDateObs.length - 1];
       const deltaP = latest.modalPrice - prior.modalPrice;
       const pctChange = prior.modalPrice > 0 ? (deltaP / prior.modalPrice) * 100 : 0;
-      const deltaPrefix = deltaP >= 0 ? '+' : '';
+      const deltaPrefix = deltaP >= 0 ? '+ ' : '− ';
+      const pctPrefix = deltaP >= 0 ? '+' : '−';
+      const absDelta = Math.abs(deltaP).toFixed(2);
+      const absPct = Math.abs(pctChange).toFixed(2);
 
       if (elements.movementCapabilityBadge) {
         elements.movementCapabilityBadge.textContent = 'SNAPSHOT_COMPARISON';
@@ -613,7 +655,7 @@
       elements.priceMovementContent.innerHTML = `
         <div class="stat-label">Change between imported snapshots (Not market trend)</div>
         <div class="stat-value" style="font-size: 1.5rem;">
-          ${deltaPrefix}₹ ${Math.abs(deltaP).toFixed(2)} (${deltaPrefix}${pctChange.toFixed(2)}%)
+          ${deltaPrefix}₹ ${absDelta} (${pctPrefix}${absPct}%)
         </div>
         <div class="stat-desc">
           Observed between ${prior.date} (₹ ${prior.modalPrice.toFixed(2)}) and ${latest.date} (₹ ${latest.modalPrice.toFixed(2)}).
@@ -1058,7 +1100,8 @@
   function renderWaterfallDecomposition(data) {
     if (!elements.waterfallCard || !elements.waterfallTbody) return;
 
-    if (data.r_sell_gross === null || data.r_sell_gross === undefined) {
+    const wf = data.waterfall_components;
+    if (!wf) {
       elements.waterfallCard.style.display = 'none';
       return;
     }
@@ -1066,61 +1109,75 @@
     elements.waterfallCard.style.display = 'block';
     elements.waterfallTbody.innerHTML = '';
 
-    const holdVal = data.r_hold_point_net !== undefined && data.r_hold_point_net !== null
-      ? data.r_hold_point_net
-      : data.r_hold;
+    const formatComponent = (val, prefix = '', suffix = '') => {
+      if (val === null || val === undefined) return 'Unavailable (Missing Cost)';
+      const formatted = formatINR(Math.abs(val));
+      if (prefix === '−' && val === 0) return '₹ 0.00';
+      if (prefix) return `${prefix} ${formatted}${suffix}`;
+      return `${formatted}${suffix}`;
+    };
+
+    const formatDelta = (val) => {
+      if (val === null || val === undefined) return 'Unavailable (Missing Cost)';
+      if (val >= 0) return `+ ${formatINR(val)}`;
+      return `− ${formatINR(Math.abs(val))}`;
+    };
 
     const rows = [
       {
         step: '1. Immediate Gross Sale',
         formula: 'Q × P₀',
-        amount: formatINR(data.r_sell_gross),
+        amount: formatComponent(wf.step_1_immediate_gross),
       },
       {
         step: '2. Spot Transaction Fee',
         formula: '− (Q × t_n)',
-        amount: data.immediate_transaction_costs != null ? `− ${formatINR(data.immediate_transaction_costs)}` : '₹ 0.00',
+        amount: formatComponent(wf.step_2_spot_transaction_fee, '−'),
       },
       {
         step: '3. Net Immediate Proceeds',
         formula: 'R_sell,net = Gross − Spot Fee',
-        amount: formatINR(data.r_sell_net),
+        amount: formatComponent(wf.step_3_immediate_net),
       },
       {
         step: '4. Post-Storage Gross Value',
         formula: 'Q × (1−L)(1−d) × P_H',
-        amount: data.gross_storage_proceeds != null ? formatINR(data.gross_storage_proceeds) : (holdVal != null ? formatINR(holdVal + (data.total_direct_costs || 0) + (data.opportunity_cost || 0) + (data.later_transaction_costs || 0)) : 'Unavailable'),
+        amount: formatComponent(wf.step_4_post_storage_gross),
       },
       {
         step: '5. Direct Storage & Handling',
         formula: '− (Q × c)',
-        amount: data.total_direct_costs != null ? `− ${formatINR(data.total_direct_costs)}` : 'Unavailable',
+        amount: formatComponent(wf.step_5_direct_storage_handling, '−'),
       },
       {
         step: '6. Post-Storage Transaction Fee',
         formula: '− (Q(1−L) × t_l)',
-        amount: data.later_transaction_costs != null ? `− ${formatINR(data.later_transaction_costs)}` : '₹ 0.00',
+        amount: formatComponent(wf.step_6_post_storage_transaction_fee, '−'),
       },
       {
         step: '7. Carrying / Financing Cost',
-        formula: '− (Q × P₀ × r × T/365)',
-        amount: data.opportunity_cost != null ? `− ${formatINR(data.opportunity_cost)}` : '₹ 0.00',
+        formula: wf.carrying_cost_type === 'financing'
+          ? '− (Q × P₀ × r × T/365) [Financing]'
+          : (wf.carrying_cost_type === 'opportunity' ? '− (Q × P₀ × r × T/365) [Opportunity]' : '− (Q × P₀ × f) [None]'),
+        amount: formatComponent(wf.step_7_carrying_cost, '−'),
       },
       {
         step: '8. Expected Net Holding Proceeds',
-        formula: 'R_hold = Value − Costs − Fees',
-        amount: formatINR(holdVal),
+        formula: 'R_hold = Value − Costs − Fees − Carrying',
+        amount: formatComponent(wf.step_8_expected_net_holding),
       },
       {
         step: '9. Net Incremental Benefit (ΔR)',
         formula: 'R_hold − R_sell,net',
-        amount: data.delta_r_point != null ? (data.delta_r_point >= 0 ? `+ ${formatINR(data.delta_r_point)}` : `− ${formatINR(Math.abs(data.delta_r_point))}`) : 'Unavailable',
+        amount: formatDelta(wf.step_9_net_incremental_benefit),
         isTotal: true,
       },
       {
         step: '10. Break-Even Future Price (P*)',
-        formula: 'Target price where ΔR = 0',
-        amount: formatINR(data.p_break_even) + ' / q',
+        formula: '[P₀(1+f) + c + (1−L)t_l − t_n] / [(1−L)(1−d)]',
+        amount: wf.step_10_break_even_price !== null && wf.step_10_break_even_price !== undefined
+          ? `${formatINR(wf.step_10_break_even_price)} / q`
+          : 'Unavailable (Missing Cost)',
       },
     ];
 
@@ -1136,7 +1193,7 @@
     });
   }
 
-  // Download Research Economic Receipt as JSON
+  // Download Research Economic Receipt as JSON (Unsigned research export)
   function downloadReceipt() {
     if (!state.lastEconomicsResult) {
       alert('Please perform an economic evaluation before downloading a receipt.');
@@ -1145,7 +1202,8 @@
 
     const receipt = {
       receipt_id: 'REC-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
-      task_id: 'MP-UI-002',
+      task_id: 'MP-FINAL-013',
+      receipt_nature: 'Unsigned JSON evaluation receipt for researcher recordkeeping; not a cryptographically signed instrument.',
       generated_at_utc: new Date().toISOString(),
       system_name: 'APMC Mandi Intelligence System',
       software_version: '1.0.0-rc1',
@@ -1164,6 +1222,12 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
+
+  // Verification & Observability Hook
+  window.__APMC_APP__ = {
+    state,
+    downloadReceipt,
+  };
 
   // DOMContentLoaded Entry
   if (document.readyState === 'loading') {

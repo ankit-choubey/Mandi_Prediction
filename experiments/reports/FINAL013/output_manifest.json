@@ -1,0 +1,44 @@
+{
+  "manifest_version": "1.0.0",
+  "task_id": "MP-FINAL-013",
+  "generated_at_utc": "2026-11-13T00:35:58.692Z",
+  "output_directory": "experiments/reports/FINAL013",
+  "file_count": 7,
+  "files": {
+    "acceptance_checks_receipt.json": {
+      "relative_path": "experiments/reports/FINAL013/acceptance_checks_receipt.json",
+      "size_bytes": 20151,
+      "sha256": "b39e65ead56202a95184ea5e24e1ac636a654abcd9048c657453684646eb2e38"
+    },
+    "prospective_cli_smoke_receipt.json": {
+      "relative_path": "experiments/reports/FINAL013/prospective_cli_smoke_receipt.json",
+      "size_bytes": 2172,
+      "sha256": "7c107a93cd94e357fa6d42c3d4168e9a3ee9e8f831da4eb78f4dc03e5e298fd1"
+    },
+    "screenshot_desktop_1280x800.png": {
+      "relative_path": "experiments/reports/FINAL013/screenshot_desktop_1280x800.png",
+      "size_bytes": 118688,
+      "sha256": "93317e6f26c36ab12aaf2bf55cdfc6296fdf7bf1e9104eeb87d83fb989ef8b30"
+    },
+    "screenshot_desktop_1440x900.png": {
+      "relative_path": "experiments/reports/FINAL013/screenshot_desktop_1440x900.png",
+      "size_bytes": 137132,
+      "sha256": "fa083c224bdaa9a20255a12c27180f5d38bbc9c68fe74ded93f824c3a498a828"
+    },
+    "screenshot_mobile_375x667.png": {
+      "relative_path": "experiments/reports/FINAL013/screenshot_mobile_375x667.png",
+      "size_bytes": 55404,
+      "sha256": "5e4ee09fd49fc227bc62a730e38c79d3228b0e3b766a971edd26e8c54d61a9d7"
+    },
+    "screenshot_print_preview.png": {
+      "relative_path": "experiments/reports/FINAL013/screenshot_print_preview.png",
+      "size_bytes": 57212,
+      "sha256": "d70af6717596aa1d93b40791156a7182f0b8682460c3918509f227f655757fe9"
+    },
+    "summary.md": {
+      "relative_path": "experiments/reports/FINAL013/summary.md",
+      "size_bytes": 8815,
+      "sha256": "61cf5b2967614a672b30f4d0b5d0c23b5ba4eadb5edbccfeeaad805e118ff932"
+    }
+  }
+}

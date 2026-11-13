@@ -66,11 +66,16 @@
           </div>
           <div class="drawer-item">
             <span class="drawer-label">Index File SHA-256</span>
-            <span class="drawer-val" id="drawer-index-sha">45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4</span>
+            <span class="drawer-val" id="drawer-index-sha">--</span>
           </div>
           <div class="drawer-item">
             <span class="drawer-label">Composite Source SHA-256</span>
-            <span class="drawer-val" id="drawer-source-sha">3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11</span>
+            <span class="drawer-val" id="drawer-source-sha">--</span>
+          </div>
+          <div class="drawer-item" style="grid-column: 1 / -1;">
+            <span class="drawer-desc" style="font-size: 0.75rem; color: var(--color-slate); line-height: 1.4;">
+              Cryptographic hashes reflect currently loaded snapshot files. These runtime digests verify local file integrity and are not independently certified third-party timestamps.
+            </span>
           </div>
           <div class="drawer-item">
             <span class="drawer-label">Serving Dependency Runtime</span>
@@ -124,6 +129,10 @@
          PANEL 1: MARKET OVERVIEW & EXACT SERIES SELECTION
          ====================================================================== -->
     <section id="panel-market" class="tab-panel active" role="tabpanel" aria-labelledby="tab-market">
+
+      <div id="print-series-identity" class="print-series-header">
+        Selected Series: None Selected
+      </div>
 
       <!-- Catalog Overview Statistics -->
       <div class="stat-grid" aria-label="Catalog Overview Statistics">
@@ -527,7 +536,7 @@
               <span class="equation-desc">Net Incremental Storage Benefit</span>
             </div>
             <div class="equation-item">
-              <span class="equation-math">P* = [P_0(1+f) + c + t_n - (1-L)t_l] / [(1-L)(1-d)]</span>
+              <span class="equation-math">P* = [P_0(1+f) + c + (1-L)t_l - t_n] / [(1-L)(1-d)]</span>
               <span class="equation-desc">Break-Even Future Price (&Delta;R = 0)</span>
             </div>
           </div>

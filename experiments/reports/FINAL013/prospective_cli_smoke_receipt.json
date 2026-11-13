@@ -1,0 +1,71 @@
+{
+  "initJson": {
+    "status": "EXISTING_REGISTRY_PRESERVED",
+    "registry_dir": "/Users/theankit/Documents/AK/Projects/Mandi_Prediction/data/shadow_registry",
+    "created_at_utc": "2026-11-13T00:18:27.182272Z",
+    "config_hash": "d1f44e872e790c0f14c8ea3f820b23088d0dcd6a09562c192e644e26ac665599"
+  },
+  "valJson": {
+    "snapshot_path": "data/imported_snapshots/latest_observation_index.json",
+    "file_size_bytes": 41194,
+    "file_sha256": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+    "composite_source_sha256": "3d3bc047440186eed49a8764eb28387a99e7293cdc9b62f1d30290b855fedb11",
+    "total_series_rows": 30,
+    "valid_series_count": 30,
+    "accepted_eligible_count": 30,
+    "review_withheld_count": 0,
+    "districts_covered": [
+      "Ghaziabad",
+      "Jhansi",
+      "Kanpur",
+      "Lucknow",
+      "Unnao"
+    ],
+    "commodities_covered": [
+      "Arecanut(Betelnut/Supari)",
+      "Firewood",
+      "Fish",
+      "Ginger(Green)",
+      "Groundnut",
+      "Gur(Jaggery)",
+      "Lemon",
+      "Mentha Oil",
+      "Onion",
+      "Paddy(Basmati)",
+      "Paddy(Common)",
+      "Potato",
+      "Wheat",
+      "Wood"
+    ],
+    "generated_at_utc": "2026-11-12T13:40:23.620822+00:00"
+  },
+  "issueJson": {
+    "status": "DRY_RUN_COMPLETED",
+    "snapshot_validated": "45c9dd75fcfc519e60911bff64bc7eaa91012c974bec4a5596d83af4340563d4",
+    "current_date_ist": "2026-11-13",
+    "records_processed": 11,
+    "issued_point_forecasts": 0,
+    "abstained_stale": 9,
+    "abstained_review": 2,
+    "abstained_out_of_scope": 19,
+    "skipped_existing_duplicates": 0,
+    "total_new_appended": 0
+  },
+  "scoreJson": {
+    "scorecard_status": "EMPIRICAL_PENDING",
+    "message": "Zero matured forward outcomes available. Forward horizons have not yet closed.",
+    "total_forecasts_issued": 0,
+    "total_forecasts_abstained": 0,
+    "pending_maturation_count": 0,
+    "unmatched_closed_count": 0,
+    "matured_matches_count": 0,
+    "metrics": {
+      "primary_mae_inr": null,
+      "rmse_inr": null,
+      "mean_bias_inr": null,
+      "mape_pct": null,
+      "within_5_pct_tolerance_pct": null
+    },
+    "advisory_status": "BLOCKED"
+  }
+}

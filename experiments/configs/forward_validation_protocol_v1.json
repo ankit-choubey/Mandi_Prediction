@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "protocol_id": "APMC-PV-2026-V1",
+  "protocol_version": "1.0.0",
+  "frozen_at_utc": "2026-11-13T00:15:00Z",
+  "status": "FROZEN_BEFORE_OUTCOMES",
+  "cohort": {
+    "cohort_id": "UP_CANDIDATE_2026_COHORT_A",
+    "target_districts": [
+      "Ghaziabad",
+      "Jhansi",
+      "Kanpur",
+      "Lucknow",
+      "Unnao"
+    ],
+    "declared_focus_crops": [
+      "Wheat",
+      "Potato",
+      "Onion",
+      "Tomato",
+      "Paddy(Common)",
+      "Rice"
+    ],
+    "unit_standard": "INR/quintal",
+    "require_price_display_permitted": true
+  },
+  "reference_model": {
+    "model_id": "naive_persistence",
+    "formulation": "P_hat(t+7) = P(t)",
+    "fitted_weights_required": false
+  },
+  "challenger_models_permitted": false,
+  "horizon_matching": {
+    "nominal_days": 7,
+    "window_min_days": 6,
+    "window_max_days": 8,
+    "tie_break_precedence": [
+      "exact_t7",
+      "closest_to_t7",
+      "earlier_t6"
+    ],
+    "finalize_after_window_closes": true
+  },
+  "freshness_policy": {
+    "max_observation_age_days_ist": 1,
+    "stale_action": "ABSTAIN",
+    "abstention_code": "STALE_OBSERVATION_EXCEEDS_1_DAY"
+  },
+  "interval_policy": {
+    "status": "UNAVAILABLE",
+    "allow_retrospective_envelope_forward": false,
+    "forward_coverage_guarantee": false
+  },
+  "metrics": {
+    "primary": "MAE",
+    "secondary": [
+      "RMSE",
+      "MEAN_BIAS",
+      "MAPE",
+      "WITHIN_5_PCT_TOLERANCE",
+      "ISSUANCE_RATE",
+      "ABSTENTION_RATE"
+    ],
+    "min_sample_size_low_n_threshold": 30,
+    "target_plan_origins": 150,
+    "monitoring_window_weeks": 6
+  },
+  "advisory_gating": {
+    "operational_status": "RESEARCH_ONLY",
+    "advisory_action": "BLOCKED",
+    "auto_enable_from_metrics": false,
+    "disclaimer": "RESEARCH ONLY. Prospective validation scores model predictive competence. Operational farmer advisory is strictly blocked."
+  }
+}

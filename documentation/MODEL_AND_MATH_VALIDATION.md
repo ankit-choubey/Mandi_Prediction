@@ -1,5 +1,10 @@
 # Model & Mathematical Validation Protocol
 
+## Superseding UI002 independent mathematical review — 2026-11-13
+
+Sourceandbrowserverifiedoverallnaive90coverage89.9547%,F2/F3/F4=92.3159/75.9377/72.2581;incorrectproducer50.81%and56.41/45.47/50.81notvalid. Noestablishedshockcause. HGB5.91%RMSEreductionisnotvariance reduction. Newvisiblebreak-evenequationwrong:correctnumerator`p0*(1+f)+c+(1-L)*tl-tn`. Backendremainscorrect. NewwaterfallreadsnonexistentAPIcomponentsandshowsfixturegross25470insteadof25970,directcostUnavailableinsteadof500;finalgain470correct. Unitcontrolstorage50perinitialquintal,total500,not1000. Repairandindependentlytestnonzerofees,financingandmissingcostsperMP-FINAL-013. Regression424passesdoesnotcertifynewvisualarithmetic.
+
+
 > **Purpose:** Authoritative record of mathematical definitions, evaluation protocols, model decision records, and validation scorecards for the Mandi Market Intelligence System.
 > **Update Rule:** Append-only for decision records and scorecard history. Any change to a formula, evaluation protocol, or decision threshold requires an explicit audit justification and date-stamped record. Never fabricate results.
 
@@ -2410,3 +2415,53 @@ Task MP-UI-002 elevated the web research interface into a professor-ready **Agri
 - **Classification**: Presentation refinement under accepted Step 11; does not alter underlying frozen models, benchmark scores, or canonical equations.
 - **Main Milestones Remaining**: Exactly **1 main research milestone** remains: **Step 13 (Prospective Shadow Validation & Usability)**. Container packaging deployment acceptance remains an open infra decision (Docker daemon `NOT_RUN`).
 - **Optional Ablations Remaining**: Exactly **2 optional ablations** remain (arrivals & localized weather).
+
+---
+
+## Section 40 — MP-FINAL-013 Final UI Closure, Prospective Validation Protocol & Academic Handoff (2026-11-13 IST)
+
+### 40.1 Mathematical and UI Defect Closures
+Task MP-FINAL-013 closes all six reproduced UI002 review findings documented in `documentation/UI002_INDEPENDENT_REVIEW.md`:
+1. **Break-Even Analytical Formulation Sign Parity**:
+   Equating net holding proceeds to net spot sale proceeds yields:
+   $$R_{\text{hold}} = Q\left[(1-L)\left((1-d)P^* - t_l\right) - c - P_0 f\right] = Q(P_0 - t_n) = R_{\text{sell,net}}$$
+   Dividing by $Q$ and solving for future price $P^*$:
+   $$(1-L)(1-d)P^* = P_0(1+f) + c + (1-L)t_l - t_n$$
+   $$P^* = \frac{P_0(1+f) + c + (1-L)t_l - t_n}{(1-L)(1-d)}$$
+   The formula banner in `src/static/index.html` was corrected to display `+(1-L)t_l - t_n`, eliminating the sign inverted fixture artifact. In zero-fee fixtures ($t_n = t_l = 0$), $P^* = 2,602.04$; with nonzero transaction costs ($P_0=2500, Q=10, c=50, t_n=10, t_l=20, L=0.02$), $P^* = 2,611.84$ INR/q, perfectly matching Decimal server calculations.
+2. **Authoritative Server Waterfall Decomposition**:
+   Replaced client-side holding decomposition with server-authoritative `waterfall_components` emitted by `src/economic_model.py` across 10 exact steps. Preserved blank-vs-zero semantics: omitted cost inputs render `Unavailable (Missing Cost)` across dependent steps rather than substituting artificial zeros.
+3. **Dynamic Reproducibility Drawer Hashes**:
+   Eliminated static hardcoded SHA literals. `src/service.py` computes SHA-256 of `latest_observation_index.json` on initialization and exposes it alongside composite source SHA-256 in `/api/v1/health` capabilities metadata. Reverts cleanly to `Unavailable` in degraded mode.
+4. **Epistemic Timestamp Separation**:
+   Disentangled temporal references: snapshot dataset creation timestamp (`generated_at_utc`), server runtime process startup time (`server_time_utc`), and IST observation calendar date (`latest_observation_date`) are distinctly labeled in the DOM.
+5. **Explicit Negative Delta Sign Formatting**:
+   Repaired `renderPriceMovement` to prepend explicit minus sign (`− ₹ X.XX (−X.XX%)`) for negative changes.
+6. **Print Series Identity & DOM Numeric Verification**:
+   Added `#print-series-identity` element ensuring selected commodity/market identity persists in print media (`screenshot_print_preview.png`). Headless Chrome DevTools Protocol verified exact numeric DOM parity.
+
+### 40.2 Prospective Validation Architecture (Step 13)
+- **Frozen Protocol**: Protocol `APMC-PV-2026-V1` (version 1.0.0) frozen in `documentation/FORWARD_VALIDATION_PROTOCOL.md` and `experiments/configs/forward_validation_protocol_v1.json`.
+- **Reference Standard**: Naive Persistence out-of-sample MAE (106.96 INR/q) serves as the primary benchmark. Candidate models must beat persistence on MAE over true prospective forward observations.
+- **Fail-Closed Freshness & Identity**: Stale observations ($> 1$ calendar day old) and review markets automatically trigger honest abstention. Zero synthetic or backdated forecasts are recorded.
+- **Append-Only Shadow Registry**: Implemented in standard-library Python (`src/prospective_shadow.py`) with SHA-256 chained entry hashes, process-level file locking (`fcntl`), and subcommands: `init`, `validate-snapshot`, `issue`, `import-outcomes`, `match`, and `scorecard`.
+
+### 40.3 Usability Study Protocol & Feature Scorecard
+- **Protocol**: `documentation/USABILITY_STUDY_PROTOCOL.md` specifies 6 evaluator tasks, informed consent, and Brooke (1996) SUS scoring. Evaluator technical rehearsal verified all flows execute in $< 20$s per task without errors.
+- **Academic Scorecard**: `documentation/PROJECT_FEATURES_AND_SCORECARD.md` documents complete feature inventory, model selection rationale, literature matrix with verified DOIs, and optional RAG extension.
+
+### 40.4 Verification Suite Pass Rates
+- **Final Acceptance Suite** (`experiments/reviews/test_final013_acceptance.js`): **17/17 passed** (100%).
+- **Interactive Browser Flows** (`experiments/reviews/test_interactive_browser_flows.js`): **21/21 passed** (100%).
+- **Contract Review Gates** (`experiments/reviews/check_app001a_review_gates.py`): **29/29 passed** (100%).
+- **Unit & Integration Suite** (`tests/`): **385 passed**, 18 warnings (including 6 shadow tests).
+- **Backing Mathematics Suite** (`backing/`): **45 passed** (100%).
+- **Clean Checkout Simulation** (`test_ui_serving.py`, `test_integration_release.py`): **16 passed** (100%).
+- **Total Combined Tests**: **508 passed, 0 failures, 18 numerical warnings preserved**.
+
+### 40.5 Final Milestone Dispositions
+- **Step 13 Prospective Validation**: Disposed as `ENGINEERING_COMPLETE_EMPIRICAL_PENDING` (protocol frozen, registry CLI verified, real prospective evaluation awaits calendar dates).
+- **Usability Study**: Disposed as `TECHNICAL_REHEARSAL_COMPLETE_FIELD_TRIAL_PENDING` (technical rehearsal passed, participant scoring awaits human subjects).
+- **Container Packaging**: Disposed as `NOT_RUN` (local Docker daemon unexecuted; release runs via pure standard library).
+- **Optional Ablations Remaining**: Exactly **2 optional research ablations** remain (arrivals and localized weather).
+- **Milestones Remaining**: Exactly **0 engineering milestones** remain.

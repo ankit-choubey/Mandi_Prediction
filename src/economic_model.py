@@ -1089,6 +1089,7 @@ class ResearchEconomicResult:
     missing_cost_inputs: List[str]
     disclaimer: str
     r_sell_gross: Optional[float] = None
+    waterfall_components: Optional[Dict[str, Any]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -1116,6 +1117,7 @@ class ResearchEconomicResult:
             "provenance_summary": self.provenance_summary,
             "missing_cost_inputs": self.missing_cost_inputs,
             "disclaimer": self.disclaimer,
+            "waterfall_components": self.waterfall_components,
         }
 
     @classmethod
@@ -1194,6 +1196,27 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             provenance_summary=prov_summary,
             missing_cost_inputs=missing_costs,
             disclaimer=disclaimer,
+            waterfall_components={
+                "is_available": False,
+                "reason": "NO_PARAMETERS_SUPPLIED",
+                "quantity_quintals": q,
+                "current_price": p0,
+                "future_price": request.future_price_point,
+                "step_1_immediate_gross": r_sell_gross,
+                "step_2_spot_transaction_fee": None,
+                "step_3_immediate_net": None,
+                "step_4_post_storage_gross": None,
+                "step_5_direct_storage_handling": None,
+                "step_6_post_storage_transaction_fee": None,
+                "step_7_carrying_cost": None,
+                "carrying_cost_type": None,
+                "annual_carrying_rate": None,
+                "holding_period_days": None,
+                "step_8_expected_net_holding": None,
+                "step_9_net_incremental_benefit": None,
+                "step_10_break_even_price": None,
+                "reconciliation_discrepancy": None,
+            },
         )
 
     # Incomplete / partial parameters contract
@@ -1217,7 +1240,9 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
         )
 
         r_sell_net = None
+        spot_fee = None
         if "transaction_cost_now" not in request.missing_cost_inputs:
+            spot_fee = q * request.params.transaction_cost_now
             r_sell_net = q * (p0 - request.params.transaction_cost_now)
 
         return ResearchEconomicResult(
@@ -1245,6 +1270,28 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
             provenance_summary=prov_summary,
             missing_cost_inputs=request.missing_cost_inputs,
             disclaimer=disclaimer,
+            waterfall_components={
+                "is_available": False,
+                "reason": "INCOMPLETE_PARAMETERS",
+                "missing_cost_inputs": request.missing_cost_inputs,
+                "quantity_quintals": q,
+                "current_price": p0,
+                "future_price": request.future_price_point,
+                "step_1_immediate_gross": r_sell_gross,
+                "step_2_spot_transaction_fee": spot_fee,
+                "step_3_immediate_net": r_sell_net,
+                "step_4_post_storage_gross": None,
+                "step_5_direct_storage_handling": None,
+                "step_6_post_storage_transaction_fee": None,
+                "step_7_carrying_cost": None,
+                "carrying_cost_type": getattr(request.params, "carrying_cost_type", None) if request.params else None,
+                "annual_carrying_rate": getattr(request.params, "annual_carrying_rate", None) if request.params else None,
+                "holding_period_days": getattr(request.params, "holding_period_days", None) if request.params else None,
+                "step_8_expected_net_holding": None,
+                "step_9_net_incremental_benefit": None,
+                "step_10_break_even_price": None,
+                "reconciliation_discrepancy": None,
+            },
         )
 
     params = request.params
@@ -1381,6 +1428,33 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
         "Advisory action is strictly blocked pending approved prospective validation."
     )
 
+    waterfall_components = None
+    if acct_point:
+        gross_hold = round(q * (1.0 - params.quantity_loss_fraction) * (1.0 - params.quality_discount_fraction) * float(request.future_price_point), 10)
+        direct_cost = round(q * params.direct_cost_c, 10)
+        trans_later = round(q * (1.0 - params.quantity_loss_fraction) * params.transaction_cost_later, 10)
+        carrying_val = round(q * p0 * acct_point["carrying_rate_factor_f"], 10)
+        waterfall_components = {
+            "is_available": True,
+            "quantity_quintals": q,
+            "current_price": p0,
+            "future_price": float(request.future_price_point),
+            "step_1_immediate_gross": r_sell_gross,
+            "step_2_spot_transaction_fee": round(q * params.transaction_cost_now, 10),
+            "step_3_immediate_net": round(r_sell, 10),
+            "step_4_post_storage_gross": gross_hold,
+            "step_5_direct_storage_handling": direct_cost,
+            "step_6_post_storage_transaction_fee": trans_later,
+            "step_7_carrying_cost": carrying_val,
+            "carrying_cost_type": params.carrying_cost_type,
+            "annual_carrying_rate": params.annual_carrying_rate,
+            "holding_period_days": params.holding_period_days,
+            "step_8_expected_net_holding": acct_point["r_hold"],
+            "step_9_net_incremental_benefit": acct_point["delta_r"],
+            "step_10_break_even_price": p_be,
+            "reconciliation_discrepancy": abs((gross_hold - direct_cost - trans_later - carrying_val) - acct_point["r_hold"]),
+        }
+
     return ResearchEconomicResult(
         r_sell_net=r_sell,
         r_hold_point_net=acct_point["r_hold"] if acct_point else None,
@@ -1419,4 +1493,5 @@ def evaluate_research_economics(request: ResearchEconomicRequest) -> ResearchEco
         missing_cost_inputs=missing_costs,
         disclaimer=disclaimer,
         r_sell_gross=r_sell_gross,
+        waterfall_components=waterfall_components,
     )
