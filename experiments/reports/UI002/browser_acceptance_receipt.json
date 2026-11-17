@@ -1,6 +1,6 @@
 {
   "task_id": "MP-UI-002",
-  "timestamp_utc": "2026-11-12T23:48:55.324Z",
+  "timestamp_utc": "2026-11-17T12:51:12.673Z",
   "driver": "experiments/reviews/test_ui002_browser_acceptance.js",
   "acceptance_matrix_total": 24,
   "acceptance_matrix_passed": 24,
@@ -12,7 +12,7 @@
       "passed": true,
       "details": {
         "consoleErrors": [
-          "Failed to load catalog or prices: Error: HTTP 503\n    at fetchAPI (http://127.0.0.1:57565/static/app.js:171:13)\n    at async Promise.all (index 1)\n    at async loadCatalogAndPrices (http://127.0.0.1:57565/static/app.js:272:37)\n    at async Promise.all (index 1)\n    at async HTMLDocument.init (http://127.0.0.1:57565/static/app.js:183:7)"
+          "Failed to load catalog or prices: Error: HTTP 503\n    at fetchAPI (http://127.0.0.1:51486/static/app.js:172:13)\n    at async Promise.all (index 1)\n    at async loadCatalogAndPrices (http://127.0.0.1:51486/static/app.js:294:37)\n    at async Promise.all (index 1)\n    at async HTMLDocument.init (http://127.0.0.1:51486/static/app.js:184:7)"
         ]
       }
     },
@@ -32,7 +32,7 @@
       "details": {
         "modal": "₹ 2721.00",
         "date": "2026-11-11",
-        "age": "2 days old (India Calendar) (2026-11-11)",
+        "age": "6 days old (India Calendar) (2026-11-11)",
         "cardVis": "block"
       }
     },
@@ -43,7 +43,7 @@
       "details": {
         "modal": "₹ 2721.00",
         "date": "2026-11-11",
-        "age": "2 days old (India Calendar) (2026-11-11)",
+        "age": "6 days old (India Calendar) (2026-11-11)",
         "cardVis": "block"
       }
     },

@@ -999,6 +999,12 @@
         elements.staleBanner.classList.remove('visible');
         elements.staleBanner.style.display = 'none';
         elements.btnExportReceipt.disabled = false;
+      } else {
+        const errMsg = resp.error?.message || resp.message || 'Evaluation rejected by safety gate';
+        elements.econCalcStatus.textContent = `Error: ${errMsg}`;
+        elements.econCalcStatus.style.color = 'var(--color-soil-rust)';
+        elements.staleBanner.style.display = 'none';
+        elements.btnExportReceipt.disabled = true;
       }
     } catch (err) {
       if (thisRequestId !== state.currentEvaluationRequestId) return;

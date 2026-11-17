@@ -1,59 +1,59 @@
 {
   "manifest_version": "1.0.0",
   "task_id": "MP-UI-002",
-  "generated_at_utc": "2026-11-12T23:48:55.330Z",
+  "generated_at_utc": "2026-11-17T12:51:12.689Z",
   "output_directory": "experiments/reports/UI002",
   "file_count": 11,
   "files": {
     "api_to_dom_numeric_parity.json": {
       "relative_path": "experiments/reports/UI002/api_to_dom_numeric_parity.json",
       "size_bytes": 816,
-      "sha256": "561a727eb0cc7db1a645af74facf840d40e996735cf8899ea7e5b75e9c108c38"
+      "sha256": "b9a9146a70767629d075cf072ddb22126a39a23645fdbeb5ea85fd0a787c94b8"
     },
     "asset_and_network_receipt.json": {
       "relative_path": "experiments/reports/UI002/asset_and_network_receipt.json",
       "size_bytes": 583,
-      "sha256": "f6763c092e187e5b97519622124c9659298709ef0924f9c006a55cdab51fc288"
+      "sha256": "97fe1b74cad291150a1253a6278d875520723a057371c412c6403068f1e8c47a"
     },
     "browser_acceptance_receipt.json": {
       "relative_path": "experiments/reports/UI002/browser_acceptance_receipt.json",
       "size_bytes": 8497,
-      "sha256": "932407f8cb354c66dfd6aeace9a267327495315e561b8c191a7e2b79097695dc"
+      "sha256": "f715f1446b335881b0a7319d1bc9b906d26ba006aa036f4020543bc6b84df709"
     },
     "responsive_viewports_receipt.json": {
       "relative_path": "experiments/reports/UI002/responsive_viewports_receipt.json",
       "size_bytes": 1914,
-      "sha256": "652da68c456ff9559e142b8c18150a8c9a0b660aa610e08dca999a83a7bef9d5"
+      "sha256": "8a9c54be484c17031afce3716fcb61acaf3c7b7c10fe60f440633792a8789576"
     },
     "screenshot_desktop_1280x800.png": {
       "relative_path": "experiments/reports/UI002/screenshot_desktop_1280x800.png",
-      "size_bytes": 104218,
-      "sha256": "1a7bd75b9c8eb6a74ab8fa1547d9130b2f168db643823b895b43a52bea2cb259"
+      "size_bytes": 105929,
+      "sha256": "6c84763d03ef4c4ac1025a354e6947445294898427b7cb1ddaf031ff447eea3e"
     },
     "screenshot_desktop_1440x900.png": {
       "relative_path": "experiments/reports/UI002/screenshot_desktop_1440x900.png",
-      "size_bytes": 131151,
-      "sha256": "264bcff00b03f44ec637d786857265e8ccc44449b2310a627815f3328c03bdd6"
+      "size_bytes": 132919,
+      "sha256": "f29fd37e2a7fbf2cc662f3ea1afbe5f8452606ea2dcbbb72a6a68f1d274b0558"
     },
     "screenshot_mobile_375x667.png": {
       "relative_path": "experiments/reports/UI002/screenshot_mobile_375x667.png",
-      "size_bytes": 117485,
-      "sha256": "ab9facf8b9d2a5e334ecd7438c4b539b9220a26bc502604bf3876e362bf42b8c"
+      "size_bytes": 121544,
+      "sha256": "2deb0591754cb65124db6f6976f57c0a93e0c02285a74d1c3ba465d9f7f2ce02"
     },
     "screenshot_mobile_390x844.png": {
       "relative_path": "experiments/reports/UI002/screenshot_mobile_390x844.png",
-      "size_bytes": 140168,
-      "sha256": "8230c72fb434089f814f57ce99b0a63ffe8c20d5eb556754d1434c2999782909"
+      "size_bytes": 144118,
+      "sha256": "22ac8094cfce259047098afabb5718b20252d8c023fac4fbf30998067370aa81"
     },
     "screenshot_print_preview.png": {
       "relative_path": "experiments/reports/UI002/screenshot_print_preview.png",
-      "size_bytes": 134317,
-      "sha256": "25973bbfac56df8879e99d5a90fac2f2a000608375dac78eab5eef8f6bcbc98b"
+      "size_bytes": 130816,
+      "sha256": "f042539a4d5754171f77de294fa326913a5b302b99ea9eb67a7139609d8a8907"
     },
     "screenshot_tablet_768x1024.png": {
       "relative_path": "experiments/reports/UI002/screenshot_tablet_768x1024.png",
-      "size_bytes": 107447,
-      "sha256": "28510fd9f87c584c8cb65b16cb41d4e5b305be588e3bc67f4ef3db59c6503e14"
+      "size_bytes": 109108,
+      "sha256": "b5846d08dfb92069df6f90b4727a72db7878046487c5e7d9a22f3ae1f132407e"
     },
     "summary.md": {
       "relative_path": "experiments/reports/UI002/summary.md",

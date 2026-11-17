@@ -1,6 +1,6 @@
 {
-  "receipt_id": "RELEASE001_BROWSER_INTERACTION_1794523002467",
-  "timestamp_utc": "2026-11-12T22:36:42.467Z",
+  "receipt_id": "RELEASE001_BROWSER_INTERACTION_1794920011272",
+  "timestamp_utc": "2026-11-17T12:53:31.272Z",
   "runner": "Node.js 25 Native WebSocket + Chrome CDP Protocol",
   "test_summary": {
     "total": 21,
@@ -117,7 +117,7 @@
         "min": "₹ 2721.00",
         "max": "₹ 2721.00",
         "date": "2026-11-11",
-        "age": "Observed 2 days ago (2026-11-11)"
+        "age": "6 days old (India Calendar) (2026-11-11)"
       }
     },
     {
@@ -282,10 +282,10 @@
           }
         ],
         "winner": "Naive Persistence",
-        "winnerDesc": "Achieves lowest MAE (106.96 INR/q). Beating persistence on absolute error remains an open machine learning challenge.",
+        "winnerDesc": "Achieves lowest MAE (106.96 INR/q). Persistence remains the reference standard on absolute loss across all benchmarked series.",
         "rmseModel": "Histogram Gradient Boosting",
-        "rmseDesc": "Achieves lower RMSE (281.16 vs 298.83 for Naive Persistence, a 5.91% reduction in quadratic penalty), but persistence remains primary MAE winner.",
-        "regimeDesc": "Severe undercoverage observed in volatile folds: F2 achieved 92.32% (23,490 origins), while F3 (75.94%, 1,413 origins) and F4 (72.26%, 2,015 origins) fell well below 90% target.",
+        "rmseDesc": "Achieves lower RMSE (281.16 vs 298.83 for Naive Persistence, a 5.91% RMSE reduction), but persistence remains primary MAE winner.",
+        "regimeDesc": "Severe undercoverage observed in later evaluation folds: F2 achieved 92.32% (23,490 origins), while F3 (75.94%, 1,413 origins) and F4 (72.26%, 2,015 origins) fell well below 90% target.",
         "foldNote": "Evaluated across 26,918 total forecast origins across F2–F4 test folds under chronological expanding window."
       }
     },

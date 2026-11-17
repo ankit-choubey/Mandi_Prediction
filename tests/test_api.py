@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 import threading
 import time
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 from wsgiref.simple_server import make_server
 import pytest
 

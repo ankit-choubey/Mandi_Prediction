@@ -103,6 +103,40 @@ class MandiMarketService:
 
     def _load_latest_index(self) -> None:
         """Loads and indexes latest market observations with bounded resource and type guards."""
+        default_index_path = REPO_ROOT / "data" / "imported_snapshots" / "latest_observation_index.json"
+        if not self.latest_index_path.exists() and self.latest_index_path == default_index_path:
+            # Auto-compile index from operational_sources.json if present and default snapshot missing
+            try:
+                op_cfg_path = REPO_ROOT / "data" / "reference" / "operational_sources.json"
+                if op_cfg_path.exists():
+                    from src.live_price_ingestion import (
+                        LivePriceIngestionClient,
+                        DataMode,
+                        publish_latest_observation_index,
+                    )
+                    with open(op_cfg_path, "r", encoding="utf-8") as f:
+                        cfg = json.load(f)
+                    sources = cfg.get("sources", [])
+                    target_files = [
+                        str(REPO_ROOT / s["file_path"]) if not os.path.isabs(s["file_path"]) else s["file_path"]
+                        for s in sources
+                        if s.get("role") == "LATEST_SNAPSHOT" and os.path.exists(
+                            str(REPO_ROOT / s["file_path"]) if not os.path.isabs(s["file_path"]) else s["file_path"]
+                        )
+                    ]
+                    if target_files:
+                        self.latest_index_path.parent.mkdir(parents=True, exist_ok=True)
+                        client = LivePriceIngestionClient(
+                            data_mode=DataMode.FILE_IMPORT,
+                            snapshots_root=str(self.latest_index_path.parent),
+                        )
+                        campaign = client.execute_file_import(file_path=target_files)
+                        publish_latest_observation_index(
+                            campaign, output_path=str(self.latest_index_path)
+                        )
+            except Exception as ex:
+                logger.warning("Auto-generation of latest observation index failed: %s", ex)
+
         if not self.latest_index_path.exists():
             self.index_loaded = False
             self.index_error = "Market price index file not found"
