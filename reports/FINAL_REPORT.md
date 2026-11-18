@@ -164,6 +164,14 @@ The system includes a dedicated inference engine that produces structured intell
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: 2026-08-25 (80 days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+
   LOCATION & COMMODITY:
     • District           : Lucknow
     • Mandi / Market     : Lucknow APMC
@@ -185,6 +193,7 @@ The system includes a dedicated inference engine that produces structured intell
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Actionable Advisory  : BLOCKED
   Confidence Probability: 68.04%
   Class Probabilities  : {'Unfavorable': 15.13, 'Normal': 68.04, 'Favorable': 16.83}
   Historical Outcome   : Favorable (Actual: Rs. 2,547.84 [+5.07%])
@@ -202,6 +211,14 @@ The system includes a dedicated inference engine that produces structured intell
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: 2026-08-25 (80 days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+
   LOCATION & COMMODITY:
     • District           : Kanpur
     • Mandi / Market     : Uttaripura APMC
@@ -223,6 +240,7 @@ The system includes a dedicated inference engine that produces structured intell
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> FAVORABLE <<<
+  Actionable Advisory  : BLOCKED
   Confidence Probability: 38.8%
   Class Probabilities  : {'Unfavorable': 33.62, 'Normal': 27.58, 'Favorable': 38.8}
   Historical Outcome   : Normal (Actual: Rs. 550.00 [+0.00%])
@@ -240,6 +258,14 @@ The system includes a dedicated inference engine that produces structured intell
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: 2026-08-25 (80 days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+
   LOCATION & COMMODITY:
     • District           : Ghaziabad
     • Mandi / Market     : Noida APMC
@@ -261,6 +287,7 @@ The system includes a dedicated inference engine that produces structured intell
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Actionable Advisory  : BLOCKED
   Confidence Probability: 38.73%
   Class Probabilities  : {'Unfavorable': 23.75, 'Normal': 38.73, 'Favorable': 37.52}
   Historical Outcome   : Favorable (Actual: Rs. 4,000.00 [+14.20%])
@@ -278,6 +305,14 @@ The system includes a dedicated inference engine that produces structured intell
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: 2026-08-25 (80 days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+
   LOCATION & COMMODITY:
     • District           : Jhansi
     • Mandi / Market     : Moth APMC
@@ -299,6 +334,7 @@ The system includes a dedicated inference engine that produces structured intell
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Actionable Advisory  : BLOCKED
   Confidence Probability: 75.16%
   Class Probabilities  : {'Unfavorable': 14.97, 'Normal': 75.16, 'Favorable': 9.88}
   Historical Outcome   : Normal (Actual: Rs. 2,662.47 [+1.86%])
@@ -316,6 +352,14 @@ The system includes a dedicated inference engine that produces structured intell
 ║               APMC MANDI MARKET INTELLIGENCE SYSTEM                  ║
 ║           Statistical Market Condition Research Prototype            ║
 ╚══════════════════════════════════════════════════════════════════════╝
+  ══════════════════════════════════════════════════════════════════════
+  ⚠️  STALE DATA WARNING — NOT A CURRENT PRICE
+  • Latest observation date: 2026-08-25 (80 days lag)
+  • Status: STALE DATA — ACTIVE ADVISORY BLOCKED
+  • Insufficient information to recommend storage. Latest market-price data is stale or unavailable.
+  • The predicted condition below represents historical / exploratory analysis only.
+  ══════════════════════════════════════════════════════════════════════
+
   LOCATION & COMMODITY:
     • District           : Unnao
     • Mandi / Market     : Purwa APMC
@@ -337,6 +381,7 @@ The system includes a dedicated inference engine that produces structured intell
 
   ----------------------------------------------------------------------
   INDICATED T+7 MARKET CONDITION: >>> NORMAL <<<
+  Actionable Advisory  : BLOCKED
   Confidence Probability: 42.73%
   Class Probabilities  : {'Unfavorable': 30.24, 'Normal': 42.73, 'Favorable': 27.02}
   Historical Outcome   : Normal (Actual: Rs. 2,513.27 [+0.43%])
