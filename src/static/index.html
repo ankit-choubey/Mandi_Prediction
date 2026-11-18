@@ -391,6 +391,143 @@
           </ul>
         </div>
       </div>
+
+      <!-- Interactive Historical Demonstration Replay Card -->
+      <div class="card" style="margin-top: 1.5rem;" id="demo-replay-card">
+        <div class="card-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+              <span class="badge" style="background: var(--color-parchment-border); color: var(--color-soil-rust); font-weight: 700; font-size: 0.6875rem;">RESEARCH DEMONSTRATION PLAYBACK</span>
+              <span class="badge" style="background: #fee2e2; color: #991b1b; font-weight: 700; font-size: 0.6875rem;">ADVISORY: BLOCKED</span>
+            </div>
+            <h2 class="card-title">Historical Demonstration Replay &amp; Classifier Inference</h2>
+            <p class="card-subtitle">
+              Live retrospective playback demonstrating how the 3-class market condition model executes inference on verified historical mandi sessions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Case Selector Controls -->
+        <div style="background: var(--color-parchment); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); padding: 0.875rem; margin-bottom: 1.25rem; max-width: 100%; overflow: hidden;">
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem; max-width: 100%;">
+            <div style="flex: 1; min-width: 180px; max-width: 100%;">
+              <label for="demo-case-select" class="form-label" style="font-weight: 600; font-size: 0.8125rem; margin-bottom: 0.375rem; display: block;">
+                Select Historical Benchmark Case Study:
+              </label>
+              <select id="demo-case-select" class="form-select" style="width: 100%; max-width: 100%;">
+                <option value="lucknow_wheat">Lucknow APMC — Wheat (Dara) [2026-08-25]</option>
+                <option value="kanpur_potato">Uttaripura APMC (Kanpur) — Potato (Other) [2026-08-25]</option>
+                <option value="ghaziabad_onion">Noida APMC (Ghaziabad) — Onion (Other) [2026-08-25]</option>
+                <option value="jhansi_wheat">Moth APMC (Jhansi) — Wheat (Other) [2026-08-25]</option>
+                <option value="unnao_rice">Purwa APMC (Unnao) — Rice (Common) [2026-08-25]</option>
+              </select>
+            </div>
+            <button type="button" id="btn-run-demo-inference" class="btn btn-primary">
+              Run Demonstration Inference
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Intelligence Card Display -->
+        <div id="demo-output-container" style="border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); padding: 1.25rem; background: var(--color-card-bg); max-width: 100%; overflow: hidden;">
+          <!-- Top Row: Location & Commodity & Prediction Badge -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 1rem; margin-bottom: 1rem;">
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-ink-muted);" id="demo-location-sub">
+                LUCKNOW • LUCKNOW APMC
+              </div>
+              <h3 style="font-family: var(--font-serif); font-size: 1.25rem; font-weight: 700; color: var(--color-ink); margin: 0.25rem 0;" id="demo-crop-title">
+                Wheat (Dara)
+              </h3>
+              <div style="font-size: 0.8125rem; color: var(--color-ink-secondary);">
+                Observed Date: <strong id="demo-obs-date" class="tabular">2026-08-25</strong> &bull; Wholesale Price: <strong id="demo-modal-price" class="tabular">₹2,425.00/qtl</strong>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-ink-muted); margin-bottom: 0.25rem;">
+                Indicated T+7 Market Condition
+              </div>
+              <span id="demo-condition-badge" class="badge" style="font-size: 1rem; padding: 0.375rem 0.875rem; font-weight: 800; background: #e0f2fe; color: #0369a1;">
+                NORMAL
+              </span>
+              <div style="font-size: 0.75rem; color: var(--color-ink-secondary); margin-top: 0.25rem;">
+                Confidence: <strong id="demo-confidence-val" class="tabular">68.04%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Probability Distribution Bars -->
+          <div style="margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8125rem; font-weight: 600; color: var(--color-ink); margin-bottom: 0.5rem;">
+              Ensemble Class Probability Distribution:
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem;">
+              <div style="background: var(--color-parchment); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.6875rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+                  <span>Unfavorable</span>
+                  <strong id="demo-prob-unfav" class="tabular">15.13%</strong>
+                </div>
+                <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                  <div id="demo-bar-unfav" style="width: 15.13%; height: 100%; background: #ef4444;"></div>
+                </div>
+              </div>
+              <div style="background: var(--color-parchment); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.6875rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+                  <span>Normal</span>
+                  <strong id="demo-prob-normal" class="tabular">68.04%</strong>
+                </div>
+                <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                  <div id="demo-bar-normal" style="width: 68.04%; height: 100%; background: #3b82f6;"></div>
+                </div>
+              </div>
+              <div style="background: var(--color-parchment); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.6875rem; margin-bottom: 0.25rem; flex-wrap: wrap;">
+                  <span>Favorable</span>
+                  <strong id="demo-prob-fav" class="tabular">16.83%</strong>
+                </div>
+                <div style="height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden;">
+                  <div id="demo-bar-fav" style="width: 16.83%; height: 100%; background: #10b981;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Metrics Grid: Momentum & Spatial Arbitrage -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.5rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--color-parchment); padding: 0.625rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+              <div style="font-size: 0.6875rem; text-transform: uppercase; color: var(--color-ink-muted);">7-Day Momentum</div>
+              <div style="font-size: 1.0625rem; font-weight: 700; color: var(--color-ink); margin: 0.25rem 0;" id="demo-metric-momentum" class="tabular">-6.37%</div>
+              <div style="font-size: 0.6875rem; color: var(--color-ink-secondary);">7-Day Roll: <span id="demo-metric-rolling" class="tabular">₹2,448.71</span></div>
+            </div>
+            <div style="background: var(--color-parchment); padding: 0.625rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+              <div style="font-size: 0.6875rem; text-transform: uppercase; color: var(--color-ink-muted);">Neighbour Arbitrage</div>
+              <div style="font-size: 1.0625rem; font-weight: 700; color: var(--color-ink); margin: 0.25rem 0;" id="demo-metric-arbitrage" class="tabular">-₹73.51</div>
+              <div style="font-size: 0.6875rem; color: var(--color-ink-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="demo-metric-arbitrage-note">Target lower than neighbour</div>
+            </div>
+            <div style="background: var(--color-parchment); padding: 0.625rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border-subtle); overflow: hidden;">
+              <div style="font-size: 0.6875rem; text-transform: uppercase; color: var(--color-ink-muted);">Actual T+7 Realized</div>
+              <div style="font-size: 1.0625rem; font-weight: 700; color: #15803d; margin: 0.25rem 0;" id="demo-metric-actual-price" class="tabular">₹2,547.84 (+5.07%)</div>
+              <div style="font-size: 0.6875rem; color: var(--color-ink-secondary);">Realized Class: <strong id="demo-metric-actual-cond">Favorable</strong></div>
+            </div>
+          </div>
+
+          <!-- Bottom Alert: Why Commercial Advisory is Blocked & Why Classification Over Regression -->
+          <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: var(--radius-sm); padding: 0.875rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.375rem;">
+              <strong style="color: #92400e; font-size: 0.8125rem;">SAFETY GATE STATUS: ACTIVE ADVISORY BLOCKED (advisory_permitted: false)</strong>
+            </div>
+            <p style="font-size: 0.75rem; color: #78350f; line-height: 1.5; margin: 0 0 0.5rem 0;" id="demo-safety-reason">
+              Historical retrospective demonstration only. Retrospective fold models cannot be served as active commercial trading advice to farmers without approved prospective validation (Step 13) and real-time arrival telemetry.
+            </p>
+            <div style="border-top: 1px dashed #fde68a; padding-top: 0.5rem; font-size: 0.75rem; color: #92400e;">
+              <strong>Methodological Note (Classification vs. Regression):</strong>
+              <span id="demo-method-note">
+                Point regression was disqualified due to high decimal noise and false precision. The system operates as a 3-class condition classifier (Favorable / Normal / Unfavorable) reflecting discrete operational harvest decisions.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ======================================================================

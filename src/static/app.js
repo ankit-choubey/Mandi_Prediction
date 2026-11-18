@@ -138,6 +138,30 @@
     // Waterfall Table
     waterfallCard: document.getElementById('waterfall-card'),
     waterfallTbody: document.getElementById('waterfall-tbody'),
+
+    // Demo Replay Card
+    selDemoCase: document.getElementById('demo-case-select'),
+    btnRunDemoInference: document.getElementById('btn-run-demo-inference'),
+    demoLocationSub: document.getElementById('demo-location-sub'),
+    demoCropTitle: document.getElementById('demo-crop-title'),
+    demoObsDate: document.getElementById('demo-obs-date'),
+    demoModalPrice: document.getElementById('demo-modal-price'),
+    demoConditionBadge: document.getElementById('demo-condition-badge'),
+    demoConfidenceVal: document.getElementById('demo-confidence-val'),
+    demoProbUnfav: document.getElementById('demo-prob-unfav'),
+    demoBarUnfav: document.getElementById('demo-bar-unfav'),
+    demoProbNormal: document.getElementById('demo-prob-normal'),
+    demoBarNormal: document.getElementById('demo-bar-normal'),
+    demoProbFav: document.getElementById('demo-prob-fav'),
+    demoBarFav: document.getElementById('demo-bar-fav'),
+    demoMetricMomentum: document.getElementById('demo-metric-momentum'),
+    demoMetricRolling: document.getElementById('demo-metric-rolling'),
+    demoMetricArbitrage: document.getElementById('demo-metric-arbitrage'),
+    demoMetricArbitrageNote: document.getElementById('demo-metric-arbitrage-note'),
+    demoMetricActualPrice: document.getElementById('demo-metric-actual-price'),
+    demoMetricActualCond: document.getElementById('demo-metric-actual-cond'),
+    demoSafetyReason: document.getElementById('demo-safety-reason'),
+    demoMethodNote: document.getElementById('demo-method-note'),
   };
 
   // Utility: Currency Formatter
@@ -179,6 +203,7 @@
     setupTabNavigation();
     setupSelectorCascade();
     setupEconomicsEvents();
+    setupDemoReplayEvents();
 
     try {
       await Promise.all([
@@ -188,6 +213,115 @@
       ]);
     } catch (err) {
       console.error('System initialization error:', err);
+    }
+  }
+
+  // Historical Demonstration Replay
+  function setupDemoReplayEvents() {
+    if (!elements.selDemoCase || !elements.btnRunDemoInference) return;
+
+    elements.btnRunDemoInference.addEventListener('click', () => {
+      const caseId = elements.selDemoCase.value;
+      if (caseId) loadDemoInference(caseId);
+    });
+
+    elements.selDemoCase.addEventListener('change', () => {
+      const caseId = elements.selDemoCase.value;
+      if (caseId) loadDemoInference(caseId);
+    });
+  }
+
+  async function loadDemoInference(caseId) {
+    if (!caseId) return;
+    try {
+      if (elements.btnRunDemoInference) {
+        elements.btnRunDemoInference.disabled = true;
+        elements.btnRunDemoInference.textContent = 'Running Inference...';
+      }
+      const resp = await fetchAPI(`/api/v1/demo/inference?case_id=${encodeURIComponent(caseId)}`);
+      if (resp.status === 'SUCCESS' && resp.data) {
+        renderDemoInference(resp.data);
+      }
+    } catch (err) {
+      console.error('Failed to load demo inference:', err);
+    } finally {
+      if (elements.btnRunDemoInference) {
+        elements.btnRunDemoInference.disabled = false;
+        elements.btnRunDemoInference.textContent = 'Run Demonstration Inference';
+      }
+    }
+  }
+
+  function renderDemoInference(data) {
+    if (!data) return;
+    if (elements.demoLocationSub) {
+      elements.demoLocationSub.textContent = `${(data.district || '').toUpperCase()} • ${(data.market || '').toUpperCase()}`;
+    }
+    if (elements.demoCropTitle) {
+      elements.demoCropTitle.textContent = `${data.commodity} (${data.variety})`;
+    }
+    if (elements.demoObsDate) {
+      elements.demoObsDate.textContent = data.observation_date || '--';
+    }
+    if (elements.demoModalPrice) {
+      elements.demoModalPrice.textContent = `${formatINR(data.current_price)}/qtl`;
+    }
+    if (elements.demoConditionBadge) {
+      const cond = data.expected_condition_T7 || 'NORMAL';
+      elements.demoConditionBadge.textContent = cond;
+      if (cond === 'FAVORABLE') {
+        elements.demoConditionBadge.style.background = '#dcfce7';
+        elements.demoConditionBadge.style.color = '#15803d';
+      } else if (cond === 'UNFAVORABLE') {
+        elements.demoConditionBadge.style.background = '#fee2e2';
+        elements.demoConditionBadge.style.color = '#b91c1c';
+      } else {
+        elements.demoConditionBadge.style.background = '#e0f2fe';
+        elements.demoConditionBadge.style.color = '#0369a1';
+      }
+    }
+    if (elements.demoConfidenceVal) {
+      elements.demoConfidenceVal.textContent = `${data.condition_confidence}%`;
+    }
+    const probs = data.all_probabilities || {};
+    const unfav = probs.Unfavorable || 0;
+    const norm = probs.Normal || 0;
+    const fav = probs.Favorable || 0;
+    if (elements.demoProbUnfav) elements.demoProbUnfav.textContent = `${unfav}%`;
+    if (elements.demoBarUnfav) elements.demoBarUnfav.style.width = `${unfav}%`;
+    if (elements.demoProbNormal) elements.demoProbNormal.textContent = `${norm}%`;
+    if (elements.demoBarNormal) elements.demoBarNormal.style.width = `${norm}%`;
+    if (elements.demoProbFav) elements.demoProbFav.textContent = `${fav}%`;
+    if (elements.demoBarFav) elements.demoBarFav.style.width = `${fav}%`;
+
+    if (elements.demoMetricMomentum) {
+      const mom = data.price_change_7d_pct;
+      elements.demoMetricMomentum.textContent = `${mom > 0 ? '+' : ''}${mom}%`;
+      elements.demoMetricMomentum.style.color = mom > 0 ? '#15803d' : (mom < 0 ? '#b91c1c' : 'inherit');
+    }
+    if (elements.demoMetricRolling) {
+      elements.demoMetricRolling.textContent = formatINR(data.rolling_avg_7d);
+    }
+    if (elements.demoMetricArbitrage) {
+      const diff = data.neighbouring_summary?.price_difference || 0;
+      elements.demoMetricArbitrage.textContent = `${diff > 0 ? '+' : ''}₹${diff.toFixed(2)}`;
+    }
+    if (elements.demoMetricArbitrageNote) {
+      elements.demoMetricArbitrageNote.textContent = data.neighbouring_summary?.spatial_comparison || '--';
+    }
+    if (elements.demoMetricActualPrice) {
+      const actPrice = data.actual_outcome_T7?.actual_price_T7;
+      const actPct = data.actual_outcome_T7?.actual_pct_change;
+      elements.demoMetricActualPrice.textContent = `${formatINR(actPrice)} (${actPct > 0 ? '+' : ''}${actPct}%)`;
+    }
+    if (elements.demoMetricActualCond) {
+      elements.demoMetricActualCond.textContent = data.actual_outcome_T7?.actual_condition || '--';
+    }
+    if (elements.demoSafetyReason) {
+      elements.demoSafetyReason.textContent = data.safety_gate?.reason || '--';
+    }
+    if (elements.demoMethodNote) {
+      elements.demoMethodNote.textContent = data.methodological_note || '--';
     }
   }
 

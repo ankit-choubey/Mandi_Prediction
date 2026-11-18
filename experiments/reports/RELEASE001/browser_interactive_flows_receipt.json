@@ -1,6 +1,6 @@
 {
-  "receipt_id": "RELEASE001_BROWSER_INTERACTION_1794920011272",
-  "timestamp_utc": "2026-11-17T12:53:31.272Z",
+  "receipt_id": "RELEASE001_BROWSER_INTERACTION_1794976188170",
+  "timestamp_utc": "2026-11-18T04:29:48.170Z",
   "runner": "Node.js 25 Native WebSocket + Chrome CDP Protocol",
   "test_summary": {
     "total": 21,
@@ -117,7 +117,7 @@
         "min": "₹ 2721.00",
         "max": "₹ 2721.00",
         "date": "2026-11-11",
-        "age": "6 days old (India Calendar) (2026-11-11)"
+        "age": "7 days old (India Calendar) (2026-11-11)"
       }
     },
     {

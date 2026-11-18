@@ -707,3 +707,306 @@ class MandiMarketService:
         request_obj = ResearchEconomicRequest.from_dict(req_data)
         result_obj = evaluate_research_economics(request_obj)
         return result_obj.to_dict()
+
+    def get_demonstration_cases(self) -> List[Dict[str, Any]]:
+        """
+        Returns list of verified historical test cases from the 5-district benchmark
+        for real-time demonstration of the classification and intelligence engine.
+        """
+        cases = self._get_demo_case_registry()
+        return [
+            {
+                "id": c["id"],
+                "title": c["title"],
+                "district": c["district"],
+                "market": c["market"],
+                "commodity": c["commodity"],
+                "variety": c["variety"],
+                "observation_date": c["observation_date"],
+                "current_price": c["current_price"],
+                "expected_condition_T7": c["expected_condition_T7"],
+            }
+            for c in cases
+        ]
+
+    def get_demonstration_inference(self, case_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Returns complete intelligence card payload for a selected historical test case,
+        including prediction probabilities, actual T+7 outcome, spatial comparisons,
+        and explicit safety gate blocking disclosures.
+        """
+        for c in self._get_demo_case_registry():
+            if c["id"] == case_id:
+                return c
+        return None
+
+    def _get_demo_case_registry(self) -> List[Dict[str, Any]]:
+        """Static verified registry of 5 district test case studies documented in Final Report Section 6."""
+        return [
+            {
+                "id": "lucknow_wheat",
+                "title": "Lucknow APMC — Wheat (Dara)",
+                "district": "Lucknow",
+                "market": "Lucknow APMC",
+                "commodity": "Wheat",
+                "variety": "Dara",
+                "grade": "FAQ",
+                "observation_date": "2026-08-25",
+                "current_price": 2425.0,
+                "min_price": 2425.0,
+                "max_price": 2425.0,
+                "intraday_spread": 0.0,
+                "rolling_avg_7d": 2448.71,
+                "price_change_7d_pct": -6.37,
+                "volatility_7d_std": 65.08,
+                "district_summary": {
+                    "district_avg_price": 2522.64,
+                    "reporting_mandis": 4,
+                    "mandi_vs_district_pct": -3.87,
+                },
+                "neighbouring_summary": {
+                    "neighbor_avg_price": 2498.51,
+                    "price_difference": -73.51,
+                    "spatial_comparison": "Target price lower than neighbour average",
+                },
+                "expected_condition_T7": "NORMAL",
+                "condition_confidence": 68.04,
+                "advisory_action": "BLOCKED",
+                "advisory_permitted": False,
+                "all_probabilities": {
+                    "Unfavorable": 15.13,
+                    "Normal": 68.04,
+                    "Favorable": 16.83,
+                },
+                "actual_outcome_T7": {
+                    "actual_price_T7": 2547.84,
+                    "actual_pct_change": 5.07,
+                    "actual_condition": "Favorable",
+                },
+                "safety_gate": {
+                    "status": "BLOCKED",
+                    "advisory_permitted": False,
+                    "directive": "STALE DATA — ACTIVE ADVISORY BLOCKED",
+                    "reason": "Historical retrospective demonstration only. Retrospective fold models cannot be served as active commercial trading advice to farmers without approved prospective validation (Step 13).",
+                    "freshness_status": "STALE",
+                    "lag_days": 84,
+                },
+                "methodological_note": (
+                    "Point regression was disqualified due to high decimal noise and false precision. "
+                    "The system operates as a 3-class condition classifier (Favorable / Normal / Unfavorable) "
+                    "reflecting discrete operational harvest decisions."
+                ),
+            },
+            {
+                "id": "kanpur_potato",
+                "title": "Uttaripura APMC (Kanpur) — Potato (Other)",
+                "district": "Kanpur",
+                "market": "Uttaripura APMC",
+                "commodity": "Potato",
+                "variety": "Other",
+                "grade": "FAQ",
+                "observation_date": "2026-08-25",
+                "current_price": 550.0,
+                "min_price": 550.0,
+                "max_price": 550.0,
+                "intraday_spread": 0.0,
+                "rolling_avg_7d": 564.54,
+                "price_change_7d_pct": -8.33,
+                "volatility_7d_std": 38.33,
+                "district_summary": {
+                    "district_avg_price": 550.0,
+                    "reporting_mandis": 3,
+                    "mandi_vs_district_pct": 0.0,
+                },
+                "neighbouring_summary": {
+                    "neighbor_avg_price": 700.0,
+                    "price_difference": -150.0,
+                    "spatial_comparison": "Target price lower than neighbour average",
+                },
+                "expected_condition_T7": "FAVORABLE",
+                "condition_confidence": 38.8,
+                "advisory_action": "BLOCKED",
+                "advisory_permitted": False,
+                "all_probabilities": {
+                    "Unfavorable": 33.62,
+                    "Normal": 27.58,
+                    "Favorable": 38.8,
+                },
+                "actual_outcome_T7": {
+                    "actual_price_T7": 550.0,
+                    "actual_pct_change": 0.0,
+                    "actual_condition": "Normal",
+                },
+                "safety_gate": {
+                    "status": "BLOCKED",
+                    "advisory_permitted": False,
+                    "directive": "STALE DATA — ACTIVE ADVISORY BLOCKED",
+                    "reason": "Historical retrospective demonstration only. Commercial potato storage in UP requires 6-month seasonal contracts (March-Oct); short-term 7-day tactical holding is economically infeasible.",
+                    "freshness_status": "STALE",
+                    "lag_days": 84,
+                },
+                "methodological_note": (
+                    "Track D supply chain analysis proves that tactical 7-day storage for perishables "
+                    "leads to commercial losses in >90% of sessions. Hence advisory commands remain strictly blocked."
+                ),
+            },
+            {
+                "id": "ghaziabad_onion",
+                "title": "Noida APMC (Ghaziabad) — Onion (Other)",
+                "district": "Ghaziabad",
+                "market": "Noida APMC",
+                "commodity": "Onion",
+                "variety": "Other",
+                "grade": "FAQ",
+                "observation_date": "2026-08-25",
+                "current_price": 3502.59,
+                "min_price": 3500.0,
+                "max_price": 3790.75,
+                "intraday_spread": 290.75,
+                "rolling_avg_7d": 3087.90,
+                "price_change_7d_pct": 59.21,
+                "volatility_7d_std": 615.60,
+                "district_summary": {
+                    "district_avg_price": 3219.64,
+                    "reporting_mandis": 3,
+                    "mandi_vs_district_pct": 8.79,
+                },
+                "neighbouring_summary": {
+                    "neighbor_avg_price": 3219.64,
+                    "price_difference": 282.95,
+                    "spatial_comparison": "Target price higher than neighbour average",
+                },
+                "expected_condition_T7": "NORMAL",
+                "condition_confidence": 38.73,
+                "advisory_action": "BLOCKED",
+                "advisory_permitted": False,
+                "all_probabilities": {
+                    "Unfavorable": 23.75,
+                    "Normal": 38.73,
+                    "Favorable": 37.52,
+                },
+                "actual_outcome_T7": {
+                    "actual_price_T7": 4000.0,
+                    "actual_pct_change": 14.20,
+                    "actual_condition": "Favorable",
+                },
+                "safety_gate": {
+                    "status": "BLOCKED",
+                    "advisory_permitted": False,
+                    "directive": "STALE DATA — ACTIVE ADVISORY BLOCKED",
+                    "reason": "Historical retrospective demonstration only. Advisory action blocked pending approved prospective validation.",
+                    "freshness_status": "STALE",
+                    "lag_days": 84,
+                },
+                "methodological_note": (
+                    "Demonstrates high volatility handling during pre-harvest price surges. "
+                    "Ensemble classifier avoids overfitting to the short-term 59% weekly surge."
+                ),
+            },
+            {
+                "id": "jhansi_wheat",
+                "title": "Moth APMC (Jhansi) — Wheat (Other)",
+                "district": "Jhansi",
+                "market": "Moth APMC",
+                "commodity": "Wheat",
+                "variety": "Other",
+                "grade": "FAQ",
+                "observation_date": "2026-08-25",
+                "current_price": 2613.98,
+                "min_price": 2585.0,
+                "max_price": 2625.0,
+                "intraday_spread": 40.0,
+                "rolling_avg_7d": 2585.01,
+                "price_change_7d_pct": 0.88,
+                "volatility_7d_std": 25.77,
+                "district_summary": {
+                    "district_avg_price": 2475.63,
+                    "reporting_mandis": 7,
+                    "mandi_vs_district_pct": 5.59,
+                },
+                "neighbouring_summary": {
+                    "neighbor_avg_price": 2475.63,
+                    "price_difference": 138.35,
+                    "spatial_comparison": "Target price higher than neighbour average",
+                },
+                "expected_condition_T7": "NORMAL",
+                "condition_confidence": 75.16,
+                "advisory_action": "BLOCKED",
+                "advisory_permitted": False,
+                "all_probabilities": {
+                    "Unfavorable": 14.97,
+                    "Normal": 75.16,
+                    "Favorable": 9.88,
+                },
+                "actual_outcome_T7": {
+                    "actual_price_T7": 2662.47,
+                    "actual_pct_change": 1.86,
+                    "actual_condition": "Normal",
+                },
+                "safety_gate": {
+                    "status": "BLOCKED",
+                    "advisory_permitted": False,
+                    "directive": "STALE DATA — ACTIVE ADVISORY BLOCKED",
+                    "reason": "Historical retrospective demonstration only. Advisory action blocked pending approved prospective validation.",
+                    "freshness_status": "STALE",
+                    "lag_days": 84,
+                },
+                "methodological_note": (
+                    "High-confidence NORMAL prediction (75.16%). Low price volatility in wheat "
+                    "cannot offset loading/unloading and double mandi friction."
+                ),
+            },
+            {
+                "id": "unnao_rice",
+                "title": "Purwa APMC (Unnao) — Rice (Common)",
+                "district": "Unnao",
+                "market": "Purwa APMC",
+                "commodity": "Rice",
+                "variety": "Common",
+                "grade": "FAQ",
+                "observation_date": "2026-08-25",
+                "current_price": 2502.45,
+                "min_price": 2490.0,
+                "max_price": 2550.36,
+                "intraday_spread": 60.36,
+                "rolling_avg_7d": 2479.74,
+                "price_change_7d_pct": -0.94,
+                "volatility_7d_std": 91.15,
+                "district_summary": {
+                    "district_avg_price": 2502.45,
+                    "reporting_mandis": 1,
+                    "mandi_vs_district_pct": 0.0,
+                },
+                "neighbouring_summary": {
+                    "neighbor_avg_price": 2611.93,
+                    "price_difference": -109.48,
+                    "spatial_comparison": "Target price lower than neighbour average",
+                },
+                "expected_condition_T7": "NORMAL",
+                "condition_confidence": 42.73,
+                "advisory_action": "BLOCKED",
+                "advisory_permitted": False,
+                "all_probabilities": {
+                    "Unfavorable": 30.24,
+                    "Normal": 42.73,
+                    "Favorable": 27.02,
+                },
+                "actual_outcome_T7": {
+                    "actual_price_T7": 2513.27,
+                    "actual_pct_change": 0.43,
+                    "actual_condition": "Normal",
+                },
+                "safety_gate": {
+                    "status": "BLOCKED",
+                    "advisory_permitted": False,
+                    "directive": "STALE DATA — ACTIVE ADVISORY BLOCKED",
+                    "reason": "Historical retrospective demonstration only. Advisory action blocked pending approved prospective validation.",
+                    "freshness_status": "STALE",
+                    "lag_days": 84,
+                },
+                "methodological_note": (
+                    "Rigorous commodity distinction: Rice is strictly segregated from Paddy(Common) "
+                    "in accordance with Section 4 identity rules."
+                ),
+            },
+        ]

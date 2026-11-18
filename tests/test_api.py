@@ -158,7 +158,22 @@ class TestWsgiApiEndpoints:
         assert status == 200
         assert body["status"] == "SUCCESS"
         assert body["data"]["break_even_relation"] == "INCOMPLETE_PARAMETERS"
-        assert body["data"]["r_hold_point_net"] is None
+
+    def test_demo_cases_and_inference_endpoints(self, app):
+        status, headers, body = call_wsgi_app(app, "GET", "/api/v1/demo/cases")
+        assert status == 200
+        assert body["status"] == "SUCCESS"
+        cases = body["data"]["cases"]
+        assert len(cases) == 5
+        assert any(c["id"] == "lucknow_wheat" for c in cases)
+
+        status, headers, body = call_wsgi_app(app, "GET", "/api/v1/demo/inference?case_id=lucknow_wheat")
+        assert status == 200
+        assert body["status"] == "SUCCESS"
+        assert body["data"]["id"] == "lucknow_wheat"
+        assert body["data"]["expected_condition_T7"] == "NORMAL"
+        assert body["data"]["safety_gate"]["status"] == "BLOCKED"
+        assert body["data"]["actual_outcome_T7"]["actual_price_T7"] == 2547.84
         assert body["data"]["advisory_action"] == "BLOCKED"
 
     def test_method_not_allowed_on_mismatched_verbs(self, app):

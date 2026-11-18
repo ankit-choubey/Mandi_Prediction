@@ -62,7 +62,7 @@ class MandiApiApp:
         request_id = str(uuid.uuid4())
         as_of_utc = datetime.now(timezone.utc).isoformat()
 
-        raw_path = environ.get("PATH_INFO", "")
+        raw_path = environ.get("PATH_INFO", "").split("?")[0]
         norm_path = raw_path.rstrip("/") if raw_path != "/" else "/"
         method = environ.get("REQUEST_METHOD", "GET").upper()
 
@@ -89,6 +89,10 @@ class MandiApiApp:
                 return self._handle_forecast(environ, method, start_response, request_id, as_of_utc)
             elif norm_path == "/api/v1/economics/evaluate":
                 return self._handle_economics(environ, method, start_response, request_id, as_of_utc)
+            elif norm_path == "/api/v1/demo/cases":
+                return self._handle_demo_cases(environ, method, start_response, request_id, as_of_utc)
+            elif norm_path == "/api/v1/demo/inference":
+                return self._handle_demo_inference(environ, method, start_response, request_id, as_of_utc)
             else:
                 return self._send_json(
                     start_response,
@@ -536,6 +540,66 @@ class MandiApiApp:
                     ),
                 ),
             )
+
+    def _handle_demo_cases(
+        self,
+        environ: Dict[str, Any],
+        method: str,
+        start_response: Callable,
+        request_id: str,
+        as_of_utc: str,
+    ) -> List[bytes]:
+        if method != "GET":
+            return self._method_not_allowed(start_response, request_id, as_of_utc, "GET")
+        cases = self.service.get_demonstration_cases()
+        return self._send_json(
+            start_response,
+            status_code="200 OK",
+            payload=ServiceEnvelope(
+                request_id=request_id,
+                as_of_utc=as_of_utc,
+                status=ServiceStatus.SUCCESS.value,
+                data={"cases": cases},
+            ),
+        )
+
+    def _handle_demo_inference(
+        self,
+        environ: Dict[str, Any],
+        method: str,
+        start_response: Callable,
+        request_id: str,
+        as_of_utc: str,
+    ) -> List[bytes]:
+        if method != "GET":
+            return self._method_not_allowed(start_response, request_id, as_of_utc, "GET")
+        params = self._parse_query_params(environ)
+        case_id = params.get("case_id", "lucknow_wheat")
+        res = self.service.get_demonstration_inference(case_id)
+        if res is None:
+            return self._send_json(
+                start_response,
+                status_code="404 Not Found",
+                payload=ServiceEnvelope(
+                    request_id=request_id,
+                    as_of_utc=as_of_utc,
+                    status=ServiceStatus.ERROR.value,
+                    error=ServiceError(
+                        code="CASE_NOT_FOUND",
+                        message=f"Demonstration case '{case_id}' was not found in registry.",
+                    ),
+                ),
+            )
+        return self._send_json(
+            start_response,
+            status_code="200 OK",
+            payload=ServiceEnvelope(
+                request_id=request_id,
+                as_of_utc=as_of_utc,
+                status=ServiceStatus.SUCCESS.value,
+                data=res,
+            ),
+        )
 
     def _serve_static_file(
         self,

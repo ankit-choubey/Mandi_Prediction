@@ -1,29 +1,29 @@
 {
   "manifest_version": "1.0.0",
   "task_id": "MP-UI-002",
-  "generated_at_utc": "2026-11-17T12:51:12.689Z",
+  "generated_at_utc": "2026-11-18T04:28:14.808Z",
   "output_directory": "experiments/reports/UI002",
   "file_count": 11,
   "files": {
     "api_to_dom_numeric_parity.json": {
       "relative_path": "experiments/reports/UI002/api_to_dom_numeric_parity.json",
       "size_bytes": 816,
-      "sha256": "b9a9146a70767629d075cf072ddb22126a39a23645fdbeb5ea85fd0a787c94b8"
+      "sha256": "9ac7b3bb2c66f335ba43b05895b4ff22bb008788e4088f140628c7460ea787b9"
     },
     "asset_and_network_receipt.json": {
       "relative_path": "experiments/reports/UI002/asset_and_network_receipt.json",
       "size_bytes": 583,
-      "sha256": "97fe1b74cad291150a1253a6278d875520723a057371c412c6403068f1e8c47a"
+      "sha256": "6490a22569e1a66401212d6ae198411f15571385d2d3725b3fc37b1ffca71224"
     },
     "browser_acceptance_receipt.json": {
       "relative_path": "experiments/reports/UI002/browser_acceptance_receipt.json",
       "size_bytes": 8497,
-      "sha256": "f715f1446b335881b0a7319d1bc9b906d26ba006aa036f4020543bc6b84df709"
+      "sha256": "17bb6973145454bb3470a70f7fb28890f3887d0768ccecec77cabb8d195e16bd"
     },
     "responsive_viewports_receipt.json": {
       "relative_path": "experiments/reports/UI002/responsive_viewports_receipt.json",
       "size_bytes": 1914,
-      "sha256": "8a9c54be484c17031afce3716fcb61acaf3c7b7c10fe60f440633792a8789576"
+      "sha256": "89b64153bbc0af11c97f49570aa4fbd887f81407aba530463d214bc6522973cf"
     },
     "screenshot_desktop_1280x800.png": {
       "relative_path": "experiments/reports/UI002/screenshot_desktop_1280x800.png",
